@@ -1,0 +1,142 @@
+# MRider Calibration Design
+
+Concrete calibration procedures for MRider — steering zero/center and counts→degrees, drive-encoder ticks→distance, camera intrinsics, camera/LiDAR→`base_link` extrinsics, IMU calibration, and laptop↔Pixhawk time synchronization. Each section is a procedure a student or researcher can execute and log, not a hand-wave. Every calibration produces a **stored artifact** (a YAML/param file or a recorded constant) that the runtime loads, plus a **verification step**.
+
+Cross-links: [dbw.md](dbw.md) (angle range, encoder PPR, serial contract), [sensors.md](sensors.md) (camera/LiDAR models), [software.md](software.md) (TF tree, EKF), [safety.md](safety.md) (bring-up staging), [architecture.md](architecture.md).
+
+Store all calibration artifacts under `config/calibration/` in the repo, one file per subsystem, each stamped with date, operator, vehicle serial, and the git commit of the firmware/software used.
+
+---
+
+## 1. Steering: zero/center and counts→degrees
+
+The absolute column sensor (potentiometer per [dbw.md §6](dbw.md)) reports raw ADC counts; the Nano and ROS 2 need **degrees**, with `0°` = wheels straight. Working range is **±22.5°** at the road wheels ([dbw.md §12](dbw.md), verified `mavlink_bridge.py:250`).
+
+### 1.1 Find mechanical center (zero)
+
+1. Vehicle wheels **off the ground** (bench stands), steering motor **unpowered** (freewheel).
+2. By hand, set the front wheels physically straight — use a straightedge across both front tires, or drive a short straight line first and mark the neutral.
+3. With the wheels straight, read the absolute-sensor raw counts. Record as `c0` (zero-offset counts).
+4. Store `c0` via the Nano config command `C,ZERO` ([dbw.md §10.1](dbw.md)); the Nano persists it (EEPROM) so center survives reboot — this is the boot-stable center that ADR B buys us.
+
+### 1.2 Counts→degrees scale (two-point / multi-point)
+
+The pot is near-linear over the small ±22.5° span, so a two-point fit is adequate; take extra points to confirm linearity.
+
+1. Turn wheels to **full left lock**, measure the actual road-wheel angle with a digital angle gauge (protractor/inclinometer on the wheel) → record `(θ_L, c_L)`; ideally `θ_L ≈ +22.5°`.
+2. Turn to **full right lock** → record `(θ_R, c_R)`; ideally `θ_R ≈ −22.5°`.
+3. Optionally record 3–5 intermediate points to check linearity (residual < ~0.5°).
+4. Fit `θ(counts) = k · (counts − c0)`, where `k = (θ_L − θ_R)/(c_L − c_R)` (degrees per count). If nonlinearity matters, store a small lookup/polynomial instead.
+5. Store `c0`, `k` (or the LUT) in `config/calibration/steering.yaml`. The Nano applies `θ = k·(raw − c0)` before emitting `steer_deg` in the feedback frame.
+
+### 1.3 Setpoint normalization check
+
+Confirm the full command chain: `MANUAL_CONTROL.roll = +1000` should command `+22.5°` and produce a measured `+22.5°` at the wheels; `−1000 → −22.5°`; `0 → 0°` (1500 µs servo pulse). Log the commanded-vs-measured curve; it should be linear through the origin. Any offset means re-check `c0`.
+
+### 1.4 Verification
+
+Command a sweep (0 → +22.5 → −22.5 → 0) and confirm the measured road-wheel angle matches within **±1°** and returns to `0°` at center. Store the sweep log.
+
+---
+
+## 2. Drive distance: encoder ticks→meters
+
+The drive encoder is **52 PPR** on the motor shaft (`code.ino:27`, verified). Distance needs the wheel-diameter and the gear/coupling ratio between the instrumented motor shaft and the wheel.
+
+### 2.1 Effective distance-per-tick
+
+1. Measure the **loaded** wheel diameter `D` (person/payload aboard, correct tire pressure) — measure rolling circumference directly by marking the tire and rolling one full revolution on the floor; `C_wheel = ` measured rollout (more accurate than `πD` because of tire squish).
+2. Determine ticks-per-wheel-revolution `N_wheel`. If the encoder is on the motor shaft through gear ratio `G` (motor:wheel), then `N_wheel = 52 × G × (quadrature factor)`. If the firmware counts one edge (as `code.ino` divides count by PPR for the throttle wheel, `code.ino:83,141`), use the effective counts the firmware actually reports — do **not** assume 4× unless the firmware decodes all quadrature edges.
+3. **Roll-out calibration (authoritative, bypasses guessing G):** drive/push the vehicle a **measured straight distance** `L` (e.g. 10.0 m marked with a tape), record the tick delta `Δticks` from the feedback frame. Then `meters_per_tick = L / Δticks`. Repeat 3× and average.
+4. Store `meters_per_tick` in `config/calibration/odom.yaml`.
+
+### 2.2 Consequence to document (not a defect to calibrate away)
+
+Only one motor shaft is instrumented and the two rear motors are paralleled ([dbw.md ADR C](dbw.md)). `meters_per_tick` captures straight-line scale but **cannot** capture per-turn differential slip or backlash. This is why odometry is **fused with the IMU in the EKF** ([software.md](software.md)); calibration bounds the *scale* error, the EKF bounds the *drift*. State this in the student notes so no one expects raw wheel odometry to be exact.
+
+### 2.3 Verification
+
+Drive a fresh measured 20 m straight line; integrated odometry distance should match within **~2%**. Drive a known square loop; the closure error is the fused-odometry check (EKF, not calibration alone).
+
+---
+
+## 3. Camera intrinsics
+
+For the front camera ([sensors.md](sensors.md)).
+
+1. Use the ROS 2 `camera_calibration` (`cameracalibrator`) tool with a printed **checkerboard** of known square size (e.g. 8×6 inner corners, 25 mm squares) mounted rigidly flat.
+2. Stream the camera, move the board across the full field of view and depth range (near/far, all corners, tilts) until the tool's X/Y/size/skew bars are full.
+3. Commit → produces `camera_matrix` (fx, fy, cx, cy), `distortion_coefficients`, `rectification`, `projection`. Save as `config/calibration/camera_front.yaml` (ROS `CameraInfo` format).
+4. If using a RealSense D435i, the factory intrinsics are available from the driver, but re-verify with the checkerboard for the exact lens/resolution used.
+
+**Verification:** rectify a checkerboard image; straight board edges must appear straight (reprojection error < ~0.3 px reported by the tool).
+
+---
+
+## 4. Extrinsics: camera / LiDAR → `base_link`
+
+Every sensor frame must be located relative to `base_link` for the TF tree ([software.md](software.md): `map → odom → base_link → sensor frames`). Define `base_link` first, then each sensor's static transform.
+
+### 4.1 base_link definition
+
+Pin `base_link` at the **center of the rear axle, on the ground plane, X forward, Z up, Y left** (REP-103 / REP-105). The Ackermann kinematics (wheelbase, track) in [software.md](software.md) are measured from this origin.
+
+### 4.2 Coarse extrinsics by measurement
+
+For each sensor, measure the translation (x, y, z in meters) and orientation (roll, pitch, yaw) from `base_link` to the sensor's optical/scan frame with a tape and level. Publish as `static_transform_publisher` entries (or a URDF joint). This gets you to a few cm / few degrees.
+
+### 4.3 LiDAR→base_link refinement
+
+1. Place the vehicle a **known distance** from a flat wall, perpendicular. The 2D LiDAR scan of the wall should be a straight line at the measured range and centered — adjust yaw/x/y until the scan matches ground truth.
+2. Confirm the scan's zero-heading points **forward** (+X) and that left/right are not mirrored.
+
+### 4.4 Camera→LiDAR (cross-sensor) refinement
+
+1. Place a target visible to both (e.g. a board/pole) at several known positions.
+2. Verify a LiDAR return of the target projects onto the correct camera pixel using the intrinsics (§3) and the two extrinsics chained through `base_link`.
+3. Adjust the camera extrinsic until projection error is within a few pixels / few cm. Store `config/calibration/extrinsics.yaml` (or the URDF `<joint>` origins).
+
+**Verification:** overlay projected LiDAR points on the camera image of a known scene; points land on the corresponding structure.
+
+---
+
+## 5. IMU calibration
+
+The IMU is internal to the Pixhawk 6C ([sensors.md](sensors.md)); calibration is via PX4/QGroundControl and feeds the PX4 EKF that the mrover bridge surfaces (`SensorCombined`, `mavlink_bridge.py:213-229`).
+
+1. **Accel/gyro/mag calibration in QGroundControl:** run the standard PX4 sensor calibration (level, orientation sequence, compass rotation) — required for the PX4 EKF (`EKF2`) and for `VehicleAttitude`/`SensorGps` fusion.
+2. **Level horizon:** set the vehicle on a known-level surface and capture level trim so `0` pitch/roll matches the physical vehicle.
+3. **Gyro bias:** let the IMU sit still after power-up for the PX4 bias estimate to settle before driving (part of the arm sequence).
+4. **Mounting orientation:** set `SENS_BOARD_ROT`/board-rotation params to match how the Pixhawk is physically mounted on MRider; wrong board rotation corrupts yaw. Record the mounting orientation photo + param value.
+5. Store the exported QGC parameter file in `config/calibration/px4_params_<version>.params`, stamped with the **pinned PX4 version** ([dbw.md §9](dbw.md), [software.md](software.md)).
+
+**Verification:** with the vehicle stationary and level, `VehicleAttitude` roll/pitch ≈ 0 and stable; rotate the vehicle a known 90° and confirm yaw changes ~90° in the correct sign.
+
+---
+
+## 6. Laptop↔Pixhawk time synchronization
+
+Odometry, LiDAR, camera, and IMU must share a common time base or the EKF/SLAM fuses stale data. Two clocks exist: the laptop (ROS 2 `/clock`) and the Pixhawk (PX4 boot-time microseconds, e.g. `msg.time_usec`/`time_boot_ms` used throughout `mavlink_bridge.py:143,215,237`).
+
+**Approach (pinned):**
+1. **Single authoritative clock = the laptop.** All ROS 2 sensor drivers (camera, LiDAR) stamp with the laptop clock on arrival. Because most sensors are physically connected to the laptop ([overview.md](overview.md) requirement: "a laptop will be an on-board computer to which most sensors are connected"), their timestamps are already laptop-referenced.
+2. **PX4→laptop offset estimation:** the Micro-XRCE-DDS / MAVLink link exposes PX4 timestamps; estimate a constant offset + drift between PX4 boot-µs and laptop time by the standard MAVLink `TIMESYNC`/`SYSTEM_TIME` round-trip (or record the offset at bridge start and periodically correct). Apply the offset in the bridge so PX4-originated messages (`SensorCombined`, `VehicleAttitude`, `SensorGps`) carry laptop-referenced stamps before publication.
+3. **Nano feedback:** the Nano has no real-time clock; its USB feedback frames ([dbw.md §10.1](dbw.md)) are stamped by the ROS 2 node **on receipt** with the laptop clock. USB latency at 115200 baud and ≥20 Hz is small and roughly constant; record the mean latency once (loopback test) and, if needed, subtract it as a fixed offset.
+4. Keep everything on one machine's wall clock; do **not** enable ROS 2 simulated time (`use_sim_time=false`) on the real vehicle.
+
+**Verification:** wiggle a feature seen by both LiDAR and camera while driving; the events should align in time within one sensor period. Check that the EKF does not reject measurements for being out-of-sequence (PX4 EKF timestamp warnings absent).
+
+---
+
+## 7. Calibration artifact index
+
+| Subsystem | Procedure | Stored artifact |
+|---|---|---|
+| Steering zero + scale | §1 | `config/calibration/steering.yaml` (`c0`, `k`/LUT) |
+| Drive odometry | §2 | `config/calibration/odom.yaml` (`meters_per_tick`) |
+| Camera intrinsics | §3 | `config/calibration/camera_front.yaml` |
+| Extrinsics (cam/LiDAR→base_link) | §4 | `config/calibration/extrinsics.yaml` or URDF joints |
+| IMU / PX4 | §5 | `config/calibration/px4_params_<ver>.params` |
+| Time sync | §6 | offset recorded in bridge config; loopback-latency note |
+
+Each artifact is stamped with date, operator, vehicle serial, and the firmware/software git commit so a calibration can be reproduced or invalidated when hardware changes. Re-run the relevant section after any mechanical change (new tires, re-mounted sensor, re-flashed firmware).

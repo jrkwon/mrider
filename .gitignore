@@ -1,0 +1,18 @@
+# oh-my-claudecode session state
+.omc/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# ROS 2 / colcon (future workspaces, root-level only — keep docs/build/)
+/build/
+/install/
+/log/
