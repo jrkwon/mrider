@@ -1,8 +1,9 @@
 # MRider — Michigan Rider
 
 <p align="center">
-  <img src="images/mrider.png" alt="MRider" height="180">
-  <img src="images/mitt.png" alt="MITT" height="180">
+  <img src="images/mrider.png" alt="MRider" height="40">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="images/mitt.png" alt="MITT" height="40">
 </p>
 
 **MRider** converts a kids ride-on, remote-controllable electric vehicle into a self-driving-ready car with a full **Drive-By-Wire (DBW)** system. The vehicle's nickname is **MITT** (Michigan Intelligent Transportation Tech), inspired by KITT from *Knight Rider*.
