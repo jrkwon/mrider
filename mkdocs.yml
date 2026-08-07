@@ -78,6 +78,7 @@ nav:
   - Getting Started: getting-started.md
   - Design:
       - Overview: design/overview.md
+      - DBW Architecture Review (2026-08): design/adr-dbw-architecture-review.md
       - Architecture: design/architecture.md
       - Vehicle: design/vehicle.md
       - Drive-by-Wire: design/dbw.md

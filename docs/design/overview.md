@@ -73,6 +73,10 @@ ADR in the linked document below.
 - [software.md](software.md) — ROS 2 Humble stack, mrover reuse map, topic/TF contract, SLAM/Nav2/NN plan.
 - [bom.md](bom.md) — itemized bill of materials with minimum- and full-tier totals.
 
+### Reviews
+
+- [adr-dbw-architecture-review.md](adr-dbw-architecture-review.md) — 2026-08 re-review of the resolved DBW decisions against the B-MROVER source: both confirmed but on revised grounds, two alternatives added (E4 pre-registered as a fallback; a single-MCU controller left **open** and time-boxed to the hardware order), and several items flagged for verification at bring-up.
+
 ### Build & Learn (RoboRacer-style)
 
 - [Build guide](../build/index.md) — step-by-step Build guide (BOM → mechanical → electrical → firmware → software → bench test → manual drive → autonomous).
