@@ -1,9 +1,13 @@
 # MRider — Michigan Rider
 
 <p align="center">
-  <img src="images/mrider.png" alt="MRider" height="40">
+  <img src="docs/images/mrider.png" alt="MRider" height="40">
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="images/mitt.png" alt="MITT" height="40">
+  <img src="docs/images/mitt.png" alt="MITT" height="40">
+</p>
+
+<p align="center">
+  📖 <strong>Documentation site: <a href="https://jrkwon.github.io/mrider/">jrkwon.github.io/mrider</a></strong>
 </p>
 
 **MRider** converts a kids ride-on, remote-controllable electric vehicle into a self-driving-ready car with a full **Drive-By-Wire (DBW)** system. The vehicle's nickname is **MITT** (Michigan Intelligent Transportation Tech), inspired by KITT from *Knight Rider*.
@@ -24,7 +28,7 @@ MRider is a **research and education platform**: rigorous enough for autonomous-
 | Compute | Onboard laptop (own battery) running ROS 2 Humble — SLAM, Nav2, and an end-to-end NN pipeline |
 | Safety | Hardware E-stop, relay-MUX authority arbitration (default = stock), RC-via-PX4 live override, failsafe matrix + FMEA |
 
-Estimated cost: **~$1.4k minimum tier / ~$1.9k full tier** (see [BOM](design/bom.md)).
+Estimated cost: **~$1.4k minimum tier / ~$1.9k full tier** (see [BOM](docs/design/bom.md)).
 
 ## Documentation
 
@@ -32,20 +36,20 @@ Estimated cost: **~$1.4k minimum tier / ~$1.9k full tier** (see [BOM](design/bom
 
 | Document | Contents |
 |---|---|
-| [design/overview.md](design/overview.md) | Project goals, requirements, and resolved design decisions |
-| [design/architecture.md](design/architecture.md) | System architecture, command/feedback flows, power tree, timing contract |
-| [design/vehicle.md](design/vehicle.md) | Chassis selection criteria, candidate models, 24V two-seater ADR |
-| [design/dbw.md](design/dbw.md) | The core DBW design: steering smart-servo, throttle, encoders, interface contract |
-| [design/safety.md](design/safety.md) | Failsafe matrix, authority arbitration, E-stop semantics, FMEA, bring-up protocol |
-| [design/sensors.md](design/sensors.md) | Camera and LiDAR ADRs, IMU, GNSS/RTK path, mounting, laptop criteria |
-| [design/calibration.md](design/calibration.md) | Steering, odometry, camera/LiDAR extrinsics, IMU, time-sync procedures |
-| [design/software.md](design/software.md) | ROS 2 Humble stack, mrover reuse map, topic/TF contract, SLAM/Nav2/NN plan |
-| [design/bom.md](design/bom.md) | Itemized bill of materials with minimum- and full-tier totals |
+| [docs/design/overview.md](docs/design/overview.md) | Project goals, requirements, and resolved design decisions |
+| [docs/design/architecture.md](docs/design/architecture.md) | System architecture, command/feedback flows, power tree, timing contract |
+| [docs/design/vehicle.md](docs/design/vehicle.md) | Chassis selection criteria, candidate models, 24V two-seater ADR |
+| [docs/design/dbw.md](docs/design/dbw.md) | The core DBW design: steering smart-servo, throttle, encoders, interface contract |
+| [docs/design/safety.md](docs/design/safety.md) | Failsafe matrix, authority arbitration, E-stop semantics, FMEA, bring-up protocol |
+| [docs/design/sensors.md](docs/design/sensors.md) | Camera and LiDAR ADRs, IMU, GNSS/RTK path, mounting, laptop criteria |
+| [docs/design/calibration.md](docs/design/calibration.md) | Steering, odometry, camera/LiDAR extrinsics, IMU, time-sync procedures |
+| [docs/design/software.md](docs/design/software.md) | ROS 2 Humble stack, mrover reuse map, topic/TF contract, SLAM/Nav2/NN plan |
+| [docs/design/bom.md](docs/design/bom.md) | Itemized bill of materials with minimum- and full-tier totals |
 
 ### Build & Learn (RoboRacer-style)
 
-- **[Build guide](docs/build/README.md)** — BOM → mechanical → electrical → firmware → software → bench test → manual drive → autonomous.
-- **[Learn curriculum](docs/learn/README.md)** — ROS 2 intro → DBW → safety → perception → SLAM → Nav2 → behavior cloning → capstone.
+- **[Build guide](docs/build/index.md)** — BOM → mechanical → electrical → firmware → software → bench test → manual drive → autonomous.
+- **[Learn curriculum](docs/learn/index.md)** — ROS 2 intro → DBW → safety → perception → SLAM → Nav2 → behavior cloning → capstone.
 
 ## Lineage & Related Work
 

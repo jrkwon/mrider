@@ -75,8 +75,8 @@ ADR in the linked document below.
 
 ### Build & Learn (RoboRacer-style)
 
-- [../docs/build/](../docs/build/README.md) — step-by-step Build guide (BOM → mechanical → electrical → firmware → software → bench test → manual drive → autonomous).
-- [../docs/learn/](../docs/learn/README.md) — Learn curriculum (ROS 2 intro → DBW → safety → perception → SLAM → Nav2 → behavior cloning → capstone).
+- [Build guide](../build/index.md) — step-by-step Build guide (BOM → mechanical → electrical → firmware → software → bench test → manual drive → autonomous).
+- [Learn curriculum](../learn/index.md) — Learn curriculum (ROS 2 intro → DBW → safety → perception → SLAM → Nav2 → behavior cloning → capstone).
 
 ## My Previous Work (Documents)
 

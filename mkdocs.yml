@@ -1,0 +1,108 @@
+site_name: MRider
+site_description: Michigan Rider — a drive-by-wire research and education vehicle platform
+site_url: https://jrkwon.github.io/mrider/
+copyright: Bio-Inspired Machine Intelligence Lab (BIMI), University of Michigan-Dearborn
+
+repo_url: https://github.com/jrkwon/mrider
+repo_name: jrkwon/mrider
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  logo: images/mrider.png
+  favicon: images/mrider.png
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.instant
+    - navigation.tracking
+    - navigation.footer
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.action.edit
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: amber
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: amber
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - footnotes
+  - tables
+  - def_list
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+plugins:
+  - search
+  - git-revision-date-localized:
+      enable_creation_date: true
+      fallback_to_build_date: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/jrkwon/mrider
+      name: MRider on GitHub
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Design:
+      - Overview: design/overview.md
+      - Architecture: design/architecture.md
+      - Vehicle: design/vehicle.md
+      - Drive-by-Wire: design/dbw.md
+      - Safety: design/safety.md
+      - Sensors: design/sensors.md
+      - Calibration: design/calibration.md
+      - Software: design/software.md
+      - Bill of Materials: design/bom.md
+  - Build Guide:
+      - Overview: build/index.md
+      - 1. BOM & Sourcing: build/01-bom-sourcing.md
+      - 2. Vehicle Prep & Mechanical: build/02-mechanical.md
+      - 3. Electrical & Wiring: build/03-electrical.md
+      - 4. Firmware Bring-up: build/04-firmware.md
+      - 5. Software Install: build/05-software.md
+      - 6. Bench Test & Calibration: build/06-bench-test.md
+      - 7. Manual Drive: build/07-manual-drive.md
+      - 8. Autonomous Bring-up: build/08-autonomous.md
+  - Learn:
+      - Overview: learn/index.md
+      - M1 — Intro to MRider & ROS 2: learn/m1-ros2-intro.md
+      - M2 — Drive-by-Wire & Smart-Servo: learn/m2-dbw-steering.md
+      - M3 — Teleop Control & Safety: learn/m3-teleop-safety.md
+      - M4 — Perception: learn/m4-perception.md
+      - M5 — Localization & SLAM: learn/m5-slam.md
+      - M6 — Navigation (Nav2): learn/m6-nav2.md
+      - M7 — Behavior Cloning: learn/m7-behavior-cloning.md
+      - M8 — Capstone: learn/m8-capstone.md

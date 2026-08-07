@@ -11,9 +11,9 @@ This document selects the base ride-on vehicle ("MITT") that MRider converts to
 drive-by-wire. It states the **selection criteria first**, then evaluates real,
 currently-purchasable candidate models against them, lists the physical
 verification that must be done on the unit actually purchased, and records the
-chassis decision as [ADR D](#adr-d--24v-two-seater-vs-12v-single-seater).
+chassis decision as [ADR D](#adr-d-24-v-two-seater-vs-12-v-single-seater).
 
-The choice is driven by the [plan's decision drivers](../.claude/plans): payload
+The choice is driven by the project's decision drivers: payload
 for an onboard laptop plus sensors, an accessible steering column for the
 [DBW](dbw.md) angle actuator and absolute sensor, 24 V electrical headroom, and
 reuse of the [mrover](https://github.com/jrkwon/mrover) Sabertooth + Pixhawk

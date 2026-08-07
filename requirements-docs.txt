@@ -1,0 +1,5 @@
+# Documentation site toolchain — keep CI and local installs in sync.
+#   pip install -r requirements-docs.txt
+#   mkdocs serve
+mkdocs-material>=9.5,<10
+mkdocs-git-revision-date-localized-plugin>=1.2,<2

@@ -72,8 +72,7 @@ Delta (full − min) = **$470**, entirely in the LiDAR (+$200), camera (+$170),
 GNSS (+$90), and minor wiring/mount (+$10) upgrades.
 
 Contingency (~10%) covers shipping, taxes, connector/fastener miscellany, and the
-verification-driven risk that the **drive-motor stall current** ([vehicle.md §3.1]
-(vehicle.md)) forces a current-limit accessory or a second motor driver.
+verification-driven risk that the **drive-motor stall current** ([vehicle.md §3.1](vehicle.md)) forces a current-limit accessory or a second motor driver.
 
 ---
 
@@ -93,8 +92,7 @@ following are typically already owned and can be subtracted:
 New-to-MRider items (not in the mrover BOM) are the **absolute steering angle
 sensor** (#5), **relay MUX** (#9), **E-stop** (#10), **RC TX/RX** (#11), the
 **global-shutter camera** (#13), and the **GNSS** (#14, full tier) — these
-implement the [DBW angle servo](dbw.md), [safety authority arbitration]
-(safety.md), and the [global-shutter behavior-cloning](sensors.md) decisions that
+implement the [DBW angle servo](dbw.md), [safety authority arbitration](safety.md), and the [global-shutter behavior-cloning](sensors.md) decisions that
 distinguish MRider from the base mrover recipe.
 
 ---

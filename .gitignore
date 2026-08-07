@@ -16,3 +16,6 @@ __pycache__/
 /build/
 /install/
 /log/
+
+# MkDocs build output
+/site/
