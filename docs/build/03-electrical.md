@@ -1,28 +1,10 @@
 # 3. Electrical & Wiring
 
-!!! danger "Superseded — pending rewrite (2026-08-07)"
-
-    This page still describes the **Pixhawk 6C + PX4 + Arduino Nano** topology. That was
-    replaced by a **single Teensy 4.1 running micro-ROS**
-    ([decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)).
-
-    **Do not follow the steps below as written.** Specifically, these no longer exist: PX4,
-    QGroundControl, MAVLink, the Micro-XRCE-DDS agent, `px4_msgs`, the Arduino Nano, the
-    USB-TTL adapter, the servo-PWM steering setpoint, and the ASCII/I2C feedback protocols.
-    New in their place: micro-ROS over USB, `DbwCommand`/`DbwStatus`, Sabertooth **packetized
-    serial**, an isolated logic rail, and a **hardware RC signal MUX**.
-
-    The [design set](../design/overview.md) is authoritative and current —
-    [dbw.md](../design/dbw.md), [architecture.md](../design/architecture.md),
-    [safety.md](../design/safety.md), [software.md](../design/software.md) — as are
-    [step 1](01-bom-sourcing.md) and [step 4](04-firmware.md).
-
-
 **Goal:** build the power and signal harness, including the authority MUX and E-stop.
 
-Wire the 24V traction rail, the isolated logic rail, the Sabertooth 2x32, the Pixhawk
-power module, the relay-MUX (STOCK vs. DBW), and the hardware E-stop. Verify rail
-isolation and default-to-stock behavior before energizing anything downstream.
+Wire the 24V traction rail, the isolated logic rail, the Sabertooth 2x32, the Teensy,
+the relay-MUX (STOCK vs. DBW), the hardware RC signal MUX, and the hardware E-stop. Verify
+rail isolation and default-to-stock behavior before energizing anything downstream.
 
 - **Prerequisites:** Section 2 complete.
 - **Specification:** [design/dbw.md](../design/dbw.md), [design/safety.md](../design/safety.md)
@@ -50,27 +32,40 @@ isolation and default-to-stock behavior before energizing anything downstream.
 MRider has exactly two power rails, and the split is safety-critical.
 
 ```
-24 V battery pack
+24 V traction pack
   │
-  ├──▶ E-stop contactor (cuts TRACTION only) ──▶ Relay MUX ──┬──▶ STOCK: parent-remote receiver + ESC
-  │                                                          └──▶ DBW:   Sabertooth 2x32 B+
-  │                                                                       ├─ M1 → steering gearmotor
-  │                                                                       └─ M2 → paralleled drive motors
-  │
-  └──▶ Pixhawk power module (PM02) ──▶ ISOLATED LOGIC RAIL
-                                        ├─ Pixhawk 6C
-                                        ├─ Arduino Nano
-                                        ├─ absolute angle sensor (regulated, ratiometric)
-                                        ├─ Sabertooth signal logic
-                                        └─ MUX coil driver
+  └──▶ E-stop contactor (cuts TRACTION only) ──▶ Relay MUX ──┬──▶ STOCK: parent-remote receiver + ESC
+                                                             └──▶ DBW:   Sabertooth 2x32 B+
+                                                                          ├─ M1 → steering gearmotor
+                                                                          └─ M2 → paralleled drive motors
 
-Laptop ──▶ its own internal battery (NOT wired to 24 V in v1)
+12 V logic battery ──▶ DC-DC ──▶ ISOLATED LOGIC RAIL
+                                   ├─ Teensy 4.1 (5 V in, 3.3 V logic)
+                                   ├─ absolute angle sensor (3.3 V, I²C)
+                                   ├─ RC receiver
+                                   ├─ hardware RC signal MUX
+                                   ├─ Sabertooth signal logic
+                                   └─ MUX coil driver
+
+Laptop ──▶ its own internal battery (NOT wired to traction in v1)
 ```
 
 | Rail | Feeds | Dies when |
 |---|---|---|
 | **Traction / motor** | Sabertooth B+, M1 (steering gearmotor), M2 (drive motors) | E-stop pressed, MUX drops, pack disconnected |
-| **Isolated logic** | Pixhawk, Nano, angle sensor, Sabertooth signal logic, MUX coil driver | Pack disconnected only |
+| **Isolated logic** | Teensy, angle sensor, RC receiver, signal MUX, Sabertooth signal logic, MUX coil driver | Logic battery disconnected only |
+
+!!! danger "The logic rail is now a separate battery, not a tap off the pack"
+
+    The superseded design got logic isolation from the Pixhawk's PM02 power module. **That
+    part is deleted**, so the isolation must be built explicitly — a dedicated 12 V battery and
+    DC-DC, from day one, not as a retrofit
+    ([safety.md §5](../design/safety.md#5-power-rail-isolation-and-brownout-protection)).
+
+    This matters more than it did before. The Teensy holds the **entire** safety supervisor —
+    the position loop, throttle shaping, the staleness watchdog, SBUS decode, arming. A reset
+    mid-drive loses every firmware-layer protection at once (FMEA row 4, severity 5). There is
+    no second controller to survive it.
 
 !!! info "The steering gearmotor is on the traction rail — deliberately"
 
@@ -78,13 +73,12 @@ Laptop ──▶ its own internal battery (NOT wired to 24 V in v1)
     pins this. The consequence is that **E-stop de-energizes the steering motor and the
     column freewheels**. That is the intended, analyzed behavior — acceptable at ≤ walking
     speed with an operator alongside. Putting the steering motor on the logic rail would risk
-    browning out the Nano and PX4 on a steering stall, and would leave a live actuator after
-    an emergency stop. Do not "improve" this.
+    browning out the Teensy on a steering stall, and would leave a live actuator after an
+    emergency stop. Do not "improve" this.
 
 **Brownout isolation is the point of the split.** Motor stalls sag the traction rail. The
-logic rail must not follow, or the Nano/PX4 reset mid-drive. Use a dedicated logic DC-DC with
-adequate hold-up capacitance and put the undervoltage monitor on the **logic** rail
-([safety.md §5](../design/safety.md#5-power-rail-isolation-and-brownout-protection)).
+logic rail must not follow. Use adequate hold-up capacitance and put the undervoltage monitor
+on the **logic** rail.
 
 ## 3.2 Per-rail fuse and gauge table
 
@@ -96,8 +90,8 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 | MUX → Sabertooth B+ | *(measure during bring-up)* | *(measure during bring-up)* | *(size to measured)* | *(size to fuse)* |
 | Sabertooth M2 → paralleled drive motors | *(measure during bring-up)* | **must be < 32 A** ([dbw.md §7](../design/dbw.md#7-throttle-path)) | *(size to measured)* | *(size to fuse)* |
 | Sabertooth M1 → steering gearmotor | *(measure during bring-up)* | *(measure during bring-up)* | *(size to measured)* | *(size to fuse)* |
-| Pack → Pixhawk power module (PM02) | per PM02 spec | — | *(size to measured)* | per PM02 harness |
-| Logic rail → Nano / sensor / signal logic | < 1 A typical | — | 1–2 A | 22–24 AWG |
+| Logic battery → DC-DC input | < 2 A typical | — | 3–5 A | 18–20 AWG |
+| Logic rail → Teensy / sensor / RC RX / signal MUX | < 1 A typical | — | 1–2 A | 22–24 AWG |
 | MUX coil circuit | per relay coil spec | — | *(size to coil)* | 22 AWG |
 
 !!! danger "Verify paralleled drive-motor stall current against 32 A/channel"
@@ -111,13 +105,13 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 ## 3.3 The three taps
 
 Reversibility comes from three keyed inline connectors that intercept the stock harness
-without cutting it ([dbw.md §11.3](../design/dbw.md#115-3-tap-connector-spec-minimally-invasive)).
+without cutting it ([dbw.md §11.5](../design/dbw.md#115-3-tap-connector-spec-minimally-invasive)).
 
 | Tap | Intercepts | MUX side | Notes |
 |---|---|---|---|
 | **Throttle tap** | stock throttle motor leads | NC → stock ECU, NO → Sabertooth M2 | paralleled rear motors |
-| **Steering tap** | stock steering motor leads | NC → stock ECU, NO → Sabertooth M1 | MRider adds the gearmotor if the column had none |
-| **Power tap** | 24 V battery pack | feeds Sabertooth B+ and the isolated logic rail | fused; brownout isolation per §3.1 |
+| **Steering tap** | stock steering motor leads | NC → stock ECU, NO → Sabertooth M1 | MRider adds the gearmotor if the column had none. **Note the M1/M2 assignment is inverted vs. mrover** — intentional, see [dbw.md §2.1](../design/dbw.md#21-actuator) (finding F6) |
+| **Power tap** | 24 V battery pack | feeds Sabertooth B+ only | fused. The logic rail is a **separate battery** (§3.1), not tapped from here |
 
 Use **keyed** connectors — not generic bullets. During bring-up you will unplug and re-plug
 these many times, and a reversed steering tap means the position loop runs away from its
@@ -128,7 +122,7 @@ setpoint instead of toward it.
 Build the authority chain before anything can be commanded.
 
 **E-stop.** A latching mushroom-head contactor, hardwired in the **traction** power path —
-not a software command. It must work when the laptop, Nano, and PX4 have all hung. It does
+not a software command. It must work when the laptop and the Teensy have both hung. It does
 two things at once:
 
 1. cuts traction power, and
@@ -148,40 +142,87 @@ two things at once:
 !!! note "Default de-energized = STOCK is the whole safety story"
 
     Every failure direction leads back to the factory-controlled vehicle: E-stop, logic
-    brownout, a pulled connector, a dead Nano. If you wire the relays inverted — energize for
+    brownout, a pulled connector, a dead Teensy. If you wire the relays inverted — energize for
     STOCK — you invert the entire failsafe analysis in
     [safety.md](../design/safety.md). Check this twice.
 
 ## 3.5 Signal wiring
 
-The Sabertooth runs in **independent R/C (PWM) mode** with two separate masters
+The Sabertooth runs in **packetized serial mode** with the **Teensy as the single bus master**
+addressing both channels over one wire
 ([dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-packetized-serial-single-master)).
+Set the DIP switches for packetized serial at your chosen baud and address before wiring —
+consult the Sabertooth manual for the switch table.
 
-| Sabertooth input | Driven by | Motor output | Function |
+| Sabertooth channel | Driven by | Motor output | Function |
 |---|---|---|---|
-| **S1** | Arduino Nano PWM (steering effort) | M1 | steering gearmotor |
-| **S2** | PX4 PWM (throttle) | M2 | drive motors, paralleled |
+| Channel 1 | Teensy, packetized serial | M1 | steering gearmotor |
+| Channel 2 | Teensy, packetized serial | M2 | drive motors, paralleled |
 
-This is the one place MRider departs from mrover, which fed **both** S1 and S2 from the PX4
-PWM board. There is no bus conflict because in R/C mode S1 and S2 are electrically separate
-one-way PWM lines with a common ground — not a shared addressed bus.
+Packetized serial is available because there is now **one** master. The superseded design
+needed two independent PWM lines because the Nano owned steering and PX4 owned throttle, and
+two masters cannot share an addressed bus. One controller removes that constraint — and with
+it the ~50 Hz servo-frame ceiling that silently capped closed-loop performance.
 
 **Signal connections to make:**
 
-- PX4 servo output → Sabertooth **S2** (3-wire servo lead)
-- Nano PWM output pin → Sabertooth **S1**
-- Absolute angle sensor → Nano ADC input (fed from the Nano's regulated rail)
-- Drive encoder → Nano interrupt pins
-- Steering gearmotor encoder (if fitted) → Nano interrupt pins
-- Nano USB → laptop (this is the feedback transport, 115200 baud)
+| From | To | Notes |
+|---|---|---|
+| Teensy hardware serial TX | Sabertooth **S1** | Packetized serial, single wire + common ground |
+| Absolute angle sensor | Teensy **I²C** (SDA/SCL) | 3.3 V from the logic rail. Pot fallback → an analog input instead |
+| Drive encoder A/B | Teensy **hardware quadrature decoder** pins | Not software interrupts — the Teensy has 4 dedicated QDC channels |
+| Steering motor encoder A/B | Teensy hardware quadrature decoder pins | Second QDC channel |
+| RC receiver **SBUS** | Teensy hardware serial RX | Layer A override (closed-loop) |
+| RC receiver **MUX channel** | Hardware RC signal MUX select | Layer B override — see below |
+| Teensy PWM/serial out | Hardware RC signal MUX input A | Normal path |
+| RC receiver PWM out | Hardware RC signal MUX input B | Emergency path |
+| Signal MUX output | Sabertooth | Whichever source the MUX selects |
+| Teensy **USB** | Laptop | micro-ROS — carries **command *and* feedback** |
+
+!!! danger "Give the Teensy USB a direct laptop port, not a hub"
+
+    This single link carries the steering setpoint as well as the feedback. A dropout removes
+    the setpoint and drops the vehicle to `ESTOP`
+    ([failsafe row 2](../design/safety.md#2-failsafe-matrix)). That is the safe behavior, but a
+    flaky cable or a marginal hub becomes a vehicle that stops repeatedly. Use a good cable and
+    a direct port, and log 30 minutes of session stability at
+    [bring-up Stage 0](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first).
+
+### 3.5.1 Hardware RC signal MUX — wire this, it is not optional
+
+!!! danger "This is the condition on which the architecture was adopted"
+
+    D3 concentrates the steering loop, throttle, override, and arming on one MCU. The
+    justification for accepting that is that override is a **wiring property**, not a firmware
+    property ([safety.md §1.2](../design/safety.md#12-live-override-inside-dbw-mode-two-layers)).
+    A build without this MUX has no independent override and does not match the safety analysis
+    the design was approved against.
+
+The MUX sits **between the Teensy and the Sabertooth**, selecting which source reaches the
+motor driver:
+
+```
+Teensy output ──▶ MUX input A ─┐
+                               ├──▶ MUX output ──▶ Sabertooth
+RC receiver   ──▶ MUX input B ─┘
+                     ▲
+RC channel ──────────┘  (select: A = normal, B = emergency)
+```
+
+- Power the MUX from the **logic rail**, so it survives an E-stop and a traction brownout.
+- Choose the **failsafe direction deliberately**: on RC signal loss the MUX should fall back to
+  a defined state, and you must know which. Set the receiver's failsafe values before wiring.
+- Verify at [Stage 2](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first) **with
+  the Teensy deliberately halted** — held in reset or unplugged. A safety claim you have not
+  tested with the component dead is not a safety claim.
 
 !!! danger "Star-ground at the Sabertooth"
 
-    Tie the signal grounds of the Nano, the PX4, and the Sabertooth to a **single** point at
-    the Sabertooth. This is [FMEA row 5](../design/safety.md#7-fmea-lightweight) — a ground
-    loop between two independent PWM masters and a 24 V power stage produces erratic motor
-    commands that are extremely hard to diagnose later, because they look like a firmware
-    bug.
+    Tie the signal grounds of the Teensy, the RC receiver, the signal MUX, and the Sabertooth to
+    a **single** point at the Sabertooth. This is
+    [FMEA row 5](../design/safety.md#7-fmea-lightweight) — a ground loop between logic and a
+    24 V power stage produces erratic motor commands that are extremely hard to diagnose later,
+    because they look like a firmware bug.
 
 ## 3.6 Continuity and isolation checks — before any power
 
@@ -245,7 +286,7 @@ Only after §3.6 and §3.7 pass.
 2. Connect the pack. Do **not** energize the MUX coil — the vehicle should be in STOCK mode.
 3. Confirm the stock parent remote still drives the vehicle normally. If it does not, your
    taps are wrong, and you have learned that before involving the Sabertooth.
-4. Confirm the logic rail is up and stable, and that the Pixhawk and Nano power on.
+4. Confirm the logic rail is up and stable, and that the Teensy powers on and enumerates over USB.
 5. Measure the logic rail while someone forces a stock steering stall. **The logic rail must
    not sag.** If it does, your isolation is inadequate — add hold-up capacitance before
    continuing.
@@ -274,6 +315,12 @@ Only after §3.6 and §3.7 pass.
 - [ ] Continuity/isolation checklist (§3.6) passes
 - [ ] Stock parent remote still drives the vehicle through the taps
 - [ ] Logic rail does not sag under traction stall
+- [ ] **Logic rail is its own battery**, not tapped from the traction pack (§3.1)
+- [ ] Sabertooth DIP switches set for **packetized serial** at the chosen baud and address
+- [ ] **Hardware RC signal MUX installed and powered from the logic rail** (§3.5.1) — its
+      Stage 2 test with the Teensy halted is the condition D3 was adopted on
+- [ ] RC receiver failsafe values set, and the MUX's failsafe direction known and written down
+- [ ] Teensy USB on a **direct laptop port**, not a hub
 
 ---
 

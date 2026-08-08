@@ -1,323 +1,244 @@
 # 5. Software Install: ROS 2 Humble Stack
 
-!!! danger "Superseded — pending rewrite (2026-08-07)"
+**Goal:** stand up the ROS 2 stack on the laptop, connect it to the Teensy over micro-ROS, and
+confirm the vehicle interface end to end.
 
-    This page still describes the **Pixhawk 6C + PX4 + Arduino Nano** topology. That was
-    replaced by a **single Teensy 4.1 running micro-ROS**
-    ([decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)).
+Install ROS 2 Humble and the packages the design set names, settle the Gazebo pairing, build
+the micro-ROS agent from source, and verify `DbwCommand`/`DbwStatus` round-trip at rate.
 
-    **Do not follow the steps below as written.** Specifically, these no longer exist: PX4,
-    QGroundControl, MAVLink, the Micro-XRCE-DDS agent, `px4_msgs`, the Arduino Nano, the
-    USB-TTL adapter, the servo-PWM steering setpoint, and the ASCII/I2C feedback protocols.
-    New in their place: micro-ROS over USB, `DbwCommand`/`DbwStatus`, Sabertooth **packetized
-    serial**, an isolated logic rail, and a **hardware RC signal MUX**.
-
-    The [design set](../design/overview.md) is authoritative and current —
-    [dbw.md](../design/dbw.md), [architecture.md](../design/architecture.md),
-    [safety.md](../design/safety.md), [software.md](../design/software.md) — as are
-    [step 1](01-bom-sourcing.md) and [step 4](04-firmware.md).
-
-
-**Goal:** stand up the on-board ROS 2 Humble stack on the laptop.
-
-Install ROS 2 Humble and the MRider workspace (reusing `jrkwon/mrover` packages),
-bring up Micro-XRCE-DDS to the Pixhawk, and confirm the command/feedback topics
-(`/mrider/cmd`, `/mrider/feedback`) and the TF tree are alive.
-
-- **Prerequisites:** Section 4 complete; laptop selected.
+- **Prerequisites:** Section 4 complete (Teensy passes Stage 0–2 gates).
 - **Specification:** [design/software.md](../design/software.md)
-- **Expected outcome:** ROS 2 talks to PX4 over XRCE; feedback streams from the Nano
-  over USB serial; TF tree populated.
+- **Expected outcome:** `/mitt/dbw/status` at ≥ 50 Hz, `ros2_control` loaded, TF tree complete,
+  and the identical launch working in simulation.
 
 !!! warning "Draft — not yet validated on hardware"
 
-    The MRider workspace does not exist yet. Package names, launch files, and the two NEW
-    nodes (the Nano feedback driver and the command shim) are specified in
-    [software.md](../design/software.md) but **not written**. Commands below show the intended
-    shape; adjust to the workspace as it actually lands.
+    Commands are derived from [software.md](../design/software.md). No MRider has been brought
+    up, so package versions and device paths are **unconfirmed**. Record what you actually
+    install — under this architecture, your pinned versions *are* the reproducibility claim
+    ([software.md §6.3](../design/software.md#63-version-pinning)).
 
 ---
 
 ## 5.1 What is reused and what is new
 
-The guiding rule is **reuse before invent**. B-MROVER already provides the MAVLink bridge,
-the EKF, slam_toolbox, Nav2, the ros2_control CarlikeBot interface, the data recorder, and
-the Keras end-to-end pipeline. MRider changes exactly two things
-([software.md §1](../design/software.md#1-reuse-posture)):
+The controller change does **not** touch the autonomy stack. Everything that carries MRider's
+navigation sits *above* the vehicle interface and is transport-agnostic.
 
-1. **The feedback datapath** moves off MAVLink `WHEEL_DISTANCE` onto Nano → USB →
-   `/mrider/feedback` ([ADR-SW1](../design/software.md#adr-sw1-one-transport-one-clock-typed-messages)).
-2. **Kinematic and frame parameters** are re-measured for the real chassis, and two B-MROVER
-   config artifacts are corrected.
-
-That means exactly **two new nodes**:
-
-| New node | Job |
+| Reused from B-MROVER | Status |
 |---|---|
-| **Feedback driver** | Parse Nano USB serial `F,...` frames → publish `/mrider/feedback` |
-| **Command shim** (thin) | Map `/mrider/cmd` → `ManualControlSetpoint` (roll/throttle) |
+| `robot_localization` EKF configs, `slam_toolbox`, Nav2 params | ADAPT — re-parameterize for the real chassis (§5.8) |
+| URDF/xacro Ackermann structure, Gazebo worlds | ADAPT — same distro, minimal change |
+| `data_collection`, `neural_net/` behavior cloning | REUSE — phase 2 |
 
-Everything else is reused or reconfigured. If you find yourself writing a third node, check
-[the reuse table](../design/software.md#2-ros-2-stack-reused-adapted-new) first — it is
-probably already there.
+| New in MRider | Why |
+|---|---|
+| **`mitt_hardware`** | A real `ros2_control` `hardware_interface` bridging to the micro-ROS topics. B-MROVER's `carlikebot_system.cpp` is an **unmodified upstream demo stub** — `read()` echoes the command back as state, `write()` only logs (finding F3). There was never working code here to reuse. |
+| **`mitt_msgs`** | `DbwCommand` / `DbwStatus`, replacing `px4_msgs` |
+| **Odometry node** | Bicycle model from `DbwStatus` → `wheel/odometry` |
+| **`mitt_bench`** | Produces the quantified acceptance numbers |
 
-## 5.2 Install ROS 2 Humble
+**Retired:** `mavlink_bridge.py`, `px4_msgs`, the Micro-XRCE-DDS agent, the ASCII feedback
+driver, and the command shim. The vehicle interface is two typed topics on one transport
+([ADR-SW1](../design/software.md#adr-sw1-one-transport-one-clock-typed-messages)).
 
-Target is **Ubuntu 22.04 + ROS 2 Humble** — B-MROVER's validated distro. Do not substitute a
-newer distro to be helpful; the reuse claims are verified against Humble.
+## 5.2 Install ROS 2 Humble and packages
 
 ```bash
-sudo apt install -y software-properties-common curl
-sudo add-apt-repository universe
-sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key \
-  -o /usr/share/keyrings/ros-archive-keyring.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] \
-  http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" \
-  | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+source /opt/ros/humble/setup.bash
 
-sudo apt update
-sudo apt install -y ros-humble-desktop ros-dev-tools
-sudo apt install -y ros-humble-slam-toolbox ros-humble-navigation2 ros-humble-nav2-bringup \
-                    ros-humble-robot-localization ros-humble-ros2-control \
-                    ros-humble-ros2-controllers python3-colcon-common-extensions
+sudo apt install -y \
+  ros-humble-ackermann-steering-controller \
+  ros-humble-joint-state-broadcaster \
+  ros-humble-robot-localization \
+  ros-humble-slam-toolbox \
+  ros-humble-nav2-bringup \
+  ros-humble-rplidar-ros \
+  ros-humble-gz-ros2-control \
+  ros-humble-ros-gz-sim
 
-echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+# Record exactly what you got — this is the reproducibility claim
+apt list --installed 2>/dev/null | grep -E "ros-humble-(ackermann|gz-ros2|ros-gz|robot-local|slam|nav2|rplidar)" \
+  | tee ~/mrider_pinned_versions.txt
 ```
 
-## 5.3 Build the workspace
+## 5.3 Settle the Gazebo pairing — do this in week 1, not week 12
+
+!!! danger "Humble's paired Gazebo is Fortress; this lab machine has Harmonic"
+
+    `gz sim 8.14.0` (Harmonic) is installed, but Humble's apt `ros_gz` (0.244.x) and
+    `gz_ros2_control` (0.7.x) are built against **Fortress**. This is a known mismatch, and
+    resolving it is a **week-1 gate with a one-day cap**
+    ([software.md §6.2](../design/software.md#62-gazebo-pairing-week-1-gate)).
 
 ```bash
-mkdir -p ~/mrider_ws/src && cd ~/mrider_ws/src
+gz sim --version                       # what is actually installed
+ros2 pkg prefix ros_gz_sim             # what ROS thinks it has
+ros2 launch ros_gz_sim gz_sim.launch.py gz_args:="-r empty.sdf"
+```
 
-# B-MROVER packages: bridge, px4_msgs, description, configs, data_collection, run_neural
-git clone https://github.com/jrkwon/mrover.git
+**Decision rule — do not spend more than one day here:**
 
-cd ~/mrider_ws
-rosdep install --from-paths src --ignore-src -r -y
+1. It works against Harmonic → keep it, pin the versions, record them in `docs/build/`.
+2. It does not → **install Gazebo Fortress and use the apt binaries.** Fortress is the
+   supported Humble pairing and is entirely adequate for a 14-week indoor-navigation project.
+
+**Do not** attempt a source build of `ros_gz` + `gz_ros2_control` against Harmonic on a
+semester timeline. The twin is a means, not the deliverable.
+
+## 5.4 Build the micro-ROS agent from source
+
+`micro_ros_agent` is **not in the Humble apt repositories.** Build it now, during Track A —
+not in week 5 when it blocks the vehicle.
+
+```bash
+mkdir -p ~/uros_ws/src && cd ~/uros_ws
+git clone -b humble https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
+rosdep install --from-paths src --ignore-src -y
+colcon build && source install/local_setup.bash
+
+ros2 run micro_ros_setup create_agent_ws.sh
+ros2 run micro_ros_setup build_agent.sh && source install/local_setup.bash
+
+ros2 pkg prefix micro_ros_agent        # confirm it exists
+```
+
+Record the commit you built.
+
+## 5.5 Build the workspace
+
+```bash
+cd ~/mrider/ros2_ws
+rosdep install --from-paths src --ignore-src -y
 colcon build --symlink-install
 source install/setup.bash
 ```
 
-!!! tip "Use `--symlink-install`"
+## 5.6 Stable device names
 
-    You will edit YAML configs constantly during steps 6–8. Symlink installs mean a config
-    change does not require a rebuild.
-
-## 5.4 Micro-XRCE-DDS agent
-
-The transport between the laptop and PX4. B-MROVER pins **Agent v2.4.2**, TELEM2 =
-`/dev/ttyS2`, `SER_TEL2_BAUD` typically **2000000**, with client auto-start via SD
-`etc/extras.txt` ([dbw.md §9](../design/dbw.md#9-teensy-41-firmware-platform-and-version-pinning)).
+Under this architecture there is **one** MCU, so the old two-way `/dev/ttyUSB*` ambiguity is
+gone — but the LiDAR is also a USB serial device, so pin both.
 
 ```bash
-git clone -b v2.4.2 https://github.com/eProsima/Micro-XRCE-DDS-Agent.git
-cd Micro-XRCE-DDS-Agent && mkdir build && cd build
-cmake .. && make && sudo make install && sudo ldconfig /usr/local/lib/
-
-# Run against the Pixhawk TELEM2 link
-MicroXRCEAgent serial --dev /dev/ttyUSB0 -b 2000000
+udevadm info -a -n /dev/ttyACM0 | grep -E "idVendor|idProduct|serial" | head
 ```
 
-Domain ID comes from `agent_config.xml` (default **10**). Set `ROS_DOMAIN_ID` to match, or
-nothing will appear in `ros2 topic list` and you will assume the link is dead:
+`/etc/udev/rules.d/99-mrider.rules`:
 
-```bash
-export ROS_DOMAIN_ID=10
 ```
-
-**Verify the link:**
-
-```bash
-ros2 topic list | grep /fmu
-# expect /fmu/in/manual_control_setpoint, /fmu/out/sensor_combined, ...
-
-ros2 topic hz /fmu/out/sensor_combined     # expect >= 100 Hz (EKF input)
+# Teensy 4.1 (VID 16c0) — fill in the serial from the command above
+SUBSYSTEM=="tty", ATTRS{idVendor}=="16c0", ATTRS{serial}=="XXXXXXXX", SYMLINK+="mitt_dbw"
+# LiDAR — fill in from udevadm
+SUBSYSTEM=="tty", ATTRS{idVendor}=="XXXX", ATTRS{idProduct}=="XXXX", SYMLINK+="mitt_lidar"
 ```
-
-## 5.5 Stable device names for the two USB links
-
-You have two USB serial devices — the Nano and the Pixhawk — and `/dev/ttyUSB0` will swap
-between them across reboots. Fix this now rather than after it silently sends steering
-commands to the wrong device.
-
-```bash
-# Find the stable identifiers
-ls -l /dev/serial/by-id/
-udevadm info -a -n /dev/ttyUSB0 | grep -E 'idVendor|idProduct|serial' | head
-```
-
-```title="/etc/udev/rules.d/99-mrider.rules"
-SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523", SYMLINK+="mrider_nano"
-SUBSYSTEM=="tty", ATTRS{idVendor}=="XXXX", ATTRS{idProduct}=="XXXX", SYMLINK+="mrider_px4"
-```
-
-*(Vendor/product IDs above are placeholders — read yours from `udevadm` and record them.)*
 
 ```bash
 sudo udevadm control --reload-rules && sudo udevadm trigger
-sudo usermod -aG dialout $USER     # log out and back in
-ls -l /dev/mrider_nano /dev/mrider_px4
+ls -l /dev/mitt_dbw /dev/mitt_lidar
 ```
 
-## 5.6 The feedback driver
+!!! danger "Give `/dev/mitt_dbw` a direct laptop port, not a hub"
 
-The one genuinely new node. It opens the Nano serial link at **115200**, parses
+    This link carries the steering **setpoint** as well as feedback. A dropout removes the
+    setpoint and drops the vehicle to `ESTOP`
+    ([failsafe row 2](../design/safety.md#2-failsafe-matrix)) — safe, but a flaky link is a
+    vehicle that stops repeatedly.
 
-```
-F,<steer_deg>,<steer_counts>,<drive_ticks>,<drive_rpm>,<setpoint_deg>,<status>\n
-```
+## 5.7 `mitt_hardware` — the `ros2_control` interface
 
-and publishes `/mrider/feedback`. The message descends from B-MROVER's
-`mrover_control/msg/Control.msg` — retaining `timestamp` and `steer_angle` (degrees, the
-absolute-sensor reading) and adding a drive-distance/velocity field derived from the drive
-encoder ([software.md §3.1](../design/software.md#31-topic-interface-contract)).
+The plugin implements `read()` by taking the latest `DbwStatus` and `write()` by publishing a
+`DbwCommand`. The controller stack above it is upstream
+`ackermann_steering_controller`: front steer = **position**, rear drive = **velocity**.
 
-Three behaviors the driver must implement, because downstream safety depends on them:
+**The point of this design** is that the *same* controller stack and the *same* Nav2/SLAM
+configs run in simulation and on the vehicle. Only the plugin differs:
 
-1. **Stamp on receipt with the laptop clock.** The Nano has no real-time clock. The laptop is
-   the single authoritative clock ([calibration.md §6](../design/calibration.md#6-time-synchronization)).
-2. **Flag staleness.** No frame for `T_timeout` (e.g. 250 ms) → mark `/mrider/feedback` stale
-   so the EKF coasts on IMU and Nav2 halts
-   ([failsafe matrix row 2](../design/safety.md#2-failsafe-matrix)).
-3. **Surface the `status` bitfield** — setpoint-valid, at-limit, stall-detected — rather than
-   swallowing it. Step 6's failsafe tests read these.
+| Context | `hardware_interface` plugin |
+|---|---|
+| Simulation | `gz_ros2_control` |
+| Vehicle | `mitt_hardware` |
 
-```bash
-ros2 run mrider feedback_driver --ros-args -p port:=/dev/mrider_nano -p baud:=115200
-
-ros2 topic hz   /mrider/feedback      # expect >= 20 Hz
-ros2 topic echo /mrider/feedback --once
-```
-
-!!! note "Steering does not travel this link"
-
-    The USB link carries feedback up and only non-time-critical config down (`C,PID,...`,
-    `C,ZERO`). The steering **setpoint** arrives via PX4 servo PWM
-    ([ADR E](../design/dbw.md#3-adr-e-steering-control-loop-location-the-key-dbw-decision)).
-    This is why USB loss degrades odometry but leaves steering tracking — row 2 of the
-    failsafe matrix.
-
-## 5.7 The command shim
-
-Thin by design: maps `/mrider/cmd` (normalized steer + throttle from Nav2, teleop, or the
-learned policy) onto `ManualControlSetpoint` with `roll` = STEER and `throttle` = THROTTLE,
-published to `/fmu/in/manual_control_setpoint`.
-
-Keeping this shim thin is what makes Nav2, teleop, and behavior cloning share one datapath —
-they all publish `/mrider/cmd` and nothing else knows the difference.
-
-```bash
-ros2 run mrider command_shim
-ros2 topic hz /fmu/in/manual_control_setpoint    # expect >= 10 Hz (heartbeat contract)
-```
-
-!!! danger "The ≥10 Hz stream is a heartbeat, not a suggestion"
-
-    PX4's offboard-loss failsafe fires when the stream drops below 10 Hz: throttle → 0, enter
-    hold ([failsafe matrix row 1](../design/safety.md#2-failsafe-matrix)). If your shim
-    publishes only on change, the vehicle will failsafe every time the command is steady.
+That is [ADR-SW4](../design/software.md#7-software-adr-summary), and it is what makes the twin
+a development vehicle rather than a demonstration. If you find yourself adding a
+sim-only or vehicle-only node above this line, stop — you are re-introducing the divergence
+the design exists to prevent.
 
 ## 5.8 Re-parameterize for the real chassis
 
-Fill in the measurements from [step 2](02-mechanical.md). B-MROVER's URDF mixes a simulation
-chassis (`chassis_length=1.3`) with a much smaller controller `wheelbase=0.325` — these are
-simulation artifacts, **not** measurements. Treat every dimension as a placeholder
-([software.md §3.2](../design/software.md#32-ackermann-kinematic-parameters)).
+!!! danger "Treat every B-MROVER dimension as a placeholder"
 
-| Parameter | B-MROVER reference | Your value | File |
-|---|---|---|---|
-| Steering range | ±22.5° | keep as design target; re-verify mechanically | `robot_core2_urdf.xacro:26` |
-| Wheelbase | 0.325 m (controller) / 1.3 m (URDF placeholder) | *(from step 2)* | `carlike_controllers.yaml:13` |
-| Track | 0.4 m (sim placeholder) | *(from step 2)* | `robot_core2_urdf.xacro:9-10` |
-| Wheel radius | 0.1397 m | *(from step 2)* | `robot_core2_urdf.xacro:19` |
-| `robot_radius` (Nav2) | 0.1397 | *(derive from real chassis)* | `nav2_params.yaml` |
+    B-MROVER's URDF mixes a simulation chassis (`chassis_length=1.3`) with a controller
+    `wheelbase=0.325` — these are simulation artifacts, not measurements
+    ([software.md §3.2](../design/software.md#32-ackermann-kinematic-parameters)). Measure
+    everything on your vehicle. The one value consistent across three independent files is the
+    **±22.5° steering range**, adopted as the design target and still to be re-verified against
+    the real mechanical lock.
 
-**Three corrections found during design verification** — make all three now
-([software.md §7](../design/software.md#7-software-adr-summary)):
-
-1. **Frame mismatch.** slam_toolbox uses `base_frame: base_footprint`; the EKF uses
-   `base_link`. Reconcile to one convention — recommend `base_link` throughout, or add a
-   static `base_link` → `base_footprint` transform.
-2. **Magnetic declination.** `navsat_transform.magnetic_declination_radians` is set for
-   **Lisbon** in B-MROVER. Set your local value. (GNSS is optional; the map-EKF runs
-   GNSS-free until a receiver is added.)
-3. **Nav2 local controller.** DWB is diff-drive/omni-oriented. Keep it for first bring-up as
-   the reused default, but pre-register Regulated Pure Pursuit as the swap
-   ([ADR-SW2](../design/software.md#adr-sw2-nav2-local-controller-for-ackermann)) — the
-   ±22.5° minimum-turn-radius constraint may make DWB paths infeasible.
+| Parameter | Source | Action |
+|---|---|---|
+| `wheelbase`, track, `wheel_radius` | Measured in step 2 | Set in URDF + controller config |
+| Steering range | Measured mechanical lock | Verify against ±22.5° |
+| Drive encoder PPR | **Measured on the part fitted** | Do **not** inherit 52 — the source project conflicts with itself (F7) |
+| `robot_radius`, velocity limits | Real chassis | Nav2 params |
 
 ## 5.9 EKF and TF
 
-Keep B-MROVER's **dual-EKF** structure — local (`world_frame: odom`) and global
-(`world_frame: map`, GNSS) — with `two_d_mode: true` for a planar ride-on
-([software.md §4.1](../design/software.md#41-robot_localization-ekf-configekfyaml)).
+Three corrections carried over from the design verification
+([software.md §7](../design/software.md#7-software-adr-summary)):
 
-Retarget `odom0` from `wheel/odometry` to odometry derived from `/mrider/feedback`: an
-odometry node applies the bicycle model to steer angle + drive distance. Keep `imu0` sourced
-from the Pixhawk (`/fmu/out/sensor_combined` → `imu/data`).
+1. SLAM `base_frame: base_footprint` vs EKF `base_link` — reconcile to one convention.
+2. `navsat_transform` magnetic declination is set for **Lisbon** in B-MROVER — set the local
+   value.
+3. Nav2's DWB controller is diff-drive-oriented; RPP is pre-registered as the Ackermann swap.
 
-**Verify the TF tree** — `map` → `odom` → `base_link` → sensor frames (REP-105):
-
-```bash
-ros2 run tf2_tools view_frames        # writes frames.pdf
-ros2 run tf2_ros tf2_echo odom base_link
-```
-
-Sensor frames are static from the URDF; their **values** are only meaningful after the
-extrinsics calibration in [step 6](06-bench-test.md). At this stage you are confirming the
-tree is *connected*, not that it is *accurate*.
-
-!!! danger "Never enable simulated time on the real vehicle"
-
-    Keep `use_sim_time=false`. Everything stamps against the laptop wall clock
-    ([calibration.md §6](../design/calibration.md#6-time-synchronization)).
+EKF inputs: `odom0: wheel/odometry` from the new odometry node, `imu0: /imu/data` from the
+**BNO085-class IMU driver** — a driver swap only, since the estimator was always
+`robot_localization` (finding F11).
 
 ## 5.10 Bring-up smoke test
 
 ```bash
-# Terminal 1 — XRCE agent
-MicroXRCEAgent serial --dev /dev/mrider_px4 -b 2000000
+# Terminal 1 — micro-ROS agent
+ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/mitt_dbw -b 115200
 
-# Terminal 2 — vehicle bring-up (bridge + feedback driver + shim + EKF + description)
-ros2 launch mrider bringup.launch.py
+# Terminal 2 — vehicle bring-up
+ros2 launch mitt_bringup real.launch.py
 
 # Terminal 3 — verify
-ros2 topic hz /fmu/out/sensor_combined          # >= 100 Hz
-ros2 topic hz /mrider/feedback                  # >= 20 Hz
-ros2 topic hz /fmu/in/manual_control_setpoint   # >= 10 Hz
-ros2 topic echo /mrider/feedback --once
-ros2 run tf2_tools view_frames
+ros2 topic hz /mitt/dbw/status          # target >= 50 Hz
+ros2 topic echo /mitt/dbw/status --once # mode, faults, measured angle
+ros2 control list_controllers           # ackermann + joint_state_broadcaster: active
+ros2 run tf2_tools view_frames          # map -> odom -> base_link -> sensors
 ```
 
-**Record sheet — rates observed**
+Then run the **identical** stack in simulation and confirm only the plugin differs:
 
-| Link | Contract | Observed | Pass |
+```bash
+ros2 launch mitt_bringup sim.launch.py
+```
+
+| Link | Target | Measured | ☐ |
 |---|---|---|---|
-| Setpoint stream (laptop → PX4) | ≥ 10 Hz | *(record)* | ☐ |
-| Steering servo loop (Nano-local) | ≥ 100 Hz | *(from step 4)* | ☐ |
-| Feedback (Nano → laptop) | ≥ 20 Hz | *(record)* | ☐ |
-| PX4 IMU (`sensor_combined`) | ≥ 100 Hz | *(record)* | ☐ |
-| RC override (RX → PX4) | ~50 Hz | *(record)* | ☐ |
-
-These are the [architecture.md timing contract](../design/architecture.md#6-timing-heartbeat-contract)
-rates. A link that misses its rate does not fail loudly — it degrades, and the failure
-surfaces later as bad odometry or spurious failsafes.
+| Command stream (laptop → Teensy) | ≥ 50 Hz | *(record)* | ☐ |
+| Steering position loop (Teensy) | ≥ 200 Hz | *(from step 4)* | ☐ |
+| Actuation frame (Teensy → Sabertooth) | ≥ 200 Hz | *(from step 4)* | ☐ |
+| Status feedback (Teensy → laptop) | ≥ 50 Hz | *(record)* | ☐ |
+| IMU | ≥ 100 Hz | *(record)* | ☐ |
+| RC override (SBUS) | ~50 Hz | *(record)* | ☐ |
 
 ## 5.11 Gate to step 6
 
-- [ ] ROS 2 Humble installed; workspace builds clean
-- [ ] XRCE agent connected; `/fmu/*` topics present at the right `ROS_DOMAIN_ID`
-- [ ] udev rules give stable `/dev/mrider_nano` and `/dev/mrider_px4`
-- [ ] Feedback driver publishes `/mrider/feedback` at ≥20 Hz with laptop-clock stamps
-- [ ] Staleness flagging and `status` bitfield pass-through implemented
-- [ ] Command shim publishes `ManualControlSetpoint` at ≥10 Hz continuously
-- [ ] Real chassis dimensions substituted for all B-MROVER placeholders
-- [ ] All three config corrections applied (frame, declination, controller decision)
-- [ ] Dual-EKF running; `odom0` retargeted to feedback-derived odometry
-- [ ] TF tree connected `map` → `odom` → `base_link` → sensors
-- [ ] `use_sim_time=false`
-- [ ] All five timing-contract rates observed and recorded
+- [ ] All apt packages installed and versions recorded
+- [ ] **Gazebo pairing settled** (§5.3) and the choice written down
+- [ ] `micro_ros_agent` built from source; commit recorded
+- [ ] Workspace builds clean; `colcon test` passes
+- [ ] udev gives stable `/dev/mitt_dbw` and `/dev/mitt_lidar`; Teensy on a direct port
+- [ ] `/mitt/dbw/status` ≥ 50 Hz with **zero session dropouts over 30 min**
+- [ ] `ros2_control` controllers active; TF tree complete with no warnings
+- [ ] **The same launch runs in sim and on hardware, differing only in the plugin**
+- [ ] Chassis dimensions and encoder PPR are *measured* values, not inherited ones
+- [ ] Full toolchain pinned in `docs/build/`
 
 ---
 
-**Previous:** [4. Firmware bring-up](04-firmware.md) · **Next:** [6. Bench test & calibration](06-bench-test.md)
+**Previous:** [4. Firmware bring-up](04-firmware.md) · **Next:** [6. Bench test](06-bench-test.md)
