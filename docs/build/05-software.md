@@ -221,7 +221,7 @@ ros2 launch mitt_bringup sim.launch.py
 |---|---|---|---|
 | Command stream (laptop → Teensy) | ≥ 50 Hz | *(record)* | ☐ |
 | Steering position loop (Teensy) | ≥ 200 Hz | *(from step 4)* | ☐ |
-| Actuation frame (Teensy → Sabertooth) | ≥ 200 Hz | *(from step 4)* | ☐ |
+| Actuation frame (Teensy → MUX → Sabertooth) | **measure & pin** | *(from step 4)* | ☐ |
 | Status feedback (Teensy → laptop) | ≥ 50 Hz | *(record)* | ☐ |
 | IMU | ≥ 100 Hz | *(record)* | ☐ |
 | RC override (SBUS) | ~50 Hz | *(record)* | ☐ |

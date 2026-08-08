@@ -49,7 +49,7 @@ specific way this vehicle can fail; each has a defined behavior; each is testabl
 | 3 | **RC loss** | Power off the transmitter | Teensy → `ESTOP`: throttle → 0 | Centered, then de-energized | | ☐ |
 | 4 | **Battery sag / brownout** | Force a stall while watching the logic rail; or bench-drop the logic rail | Logic rail below threshold → MUX coil drops → **revert to STOCK**; Sabertooth LVC also stops motors | steering motor de-energizes with the coil → **freewheel** | | ☐ |
 | 5 | **E-stop pressed** | Press it — **also repeat with the laptop powered off** | Traction power cut; MUX coil dropped → STOCK | steering motor loses power → **freewheel** | | ☐ |
-| 6 | **Sabertooth command loss** | Halt the Teensy (hold reset) while a motor is commanded | **Serial timeout** stops both motors | steering motor stops | | ☐ |
+| 6 | **Sabertooth signal loss** | Halt the Teensy (hold reset) while a motor is commanded | **R/C signal-loss timeout** stops both motors | steering motor stops | | ☐ |
 | 7 | **Steering at limit / jam** | Command beyond the mechanical stop | Teensy clamps effort **toward center only**, sets stall bit | holds at limit, no further drive into the stop | | ☐ |
 | 8 | **Teensy firmware hang** | Hold the Teensy in reset | Motors stop (row 6); watchdog resets outputs to neutral | freewheel or held per §6.3 | | ☐ |
 | 9 | **Angle sensor fault** | Unplug the sensor / short I²C | Teensy → `ESTOP`, encoder-fault bit set | de-energized — **must not** drive to a garbage target | | ☐ |
@@ -71,9 +71,9 @@ specific way this vehicle can fail; each has a defined behavior; each is testabl
     A single MCU holds the loop, throttle, override, and arming. The claim that this is
     acceptable rests on layers *independent* of that MCU. **Test them by actually halting the
     Teensy**, not by reasoning about it. If row 6 fails — the Sabertooth latches its last
-    command instead of timing out — revert to independent R/C mode
-    ([dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-packetized-serial-single-master))
-    before going further.
+    command instead of timing out — stop and diagnose before going further. In R/C mode this
+    timeout is inherent to the driver, so a failure here means the wiring or the mode switches
+    are wrong, not that a setting needs tuning.
 
 ### 6.2.1 Override layer verification
 

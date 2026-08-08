@@ -59,7 +59,8 @@ ADR in the linked document below.
 
 - **DBW architecture — single Teensy 4.1 + micro-ROS.** One MCU owns all actuation and
   low-level sensing, speaking native ROS 2 over USB to the laptop, commanding a Sabertooth
-  2x32 in packetized serial. Replaces the Pixhawk 6C + Arduino Nano pair.
+  2x32 in independent R/C (PWM) mode through a hardware RC signal MUX. Replaces the Pixhawk 6C
+  + Arduino Nano pair.
   → [dbw.md](dbw.md), [architecture.md](architecture.md),
   [the decision record](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)
 - **Steering — Teensy-local position loop at ≥ 200 Hz**, against an **absolute magnetic angle

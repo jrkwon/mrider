@@ -148,35 +148,40 @@ two things at once:
 
 ## 3.5 Signal wiring
 
-The Sabertooth runs in **packetized serial mode** with the **Teensy as the single bus master**
-addressing both channels over one wire
-([dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-packetized-serial-single-master)).
-Set the DIP switches for packetized serial at your chosen baud and address before wiring —
-consult the Sabertooth manual for the switch table.
+The Sabertooth runs in **independent R/C (PWM) mode**. Both signal lines come from the Teensy,
+and **both pass through the hardware RC signal MUX** on the way
+([dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)).
+Set the DIP switches for R/C mode before wiring — consult the Sabertooth manual for the table.
 
-| Sabertooth channel | Driven by | Motor output | Function |
+| Sabertooth input | Normal source | Override source | Motor output |
 |---|---|---|---|
-| Channel 1 | Teensy, packetized serial | M1 | steering gearmotor |
-| Channel 2 | Teensy, packetized serial | M2 | drive motors, paralleled |
+| S1 | Teensy PWM (via MUX) | RC receiver (via MUX) | M1 — steering gearmotor |
+| S2 | Teensy PWM (via MUX) | RC receiver (via MUX) | M2 — drive motors, paralleled |
 
-Packetized serial is available because there is now **one** master. The superseded design
-needed two independent PWM lines because the Nano owned steering and PX4 owned throttle, and
-two masters cannot share an addressed bus. One controller removes that constraint — and with
-it the ~50 Hz servo-frame ceiling that silently capped closed-loop performance.
+!!! info "Why not packetized serial?"
+
+    Single-master packetized serial was briefly adopted — it gives exact, high-rate commands
+    and would close the actuation-rate question outright. It was **reverted** because every
+    available RC signal multiplexer switches *servo pulses*, and none can select between a
+    serial stream and RC PWM. Packetized serial and the RC signal MUX are mutually exclusive,
+    and the MUX is the condition D3 was adopted on. See
+    [dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters).
+
+    The consolation: in R/C mode the Sabertooth's **signal-loss timeout is inherent** — motors
+    stop when pulses stop, with nothing to configure.
 
 **Signal connections to make:**
 
 | From | To | Notes |
 |---|---|---|
-| Teensy hardware serial TX | Sabertooth **S1** | Packetized serial, single wire + common ground |
+| Teensy PWM out ×2 | RC signal MUX **master** inputs | Servo-style pulses — steering and throttle |
 | Absolute angle sensor | Teensy **I²C** (SDA/SCL) | 3.3 V from the logic rail. Pot fallback → an analog input instead |
 | Drive encoder A/B | Teensy **hardware quadrature decoder** pins | Not software interrupts — the Teensy has 4 dedicated QDC channels |
 | Steering motor encoder A/B | Teensy hardware quadrature decoder pins | Second QDC channel |
 | RC receiver **SBUS** | Teensy hardware serial RX | Layer A override (closed-loop) |
 | RC receiver **MUX channel** | Hardware RC signal MUX select | Layer B override — see below |
-| Teensy PWM/serial out | Hardware RC signal MUX input A | Normal path |
-| RC receiver PWM out | Hardware RC signal MUX input B | Emergency path |
-| Signal MUX output | Sabertooth | Whichever source the MUX selects |
+| RC receiver PWM out ×2 | RC signal MUX **slave** inputs | Emergency path |
+| Signal MUX outputs ×2 | Sabertooth **S1** and **S2** | Whichever source the MUX selects |
 | Teensy **USB** | Laptop | micro-ROS — carries **command *and* feedback** |
 
 !!! danger "Give the Teensy USB a direct laptop port, not a hub"
@@ -316,7 +321,7 @@ Only after §3.6 and §3.7 pass.
 - [ ] Stock parent remote still drives the vehicle through the taps
 - [ ] Logic rail does not sag under traction stall
 - [ ] **Logic rail is its own battery**, not tapped from the traction pack (§3.1)
-- [ ] Sabertooth DIP switches set for **packetized serial** at the chosen baud and address
+- [ ] Sabertooth DIP switches set for **independent R/C (PWM) mode**
 - [ ] **Hardware RC signal MUX installed and powered from the logic rail** (§3.5.1) — its
       Stage 2 test with the Teensy halted is the condition D3 was adopted on
 - [ ] RC receiver failsafe values set, and the MUX's failsafe direction known and written down
