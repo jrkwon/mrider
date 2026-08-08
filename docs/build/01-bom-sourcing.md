@@ -2,11 +2,10 @@
 
 **Goal:** acquire every part before touching the vehicle, at a known cost.
 
-Order the components for your chosen tier (minimum vs. full) and confirm long-lead
-items (flight controller, LiDAR, gearmotor) are in hand. Cross-check quantities and
-connectors against the bill of materials.
+Order the components for Tier 1 and confirm long-lead items (vehicle, LiDAR, gearmotor) are
+in hand. Cross-check quantities and connectors against the bill of materials.
 
-- **Prerequisites:** budget decided; tier (minimum / full) chosen.
+- **Prerequisites:** budget decided; Tier 1 vs. Tier 2 timing understood.
 - **Specification:** [design/bom.md](../design/bom.md)
 - **Expected outcome:** all line items received; totals reconciled against the BOM.
 
@@ -19,28 +18,35 @@ connectors against the bill of materials.
 
 ---
 
-## 1.1 Choose your tier first
+## 1.1 Two purchase tiers, bought at different times
 
-Two tiers are specified. The delta is **$470**, entirely in LiDAR (+$200), camera (+$170),
-GNSS (+$90), and minor wiring/mounts (+$10).
+The BOM is split so the **perception spend follows the DBW gates**. If the steering loop fails
+its accuracy gate at [bring-up Stage 1](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first),
+you have not yet bought Tier 2.
 
-| Tier | What you get | Line items | With ~10% contingency |
-|---|---|---:|---:|
-| **Minimum** | YDLidar G4, Arducam AR0234 global-shutter, no GNSS | $1,429 | ~$1,570 |
-| **Full** | RPLidar S3 (ToF/IP65), RealSense D435i, GNSS | $1,899 | ~$2,090 |
+| Tier | What it covers | When to order | Line items | With ~10% contingency |
+|---|---|---|---:|---:|
+| **Tier 1** | Vehicle + DBW core | Week 1 | $773 | ~$850 |
+| **Tier 2** | LiDAR, camera, IMU | By week 10 | $168 | ~$185 |
+| **Both** | | | **$941** | **~$1,035** |
 
-**Pick minimum unless you have a specific reason not to.** The minimum tier is fully capable
-of mapping, navigation, and behavior cloning. The full tier buys outdoor robustness (IP65
-LiDAR), depth sensing, and the RTK growth path — none of which the core curriculum requires.
+This is down from ~$1,570 in the previous revision. See
+[bom.md § Change record](../design/bom.md#change-record-why-the-total-fell-from-1570-to-1035)
+for where the money went and what was deferred rather than deleted.
 
 !!! tip "Already have an mrover rig?"
 
-    If your lab is converting an existing [mrover](https://github.com/jrkwon/mrover) build,
-    the Pixhawk, Sabertooth, Nano, USB-TTL, drive encoder, YDLidar G4, 3D-printed enclosures,
-    and laptop are typically already owned. The genuinely new purchase list — vehicle,
-    steering gearmotor, angle sensor, relay MUX, E-stop, RC set, camera, couplers, wiring,
-    mounts — comes to roughly **$780** before contingency. See
-    [bom.md § Reuse Notes](../design/bom.md#reuse-notes-lab-already-has-an-mrover-build).
+    Reusable: **Sabertooth 2x32**, drive encoder + shaft adapter, 3D-printed enclosures
+    (though the controller cases need rework), and the laptop — roughly **−$173**.
+
+    **Not reusable:** the Pixhawk 6C, PM02, Arduino Nano, and USB-TTL adapter. MRider's
+    controller is a single Teensy 4.1
+    ([D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)). Those
+    parts remain useful for other projects; this is a deliberate architectural departure, not
+    a write-off.
+
+    With a used vehicle, lab-reused Sabertooth and encoder, and printed mounts, the realistic
+    floor is **~$620 all-in**.
 
 ## 1.2 Order long-lead items first
 
@@ -52,32 +58,45 @@ at the hardware store the week you need it.
     | Item | BOM # | Why it gates the build |
     |---|---|---|
     | Vehicle (24 V 2-seater ride-on) | 1 | Nothing can be measured until it arrives; seasonal stock |
-    | Pixhawk 6C + PM02 power module | 2 | Flight-controller stock is erratic; needed from step 4 |
-    | 2D LiDAR | 12 | Long lead; needed from step 8 but too risky to defer |
-    | RC transmitter + receiver | 11 | Needed for step 4 RC-override verification |
+    | Teensy 4.1 | 2 | Needed from step 4; cheap enough to buy a spare |
+    | RC transmitter + receiver (SBUS) | 10 | Needed for step 4 override verification |
+    | Hardware RC signal MUX | 9 | Safety-critical and easy to forget — see the warning below |
 
 === "Week 1 — after the vehicle arrives"
 
     | Item | BOM # | Why it waits |
     |---|---|---|
     | Steering gearmotor + encoder | 4 | **Sized from a measurement you cannot take yet** — see §1.3 |
-    | Absolute steering angle sensor | 5 | Choice depends on measured column travel (§1.3) |
-    | Steering shaft coupler / adapter | 16 | Depends on the actual column diameter |
+    | Absolute steering angle sensor | 5 | Technology depends on measured shaft travel (§1.3) |
+    | Steering shaft coupler / adapter | 13 | Depends on the actual column diameter |
 
-=== "Anytime"
+=== "Anytime (Tier 1)"
 
     | Item | BOM # |
     |---|---|
     | Sabertooth 2x32 | 3 |
     | Drive encoder + 3.15→5 mm shaft adapter | 6 |
-    | Arduino Nano V3 | 7 |
-    | USB-TTL serial adapter (3.3 V) | 8 |
-    | Relay MUX hardware (2× DPDT + sockets + flyback diodes + drive transistors) | 9 |
-    | E-stop switch (latching mushroom, traction-rated) | 10 |
-    | Front camera | 13 |
-    | GNSS module (full tier only) | 14 |
-    | Wiring / connectors / fuses | 15 |
-    | Mounts / 3D prints | 17 |
+    | Relay MUX hardware (2× DPDT + sockets + flyback diodes + drive transistors) | 7 |
+    | E-stop switch (latching mushroom, traction-rated) | 8 |
+    | Isolated logic rail (12 V SLA + charger + 2× DC-DC) | 11 |
+    | Wiring / connectors / fuses | 12 |
+    | Mounts / 3D prints | 14 |
+
+=== "By week 10 (Tier 2)"
+
+    | Item | BOM # |
+    |---|---|
+    | 2D LiDAR (RPLIDAR A1M8) | 15 |
+    | Front camera (USB 1080p) | 16 |
+    | IMU (BNO085 class) | 17 |
+
+!!! danger "The hardware RC signal MUX is not optional"
+
+    Item #9 is the **condition on which the single-Teensy architecture was adopted**
+    ([safety.md §1.2](../design/safety.md#12-live-override-inside-dbw-mode-two-layers)). With
+    one MCU holding the steering loop, throttle, override, and arming, a firmware hang loses
+    all four — unless override is a *wiring* property. Order it with the RC set, not later.
+    It is $18 and it is the difference between a defensible safety story and a fragile one.
 
 ## 1.3 Two parts you must not order blind
 
@@ -104,31 +123,49 @@ to turn lock-to-lock while stationary, then `τ_column = F × r`.
        becomes the **sole** angle source. Acceptable — [ADR B](../design/dbw.md#5-adr-b-steering-angle-encoding)
        already makes it authoritative.
 
-**Absolute steering angle sensor (#5)** — the default is a **single-turn conductive-plastic
-potentiometer** coupled 1:1 to the column. Before ordering, measure the column's total
-lock-to-lock rotation. If it stays comfortably inside one turn (expected, since road-wheel
-travel is only ±22.5°), the pot is correct. If the column is geared such that it exceeds one
-turn, you need the multi-turn magnetic fallback — the escape hatch in
-[dbw.md §6](../design/dbw.md#6-adr-angle-sensor-technology-potentiometer-vs-as5600-class-magnetic-encoder).
+**Absolute steering angle sensor (#5)** — the default is an **AS5600-class magnetic encoder**
+mounted **load-side**: downstream of the steering gearbox, on the kingpin/road-wheel axis or
+the linkage, where total travel is only ±22.5°. Load-side mounting is the point —
+it measures what the road wheels actually do, so gearbox backlash appears as *measured error*
+rather than invisible bias
+([ADR B](../design/dbw.md#5-adr-b-steering-angle-encoding)).
 
-!!! danger "Do not substitute an AS5600 without checking column travel"
+!!! danger "Measure shaft travel before ordering — this is a hard gate"
 
-    The AS5600 is attractive — contactless, 12-bit, I²C, no wear — but it is **single-turn
-    absolute (0–360°)**. If the column rotates more than 360° lock-to-lock, it wraps and
-    silently loses absolute meaning. That failure is a garbage angle reading feeding a
-    position loop that drives a motor.
+    The AS5600 is **single-turn absolute (0–360°)**. If the shaft it is mounted on rotates
+    more than one turn lock-to-lock, it wraps and **silently** loses absolute meaning — a
+    garbage angle feeding a position loop that drives a motor. This is FMEA row 2, severity 5.
+
+    **Measure every candidate mounting shaft on the vehicle you actually bought.**
+
+    - Shaft travel ≤ 340° → **AS5600**. Contactless, 12-bit, no wiper wear at the small
+      high-duty-cycle oscillations a steering servo makes, no ADC noise, no ratiometric
+      reference.
+    - No accessible shaft under 340° → **single-turn conductive-plastic potentiometer**, the
+      pre-registered fallback. Costs analog filtering and wiper wear, but maps monotonically
+      across whatever travel its shaft sees.
+
+    Budget for either — they are within a few dollars. Record the measurement in
+    [calibration.md](../design/calibration.md).
+
+    The AS5600 also needs a **diametrically magnetized magnet mounted concentric** to the
+    sensed shaft, with the air gap inside spec. That mechanical precision is the main reason
+    the pot fallback is retained. Check for magnetic interference from the steering motor
+    during bench validation.
 
 ## 1.4 Substitution notes
 
 | Item | Safe to substitute? | Constraint |
 |---|---|---|
 | Vehicle | Yes, within class | Must be **24 V, two-seater, dual rear motors, parent-remote class**, with an accessible steering column. Run the [vehicle.md §3 verification checklist](../design/vehicle.md) on whatever you buy. |
-| Pixhawk 6C | Not recommended | The PX4 rover airframe behavior and `MANUAL_CONTROL.roll` → servo-PWM mapping are validated on 6C. Another FC means re-validating [dbw.md §9](../design/dbw.md#9-pixhawk-6c-px4-rover-configuration-and-version-pinning). |
-| Sabertooth 2x32 | Only for higher current | **Verify paralleled drive-motor stall current against the 32 A/channel rating.** If the pair can exceed 32 A stalled, current-limit in the Sabertooth config or pick lower-draw motors ([dbw.md §7](../design/dbw.md#7-throttle-path)). |
-| Drive encoder | Yes | Any quadrature/Hall encoder. **Record the actual PPR** — the firmware default is 52 PPR (`code.ino:27`) and the roll-out calibration in step 6 bypasses gear-ratio guessing anyway. |
-| Camera | Yes, if global-shutter | Behavior cloning needs a **global shutter**; a rolling-shutter webcam will smear during turns and corrupt the steering labels. |
-| LiDAR | Yes | Swapping away from YDLidar means swapping the ROS 2 driver ([software.md §2](../design/software.md#2-ros-2-stack-reused-adapted-new)). |
-| RC TX/RX | Yes | Must be **PX4-bindable** (SBUS/ACCESS/CRSF class). This is your live override authority — do not economize here. |
+| Teensy 4.1 | Not recommended | A Teensy 4.0 fits the peripheral budget, but 4.1 is $8 more for headroom. **Do not drop to an ESG32/AVR-class part** — the 600 MHz Cortex-M7's timing determinism and 4 hardware quadrature decoders are load-bearing ([dbw.md §9](../design/dbw.md#9-teensy-41-firmware-platform-and-version-pinning)). |
+| Sabertooth 2x32 | Only for higher current | **Do not substitute a bare H-bridge to save money.** RS-550-class drive motors stall at 30–60 A each and the pair is paralleled onto one channel; the Sabertooth provides current limiting, thermal protection, and the **serial timeout** backing [failsafe row 6](../design/safety.md#2-failsafe-matrix). Verify paralleled stall current against 32 A/channel ([dbw.md §7](../design/dbw.md#7-throttle-path)). |
+| Drive encoder | Yes | Any quadrature/Hall encoder. **Record the actual PPR — do not assume 52.** The source project conflicts with itself (52 PPR in `code.ino:27` vs 16 PPR in its own BOM, finding F7). The roll-out calibration in step 6 bypasses PPR anyway. |
+| Camera | Yes for semester 1 | A $30 rolling-shutter USB camera is fine for SLAM and teleop. **Behavior cloning (phase 2) needs a global shutter** — rolling shutter smears during turns and corrupts steering labels. Budget +$150 then; do not train on rolling-shutter data and attribute the result to the platform. |
+| LiDAR | Yes | `rplidar_ros` is in apt for Humble. Swapping to YDLidar or another vendor means swapping the ROS 2 driver ([software.md §2](../design/software.md#2-ros-2-stack-reused-adapted-new)). |
+| RC TX/RX | Yes | Must have **SBUS output plus a spare channel** to drive the hardware signal MUX. No longer needs to be PX4-bindable. This is your live override authority — do not economize here. |
+| Hardware RC signal MUX | Within class | Any servo-signal multiplexer that selects between two PWM sources on an RC channel. **Do not omit** — see §1.2. |
+| IMU | Yes | Any 9-DoF publishing `sensor_msgs/Imu`. Onboard fusion (BNO085 class) saves work; the estimator is `robot_localization` either way. |
 | E-stop | No | Must be **traction-rated** (switching the actual motor current, or a contactor coil). A signal-rated mushroom button will weld. |
 
 ## 1.5 Connector and consumable list
@@ -148,9 +185,14 @@ you need all of them before step 3:
 **Signal side (logic level)**
 
 - Keyed inline connectors ×3 for the throttle, steering, and power taps — the reversibility
-  requirement of [dbw.md §11.3](../design/dbw.md#113-3-tap-connector-spec-minimally-invasive)
-- Dupont / JST-XH pigtails for Nano ↔ Sabertooth S1, Nano ↔ pot, Nano ↔ drive encoder
-- Servo-style 3-wire leads for PX4 → Sabertooth S2
+  requirement of [dbw.md §11.5](../design/dbw.md#115-3-tap-connector-spec-minimally-invasive)
+- Dupont / JST-XH pigtails for Teensy ↔ angle sensor (I²C: SDA/SCL/3V3/GND), Teensy ↔ steering
+  encoder, Teensy ↔ drive encoder
+- One serial lead for Teensy → Sabertooth S1 (packetized serial, single wire + ground)
+- Servo-style 3-wire leads for the RC receiver → signal MUX → Sabertooth
+- USB cable, Teensy → laptop (this carries **both** command and feedback — use a good one; a
+  marginal cable is now a vehicle-safety issue, see
+  [failsafe row 2](../design/safety.md#2-failsafe-matrix))
 - Flyback diodes (1N4007 class) across each relay coil
 - Logic-level MOSFETs or transistors + base resistors for the MUX coil drivers
 
@@ -172,22 +214,22 @@ estimates, and the next person to build one needs your real numbers.
 | # | Item | Ordered | Received | Actual $ | Notes / substitution |
 |---|---|---|---|---|---|
 | 1 | Vehicle (24 V 2-seater) | ☐ | ☐ | | *(record model + serial)* |
-| 2 | Pixhawk 6C + PM02 | ☐ | ☐ | | |
+| 2 | Teensy 4.1 | ☐ | ☐ | | *(buy a spare — it is $32)* |
 | 3 | Sabertooth 2x32 | ☐ | ☐ | | |
 | 4 | Steering gearmotor + encoder | ☐ | ☐ | | *(record rated torque + gear ratio)* |
-| 5 | Absolute angle sensor | ☐ | ☐ | | *(pot or magnetic — record which and why)* |
-| 6 | Drive encoder + shaft adapter | ☐ | ☐ | | *(record PPR)* |
-| 7 | Arduino Nano V3 | ☐ | ☐ | | |
-| 8 | USB-TTL serial adapter | ☐ | ☐ | | |
-| 9 | Relay MUX hardware | ☐ | ☐ | | *(record relay contact rating)* |
-| 10 | E-stop switch | ☐ | ☐ | | *(record current rating)* |
-| 11 | RC transmitter + receiver | ☐ | ☐ | | *(record protocol: SBUS / ACCESS / CRSF)* |
-| 12 | 2D LiDAR | ☐ | ☐ | | |
-| 13 | Front camera | ☐ | ☐ | | *(confirm global shutter)* |
-| 14 | GNSS module (full tier) | ☐ | ☐ | | |
-| 15 | Wiring / connectors / fuses | ☐ | ☐ | | |
-| 16 | Steering coupler / adapter | ☐ | ☐ | | *(record column diameter)* |
-| 17 | Mounts / 3D prints | ☐ | ☐ | | |
+| 5 | Absolute angle sensor | ☐ | ☐ | | *(**record measured shaft travel** + which tech and why)* |
+| 6 | Drive encoder + shaft adapter | ☐ | ☐ | | *(record **measured** PPR — do not assume 52)* |
+| 7 | Relay MUX hardware | ☐ | ☐ | | *(record relay contact rating)* |
+| 8 | E-stop switch | ☐ | ☐ | | *(record current rating)* |
+| 9 | Hardware RC signal MUX | ☐ | ☐ | | *(**safety-critical** — record part + channel count)* |
+| 10 | RC transmitter + receiver | ☐ | ☐ | | *(confirm SBUS out + a spare channel for the MUX)* |
+| 11 | Isolated logic rail (SLA + charger + DC-DC) | ☐ | ☐ | | *(record capacity + rail voltages)* |
+| 12 | Wiring / connectors / fuses | ☐ | ☐ | | |
+| 13 | Steering coupler / adapter + magnet mount | ☐ | ☐ | | *(record column diameter)* |
+| 14 | Mounts / 3D prints | ☐ | ☐ | | |
+| 15 | 2D LiDAR *(Tier 2)* | ☐ | ☐ | | |
+| 16 | Front camera *(Tier 2)* | ☐ | ☐ | | *(rolling shutter OK for semester 1)* |
+| 17 | IMU *(Tier 2)* | ☐ | ☐ | | |
 | — | Laptop | reuse | ☐ | — | *(record GPU, RAM, USB3 ports, battery hours)* |
 
 **Totals:** estimated $ ______ · actual $ ______ · delta ______
@@ -197,12 +239,14 @@ operator per [calibration.md §7](../design/calibration.md#7-calibration-artifac
 
 ## 1.7 Gate to step 2
 
-- [ ] Tier chosen and budget approved
+- [ ] Budget approved; Tier 2 timing understood (order by week 10)
 - [ ] All week-0 long-lead items received
 - [ ] Vehicle received and its model/serial recorded
 - [ ] Column torque measured, gearmotor ordered against it with ≥2× margin
-- [ ] Column lock-to-lock travel measured, angle sensor technology confirmed
+- [ ] **Candidate sensor-shaft travel measured; angle-sensor technology confirmed against the ≤ 340° rule**
+- [ ] **Hardware RC signal MUX in hand** — the safety chain cannot be built without it
 - [ ] Paralleled drive-motor stall current checked against the Sabertooth 32 A/channel rating
+- [ ] Drive-encoder PPR measured on the part actually fitted (not assumed)
 - [ ] Receiving table complete; totals reconciled
 
 ---

@@ -1,12 +1,25 @@
-# M2 — Drive-by-Wire & the Smart-Servo Steering Loop
+# M2 — Drive-by-Wire & the Steering Position Loop
 
 **Learning objectives:**
 
-- Understand closed-loop position control and why the steering loop lives on the Nano.
-- Follow the pinned datapath: `MANUAL_CONTROL.roll` → PX4 servo-PWM → Nano → Sabertooth S1.
-- Read an absolute angle sensor and convert sensor counts to steering degrees.
+- Understand closed-loop position control and why the steering loop lives on the MCU.
+- Follow the pinned datapath: `DbwCommand` → micro-ROS → Teensy loop → Sabertooth M1.
+- Read an absolute angle sensor and convert sensor counts to steering radians.
+- Explain why the sensor is mounted **load-side** and what that excludes from the measurement.
 
 **Reference:** [design/dbw.md](../design/dbw.md)
+
+!!! info "Architecture updated 2026-08-07"
+
+    This module previously taught a two-controller datapath (`MANUAL_CONTROL.roll` → PX4
+    servo-PWM → Arduino Nano). MRider now uses a **single Teensy 4.1 running micro-ROS**
+    ([D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)). The
+    control theory in this module is unchanged — a position loop is a position loop — but the
+    PWM-capture step is gone: the setpoint is a typed ROS 2 message the loop reads directly.
+
+    **This is worth teaching as a design lesson in itself.** That PWM round trip existed only
+    because the setpoint had to cross from one board to another. Removing a board removed an
+    entire class of firmware, and a whole category of debugging.
 
 !!! warning "Draft — lab not yet run on hardware"
 
@@ -54,7 +67,7 @@ read the filtered angle, compute error, output a signed effort.
     The Nano commands a **signed effort** — drive left, drive right, stop — which is the
     *output* of the position loop. Angle regulation lives entirely in the Nano. This keeps
     the Sabertooth a dumb, fast power stage, exactly its role in mrover
-    ([dbw.md §2.3](../design/dbw.md#23-why-the-sabertooth-drives-the-steering-motor-as-an-effort-command)).
+    ([dbw.md §2.3](../design/dbw.md#23-why-the-sabertooth-receives-an-effort-command)).
 
 ### Why the loop lives on the Nano — ADR E
 
@@ -112,7 +125,7 @@ trivial: **absolute = truth, incremental = rate**.
 
 The obvious modern choice is an AS5600-class magnetic encoder: contactless, 12-bit, I²C, no
 wear. It was rejected as the default
-([dbw.md §6](../design/dbw.md#6-adr-angle-sensor-technology-potentiometer-vs-as5600-class-magnetic-encoder)).
+([dbw.md §6](../design/dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer)).
 
 **Because it is single-turn (0–360°) absolute.** If the *column* — not the road wheel —
 rotates more than 360° across lock-to-lock travel, which is common when steering is geared

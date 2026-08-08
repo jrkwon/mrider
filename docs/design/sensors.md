@@ -9,8 +9,9 @@
 
 This document specifies the MRider perception and localization sensor set and the
 onboard computer. Per [overview.md](overview.md), the **minimum sensor package is
-one front camera and one 2D LiDAR**; IMU is provided by the Pixhawk 6C; GNSS is
-optional with an RTK growth path. Each major choice is an ADR. Frame definitions,
+one front camera and one 2D LiDAR**; the IMU is a standalone BNO085-class module
+(§3); GNSS is optional for the indoor target and required for phase-2 outdoor
+waypoint following (§4). Each major choice is an ADR. Frame definitions,
 intrinsics/extrinsics, and time-sync are handled in [calibration.md](calibration.md);
 how these topics flow through ROS 2 is in [software.md](software.md).
 
@@ -44,10 +45,21 @@ removes a systematic label-noise source.
 capture and (b) optional depth for obstacle context. The mrover/OSCAR pipeline
 trains on RGB frames.
 
-**Decision.** **Minimum tier: a color global-shutter USB3 camera** (e.g.,
-**Arducam AR0234**, 2.3 MP, global shutter, up to 80 fps, ~$160–180). **Full
-tier: Intel RealSense D435i** (~$334–380) when depth + a factory-calibrated IMU
-are wanted.
+**Decision.** **Semester 1: a $30 rolling-shutter USB camera.** **Phase 2 (behavior cloning):
+a color global-shutter USB3 camera** (e.g., **Arducam AR0234**, 2.3 MP, global shutter, up to
+80 fps, ~$160–180). RealSense D435i remains the option if depth is wanted later.
+
+!!! info "Re-tiered 2026-08-07 — deferred, not deleted"
+
+    Behavior cloning is **phase 2**
+    ([software.md §8](software.md#8-semester-1-scope-and-software-acceptance-gates)), and the
+    global-shutter argument below is *entirely* about training-label quality. Semester 1
+    delivers teleop and LiDAR SLAM, neither of which cares about rolling-shutter skew, so the
+    $150 premium buys nothing this term.
+
+    **The reasoning below still stands and still applies at phase 2.** Do not train a
+    behavior-cloning policy on rolling-shutter data and attribute the result to the platform —
+    budget the +$150 when the pipeline comes back ([bom.md](bom.md#phase-2-growth-path)).
 
 **Key finding (verified July 2026):** the RealSense D435i uses a **global-shutter
 stereo depth pair but a *rolling-shutter* RGB sensor** (1920×1080). So if the
@@ -157,23 +169,35 @@ extrinsics are tier-independent.
 
 ## 3. IMU
 
-**Decision:** in v1, **use the Pixhawk 6C's internal IMUs** as the EKF/attitude
-source — **no separate standalone IMU.** The Pixhawk 6C carries dual IMUs
-(e.g., BMI055 + ICM-class) with temperature compensation and vibration isolation,
-already fused by PX4's EKF2, which MRider reuses along with the rest of the mrover
-PX4 stack ([software.md](software.md)). Wheel/steering odometry from the
-[Nano feedback path](dbw.md) fuses with this IMU in `robot_localization`'s EKF
-(mrover `config/ekf.yaml`) to bound the paralleled-motor/single-encoder odometry
-error noted in [ADR C](dbw.md).
+**Decision:** a **standalone BNO085-class 9-DoF IMU** with onboard sensor fusion,
+connected directly to the laptop and publishing `sensor_msgs/Imu` on `/imu/data`.
 
-**Rationale.** Reuse (the mrover EKF + PX4 fusion is validated), fewer parts,
-one clock domain to time-sync ([calibration.md](calibration.md)). Adding a
-standalone IMU would duplicate what the Pixhawk already provides.
+!!! info "Revised 2026-08-07 — this ADR was reversed by D3"
 
-**Consequence / growth path.** The full-tier RealSense D435i contributes a
-**second** IMU; treat it as a cross-check for camera-frame motion, **not** the
-EKF primary. If a future build drops the Pixhawk (e.g., an Arduino-lite tier),
-an IMU becomes a required standalone line item — out of scope for v1.
+    This previously specified "use the Pixhawk 6C's internal IMUs — no separate standalone
+    IMU," on the rationale that PX4's EKF2 was being reused. [D3](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)
+    removed the Pixhawk, so a standalone IMU is now required.
+
+    **The reuse argument was weaker than it read even before D3.** Finding F11 verified that
+    MRider's estimator was always `robot_localization` on the laptop
+    ([software.md §4.1](software.md#41-robot_localization-ekf-configekfyaml)), with PX4
+    supplying **raw `SensorCombined` only** — EKF2's output was not what the stack consumed.
+    So this is a **driver swap, not an estimator change**, and the "PX4 gives you the EKF"
+    leg of the original topology argument did not hold.
+
+Wheel/steering odometry from [`DbwStatus`](dbw.md#101-primary-transport-micro-ros-typed-messages)
+fuses with this IMU in `robot_localization`'s EKF to bound the paralleled-motor /
+single-encoder odometry error noted in [ADR C](dbw.md#8-adr-c-drive-distance-encoding).
+
+**Rationale.** Onboard fusion (BNO085 class) provides a stable quaternion and calibrated
+rates without project code, at ~$28. It connects straight to the laptop, so it sits in the
+**laptop's clock domain** — which is simpler than the previous arrangement, where PX4 boot-time
+microseconds had to be offset-estimated against the laptop clock
+([calibration.md §6](calibration.md)).
+
+**Consequence.** Mounting orientation and vibration isolation are now MRider's responsibility
+rather than inherited from a flight-controller design — see §5. Calibration moves from
+QGroundControl to a documented in-repo procedure ([calibration.md §5](calibration.md)).
 
 ---
 
@@ -182,15 +206,19 @@ an IMU becomes a required standalone line item — out of scope for v1.
 Per [overview.md](overview.md), **GNSS is optional** and therefore **excluded
 from the minimum tier**, included in the **full tier**.
 
-- **Full tier — a Pixhawk-compatible GNSS module** (e.g., Holybro M9N or M10,
-  ~$90) on the Pixhawk GPS port. PX4 fuses it into EKF2 for global position and
-  heading aid — directly reusing the mrover GNSS wiring.
-- **RTK growth path (beyond full tier):** upgrade to an **RTK rover module**
-  (e.g., u-blox ZED-F9P-class, ~$220–300) plus an **RTK base/NTRIP correction
-  source** for centimeter-level positioning. This is the mrover "(-RTK)" path
-  referenced in the plan; PX4 already supports RTK injection over MAVLink, so
-  it's a module + corrections swap, not new firmware. Documented here as a future
-  option; **not** in either v1 tier total.
+**Amended:** optional for the semester-1 **indoor** target; **required** for the phase-2
+**outdoor waypoint-following** target, where dead reckoning from wheel odometry + IMU alone
+drifts out of a lane-width corridor within tens of meters.
+
+- **Phase 2 — a USB/UART GNSS receiver** connected directly to the laptop, feeding
+  `navsat_transform` and the global EKF. Without PX4 in the system there is no GPS port to
+  use and no MAVLink injection path; the receiver is just another laptop peripheral.
+- **RTK (recommended for lane-level accuracy):** a **u-blox ZED-F9P-class rover** (~$220–300)
+  plus an **NTRIP correction source** or a local base station. The laptop runs the NTRIP
+  client and feeds corrections to the receiver directly — **simpler than the MAVLink RTK
+  injection path** the Pixhawk design would have used, since there is no autopilot in the
+  middle. Documented as a phase-2 growth item; **not** in the semester-1 totals
+  ([bom.md](bom.md#phase-2-growth-path)).
 
 **ADR note.** GNSS is a tiering decision rather than a technology contest: the
 question is only *present (full) vs absent (min)*, and the RTK path is a labeled
@@ -212,16 +240,19 @@ so their extrinsics are fixed once ([calibration.md](calibration.md)).
   the vehicle body and mast tube occlude as little as possible. On a UTV bed,
   mount on a short riser above the cargo box lip. Record any permanent occlusion
   sector for Nav2 masking ([software.md](software.md)).
-- **Pixhawk 6C:** rigidly on the deck near the vehicle's center, **vibration-
-  isolated** (foam/gel mount) and orientation-aligned to `base_link` — its IMU
-  is the EKF source (§3), so mounting rigor directly affects state estimation.
+- **IMU:** rigidly on the deck near the vehicle's center, **vibration-isolated**
+  (foam/gel mount) and orientation-aligned to `base_link` — it is the EKF
+  attitude source (§3), so mounting rigor directly affects state estimation.
+  **Record the mounting orientation** and apply it as a static transform; a wrong
+  IMU rotation corrupts yaw silently. This responsibility was previously inherited
+  from the flight-controller design and is now MRider's own.
 - **Vibration:** ride-on drivetrains are buzzy. Use foam/rubber isolation under
-  the mast base and the Pixhawk, keep the mast short and stiff (minimize camera
-  shake and LiDAR wobble), and torque-check after the first drive. Vibration is
-  also why global-shutter imagery (§1) matters.
+  the mast base and the IMU, keep the mast short and stiff (minimize camera shake
+  and LiDAR wobble), and torque-check after the first drive. Vibration is also why
+  global-shutter imagery (§1) matters for phase-2 behavior cloning.
 - **E-stop & control box:** E-stop mushroom head reachable from outside the
-  vehicle ([safety.md](safety.md)); control enclosure (Sabertooth/Nano/relays)
-  low and central for weight distribution.
+  vehicle ([safety.md](safety.md)); control enclosure (Teensy, Sabertooth, relay
+  MUX, RC signal MUX, logic battery) low and central for weight distribution.
 
 A mermaid mount/frame diagram and the full TF tree live in
 [architecture.md](architecture.md)/[software.md](software.md);
@@ -231,15 +262,15 @@ numeric offsets in [calibration.md](calibration.md).
 
 ## 6. Onboard Computer (Laptop) Selection Criteria
 
-The laptop is the ROS 2 host, the XRCE-DDS/MAVLink endpoint to the Pixhawk
-([dbw.md](dbw.md)), and the behavior-cloning inference/training box. Per the
-plan, the **laptop runs on its own internal battery in v1** (no 24 V→19 V
-conversion), so runtime and efficiency are real constraints.
+The laptop is the ROS 2 host, runs the **`micro_ros_agent`** that terminates the vehicle link
+([dbw.md](dbw.md)), and is the behavior-cloning inference/training box. The **laptop runs on
+its own internal battery in v1** (no traction→19 V conversion), so runtime and efficiency are
+real constraints.
 
 | Criterion | Target | Why |
 |-----------|--------|-----|
 | **GPU (NN inference)** | Discrete NVIDIA GPU (e.g., RTX 3050/4050+), CUDA-capable | Real-time behavior-cloning inference and on-vehicle Keras/TensorRT; CUDA is the path of least resistance for the reused `neural_net/` stack. |
-| **USB ports** | ≥ 3× USB-A/USB-C (USB3): camera + LiDAR + Pixhawk/Nano, plus spare | Camera (USB3), LiDAR (USB-serial), Pixhawk XRCE link + Nano USB-serial all connect here ([architecture.md](architecture.md)). A powered USB3 hub is an acceptable fallback but counts against reliability. |
+| **USB ports** | ≥ 4× USB-A/USB-C (USB3): camera + LiDAR + Teensy + IMU, plus spare | Camera (USB3), LiDAR (USB-serial), **Teensy (micro-ROS — carries command *and* feedback)**, IMU. Give the Teensy a **direct port, not a hub**: this link carries the steering setpoint, and a dropout stops the vehicle ([failsafe row 2](safety.md#2-failsafe-matrix)). |
 | **Battery runtime** | ≥ ~2 h under sensor + light-inference load | Full data-collection/mapping session without a 24 V tap; drives the [power budget](safety.md) assumption that logic and traction rails are isolated. |
 | **RAM / storage** | ≥ 16 GB RAM, ≥ 512 GB NVMe | ROS 2 + rosbag logging of camera/LiDAR is storage-hungry; SLAM and training want RAM. |
 | **OS** | Ubuntu 22.04 (ROS 2 Humble) | Matches the mrover/OSCAR reused stack ([software.md](software.md)). |

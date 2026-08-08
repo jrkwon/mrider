@@ -16,7 +16,7 @@ chassis decision as [ADR D](#adr-d-24-v-two-seater-vs-12-v-single-seater).
 The choice is driven by the project's decision drivers: payload
 for an onboard laptop plus sensors, an accessible steering column for the
 [DBW](dbw.md) angle actuator and absolute sensor, 24 V electrical headroom, and
-reuse of the [mrover](https://github.com/jrkwon/mrover) Sabertooth + Pixhawk
+reuse of the [mrover](https://github.com/jrkwon/mrover) Sabertooth + chassis-conversion
 recipe.
 
 ---
@@ -28,13 +28,13 @@ fails a "must" criterion is rejected regardless of price.
 
 | # | Criterion | Target | Why (which subsystem needs it) |
 |---|-----------|--------|--------------------------------|
-| C1 | **Payload margin** | ≥ ~6 kg usable deck load (laptop ~2 kg + LiDAR/camera/mast + Pixhawk/Sabertooth/Nano/relays + wiring ~3–4 kg), on top of the rated child weight the vehicle already carries | Onboard compute ([sensors.md](sensors.md)) and the DBW control box ride on the deck. A two-seater rated for ~60 kg of kids trivially carries the ~6 kg kit. |
+| C1 | **Payload margin** | ≥ ~6 kg usable deck load (laptop ~2 kg + LiDAR/camera/mast + Teensy/Sabertooth/relay MUX/RC signal MUX/logic battery + wiring ~3–4 kg), on top of the rated child weight the vehicle already carries | Onboard compute ([sensors.md](sensors.md)) and the DBW control box ride on the deck. A two-seater rated for ~60 kg of kids trivially carries the ~6 kg kit. |
 | C2 | **24 V electrical system** | 24 V battery pack, dual drive motors | Voltage headroom for the [Sabertooth 2x32](dbw.md) throttle channel; matches the mrover recipe; more torque margin on grass/ramps than 12 V. |
 | C3 | **Dual rear drive motors** | 2 rear motors (4WD acceptable) | The two rear motors parallel onto one Sabertooth channel ([ADR C](dbw.md), throttle path). Confirms a real H-bridge-drivable DC traction path, not a sealed ESC. |
 | C4 | **Accessible steering column** | Exposed vertical steering shaft between wheel and linkage, with ~30–50 mm of clear shaft | The [steering angle gearmotor](dbw.md) couples to the column, and the **absolute angle sensor** ([ADR B, sensor-tech ADR](dbw.md)) mounts on the shaft. A sealed/rack-hidden column blocks both. |
 | C5 | **Deck / cargo space** | Flat area ≥ ~30 × 30 cm, or a rear bed (UTV/truck style) | Mounting the control enclosure, mast base ([sensors.md](sensors.md)), and E-stop. UTV beds are ideal. |
 | C6 | **Metal gearbox (preferred)** | Steel/metal reduction gears on drive motors | Plastic gearboxes strip under the extra mass + autonomous duty cycle. Not a hard reject, but a strong preference and a stated risk if unmet. |
-| C7 | **Parent 2.4 GHz remote (present)** | OEM parent remote included | Confirms the OEM already has a remote-drive electrical path we can tap; its receiver becomes the de-energized STOCK side of the [relay MUX](safety.md). Note: the OEM remote is **not** the live DBW override — that is the [RC-via-Pixhawk](safety.md) path. |
+| C7 | **Parent 2.4 GHz remote (present)** | OEM parent remote included | Confirms the OEM already has a remote-drive electrical path we can tap; its receiver becomes the de-energized STOCK side of the [relay MUX](safety.md). Note: the OEM remote is **not** the live DBW override — that is the [layered SBUS + hardware RC signal MUX](safety.md#12-live-override-inside-dbw-mode-two-layers) path. |
 | C8 | **Stock geometry & serviceability** | Bolt-on seat/body panels, standard fasteners | Minimally-invasive, reversible modification (plan principle 2). |
 
 Non-criteria (explicitly do not care): Bluetooth/MP3, LED lights, leather seats,
@@ -98,7 +98,7 @@ must stay within that.
   at a time. Stall for RS-550-class 12 V motors is typically **30–60 A each**.
 - **Acceptance:** paralleled continuous draw under load ≤ 32 A; transient/stall
   of the pair should not sit above ~64 A. If the pair can stall near/over 64 A,
-  mitigations (per-motor current limit in Sabertooth config, gentler PX4
+  mitigations (per-motor current limit in Sabertooth config, gentler
   accel/torque limits, or driving **one** motor per Sabertooth channel and
   sacrificing the steering channel split) must be chosen **before** wiring — see
   [dbw.md](dbw.md) throttle path and [safety.md](safety.md) power budget.
@@ -150,7 +150,7 @@ motor leads are tapped:
 **Status:** Accepted (chassis class). Instance SKU chosen at purchase per §2/§3.
 
 **Context.** MRider must carry an onboard laptop plus a camera, 2D LiDAR, mast,
-Pixhawk, Sabertooth, Nano, and relay MUX, and drive that mass at walking speed
+Teensy, Sabertooth, and relay MUX, and drive that mass at walking speed
 for a full data-collection/mapping session while the [DBW](dbw.md) closes a
 steering position loop. The mrover/OSCAR lineage and prior Ridon work used this
 same ride-on class.
@@ -173,7 +173,7 @@ the specific unit by the Section 1 criteria and Section 3 bench verification.
 
 **Rationale.** The 24 V two-seater is the smallest, cheapest platform that
 comfortably meets payload and torque margin while preserving the exact
-Sabertooth-2x32 + Pixhawk electrical recipe MRider reuses. The extra ~$100–200
+Sabertooth-2x32 electrical recipe MRider reuses. The extra ~$100–200
 over a 12 V single-seater buys margin on every axis that is expensive to add
 later (payload, torque, deck area) and costs nothing MRider needs.
 

@@ -1,5 +1,23 @@
 # 6. Bench Test (Wheels-Off) & Calibration
 
+!!! danger "Superseded — pending rewrite (2026-08-07)"
+
+    This page still describes the **Pixhawk 6C + PX4 + Arduino Nano** topology. That was
+    replaced by a **single Teensy 4.1 running micro-ROS**
+    ([decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)).
+
+    **Do not follow the steps below as written.** Specifically, these no longer exist: PX4,
+    QGroundControl, MAVLink, the Micro-XRCE-DDS agent, `px4_msgs`, the Arduino Nano, the
+    USB-TTL adapter, the servo-PWM steering setpoint, and the ASCII/I2C feedback protocols.
+    New in their place: micro-ROS over USB, `DbwCommand`/`DbwStatus`, Sabertooth **packetized
+    serial**, an isolated logic rail, and a **hardware RC signal MUX**.
+
+    The [design set](../design/overview.md) is authoritative and current —
+    [dbw.md](../design/dbw.md), [architecture.md](../design/architecture.md),
+    [safety.md](../design/safety.md), [software.md](../design/software.md) — as are
+    [step 1](01-bom-sourcing.md) and [step 4](04-firmware.md).
+
+
 **Goal:** validate the full command/feedback chain safely, then calibrate.
 
 With the vehicle on a stand, exercise steering and throttle end-to-end and confirm every
@@ -273,7 +291,7 @@ with the vehicle stationary and level, `VehicleAttitude` roll/pitch ≈ 0 and st
 the vehicle a known 90° and confirm yaw changes ~90° **in the correct sign**. Export the
 parameter file to `config/calibration/px4_params_<version>.params`.
 
-**Time sync** ([calibration.md §6](../design/calibration.md#6-laptoppixhawk-time-synchronization)):
+**Time sync** ([calibration.md §6](../design/calibration.md#6-time-synchronization)):
 
 - Single authoritative clock = **the laptop**. Sensors physically connected to it are already
   laptop-referenced.

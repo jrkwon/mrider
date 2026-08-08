@@ -8,6 +8,20 @@
 
 **Reference:** [design/architecture.md](../design/architecture.md)
 
+!!! info "Architecture updated 2026-08-07"
+
+    MRider's controller is a **single Teensy 4.1 running micro-ROS**, not the Pixhawk + Arduino
+    Nano pair described in earlier drafts
+    ([D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)). Two
+    consequences for this module:
+
+    - **The PX4/MAVLink/XRCE prerequisite chain is gone.** Students reach a moving vehicle
+      sooner: ROS 2 concepts → micro-ROS → drive. There is no autopilot to learn first.
+    - **The command and feedback paths share one transport and one clock**, so
+      `ros2 topic echo` shows both sides of the control loop. Tracing the datapath — the third
+      learning objective — is now a genuinely tractable exercise rather than a tour of four
+      boards and two protocols.
+
 ---
 
 ## Lecture
@@ -82,7 +96,7 @@ F,<steer_deg>,<steer_counts>,<drive_ticks>,<drive_rpm>,<setpoint_deg>,<status>\n
 
 A ROS 2 driver parses it and publishes `/mrider/feedback`. mrover instead carried encoder data
 up through PX4 as MAVLink `WHEEL_DISTANCE`; MRider retired that path
-([ADR-SW1](../design/software.md#adr-sw1-reroute-feedback-off-mavlink)) because once the Nano
+([ADR-SW1](../design/software.md#adr-sw1-one-transport-one-clock-typed-messages)) because once the Nano
 owns the servo loop it already aggregates every sensor — a direct USB link removes a round
 trip and gives one teachable serial contract.
 

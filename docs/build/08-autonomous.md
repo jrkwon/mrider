@@ -1,5 +1,14 @@
 # 8. Autonomous Bring-up (SLAM → Nav2 → Behavior Cloning)
 
+!!! warning "Partially superseded (2026-08-07)"
+
+    Some references on this page still assume the **Pixhawk + Arduino Nano** topology, replaced
+    by a **single Teensy 4.1 running micro-ROS**
+    ([decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)).
+    The substance of this page is unaffected; treat the [design set](../design/overview.md) as
+    authoritative where they disagree.
+
+
 **Goal:** progress from mapping to autonomous driving.
 
 Build a map with slam_toolbox, navigate with Nav2, then collect driving data and run the
@@ -275,7 +284,7 @@ consecutive attempts. One lucky lap is not a working policy.
 | Nav2 paths the vehicle cannot follow | DWB vs. Ackermann | Swap to RPP — [ADR-SW2](../design/software.md#adr-sw2-nav2-local-controller-for-ackermann) |
 | Map doubles walls | Odometry drift or bad extrinsics | [Odometry](06-bench-test.md#66-drive-distance-ticksmeters) and [extrinsics](06-bench-test.md#68-extrinsics-sensors-base_link) |
 | Pose jumps during localization | Featureless stretches, or LiDAR range too short | `max_laser_range`; add features to the course |
-| Steering label does not match image | Time-sync error | [calibration.md §6](../design/calibration.md#6-laptoppixhawk-time-synchronization) |
+| Steering label does not match image | Time-sync error | [calibration.md §6](../design/calibration.md#6-time-synchronization) |
 
 ## 8.8 You are done — now write it down
 

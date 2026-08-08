@@ -1,5 +1,23 @@
 # 3. Electrical & Wiring
 
+!!! danger "Superseded — pending rewrite (2026-08-07)"
+
+    This page still describes the **Pixhawk 6C + PX4 + Arduino Nano** topology. That was
+    replaced by a **single Teensy 4.1 running micro-ROS**
+    ([decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)).
+
+    **Do not follow the steps below as written.** Specifically, these no longer exist: PX4,
+    QGroundControl, MAVLink, the Micro-XRCE-DDS agent, `px4_msgs`, the Arduino Nano, the
+    USB-TTL adapter, the servo-PWM steering setpoint, and the ASCII/I2C feedback protocols.
+    New in their place: micro-ROS over USB, `DbwCommand`/`DbwStatus`, Sabertooth **packetized
+    serial**, an isolated logic rail, and a **hardware RC signal MUX**.
+
+    The [design set](../design/overview.md) is authoritative and current —
+    [dbw.md](../design/dbw.md), [architecture.md](../design/architecture.md),
+    [safety.md](../design/safety.md), [software.md](../design/software.md) — as are
+    [step 1](01-bom-sourcing.md) and [step 4](04-firmware.md).
+
+
 **Goal:** build the power and signal harness, including the authority MUX and E-stop.
 
 Wire the 24V traction rail, the isolated logic rail, the Sabertooth 2x32, the Pixhawk
@@ -93,7 +111,7 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 ## 3.3 The three taps
 
 Reversibility comes from three keyed inline connectors that intercept the stock harness
-without cutting it ([dbw.md §11.3](../design/dbw.md#113-3-tap-connector-spec-minimally-invasive)).
+without cutting it ([dbw.md §11.3](../design/dbw.md#115-3-tap-connector-spec-minimally-invasive)).
 
 | Tap | Intercepts | MUX side | Notes |
 |---|---|---|---|
@@ -137,7 +155,7 @@ two things at once:
 ## 3.5 Signal wiring
 
 The Sabertooth runs in **independent R/C (PWM) mode** with two separate masters
-([dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-mode-per-channel-masters)).
+([dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-packetized-serial-single-master)).
 
 | Sabertooth input | Driven by | Motor output | Function |
 |---|---|---|---|

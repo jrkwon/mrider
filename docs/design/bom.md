@@ -5,106 +5,170 @@
 > [sensors.md](sensors.md) · [software.md](software.md) ·
 > [calibration.md](calibration.md) · [overview.md](overview.md)
 
-**All prices are estimates as of July 2026** in USD and vary by retailer, coupon,
+**All prices are estimates as of August 2026** in USD and vary by retailer, coupon,
 and stock. They are for budgeting, not quotes. Verify at purchase.
 
-This BOM covers **two tiers**:
+**Revised 2026-08-07** following [D3](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)
+(single Teensy replaces Pixhawk + Nano) and a re-scoping of the sensor package to
+semester-1 needs. **Estimated total fell from ~$1,570 to ~$1,035** — see §Change record.
 
-- **Minimum tier** — no GNSS, budget LiDAR ([YDLidar G4](sensors.md)), budget
-  global-shutter camera ([Arducam AR0234](sensors.md)). Smallest cost to a
-  working, mappable, behavior-cloning-capable MRider.
-- **Full tier** — adds GNSS, upgrades to [RPLidar S3](sensors.md) ToF LiDAR and
-  the [RealSense D435i](sensors.md) depth camera.
-
-The **laptop is not a purchased line item** — it is lab-supplied/reused (see
-[sensors.md §6](sensors.md)), and runs on its own battery in v1
-([safety.md](safety.md) power budget).
-
-Items marked **Reuse?=Yes** already exist in the lab's
-[mrover](https://github.com/jrkwon/mrover) build and may not need repurchase for a
-lab that is converting an existing rig; they are still listed and priced so a
-fresh build has a complete total.
+The **laptop is not a purchased line item** — it is lab-supplied/reused
+([sensors.md §6](sensors.md)), and runs on its own battery in v1.
 
 ---
 
-## Itemized BOM
+## Purchase tiers
 
-| # | Item | Spec / Model | Design ref | Reuse? (mrover) | Min tier ($) | Full tier ($) | Source / note |
-|---|------|--------------|-----------|-----------------|-------------:|--------------:|---------------|
-| 1 | **Vehicle (chassis)** | 24 V 2-seater ride-on, dual motors, parent remote | [vehicle.md](vehicle.md) | Yes (class) | 300 | 300 | Target A-1002549549 / Amazon B0CJTWDC38 class; ~$260–450 |
-| 2 | **Pixhawk 6C + PM02 power module** | Holybro Pixhawk 6C, PM02 V3 | [dbw.md](dbw.md), [architecture.md](architecture.md) | Yes | 220 | 220 | Holybro / Amazon B0BB1VTXGR; mrover BOM ~$220 |
-| 3 | **Sabertooth 2x32** | Dimension Eng. 2×32 A dual motor driver | [dbw.md](dbw.md) | Yes | 125 | 125 | makermotor PN00218-DME3; mrover BOM ~$125 |
-| 4 | **Steering gearmotor + encoder** | Geared DC motor w/ encoder (RS-385/390 class) or wiper-motor fallback | [dbw.md](dbw.md) steering actuation | Partial | 35 | 35 | Sized ≥2× measured column torque ([dbw.md](dbw.md) procedure) |
-| 5 | **Absolute steering angle sensor** | Hollow-shaft / coupled potentiometer (or AS5600-class magnetic) | [dbw.md](dbw.md) ADR B / sensor-tech ADR | New | 20 | 20 | Tech chosen in [dbw.md](dbw.md); single-turn range caveat |
-| 6 | **Drive encoder + shaft adapter** | Quadrature/Hall encoder (52 PPR class) + 3.15→5 mm adapter | [dbw.md](dbw.md) ADR C; `code/code.ino:27` | Yes | 18 | 18 | mrover shaft-adapter method |
-| 7 | **Arduino Nano V3** | ATmega328P (USB-serial 115200; I2C 0x02 retained) | [dbw.md](dbw.md) firmware; `code/code.ino` | Yes | 13 | 13 | mrover BOM ~$13 |
-| 8 | **USB-TTL serial adapter** | 3.3 V FTDI/CP210x cable | [architecture.md](architecture.md) feedback path | Yes | 13 | 13 | Nano→laptop USB; mrover BOM ~$13 |
-| 9 | **Relay MUX hardware** | 2× DPDT automotive relays/contactors + sockets + flyback diodes + drive transistors | [safety.md](safety.md) authority arbitration | New | 25 | 25 | Default de-energized = STOCK mode |
-| 10 | **E-stop switch** | Latching mushroom, traction-rated (high current / contactor coil) | [safety.md](safety.md) E-stop semantics | New | 15 | 15 | Cuts traction power only |
-| 11 | **RC transmitter + receiver** | PX4-bindable (FrSky Taranis-class TX + SBUS/ACCESS RX) | [safety.md](safety.md) RC-via-PX4 override | New | 120 | 120 | Live DBW manual override; TX ~$85 + RX ~$35 |
-| 12 | **2D LiDAR** | Min: YDLidar G4 · Full: RPLidar S3 | [sensors.md §2](sensors.md) | G4: Yes | 260 | 460 | mrover ships YDLidar params; S3 ToF/IP65 upgrade |
-| 13 | **Front camera** | Min: Arducam AR0234 global-shutter USB3 · Full: RealSense D435i | [sensors.md §1](sensors.md) | No | 180 | 350 | Global-shutter RGB for behavior cloning |
-| 14 | **GNSS module** | Full only: Holybro M9N/M10 (RTK-ready growth path) | [sensors.md §4](sensors.md) | Optional | 0 | 90 | Excluded from min tier by design |
-| 15 | **Wiring / connectors / fuses** | Silicone wire, spade/XT60 connectors, inline fuses, terminals, heatshrink | [safety.md](safety.md) power budget | Partial | 40 | 45 | Slightly higher for full tier extra runs |
-| 16 | **Steering shaft coupler / adapter** | Column coupler, set screws, bracket | [dbw.md](dbw.md); [calibration.md](calibration.md) | New | 15 | 15 | Couples gearmotor + angle sensor to column |
-| 17 | **Mounts / 3D prints** | Sensor mast + camera/LiDAR mounts + Pixhawk/Sabertooth enclosures | [sensors.md §5](sensors.md) | Partial | 30 | 35 | Reuse mrover STL cases (`config/3D_design/v3/`); print filament/hardware |
-| — | **Laptop (onboard computer)** | RTX-class GPU, ≥16 GB RAM, ≥3× USB3, ≥2 h battery | [sensors.md §6](sensors.md) | Yes | *reuse* | *reuse* | Lab-supplied; own battery (not in totals) |
+Buy in **two tiers** so the perception spend happens only after the DBW gates pass. If the
+steering spike fails at [bring-up Stage 1](safety.md#6-bring-up-protocol-staged-wheels-off-first),
+Tier 2 has not been bought yet.
 
-**17 purchasable line items** (laptop excluded as reuse).
+- **Tier 1 — Vehicle + DBW core.** Order in week 1, after the
+  [steering-shaft travel measurement](dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer).
+- **Tier 2 — Perception.** Order by week 10.
 
 ---
 
-## Computed Subtotals
+## Tier 1 — Vehicle + DBW core
 
-| Tier | Sum of line items | Contingency (~10%) | **Estimated total** |
+| # | Item | Spec / Model | Design ref | Reuse? (mrover) | Est. ($) | Source / note |
+|---|------|--------------|-----------|-----------------|---------:|---------------|
+| 1 | **Vehicle (chassis)** | 24 V 2-seater ride-on, dual motors, parent remote | [vehicle.md ADR D](vehicle.md#adr-d-24-v-two-seater-vs-12-v-single-seater) | Yes (class) | 300 | Target A-1002549549 / Amazon B0CJTWDC38 class; ~$260–450. **Used units cut this to ~$150–200.** |
+| 2 | **Teensy 4.1** | 600 MHz Cortex-M7, 4× hardware QDC, 8× serial | [dbw.md §9](dbw.md#9-teensy-41-firmware-platform-and-version-pinning) | New | 32 | Replaces Pixhawk 6C + PM02 + Nano + USB-TTL |
+| 3 | **Sabertooth 2x32** | Dimension Eng. 2×32 A dual motor driver | [dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-packetized-serial-single-master) | Yes | 125 | **Do not substitute a bare H-bridge** — see the note below |
+| 4 | **Steering gearmotor + encoder** | Geared DC motor w/ encoder (RS-385/390 class) or wiper-motor fallback | [dbw.md §2](dbw.md#2-steering-actuation-design) | Partial | 35 | Sized ≥2× measured column torque ([dbw.md §2.2](dbw.md#22-torque-measurement-procedure-before-sizing-the-gearmotor)) |
+| 5 | **Absolute steering angle sensor** | AS5600 breakout + diametric magnet; pot as fallback | [dbw.md §6](dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer) | New | 20 | **Budget for either** — technology decided by the bench travel measurement |
+| 6 | **Drive encoder + shaft adapter** | Quadrature/Hall encoder + 3.15→5 mm adapter | [dbw.md §8](dbw.md#8-adr-c-drive-distance-encoding) | Yes | 18 | mrover shaft-adapter method. **Verify PPR on the part fitted** (F7) |
+| 7 | **Relay MUX hardware** | 2× DPDT automotive relays/contactors + sockets + flyback diodes + drive transistors | [safety.md §1.1](safety.md#11-relay-mux-stock-vs-dbw-selection) | New | 25 | Default de-energized = STOCK |
+| 8 | **E-stop switch** | Latching mushroom, traction-rated | [safety.md §3](safety.md#3-e-stop-semantics) | New | 15 | Cuts traction power only |
+| 9 | **Hardware RC signal MUX** | Servo-signal multiplexer / RC failsafe MUX, ≥2 ch | [safety.md §1.2](safety.md#12-live-override-inside-dbw-mode-two-layers) | New | 18 | **Required — this is the condition of D3's adoption.** Not optional |
+| 10 | **RC transmitter + receiver** | 6-ch 2.4 GHz with **SBUS** out (FlySky FS-i6 + FS-iA6B class) | [safety.md §1.2](safety.md#12-live-override-inside-dbw-mode-two-layers) | New | 55 | Was $120 for a PX4-bindable FrSky set; without PX4 the requirement is just SBUS + a spare channel for the MUX |
+| 11 | **Isolated logic rail** | 12 V 7 Ah SLA + charger + 2× DC-DC buck | [safety.md §5](safety.md#5-power-rail-isolation-and-brownout-protection) | New | 45 | Replaces the PM02's isolation role. **Not a retrofit** — the Teensy holds the whole safety supervisor |
+| 12 | **Wiring / connectors / fuses** | Silicone wire, spade/XT60, inline fuses, terminals, heatshrink | [safety.md](safety.md) | Partial | 40 | |
+| 13 | **Steering shaft coupler / adapter** | Column coupler, set screws, bracket, magnet mount | [dbw.md](dbw.md) · [calibration.md](calibration.md) | New | 15 | Couples gearmotor + angle sensor. Magnet mount needs concentricity — see [dbw.md §6](dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer) |
+| 14 | **Mounts / 3D prints** | Sensor mast + camera/LiDAR mounts + enclosures | [sensors.md §5](sensors.md) | Partial | 30 | Print filament/hardware; mrover STLs need reworking for the new controller |
+| | | | | **Tier 1** | **$773** | |
+
+!!! warning "Do not substitute a cheap H-bridge for the Sabertooth"
+
+    A BTS7960-class module is ~$14 and looks like a $110 saving. It is the wrong part here:
+    [vehicle.md §3.1](vehicle.md) notes RS-550-class drive motors stall at **30–60 A each**,
+    and the two rear motors are paralleled onto one channel. The Sabertooth 2x32 provides
+    32 A/channel with current limiting, thermal protection, and a configurable **serial
+    timeout** that backs [failsafe row 6](safety.md#2-failsafe-matrix). A bare H-bridge
+    provides none of those. Keep it.
+
+## Tier 2 — Perception
+
+| # | Item | Spec / Model | Design ref | Reuse? | Est. ($) | Source / note |
+|---|------|--------------|-----------|--------|---------:|---------------|
+| 15 | **2D LiDAR** | RPLIDAR A1M8 (360°, 12 m) | [sensors.md §2](sensors.md) | No | 110 | Sufficient for indoor hallway SLAM. `ros-humble-rplidar-ros` is in apt. Upgrade path: RPLidar S3 / YDLidar G4 |
+| 16 | **Front camera** | USB 1080p wide-FOV | [sensors.md §1](sensors.md) | No | 30 | **See the behavior-cloning note below** |
+| 17 | **IMU** | BNO085-class 9-DoF with onboard fusion | [sensors.md §3](sensors.md) | New | 28 | Replaces the Pixhawk's internal IMU. Estimator is unchanged — it was always `robot_localization` (F11) |
+| | | | | **Tier 2** | **$168** | |
+
+!!! note "The global-shutter camera is deferred, not deleted"
+
+    The previous BOM specified an **Arducam AR0234 global-shutter USB3 camera ($180)**,
+    chosen deliberately because rolling-shutter distortion during motion degrades
+    behavior-cloning training data. Behavior cloning is **phase 2**
+    ([software.md §8](software.md#8-semester-1-scope-and-software-acceptance-gates)), so
+    semester 1 uses a $30 rolling-shutter camera and the global-shutter part is a **phase-2
+    repurchase, budgeted at +$150.** Do not train a behavior-cloning policy on rolling-shutter
+    data and attribute the result to the platform.
+
+---
+
+## Totals
+
+| | Sum of line items | Contingency (~10%) | **Estimated total** |
 |------|------------------:|-------------------:|--------------------:|
-| **Minimum** (no GNSS, YDLidar G4, Arducam AR0234) | **$1,429** | ~$143 | **~$1,570** |
-| **Full** (GNSS, RPLidar S3, RealSense D435i) | **$1,899** | ~$190 | **~$2,090** |
+| **Tier 1 + Tier 2** | **$941** | ~$94 | **~$1,035** |
+| *Tier 1 alone (weeks 1–9)* | *$773* | *~$77* | *~$850* |
 
-Line-item sums (verify against the table above):
-
-- **Minimum:** 300 + 220 + 125 + 35 + 20 + 18 + 13 + 13 + 25 + 15 + 120 + 260 +
-  180 + 0 + 40 + 15 + 30 = **$1,429**.
-- **Full:** 300 + 220 + 125 + 35 + 20 + 18 + 13 + 13 + 25 + 15 + 120 + 460 +
-  350 + 90 + 45 + 15 + 35 = **$1,899**.
-
-Delta (full − min) = **$470**, entirely in the LiDAR (+$200), camera (+$170),
-GNSS (+$90), and minor wiring/mount (+$10) upgrades.
-
-Contingency (~10%) covers shipping, taxes, connector/fastener miscellany, and the
-verification-driven risk that the **drive-motor stall current** ([vehicle.md §3.1](vehicle.md)) forces a current-limit accessory or a second motor driver.
+Contingency covers shipping, taxes, connector/fastener miscellany, a blown H-bridge or
+stripped steering gear, and the verification-driven risk that the **drive-motor stall
+current** ([vehicle.md §3.1](vehicle.md)) forces a current-limit accessory.
 
 ---
 
-## Reuse Notes (lab already has an mrover build)
+## Change record — why the total fell from ~$1,570 to ~$1,035
 
-For a lab converting an **existing** mrover rig rather than building fresh, the
-following are typically already owned and can be subtracted:
+| Change | Δ | Driver |
+|---|---:|---|
+| Pixhawk 6C + PM02 removed | −$220 | [D3](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07) |
+| Arduino Nano + USB-TTL adapter removed | −$26 | D3 |
+| Teensy 4.1 added | +$32 | D3 |
+| IMU added (was inside the Pixhawk) | +$28 | D3 |
+| **Hardware RC signal MUX added** | +$18 | D3's safety condition — [safety.md §1.2](safety.md#12-live-override-inside-dbw-mode-two-layers) |
+| **Isolated logic rail added** (was the PM02's job) | +$45 | D3 — [safety.md §5](safety.md#5-power-rail-isolation-and-brownout-protection) |
+| **D3 subtotal** | **−$123** | |
+| RC set: PX4-bindable FrSky → SBUS-capable FlySky | −$65 | No PX4 to bind to; requirement is now SBUS + a MUX channel |
+| LiDAR: YDLidar G4 → RPLIDAR A1M8 | −$150 | Semester-1 scope is indoor hallway SLAM |
+| Camera: AR0234 global shutter → USB 1080p | −$150 | Behavior cloning deferred to phase 2 |
+| GNSS excluded | $0 | Already excluded from the minimum tier |
+| **Sensor re-scoping subtotal** | **−$365** | |
+| **Total** | **−$488** | $1,429 → $941 before contingency |
 
-- Pixhawk 6C + PM02 (#2), Sabertooth 2x32 (#3), Arduino Nano (#7), USB-TTL (#8),
-  drive encoder + shaft adapter (#6), YDLidar G4 (#12, min tier), 3D-printed
-  enclosures (#17, `config/3D_design/v3/`), and the laptop.
-- **Reuse-adjusted minimum tier** (buying only the genuinely new/vehicle-specific
-  items — vehicle, steering gearmotor, angle sensor, relay MUX, E-stop, RC set,
-  camera, couplers, wiring): roughly **$300 + 35 + 20 + 25 + 15 + 120 + 180 + 15
-  + 40 + 30 = ~$780** before contingency.
+**Honest attribution:** D3 itself accounts for **−$123**, not the bulk of the saving. Most of
+the reduction comes from scoping the sensor package to what semester 1 actually needs. Both
+are real, but they are different kinds of decision — one is architectural and permanent, the
+other is a deferral with a known phase-2 cost (+$150 camera, +$200–350 GNSS/RTK,
++$150–200 LiDAR upgrade).
 
-New-to-MRider items (not in the mrover BOM) are the **absolute steering angle
-sensor** (#5), **relay MUX** (#9), **E-stop** (#10), **RC TX/RX** (#11), the
-**global-shutter camera** (#13), and the **GNSS** (#14, full tier) — these
-implement the [DBW angle servo](dbw.md), [safety authority arbitration](safety.md), and the [global-shutter behavior-cloning](sensors.md) decisions that
-distinguish MRider from the base mrover recipe.
+**Vehicle voltage was reconsidered and kept at 24 V.** A 12 V single-seater saves ~$100–150,
+but [ADR D](vehicle.md#adr-d-24-v-two-seater-vs-12-v-single-seater) rejects it on payload and
+torque margin — and it is the chassis class B-MROVER is validated on (finding F1). With D3
+removing the validated-autopilot claim, the validated-*chassis* claim carries more weight than
+before, not less. Not worth $100.
 
 ---
 
-## GNSS RTK Growth Path (beyond full tier)
+## Levers if the budget must go lower
 
-Not in either total; a documented future upgrade ([sensors.md §4](sensors.md)):
+| Lever | Saving | Cost |
+|---|---:|---|
+| Buy the vehicle used (marketplace) | −$100 to −$150 | Condition risk; inspect steering column before buying |
+| Lab already has an mrover rig — reuse Sabertooth (#3), drive encoder (#6), 3D prints (#14) | −$173 | None, if the parts exist |
+| 3D-print couplers and mounts instead of buying | −$30 | Print time |
+| Defer Tier 2 entirely to next semester | −$168 | **Loses the SLAM map deliverable** — the semester's visible outcome |
+| 12 V single-seater | −$100 to −$150 | Contradicts ADR D; gives up the validated chassis class. **Not recommended** |
 
-| Item | Spec | Est. ($) |
-|------|------|---------:|
-| RTK GNSS rover | u-blox ZED-F9P-class module | 220–300 |
-| RTK corrections | NTRIP subscription or local base station | varies |
+**Realistic floor** with a used vehicle, lab-reused Sabertooth and encoder, and printed
+mounts: **~$620 all-in.**
 
-PX4 already accepts RTK injection over MAVLink, so this is a module + corrections
-swap, not new firmware.
+---
+
+## Reuse notes (lab already has an mrover build)
+
+Typically already owned and subtractable: **Sabertooth 2x32** (#3), **drive encoder + shaft
+adapter** (#6), **3D-printed enclosures** (#14, `config/3D_design/v3/` — though the Pixhawk
+and Sabertooth cases need rework for the new controller), and the laptop.
+
+**No longer reusable under D3:** the Pixhawk 6C, PM02, Arduino Nano, and USB-TTL adapter from
+an existing mrover rig are not used by MRider. If the lab has them, they remain useful for
+other projects — this is a deliberate architectural departure, not a write-off of working
+hardware.
+
+**New to MRider** (not in the mrover BOM): the Teensy (#2), absolute angle sensor (#5), relay
+MUX (#7), E-stop (#8), **hardware RC signal MUX (#9)**, RC set (#10), isolated logic rail
+(#11), and IMU (#17). These implement the [DBW angle servo](dbw.md), the
+[layered authority arbitration](safety.md), and the power isolation that distinguish MRider
+from the base mrover recipe.
+
+---
+
+## Phase-2 growth path
+
+Not in the totals; documented future upgrades.
+
+| Item | Spec | Est. ($) | Enables |
+|------|------|---------:|---------|
+| Global-shutter camera | Arducam AR0234 USB3 class | 180 | Behavior cloning without rolling-shutter artifacts |
+| RTK GNSS rover | u-blox ZED-F9P class | 220–300 | Outdoor waypoint following |
+| RTK corrections | NTRIP subscription or local base | varies | — |
+| LiDAR upgrade | RPLidar S3 (ToF, IP65) or YDLidar G4 | 150–200 | Outdoor / longer range |
+| 24 V drivetrain tuning, spare gearbox | — | 50 | Bring-up damage margin |
+
+Without PX4, RTK integrates as an F9P + laptop NTRIP client feeding `navsat_transform`
+directly — arguably simpler than MAVLink RTK injection.

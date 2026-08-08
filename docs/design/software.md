@@ -11,26 +11,46 @@ It is a sibling of [`architecture.md`](architecture.md) (system architecture),
 [`safety.md`](safety.md), [`sensors.md`](sensors.md), [`calibration.md`](calibration.md),
 [`vehicle.md`](vehicle.md), and [`bom.md`](bom.md).
 
-**Target:** ROS 2 **Humble** (B-MROVER's validated distro), PX4 rover via
-Micro-XRCE-DDS. All reuse claims were verified against the local checkout at
+**Target:** ROS 2 **Humble** on Ubuntu 22.04 (B-MROVER's validated distro), vehicle interface
+via **micro-ROS**. All reuse claims were verified against the local checkout at
 `/mnt/data/projects/mrover`; file paths are cited inline.
 
 ---
 
 ## 1. Reuse posture
 
-The guiding rule is **reuse before invent**. B-MROVER already provides the MAVLink bridge,
-robot_localization EKF, slam_toolbox mapping, Nav2 navigation, the ros2_control CarlikeBot
-interface, the data-collection recorder, and the Keras end-to-end training/inference
-pipeline. MRider keeps these and changes exactly two things:
+The guiding rule is **reuse before invent** — applied honestly. A
+[direct re-reading of the B-MROVER source](adr-dbw-architecture-review.md) established which
+reuse claims hold and which did not survive contact with the code.
 
-1. **The feedback datapath** — moved off MAVLink `WHEEL_DISTANCE` onto a direct
-   Nano → USB → `/mrider/feedback` link (see §2, ADR-SW1). This is the one reclassification
-   the plan calls out explicitly.
-2. **Kinematic and frame parameters** — re-parameterized for the new (TBD) chassis, and two
-   B-MROVER config artifacts corrected (§4).
+**Reuse that is real, and carries most of MRider's autonomy.** `robot_localization` EKF,
+slam_toolbox mapping, Nav2 navigation, the URDF/xacro Ackermann structure, the Gazebo worlds,
+the data-collection recorder, and the Keras end-to-end training/inference pipeline. All of it
+sits **above** the vehicle interface and is transport-agnostic, so the controller change
+below does not touch it. Same distro (Humble), so these port with minimal change.
 
-Everything else is reused or lightly adapted.
+**Three things change:**
+
+1. **The controller topology** — a single **Teensy 4.1 running micro-ROS** replaces the
+   Pixhawk 6C + Arduino Nano pair ([D3](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)).
+   This retires `mavlink_bridge.py`, the `px4_msgs` dependency, and the XRCE agent from the
+   command path (ADR-SW1).
+2. **The vehicle interface** — typed `DbwCommand`/`DbwStatus` on one transport with one clock,
+   replacing the split MAVLink-command / I²C-feedback arrangement.
+3. **Kinematic and frame parameters** — re-parameterized for the chassis, and three B-MROVER
+   config artifacts corrected (§4).
+
+!!! warning "One reuse claim was withdrawn (finding F3)"
+
+    Earlier drafts marked the `ros2_control` hardware interface **REUSE**, citing B-MROVER's
+    `carlikebot_system.cpp`. That file is the **unmodified upstream demo stub**: namespace
+    `ros2_control_demo_example_11` (`:27`), `read()` assigns
+    `state.position = command.position` — echoing the command back as state (`:280`) — and
+    `write()` only calls `RCLCPP_INFO` (`:304`). Both are bracketed by the upstream comment
+    *"This part here is for exemplary purposes - Please do not copy to your production code"*.
+    **There is no hardware I/O in it**, so B-MROVER's `steering_position_controller` is wired
+    to a mock. What was reusable is an interface *shape*, not working code. That row is now
+    **NEW**.
 
 ---
 
@@ -41,34 +61,46 @@ Legend: **REUSE** = used essentially as-is; **ADAPT** = kept but reconfigured/re
 
 | Subsystem | B-MROVER artifact (verified path) | Status | MRider change |
 |-----------|-----------------------------------|--------|---------------|
-| MAVLink ↔ ROS 2 command bridge | `dev_ws/src/mrover/mrover/mavlink_bridge.py:79-126` | **REUSE** | Upstream steering/throttle path unchanged: `ManualControlSetpoint` on `/fmu/in/manual_control_setpoint` (`:79-82`); `roll`→STEER, `throttle`→THROTTLE (`:122-123`). |
-| **Encoder feedback path** | `mavlink_bridge.py:231-260` (`wheel_distance_callback_mavlink`) → `Control` on `/rover` (`:76`) | **ADAPT / REPLACE** | MRider **does not** carry feedback over MAVLink `WHEEL_DISTANCE`. Feedback comes Nano → USB serial 115200 → new driver → `/mrider/feedback`. The B-MROVER count→±22.5° mapping (`:250-253`) is reference math only. **Not counted as reuse.** |
-| Micro-XRCE-DDS agent | `agent_config.xml` (domainId 10) | **REUSE** | Same XRCE transport; domain ID configurable. |
-| PX4 message set | `dev_ws/src/px4_msgs/` | **REUSE** | `ManualControlSetpoint`, `SensorCombined`, `VehicleAttitude`, `SensorGps`. |
-| Robot-localization EKF | `dev_ws/src/mrover/config/ekf.yaml` | **ADAPT** | Reuse dual-EKF structure (local `odom` + global `map`+GPS) and `two_d_mode`; retarget inputs (§4), fix magnetic declination. |
+| MAVLink ↔ ROS 2 command bridge | `dev_ws/src/mrover/mrover/mavlink_bridge.py:79-126` | **RETIRED** | Not used. Note the path it implemented was **MAVLink emitted laptop-side** (`:79-82`, `:105-126` call `mav.manual_control_send()` over its own `mavutil` connection), not XRCE-to-PX4 as earlier diagrams showed (finding F5). Retained as reference for the ±22.5° range only. |
+| **Encoder feedback path** | `mavlink_bridge.py:231-260` (`wheel_distance_callback_mavlink`) → `Control` on `/rover` (`:76`) | **RETIRED** | Replaced by typed `DbwStatus` over micro-ROS. Its runtime auto-ranging (`:47-50`, `:243-250`) expands min/max *during operation* and rescales past values, with asymmetric defaults (`-600`, `180`) making boot centre arbitrary (F4) — a defect to avoid, not a design to inherit. |
+| Micro-XRCE-DDS agent | `agent_config.xml` (domainId 10) | **REPLACED** | `micro_ros_agent` (USB serial transport) instead. Must be **built from source** via `micro_ros_setup` — not available in the Humble apt repositories. |
+| PX4 message set | `dev_ws/src/px4_msgs/` | **RETIRED** | Replaced by `mitt_msgs` (`DbwCommand`, `DbwStatus`). Dependency removed entirely. |
+| Robot-localization EKF | `dev_ws/src/mrover/config/ekf.yaml` | **ADAPT** | Reuse dual-EKF structure (local `odom` + global `map`+GPS) and `two_d_mode`; retarget inputs (§4), fix magnetic declination. **Note this was already the estimator** — PX4 supplied raw IMU only (F11) — so removing PX4 changes the IMU *driver*, not the estimator. |
 | SLAM (slam_toolbox) | `dev_ws/src/mrover/config/slam/mapper_params_online_async.yaml` | **ADAPT** | Reuse CeresSolver online-async mapping; reconcile `base_frame` (§4.1). |
 | Nav2 | `dev_ws/src/mrover/config/slam/nav2_params.yaml` | **ADAPT** | Reuse NavFn planner + costmaps; re-evaluate DWB controller for Ackermann (§4.3); re-parameterize `robot_radius`/velocities. |
-| ros2_control hardware interface | `dev_ws/src/mrover/description/ackermann/control/ros2_controls_real.xacro` | **REUSE** | CarlikeBot: front steer = **position** command, rear drive = **velocity** command — matches the smart-servo angle-setpoint model ([`dbw.md`](dbw.md)). |
+| ros2_control hardware interface | `dev_ws/src/mrover/hardware/carlikebot_system.cpp` | **NEW** (was mis-marked REUSE — F3) | `mitt_hardware`: a real `hardware_interface` bridging `ros2_control` to the micro-ROS `DbwCommand`/`DbwStatus` topics. B-MROVER's file is an unmodified demo stub with no hardware I/O — see the §1 warning. The reusable part is the *interface shape*: front steer = **position**, rear drive = **velocity**. |
+| ros2_control **sim** interface | — | **REUSE (upstream)** | `gz_ros2_control` in simulation. The same controller stack and configs run in sim and on hardware; only this plugin swaps. This is what makes the twin a development vehicle rather than a demo. |
+| Ackermann controller | `dev_ws/src/mrover/config/ackermann/carlike_controllers.yaml` | **REPLACE with upstream** | Use `ackermann_steering_controller` from `ros2_controllers` (`ros-humble-ackermann-steering-controller`, available from apt) rather than B-MROVER's fork of `ros2_control_demo_example_11`. |
 | Bicycle steering controller | `dev_ws/src/mrover/config/ackermann/carlike_controllers.yaml` | **ADAPT** | `BicycleSteeringController`; re-parameterize `wheelbase`/`wheel_radius` for real chassis (§3.2). |
 | URDF / xacro | `dev_ws/src/mrover/description/ackermann/robot_core2_urdf.xacro` | **ADAPT** | Reuse Ackermann structure; replace placeholder dimensions with measured chassis values (§3.2). |
 | LiDAR driver | `dev_ws/src/ydlidar_ros2_driver/`, `config/ydlidar_params.yaml` | **REUSE/ADAPT** | Reuse if YDLidar retained; swap driver if a different LiDAR is chosen ([`sensors.md`](sensors.md)). |
-| Data-collection recorder | `dev_ws/src/data_collection/data_collection/data_collection_main.py:69-71` | **ADAPT** | Reuse ROS 2 recorder (Control + Odometry + Image); retarget `vehicle_control_topic` to `/mrider/feedback`. |
-| End-to-end NN training | `neural_net/net_model.py`, `neural_net/train.py`, `drive_train.py` | **REUSE** | Keras PilotNet-class models unchanged. |
-| End-to-end NN inference | `dev_ws/src/run_neural/run_neural/run_neural.py` (+ `run_neural_rn.py`) | **REUSE** | Runtime inference node; output → `/mrider/cmd`. |
-| Feedback driver (Nano ↔ ROS 2) | — | **NEW** | Parses Nano USB serial frames → `/mrider/feedback`; the one genuinely new node ([`dbw.md`](dbw.md) serial protocol). |
-| Command shim | — | **NEW (thin)** | Maps `/mrider/cmd` → `ManualControlSetpoint` (roll/throttle) if the policy/Nav2 output is not already in that form. |
+| Data-collection recorder | `dev_ws/src/data_collection/data_collection/data_collection_main.py:69-71` | **ADAPT** | Reuse ROS 2 recorder (Control + Odometry + Image); retarget `vehicle_control_topic` to `/mitt/dbw/status`. Phase 2. |
+| End-to-end NN training | `neural_net/net_model.py`, `neural_net/train.py`, `drive_train.py` | **REUSE** | Keras PilotNet-class models unchanged. Phase 2. |
+| End-to-end NN inference | `dev_ws/src/run_neural/run_neural/run_neural.py` (+ `run_neural_rn.py`) | **REUSE** | Runtime inference node. Phase 2. |
+| Teensy firmware | `code/code.ino` | **PORT (logic only)** | Encoder-read logic ported to Teensy hardware quadrature decoders. **PPR not inherited** — the source conflicts with itself (52 PPR in `code.ino:27` vs 16 PPR in its own BOM), so it must be verified on the part fitted (F7). The I²C register map and ASCII prints are dropped. |
+| Vehicle interface messages | `mrover_control/msg/Control.msg` | **ADAPT** | `mitt_msgs/DbwCommand`, `DbwStatus` — lineage from `Control.msg` (`timestamp, throttle, steer, steer_angle`), extended with setpoint, ticks, mode, and a fault bitfield. |
+| Odometry node | — | **NEW** | Bicycle-model odometry from `DbwStatus` (steer angle + drive ticks) → `wheel/odometry` for the EKF. |
+| Validation bench | — | **NEW** | `mitt_bench`: scripts producing the quantified acceptance numbers (steering accuracy, odometry drift, latency). See §8. |
 
-### ADR-SW1 — Reroute feedback off MAVLink
+### ADR-SW1 — One transport, one clock, typed messages
 
-- **Decision.** Publish vehicle feedback from a new ROS 2 driver reading the Nano USB serial
-  link, on `/mrider/feedback`; retire the MAVLink `WHEEL_DISTANCE` → `/rover` path.
-- **Alternatives.** Keep `wheel_distance_callback_mavlink` (`mavlink_bridge.py:231-260`) and
-  feed encoders up through PX4 as B-MROVER does.
-- **Rationale.** Once the Nano owns the steering servo loop it already aggregates the
-  absolute angle sensor and both encoders; a direct USB link removes a MAVLink round-trip
-  from the odometry path (lower latency, feedback rate decoupled from FC telemetry budget)
-  and gives a single, teachable serial contract. **Consequence:** the B-MROVER
-  `WHEEL_DISTANCE` feedback code is retired, not reused.
+- **Decision.** The entire vehicle interface is two typed micro-ROS topics —
+  `/mitt/dbw/command` and `/mitt/dbw/status` — over a single USB serial link to the Teensy.
+  Retire the MAVLink command path, the `WHEEL_DISTANCE` feedback path, the ASCII serial
+  protocol, and the I²C register map.
+- **Alternatives.** (a) The superseded split arrangement: MAVLink command via PX4, feedback via
+  a separate Nano→I²C/USB path. (b) A hand-rolled framed binary protocol on the same link
+  (**retained as the fallback** if no Humble `micro_ros_arduino` release exists — see
+  [`dbw.md §9`](dbw.md#9-teensy-41-firmware-platform-and-version-pinning)).
+- **Rationale.** Under the split arrangement, command and feedback shared **neither a clock nor
+  a transport**. A symptom observed at the ROS layer could originate in any of four subsystems,
+  and no single log contained both sides of the loop — which is precisely the "integration
+  complexity" the lab diagnosed as a root cause of the previous generations falling short.
+  One transport with one clock makes `ros2 topic echo` authoritative and `ros2 bag` complete.
+- **Consequence.** The link now carries the **steering setpoint** as well as feedback, so a USB
+  dropout removes the setpoint — a genuine regression analysed and accepted in
+  [safety.md failsafe row 2](safety.md#2-failsafe-matrix). USB session stability is a Stage 0
+  measured gate, not an assumption.
 
 ---
 
@@ -78,17 +110,21 @@ Legend: **REUSE** = used essentially as-is; **ADAPT** = kept but reconfigured/re
 
 | Topic | Type | Direction | Notes |
 |-------|------|-----------|-------|
-| `/mrider/cmd` | steering + throttle command | policy/Nav2 → command shim | Normalized steer + throttle; shim converts to `ManualControlSetpoint`. |
-| `/fmu/in/manual_control_setpoint` | `px4_msgs/ManualControlSetpoint` | shim → PX4 (XRCE) | `roll` = STEER, `throttle` = THROTTLE (`mavlink_bridge.py:122-123`). |
-| `/mrider/feedback` | MRider feedback msg (lineage below) | Nano driver → stack | Steering angle (deg), drive distance/velocity from encoders. |
-| `/fmu/out/sensor_combined` | `px4_msgs/SensorCombined` | PX4 → EKF | IMU (`mavlink_bridge.py:71`). |
+| `/mitt/dbw/command` | `mitt_msgs/DbwCommand` | `mitt_hardware` → Teensy (micro-ROS) | `steering_angle` (**rad**), `speed` (m/s). ≥ 50 Hz; staleness > 500 ms → `ESTOP`. |
+| `/mitt/dbw/status` | `mitt_msgs/DbwStatus` | Teensy → stack (micro-ROS) | Measured angle, setpoint, wheel speed, cumulative ticks, mode, fault bitfield. ≥ 50 Hz. |
+| `/imu/data` | `sensor_msgs/Imu` | IMU driver → EKF | BNO085-class, direct to laptop. EKF `imu0`. |
 | `/scan` | `sensor_msgs/LaserScan` | LiDAR → SLAM | slam_toolbox `scan_topic: /scan`. |
 | `/camera/color/image_raw` | `sensor_msgs/Image` | camera → recorder/NN | Data-collection default (`config/data_collection/rover_template.yaml`). |
-| `wheel/odometry` | `nav_msgs/Odometry` | odom → EKF | EKF `odom0` input (`ekf.yaml`). |
-| `odometry/gps` | `nav_msgs/Odometry` | navsat → map-EKF | EKF `odom1` (global), optional GNSS. |
+| `wheel/odometry` | `nav_msgs/Odometry` | odometry node → EKF | Bicycle model from `DbwStatus`. EKF `odom0` (`ekf.yaml`). |
+| `odometry/gps` | `nav_msgs/Odometry` | navsat → map-EKF | EKF `odom1` (global). Phase 2. |
 
-**Feedback message lineage.** `/mrider/feedback` descends from
-`dev_ws/src/mrover_control/msg/Control.msg`, whose verified fields are:
+Nav2 and the behavior-cloning policy both drive `ros2_control`'s
+`ackermann_steering_controller`, which reaches the vehicle through `mitt_hardware` — so
+teleop, Nav2, and the learned policy all use **the same single datapath**, in both simulation
+and hardware.
+
+**Message lineage.** `DbwStatus` descends from `dev_ws/src/mrover_control/msg/Control.msg`,
+whose verified fields are:
 
 ```
 uint64  timestamp     # microseconds since system start
@@ -97,10 +133,9 @@ float64 steer
 float64 steer_angle
 ```
 
-MRider retains `timestamp`, `steer_angle` (degrees, the absolute-sensor reading), and adds a
-drive-distance/velocity field derived from the 52-PPR drive encoder (`code/code.ino:27`). The
-exact wire format (ASCII vs binary frame over USB 115200) is pinned in the serial-protocol
-section of [`dbw.md`](dbw.md).
+MRider retains `timestamp` and `steer_angle` (now **radians**, from the absolute load-side
+sensor) and adds `steering_setpoint`, `wheel_speed`, `drive_ticks`, `mode`, and `faults`.
+Full field tables are in [`dbw.md §10.1`](dbw.md#101-primary-transport-micro-ros-typed-messages).
 
 ### 3.2 Ackermann kinematic parameters
 
@@ -135,7 +170,7 @@ flowchart TD
     odom --> base["base_link"]
     base --> cam["camera_link<br/>(front camera)"]
     base --> lidar["laser / lidar_link<br/>(/scan)"]
-    base --> imu["imu_link<br/>(Pixhawk IMU)"]
+    base --> imu["imu_link<br/>(BNO085-class IMU)"]
     base --> gnss["gnss_link<br/>(optional GNSS)"]
     base --> fsteer["front_steer<br/>(virtual_front_wheel_joint, ±22.5°)"]
     base --> rwheel["rear_wheel<br/>(virtual_rear_wheel_joint)"]
@@ -162,9 +197,11 @@ B-MROVER runs a **dual-EKF** setup (verified):
 
 **MRider plan:**
 - Keep the dual-EKF structure and `two_d_mode` (planar ride-on).
-- Retarget `odom0: wheel/odometry` to odometry derived from `/mrider/feedback` (bicycle model
-  from steer angle + drive distance) — an odometry node converts feedback → `wheel/odometry`.
-- Keep `imu0: imu/data` sourced from the Pixhawk (`/fmu/out/sensor_combined` → `imu/data`).
+- Retarget `odom0: wheel/odometry` to odometry derived from `/mitt/dbw/status` (bicycle model
+  from steer angle + drive ticks) — a new odometry node performs the conversion.
+- Keep `imu0: imu/data`, now sourced from the **BNO085-class IMU driver** directly. Note this
+  is a *driver* swap only: B-MROVER's estimator was already `robot_localization` with PX4
+  supplying raw `sensor_combined` (finding F11), so the fusion structure is unchanged.
 - **Correction:** `navsat_transform.magnetic_declination_radians` is set for **Lisbon** in
   B-MROVER (`ekf.yaml`, `# For lat/long of Lisbon, Portugal`). MRider must set the local
   (Ann Arbor) declination — tracked in [`calibration.md`](calibration.md). GNSS is optional
@@ -225,9 +262,17 @@ and records synchronized samples to `e2e_data`. Config
 /camera/color/image_raw`, `vehicle_control_topic: /rover`, `steering_angle_max: 22.5`, and the
 image crop/size.
 
-**MRider change:** retarget `vehicle_control_topic` from `/rover` to **`/mrider/feedback`**
-(the new steering-angle-labeled source), and `base_pose_topic` to the EKF odometry output.
+**MRider change:** retarget `vehicle_control_topic` from `/rover` to **`/mitt/dbw/status`**
+(the steering-angle-labeled source), and `base_pose_topic` to the EKF odometry output.
 The legacy ROS 1 `data_collection_board.py` (rospy / `ScoutControl`) is **not** used.
+
+!!! note "Phase 2"
+
+    Behavior cloning is deferred out of semester 1 (§8). It is documented here because the
+    pipeline is reused intact and the **label quality depends on the DBW work**: B-MROVER's
+    steering labels came from a runtime-auto-ranged incremental encoder whose zero drifts
+    (F4), which is a poor training signal. MRider's absolute load-side angle is a materially
+    better label, and that is a research contribution in its own right.
 
 ### 5.2 End-to-end model
 
@@ -239,42 +284,75 @@ ResNet inference path (`run_neural_rn.py`). Config `config/neural_net/rover_temp
 `network_type`.
 
 **Pipeline (reused):** `neural_net/train.py` / `drive_train.py` train from `e2e_data`;
-`dev_ws/src/run_neural/run_neural/run_neural.py` runs inference at drive time and emits
-commands. In MRider the inference output feeds **`/mrider/cmd`** → command shim →
-`ManualControlSetpoint`, so the learned policy uses the exact same steering datapath as
-Nav2 and teleop (single pinned path, [`dbw.md`](dbw.md)).
+`dev_ws/src/run_neural/run_neural/run_neural.py` runs inference at drive time. In MRider the
+inference output drives the **same `ros2_control` stack** as Nav2 and teleop, so the learned
+policy uses the exact single pinned datapath ([`dbw.md`](dbw.md)) — and can be exercised in
+simulation first, because the twin and the vehicle differ only in the `hardware_interface`
+plugin.
 
 ```mermaid
 flowchart LR
     subgraph COLLECT["Data collection"]
         IMG["/camera/color/image_raw"] --> REC["data_collection_main.py"]
-        FB["/mrider/feedback (steer label)"] --> REC
+        FB["/mitt/dbw/status (absolute steer label)"] --> REC
         ODO["EKF odometry"] --> REC
         REC --> DS["e2e_data (image + steer/throttle)"]
     end
     DS --> TRAIN["neural_net/train.py<br/>PilotNet (model_ce491)"]
     TRAIN --> WTS["trained weights"]
     WTS --> INF["run_neural.py (inference)"]
-    INF --> CMD["/mrider/cmd"]
-    CMD --> SHIM["command shim -> ManualControlSetpoint"]
+    INF --> RC2["ros2_control<br/>ackermann_steering_controller"]
+    RC2 --> HW["mitt_hardware -> /mitt/dbw/command"]
 ```
 
 ---
 
-## 6. PX4 / firmware pinning and fallback
+## 6. Toolchain, environment, and version pinning
 
-- **PX4 version pin.** MRider pins the PX4 rover firmware version and the parameter set that
-  B-MROVER validated (rover mode, `MANUAL_CONTROL` handling, servo-PWM steering output, RC
-  override + failsafe). The exact version tag and a parameter export are recorded in
-  [`dbw.md`](dbw.md)/[`calibration.md`](calibration.md) at bring-up, so the
-  `MANUAL_CONTROL.roll`→servo-PWM behavior is reproducible and not subject to upstream drift.
-- **XRCE-DDS.** Micro-XRCE-DDS agent, domain ID from `agent_config.xml` (default 10); QoS per
-  the bridge's `qos_profile` (`mavlink_bridge.py:71-86`).
-- **Arduino-direct fallback.** If a PX4 rover `MANUAL_CONTROL`/servo-PWM quirk blocks
-  bring-up, the fallback is to drive the Nano steering setpoint directly (Arduino-direct),
-  bypassing the PX4 servo-PWM emission, with PX4 retained for IMU/EKF/RC. This trades the
-  single-pinned-path property for schedule risk reduction and is documented as the contingency
-  in [`dbw.md`](dbw.md) (ADR-E fallback).
+### 6.1 Verified on the lab machine
+
+| Component | Status |
+|---|---|
+| Ubuntu 22.04.5, ROS 2 Humble | installed |
+| `slam_toolbox`, `nav2_bringup`, `ros_gz`, `controller_manager` | installed |
+| `ackermann_steering_controller`, `gz_ros2_control`, `robot_localization`, `rplidar_ros`, `joint_state_broadcaster` | available from apt |
+| `micro_ros_agent` | **not in apt** — build from source via `micro_ros_setup` |
+| Gazebo | **Harmonic (gz-sim 8.14.0) installed**; Humble's apt `ros_gz` (0.244.x) and `gz_ros2_control` (0.7.x) target **Fortress** |
+
+### 6.2 Gazebo pairing — week-1 gate
+
+Humble's officially paired Gazebo is **Fortress**; the lab machine has **Harmonic**. Resolve in
+the first two days with this rule, and spend no more than one day on it:
+
+1. Test the installed `ros_gz` against Harmonic with a trivial world and a `gz_ros2_control` demo.
+2. **If it works** — keep Harmonic, pin the versions, record them in `docs/build/`.
+3. **If it does not** — install **Gazebo Fortress** and use the apt binaries. Fortress is the
+   supported Humble pairing and entirely adequate for a 14-week indoor-navigation project.
+
+**Do not** attempt a source build of `ros_gz` + `gz_ros2_control` against Harmonic on a
+semester timeline.
+
+### 6.3 Version pinning
+
+Pin and record: the `micro_ros_arduino` release, the PlatformIO Teensy platform version,
+Teensyduino version, ROS 2 package versions for the controllers, and the Gazebo pairing chosen
+in §6.2. Do not float on `main`.
+
+This obligation is **heavier than it was under PX4**, and deliberately so. As recorded in
+[adr §4.6](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07), the platform's
+replication claim no longer rests on an upstream autopilot's provenance — it rests on MRider's
+own pinned toolchain and its measured bring-up numbers (§8).
+
+### 6.4 Fallbacks
+
+- **No Humble `micro_ros_arduino` release** → framed **binary** protocol with CRC and sequence
+  numbers over the same USB serial link. Never unframed ASCII. Keeps every architectural gain
+  of D3 except typed-message convenience.
+- **Steering loop cannot meet accuracy at bring-up Stage 1** → adopt the pre-registered E4
+  motion-controller fallback rather than tuning without bound
+  ([`dbw.md §3`](dbw.md#3-adr-e-steering-control-loop-location-the-key-dbw-decision)).
+- **Sabertooth packetized-serial timeout unverifiable** → revert to independent R/C (PWM) mode
+  and accept the ~50 Hz actuation ceiling ([`dbw.md §4`](dbw.md#4-adr-sabertooth-control-mode-packetized-serial-single-master)).
 
 ---
 
@@ -282,15 +360,57 @@ flowchart LR
 
 | ID | Decision | Rationale |
 |----|----------|-----------|
-| ADR-SW1 | Reroute feedback Nano→USB→`/mrider/feedback`; retire MAVLink `WHEEL_DISTANCE` path | Nano already aggregates sensors once it owns the servo loop; lower latency, single serial contract. |
+| ADR-SW1 | One transport, one clock: typed `DbwCommand`/`DbwStatus` over micro-ROS; retire MAVLink, ASCII framing, and the I²C register map | The split command/feedback arrangement shared neither clock nor transport, which is what made faults unlocalizable. |
 | ADR-SW2 | Nav2: DWB first (reuse), RPP as pre-registered Ackermann swap | Reuse-first bring-up; ±22.5° turn constraint may need a curvature-aware controller. |
-| — | Reuse EKF/SLAM/Nav2/NN configs, re-parameterize for real chassis | Maximize reuse of the validated stack; only measured values and 2 config artifacts change. |
-| — | Pin PX4 version + params; Arduino-direct fallback | Reproducibility; schedule-risk contingency. |
+| ADR-SW3 | `mitt_hardware` is **NEW**, not reused | B-MROVER's `carlikebot_system.cpp` is an unmodified demo stub with no hardware I/O (F3). Only the interface *shape* was reusable. |
+| ADR-SW4 | Same `ros2_control` stack in sim and on hardware; only the plugin swaps (`gz_ros2_control` ↔ `mitt_hardware`) | Makes the twin a real development vehicle and gives sim-to-real parity by construction rather than by discipline. |
+| — | Reuse EKF/SLAM/Nav2/NN configs, re-parameterize for real chassis | These carry most of MRider's autonomy and are transport-agnostic, so D3 does not touch them. |
+| — | Pin the full toolchain (§6.3); three named fallbacks (§6.4) | Reproducibility now rests on MRider's own pinning, not upstream provenance. |
 
 **Config corrections MRider must make (found during verification):**
+
 1. SLAM `base_frame: base_footprint` vs EKF `base_link` — reconcile to one convention (§4.2).
-2. `navsat_transform` magnetic declination set for Lisbon — set local value (§4.1).
+2. `navsat_transform` magnetic declination set for Lisbon — set local (Ann Arbor) value (§4.1).
 3. Nav2 DWB controller — re-evaluate for Ackermann kinematics (§4.3).
+4. Treat **all** B-MROVER URDF dimensions as placeholders until measured (§3.2 caveat), and
+   **do not inherit 52 PPR** — the source project conflicts with itself (F7).
+
+---
+
+## 8. Semester-1 scope and software acceptance gates
+
+Semester 1 (~14 weeks, 1–3 students) commits to a **trustworthy DBW, a working twin, and an
+indoor SLAM map**. Nav2 autonomous goal-seeking is the stretch. **Deferred to phase 2:**
+outdoor GNSS waypoint following, the `docs/learn/` course kit, and behavior cloning.
+
+The scoping rationale is that the previous generations did not fall short on planning or
+perception — so the semester's prize is a vehicle whose feedback can be *believed*, evidenced
+by numbers. Autonomy on trustworthy feedback is comparatively fast; autonomy on untrustworthy
+feedback is what burned the earlier attempts.
+
+**Two tracks run in parallel from week 1**, because a simulator structurally cannot test
+backlash, encoder noise, USB latency, or motor stall — the layers that actually failed:
+
+| Weeks | Track A — Twin (no hardware needed) | Track B — Hardware |
+|---|---|---|
+| 1–4 | Settle the Gazebo pairing (§6.2); build `micro_ros_agent` from source; scaffold `ros2_ws`; port `mitt_description` Ackermann URDF with parameterized dimensions; `gz_ros2_control` + `ackermann_steering_controller`; joystick teleop in sim | **Bench gate: measure steering-shaft travel before ordering** ([dbw.md §6](dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer)); order parts; steering spike — AS5600 + PID on the bench, no ROS ([safety.md Stage 0–1](safety.md#6-bring-up-protocol-staged-wheels-off-first)) |
+| 5–8 | `mitt_hardware` plugin; odometry node; EKF bring-up | micro-ROS on the Teensy; throttle shaping; **both override layers demonstrated** (Stage 2); relay MUX + E-stop (Stage 3); teleop on the real vehicle (Stage 5) |
+| 9–11 | Feed measured values back into the twin so sim and real agree within 10% | `mitt_bench` validation — the numbers below |
+| 12–14 | Nav2 params for the real chassis | LiDAR + camera, TF/extrinsics, `slam_toolbox` hallway map |
+
+### Software acceptance gates
+
+- [ ] `colcon build && colcon test` clean; twin teleop launch runs headless in a scripted check
+- [ ] `ros2 topic hz /mitt/dbw/status` sustains **≥ 50 Hz**; **zero USB session dropouts over ≥ 30 min** (safety.md row 2)
+- [ ] Joystick → wheel motion latency **≤ 100 ms at p95**
+- [ ] Identical teleop launch runs in sim and on hardware, differing **only** in the `hardware_interface` plugin (ADR-SW4)
+- [ ] Twin's steering range, rate limit, wheelbase, and command latency match measured hardware within **10%**
+- [ ] Odometry: translational drift **≤ 2%** of distance over 20 m straight; heading error **≤ 5°** after a closed 20 m figure-8
+- [ ] `slam_toolbox` closes a **≥ 30 m** hallway loop; repeated observations of the same wall agree within **≤ 10 cm**; map loads in Nav2 without manual editing
+- [ ] All numbers recorded in `docs/build/` — this report *is* the replication claim (§6.3)
+
+Hardware and safety gates are in [`dbw.md §12`](dbw.md#12-numeric-interface-contract) and
+[`safety.md`](safety.md).
 
 ---
 
