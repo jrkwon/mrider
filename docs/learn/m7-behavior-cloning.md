@@ -1,5 +1,14 @@
 # M7 — Behavior Cloning / End-to-End Driving
 
+!!! warning "Partially superseded (2026-08-07)"
+
+    Some references on this page still assume the **Pixhawk + Arduino Nano** topology, replaced
+    by a **single Teensy 4.1 running micro-ROS**
+    ([decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)).
+    The substance of this page is unaffected; treat the [design set](../design/overview.md) as
+    authoritative where they disagree.
+
+
 **Learning objectives:**
 
 - Understand imitation learning and end-to-end driving (mrover `neural_net/` lineage).
@@ -73,7 +82,7 @@ EKF odometry             ─┘                                 │
 
 **The one MRider change:** the recorder's `vehicle_control_topic` moves from `/rover` to
 **`/mrider/feedback`** — the new steering-angle-labeled source from
-[ADR-SW1](../design/software.md#adr-sw1-reroute-feedback-off-mavlink) — and `base_pose_topic`
+[ADR-SW1](../design/software.md#adr-sw1-one-transport-one-clock-typed-messages) — and `base_pose_topic`
 points at the EKF odometry output.
 
 !!! info "The learned policy gets no special privileges"
@@ -116,7 +125,7 @@ to reproduce commands that the vehicle does not actually follow.
 
     MRider's answer: the **laptop is the single authoritative clock**; Nano frames are stamped
     on receipt; PX4 timestamps are offset-corrected in the bridge; `use_sim_time=false`
-    ([calibration.md §6](../design/calibration.md#6-laptoppixhawk-time-synchronization)).
+    ([calibration.md §6](../design/calibration.md#6-time-synchronization)).
 
 ### Dataset problems, in order of how often they bite
 

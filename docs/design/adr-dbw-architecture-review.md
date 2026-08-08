@@ -5,16 +5,23 @@
 > [software.md](software.md) · [calibration.md](calibration.md) · [vehicle.md](vehicle.md) ·
 > [sensors.md](sensors.md) · [bom.md](bom.md)
 
-**Status:** Review — **confirms** the two resolved DBW decisions, **amends** two of their
-stated rationales, **adds** two previously unevaluated alternatives (one as a pre-registered
-fallback, one **still open** and time-boxed to the hardware order), and **registers** four
-factual discrepancies for verification at bring-up.
+**Status:** Review — **confirms** the two resolved DBW decisions *on their own terms*, **amends**
+two of their stated rationales, **adds** two previously unevaluated alternatives (one as a
+pre-registered fallback, one raised as open), and **registers** four factual discrepancies for
+verification at bring-up.
 
-**Supersedes:** nothing. [dbw.md](dbw.md) and [overview.md](overview.md) remain the
-authoritative specification; this document records a later re-examination of their decisions
-and must be read alongside them, not instead of them.
+**D3 is now CLOSED — ADOPTED.** See [§4.6](#46-decision-adopted-2026-08-07) and
+[§7.4](#74-d3-closed-adopted). The single-Teensy topology replaces both the Pixhawk 6C and the
+Arduino Nano, conditional on the layered override of [§4.5](#45-the-real-objection-and-the-layered-answer).
+**This supersedes D1 and D2 as *implementations*** — their reasoning is preserved below as the
+record of why the Pixhawk path was credible, and §2/§3 should now be read as history, not as
+the build specification.
 
-**Date:** 2026-08-07
+**Supersedes:** the Pixhawk-based topology in [dbw.md](dbw.md) and [overview.md](overview.md),
+which have been amended to match. Those documents remain the authoritative specification of the
+*adopted* design; this document records how it was arrived at.
+
+**Date:** 2026-08-07 (D3 closed 2026-08-07)
 
 ---
 
@@ -79,7 +86,7 @@ what you do not want holding the emergency authority.
 There is a second, structural payoff that only option A provides. Because the steering command
 flows *through* PX4, **an RC transmitter bound to the Pixhawk overrides steering as well as
 throttle, with no separate wiring to the Nano**
-([safety.md §1.2](safety.md#12-live-override-inside-dbw-mode-rc-via-px4)). Under B or C,
+([safety.md §1.2](safety.md#12-live-override-inside-dbw-mode-two-layers)). Under B or C,
 steering override must be built separately. A topology choice buys a safety property.
 
 **Supporting evidence — the recipe is validated on this exact chassis class.** B-MROVER's own
@@ -93,8 +100,8 @@ already run on this vehicle class.
 - **PX4 version churn is real.** B-MROVER required a forked PX4
   (`jomidokunMain/PX4-Autopilot`, branch `wheelEncoder`) for its custom encoder module.
   *Mitigation:* MRider can drop that fork entirely — see finding F2 and
-  [ADR-SW1](software.md#adr-sw1-reroute-feedback-off-mavlink) — and the version is pinned per
-  [dbw.md §9](dbw.md#9-pixhawk-6c-px4-rover-configuration-and-version-pinning).
+  [ADR-SW1](software.md#adr-sw1-one-transport-one-clock-typed-messages) — and the version is pinned per
+  [dbw.md §9](dbw.md#9-teensy-41-firmware-platform-and-version-pinning).
 - **A heavier stack to teach.** Students must meet PX4, MAVLink, and XRCE-DDS before they can
   drive. Accepted: the [Learn curriculum](../learn/index.md) sequences this over M1–M3.
 
@@ -154,7 +161,7 @@ make, both stronger than the ones it does:
 
 1. **The Nano is not optional, so no alternative removes a component.** The Nano reads the
    drive encoder and produces the `/mrider/feedback` frame regardless of where the loop lives
-   ([dbw.md §10.1](dbw.md#101-primary-transport-usb-serial-115200-baud)). Every alternative
+   ([dbw.md §10.1](dbw.md#101-primary-transport-micro-ros-typed-messages)). Every alternative
    therefore only *moves the PID off a board that is already on the vehicle* — and E4 adds a
    part rather than replacing one.
 2. **E2 has no reuse advantage** (§3.3), so E1's determinism advantage is uncontested rather
@@ -205,7 +212,7 @@ Pursuit:
       estimates, verify at purchase).
 - [ ] Its position mode accepts the column potentiometer as absolute feedback across the full
       working range, without the single-turn wrap hazard that
-      [dbw.md §6](dbw.md#6-adr-angle-sensor-technology-potentiometer-vs-as5600-class-magnetic-encoder)
+      [dbw.md §6](dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer)
       rejects the AS5600 for.
 - [ ] Its behavior on setpoint-signal loss satisfies
       [failsafe matrix row 6](safety.md#2-failsafe-matrix).
@@ -270,15 +277,15 @@ This is the strongest argument for D3, and it is larger than it first appears. M
 | Deleted | Why it existed |
 |---|---|
 | The pinned `roll → servo-PWM → PWM capture → degrees` round trip ([ADR E](dbw.md#3-adr-e-steering-control-loop-location-the-key-dbw-decision)) | Only because the setpoint had to cross from PX4 to a second MCU. With one MCU the setpoint is a ROS 2 message the loop reads directly. |
-| PWM input capture firmware block ([§10.3 item 1](dbw.md#103-new-firmware-blocks-added-for-adr-e)) | Same reason |
-| The `F,...` ASCII serial protocol ([§10.1](dbw.md#101-primary-transport-usb-serial-115200-baud)) | Hand-rolled framing to get data into ROS 2. micro-ROS publishes typed messages. |
-| The retained I²C register map ([§10.2](dbw.md#102-retained-i2c-register-map-from-codeino-verified)) | B-MROVER legacy |
+| PWM input capture firmware block ([§10.3 item 1](dbw.md#102-firmware-blocks)) | Same reason |
+| The `F,...` ASCII serial protocol ([§10.1](dbw.md#101-primary-transport-micro-ros-typed-messages)) | Hand-rolled framing to get data into ROS 2. micro-ROS publishes typed messages. |
+| The retained I²C register map ([§10.2](dbw.md#101-primary-transport-micro-ros-typed-messages)) | B-MROVER legacy |
 | The feedback-driver node (**NEW** in [software.md §2](software.md#2-ros-2-stack-reused-adapted-new)) | Parses the ASCII frame — nothing left to parse |
 | `mavlink_bridge.py` command path, `px4_msgs` dependency | No PX4 |
-| PX4 version pinning, QGC parameter archaeology, the custom-PX4-fork decision ([§9](dbw.md#9-pixhawk-6c-px4-rover-configuration-and-version-pinning)) | No PX4 |
+| PX4 version pinning, QGC parameter archaeology, the custom-PX4-fork decision ([§9](dbw.md#9-teensy-41-firmware-platform-and-version-pinning)) | No PX4 |
 | Findings **F5** (XRCE-vs-MAVLink) and **F7** (52 vs 16 PPR) | Transport ambiguity and inherited constants both vanish |
 
-**A rejected option also becomes available again.** [dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-mode-per-channel-masters)
+**A rejected option also becomes available again.** [dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-packetized-serial-single-master)
 rejected the Sabertooth's packetized serial mode *solely* because two independent masters (Nano
 for steering, PX4 for throttle) cannot share one bus. **With a single controller there is one
 master**, so packetized serial becomes usable — which would give exact, high-rate actuation on
@@ -336,29 +343,53 @@ it is a change in override behaviour that must be re-analysed, not assumed.
 A layered variant is likely best: SBUS into the Teensy for normal closed-loop override, **plus**
 the hardware MUX on the E-stop chain as the independent deeper fallback.
 
-### 4.6 Decision — **open**, with a recommendation and a deadline
+### 4.6 Decision — **ADOPTED** (2026-08-07)
 
-**Recommendation: for the merged single-Teensy form, D3 is the better architecture, conditional
-on adopting the layered override of §4.5.** On the engineering merits it wins: it deletes more
-accidental complexity than it adds essential complexity, it resolves §5 and findings F5/F7
-outright, and its one serious objection is repairable in hardware.
+**D3 is adopted.** The single Teensy 4.1 running micro-ROS replaces both the Pixhawk 6C and the
+Arduino Nano, **conditional on the layered override of §4.5** — SBUS into the Teensy for normal
+closed-loop override, *plus* a hardware RC signal MUX on the E-stop chain as the independent
+deeper fallback. The condition is not optional; it is what makes the single-point-of-failure
+objection answerable.
 
-**It is recorded as open rather than decided**, because the two factors that actually decide it
-cannot be settled from the source tree:
+Recorded before the hardware order, as §7.4 required. The two factors that could not be settled
+from the source tree were put to the lab and answered:
 
-1. **How much the lab values the "we reuse a validated autopilot" claim** for publication and
-   external replication.
-2. **Schedule appetite** — RC override, arming, failsafes, an IMU driver, and micro-ROS
-   bring-up are real work. Note the honest comparison is *not* "no firmware vs. much firmware":
-   MRider was already committed to substantial new Nano firmware (PWM capture, filtering, PID,
-   limits, watchdog, EEPROM, serial protocol). The delta is smaller than it looks, and it moves
-   to a far more capable MCU with real debugging.
+1. **Value of the "we reuse a validated autopilot" claim — judged not decisive.** The claim was
+   already thinner than it read. F2 (no steering position control exists), F3 (`carlikebot_system.cpp`
+   is an unmodified upstream stub), F5 (the MAVLink hop is laptop-side, not PX4-internal), and
+   F11 (the estimator is `robot_localization`, PX4 supplies raw IMU only) each remove a leg. What
+   survived was RC override and failsafes — one load-bearing leg — and §4.5 answers it in wiring,
+   which is a stronger guarantee than PX4's software override. F1 also survives the change: what
+   was validated on the POSTACK chassis is the *conversion*, not the autopilot choice.
+2. **Schedule appetite — accepted.** MRider was already committed to substantial new Nano
+   firmware (PWM capture, filtering, PID, limits, watchdog, EEPROM, serial protocol), so the
+   delta is the override/arming/failsafe layer and an IMU driver, on a far more capable MCU with
+   real debugging. Against that, D3 *deletes* the whole of §4.3's table.
 
-!!! danger "Decide before hardware is ordered"
+**The decisive local factor**, which this review could not have known: the lab's own diagnosis of
+why the previous three generations fell short is **sensing/feedback quality and integration
+complexity** — not perception or planning. D1's topology is the principal source of the second,
+and F4's runtime auto-ranging is a direct instance of the first. The architecture that deletes
+both is the one to build.
 
-    [build step 1](../build/01-bom-sourcing.md) puts the Pixhawk in the week-0 must-order group.
-    **The moment the Pixhawk is purchased, this decision is effectively made.** D3 must be
-    resolved before that order, or it should be closed as rejected on the record.
+**Consequences accepted with this decision:**
+
+- The two non-technical costs are real and are not being dismissed — they are being paid. The
+  platform's replication claim now rests on **MRider's own measured bring-up numbers**
+  (`docs/build/` validation report) rather than on PX4's provenance. That is a heavier
+  documentation obligation and it is deliberate: §7 of the design set now gates the platform on
+  quantified steering/odometry accuracy rather than on inherited credibility.
+- **E4 remains the pre-registered fallback** (§3.5), with its trigger unchanged: if the Teensy
+  loop cannot hold ≤ 1° steady-state with no sustained oscillation at bring-up Stage 1, adopt the
+  motion-controller daughterboard rather than tuning without bound.
+
+**Still to verify before firmware work** (carried from §4.2's warning):
+
+- [ ] A `micro_ros_arduino` release exists for **Humble** specifically, with Teensy 4.1 support.
+- [ ] USB-serial is accepted as the transport (native Ethernet is not offered out of the box).
+      Note this link now carries the steering setpoint, which it does not today — re-analyse
+      against [failsafe matrix row 2](safety.md#2-failsafe-matrix).
+- [ ] The hardware RC MUX part and wiring are specified before the safety chain is built.
 
 ---
 
@@ -381,7 +412,7 @@ one of:**
    accepted range on hardware), or
 2. drive the Sabertooth channel by analog or serial instead of R/C PWM for the steering channel
    — noting that this reopens the single-master reasoning in
-   [dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-mode-per-channel-masters),
+   [dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-packetized-serial-single-master),
    or
 3. accept ~50 Hz actuation and **restate the ≥100 Hz figure as a sampling/estimation rate
    rather than an actuation rate.**
@@ -404,11 +435,11 @@ hardware.
 | F3 | `carlikebot_system.cpp` is the upstream demo stub — `read()` echoes commands, `write()` only logs | `carlikebot_system.cpp:27,280,304` | `discrepancy` — amends ADR E option E2 and the [software.md §2](software.md#2-ros-2-stack-reused-adapted-new) REUSE row |
 | F4 | Steering auto-ranging expands `min`/`max` **at runtime** and rescales all past values; defaults are asymmetric (`-600`, `180`), so boot centre is arbitrary | `mavlink_bridge.py:47-50`, `:243-250` | `confirmed` — strengthens [ADR B](dbw.md#5-adr-b-steering-angle-encoding) beyond what it claims |
 | F5 | The command path is **MAVLink emitted by a laptop-side node**, not XRCE-to-PX4: the bridge subscribes `/fmu/in/manual_control_setpoint` and calls `mav.manual_control_send()` | `mavlink_bridge.py:79-82`, `:105-126` | `verify` — see §7.1 |
-| F6 | **M1/M2 are inverted relative to B-MROVER.** mrover: M1 = throttle, M2 = steering. MRider: M1 = steering, M2 = throttle | `vehicle_setup.md:51-52` vs [dbw.md §2.1](dbw.md#21-actuator), [§4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-mode-per-channel-masters), [§11.3](dbw.md#113-3-tap-connector-spec-minimally-invasive) | `verify` — see §7.2 |
+| F6 | **M1/M2 are inverted relative to B-MROVER.** mrover: M1 = throttle, M2 = steering. MRider: M1 = steering, M2 = throttle | `vehicle_setup.md:51-52` vs [dbw.md §2.1](dbw.md#21-actuator), [§4](dbw.md#4-adr-sabertooth-control-mode-packetized-serial-single-master), [§11.3](dbw.md#115-3-tap-connector-spec-minimally-invasive) | `verify` — see §7.2 |
 | F7 | PPR conflict **inside the source project**: firmware pins 52 PPR, the B-MROVER BOM lists a 16 PPR encoder motor | `code/code.ino:27` vs `Note/overview.md` BOM row 2 | `verify` — see §7.3 |
 | F8 | B-MROVER Nano emits human-readable prints, not a protocol; it is a passive reader | `code/code.ino:82-89` | `confirmed` — the `F,...` frame is new work |
 | F9 | No closed-loop motion-controller hardware was ever considered | `dbw.md` ADR E lists only E1/E2/E3 | `discrepancy` — resolved by §3.5 |
-| F10 | **No MCU-class controller alternative was ever considered.** [overview.md](overview.md) frames the choice as "Pixhawk vs Arduino", which files a 600 MHz Cortex-M7 under the same heading as an ATmega328P and dismisses both together | [overview.md § Plan](overview.md#plan); no mention of Teensy, micro-ROS, STM32 or Cortex anywhere in `docs/design/` | `discrepancy` — **open**, see §4 |
+| F10 | **No MCU-class controller alternative was ever considered.** [overview.md](overview.md) frames the choice as "Pixhawk vs Arduino", which files a 600 MHz Cortex-M7 under the same heading as an ATmega328P and dismisses both together | [overview.md § Plan](overview.md#plan); no mention of Teensy, micro-ROS, STM32 or Cortex anywhere in `docs/design/` | `discrepancy` — **resolved: D3 adopted**, see [§4.6](#46-decision-adopted-2026-08-07) |
 | F11 | The estimator is `robot_localization` on the laptop; PX4 supplies raw IMU only, so "PX4 gives you the EKF" overstates D1's case | [software.md §4.1](software.md#41-robot_localization-ekf-configekfyaml) (`imu0: imu/data` ← `/fmu/out/sensor_combined`) | `confirmed` — weakens §2.3 |
 
 ---
@@ -439,7 +470,7 @@ MRider is internally consistent (M1 = steering everywhere), so this is a real de
 than a typo — but it is undocumented, and it inverts the wiring of the recipe MRider inherits,
 including any reused harness or 3D-printed enclosure routing. Either adopt B-MROVER's
 assignment or record the swap as an intentional departure in
-[dbw.md §11.3](dbw.md#113-3-tap-connector-spec-minimally-invasive).
+[dbw.md §11.3](dbw.md#115-3-tap-connector-spec-minimally-invasive).
 
 ### 7.3 Mark 52 PPR as unverified (F7)
 
@@ -449,18 +480,21 @@ and bypasses PPR entirely, so the *result* is safe — but "52 PPR" appears in t
 [numeric interface contract](dbw.md#12-numeric-interface-contract) as a pinned fact and should
 be annotated *verify on the encoder actually fitted*.
 
-### 7.4 Resolve D3 before the Pixhawk is ordered (F10)
+### 7.4 D3 — CLOSED, ADOPTED
 
-The only hard deadline in this document. Required to close it:
+Closed 2026-08-07, before any hardware was ordered, as this section required.
 
-1. **The lab's answer on the two non-technical factors** in §4.6 — the value of the
-   validated-autopilot claim, and schedule appetite.
-2. **Verify the transport constraint** — `micro_ros_arduino` is USB-serial-only officially;
-   confirm a Humble release exists and decide whether a custom Ethernet transport is wanted.
-3. **Decide the override design** — layered (SBUS into the Teensy *plus* a hardware RC MUX) is
-   the recommended form, and it is what the recommendation in §4.6 is conditional on.
-4. Record the outcome here as **adopted** or **rejected**, with reasons, either way. An
-   unrecorded decision reproduces exactly the defect this review found in F9 and F10.
+| Required to close | Outcome |
+|---|---|
+| 1. Lab's answer on the two non-technical factors (§4.6) | **Answered.** Validated-autopilot claim judged not decisive (four of its legs are removed by F2/F3/F5/F11); schedule appetite accepted. |
+| 2. Verify the transport constraint | **Carried forward as a pre-firmware check**, not a blocker — see the checklist at the end of §4.6. |
+| 3. Decide the override design | **Layered form adopted** — SBUS into the Teensy *plus* a hardware RC signal MUX on the E-stop chain. The adoption is conditional on it. |
+| 4. Record the outcome with reasons | **This section, plus §4.6.** |
+
+Item 2 is deliberately not a gate on the decision: if no Humble `micro_ros_arduino` release
+exists, the fallback is a framed **binary** serial protocol with CRC and sequence numbers on the
+same Teensy — which keeps every §4.3 deletion except the typed-message convenience. The topology
+decision does not depend on it.
 
 ### 7.5 Pin the output frame rate (§5)
 
@@ -473,18 +507,18 @@ it at bring-up Stage 1.
 
 | Question | Verdict |
 |---|---|
-| **Topology** | **Pixhawk-based — confirmed.** Decisive reason revised: PX4 supplies RC override and failsafes that B/C would make into new safety-critical code. Validated on this chassis class (F1). |
-| **Steering loop** | **Nano smart-servo — confirmed.** The Nano is on the vehicle regardless, so nothing is saved by moving the loop; E2's claimed reuse does not exist (F3). |
-| **Controller hardware (D3)** | **Open.** Single Teensy 4.1 + micro-ROS, replacing *both* the Pixhawk and the Nano. Recommended on engineering merit, conditional on the layered override (§4.5); blocked on two questions only the lab can answer (§4.6). **Must be closed before the Pixhawk is ordered.** |
-| **New alternatives** | **E4** (closed-loop motion-controller hardware) pre-registered as a fallback with a trigger at bring-up Stage 1. **D3** (single-MCU controller) recorded open. |
-| **Newly exposed risk** | The ≥100 Hz loop is bounded by an unpinned output frame rate (§5) — moot under D3. |
-| **To verify on hardware** | Command transport (F5), M1/M2 assignment (F6), encoder PPR (F7) — F5 and F7 are moot under D3. |
+| **Controller hardware (D3)** | **ADOPTED.** Single Teensy 4.1 + micro-ROS replaces *both* the Pixhawk 6C and the Arduino Nano, conditional on the layered override of §4.5. Closed 2026-08-07 before the hardware order. **This is the build specification.** |
+| **Topology (D1)** | **Superseded by D3.** Confirmed on its own terms at the time — PX4 supplies RC override and failsafes that options B/C would make into new safety-critical code — but that one surviving leg is answered in wiring under D3 (§4.5), and the topology was the principal source of the integration complexity the lab diagnosed as a root cause. §2 is retained as history. |
+| **Steering loop (D2)** | **Superseded by D3.** The reasoning was sound given a Nano on the vehicle — nothing was saved by moving the loop off it. D3 removes the Nano, which removes the premise. The loop now closes on the Teensy, with E2's rejection (F3) still standing for the laptop-side alternative. |
+| **New alternatives** | **E4** (closed-loop motion-controller hardware) remains pre-registered as a fallback, trigger unchanged at bring-up Stage 1. |
+| **Newly exposed risk** | The ≥100 Hz loop bounded by an unpinned output frame rate (§5) — **moot under D3**; single-master packetized serial to the Sabertooth resolves it (§4.3). |
+| **To verify on hardware** | M1/M2 assignment (F6) still applies. F5 (command transport) and F7 (encoder PPR) are **moot under D3**. New: `micro_ros_arduino` Humble availability and the RC MUX specification (§4.6 checklist). |
 
-Neither pinned decision changed on its own terms. Two rationales did, two alternatives were
-added, and four factual items moved from "assumed" to "must be checked".
+Two rationales changed, two alternatives were added, four factual items moved from "assumed" to
+"must be checked" — and the decision the review could not make has since been made.
 
-The uncomfortable result is the one worth carrying forward: **the D1 argument survived, but
+The result worth carrying forward is the one that decided it: **the D1 argument survived, but
 thinner than it was written.** Its "PX4 gives you the EKF" leg does not hold (F11), and its
-reuse leg was already undercut by F2, F3 and F5. What is left standing is RC override and
-failsafes — one leg, load-bearing. D3 asks whether that one leg is worth a flight controller,
-and the answer depends on whether the override is done in firmware or in wiring.
+reuse leg was already undercut by F2, F3 and F5. What was left standing was RC override and
+failsafes — one leg, load-bearing. D3 asked whether that one leg was worth a flight controller.
+The answer, once the override moved from firmware into wiring, was no.

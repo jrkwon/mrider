@@ -8,6 +8,26 @@
 
 **Reference:** [design/safety.md](../design/safety.md)
 
+!!! info "Architecture updated 2026-08-07 — this module gains its most important lesson"
+
+    Override is no longer delegated to PX4. Under the
+    [single-Teensy architecture](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)
+    authority arbitration is **layered explicitly**, and three of the four layers are
+    independent of the controller's firmware:
+
+    | Layer | Mechanism | Survives a firmware hang? |
+    |---|---|---|
+    | 1 | Hardware E-stop → contactor | **Yes** |
+    | 2 | Relay MUX → STOCK | **Yes** |
+    | 3 | **Hardware RC signal MUX** | **Yes** |
+    | 4 | SBUS override into the Teensy | No |
+
+    The teaching point is the one the design turned on: **a single MCU holding the loop,
+    throttle, override, and arming is only acceptable if the override is wiring rather than
+    software.** Layer 3 is the condition on which the whole architecture was adopted, and the
+    lab demonstrates it *with the Teensy deliberately halted* — because a safety claim you
+    have not tested with the component dead is not a safety claim.
+
 !!! warning "Draft — lab not yet run on hardware"
 
     The lecture is grounded in [safety.md](../design/safety.md), which is authoritative and

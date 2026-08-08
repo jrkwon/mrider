@@ -1,5 +1,14 @@
 # 2. Vehicle Prep & Mechanical
 
+!!! warning "Partially superseded (2026-08-07)"
+
+    Some references on this page still assume the **Pixhawk + Arduino Nano** topology, replaced
+    by a **single Teensy 4.1 running micro-ROS**
+    ([decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)).
+    The substance of this page is unaffected; treat the [design set](../design/overview.md) as
+    authoritative where they disagree.
+
+
 **Goal:** prepare the chassis and mount the steering actuator and encoders mechanically.
 
 Disassemble the necessary trim, identify the steering column and drive-motor shaft,
@@ -92,7 +101,7 @@ You ordered a sensor in step 1 based on an estimate. Confirm it now, before moun
 - **Column lock-to-lock > ~330°** → you are inside the pot's end-stop/dead-band risk, or past
   one turn entirely. Either take the sensor off a reduced take-off shaft, or switch to the
   multi-turn magnetic option — the escape hatch in
-  [dbw.md §6](../design/dbw.md#6-adr-angle-sensor-technology-potentiometer-vs-as5600-class-magnetic-encoder).
+  [dbw.md §6](../design/dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer).
 
 !!! note "The pot's dead-band must sit outside the working range"
 
@@ -107,7 +116,7 @@ You ordered a sensor in step 1 based on an estimate. Confirm it now, before moun
 The gearmotor drives the column through the existing steering linkage and is driven by
 **Sabertooth channel 1 (M1)**. The Nano commands it as a *signed effort* — the output of the
 position loop — never as an angle
-([dbw.md §2.3](../design/dbw.md#23-why-the-sabertooth-drives-the-steering-motor-as-an-effort-command)).
+([dbw.md §2.3](../design/dbw.md#23-why-the-sabertooth-receives-an-effort-command)).
 
 1. **Decide the coupling point.** Either directly on the column (simplest, needs a coupler
    sized to the column diameter) or on the tie-rod arm (more mechanical advantage, more
@@ -156,7 +165,7 @@ quality.
    avoid.
 4. **Strain-relieve the wiring.** For a pot, feed it from the Nano's *regulated* rail so the
    reading is ratiometric and supply drift cancels
-   ([dbw.md §6 consequences](../design/dbw.md#6-adr-angle-sensor-technology-potentiometer-vs-as5600-class-magnetic-encoder)).
+   ([dbw.md §6 consequences](../design/dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer)).
 
 The gearmotor's own incremental encoder, if it has one, mounts with the motor and is
 auxiliary — it provides velocity and stall detection only.

@@ -1,6 +1,6 @@
 # MRider Calibration Design
 
-Concrete calibration procedures for MRider — steering zero/center and counts→degrees, drive-encoder ticks→distance, camera intrinsics, camera/LiDAR→`base_link` extrinsics, IMU calibration, and laptop↔Pixhawk time synchronization. Each section is a procedure a student or researcher can execute and log, not a hand-wave. Every calibration produces a **stored artifact** (a YAML/param file or a recorded constant) that the runtime loads, plus a **verification step**.
+Concrete calibration procedures for MRider — steering zero/center and counts→degrees, drive-encoder ticks→distance, camera intrinsics, camera/LiDAR→`base_link` extrinsics, IMU calibration, and time synchronization. Each section is a procedure a student or researcher can execute and log, not a hand-wave. Every calibration produces a **stored artifact** (a YAML/param file or a recorded constant) that the runtime loads, plus a **verification step**.
 
 Cross-links: [dbw.md](dbw.md) (angle range, encoder PPR, serial contract), [sensors.md](sensors.md) (camera/LiDAR models), [software.md](software.md) (TF tree, EKF), [safety.md](safety.md) (bring-up staging), [architecture.md](architecture.md).
 
@@ -10,14 +10,22 @@ Store all calibration artifacts under `config/calibration/` in the repo, one fil
 
 ## 1. Steering: zero/center and counts→degrees
 
-The absolute column sensor (potentiometer per [dbw.md §6](dbw.md)) reports raw ADC counts; the Nano and ROS 2 need **degrees**, with `0°` = wheels straight. Working range is **±22.5°** at the road wheels ([dbw.md §12](dbw.md), verified `mavlink_bridge.py:250`).
+The absolute angle sensor (AS5600-class magnetic, mounted **load-side**; potentiometer as the fallback — [dbw.md §6](dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer)) reports raw counts; the Teensy and ROS 2 need **radians**, with `0` = wheels straight. Working range is **±22.5°** (±0.3927 rad) at the road wheels ([dbw.md §12](dbw.md#12-numeric-interface-contract)).
+
+!!! danger "Do this before anything else: the wrap check"
+
+    Rotate the sensed shaft through its **full mechanical travel** and confirm the raw reading
+    is **monotonic with no discontinuity**. The AS5600 is single-turn absolute — a wrap means
+    a garbage angle feeding a position loop that drives a motor (FMEA row 2, severity 5). If
+    it wraps, the sensor is on the wrong shaft: move it load-side or switch to the pot
+    fallback. **Record the measured travel here.**
 
 ### 1.1 Find mechanical center (zero)
 
 1. Vehicle wheels **off the ground** (bench stands), steering motor **unpowered** (freewheel).
 2. By hand, set the front wheels physically straight — use a straightedge across both front tires, or drive a short straight line first and mark the neutral.
 3. With the wheels straight, read the absolute-sensor raw counts. Record as `c0` (zero-offset counts).
-4. Store `c0` via the Nano config command `C,ZERO` ([dbw.md §10.1](dbw.md)); the Nano persists it (EEPROM) so center survives reboot — this is the boot-stable center that ADR B buys us.
+4. Store `c0` via the Teensy's ROS 2 zeroing service ([dbw.md §10.1](dbw.md#101-primary-transport-micro-ros-typed-messages)); the Teensy persists it (EEPROM) so center survives reboot — this is the boot-stable center that ADR B buys us, and the direct fix for B-MROVER's arbitrary boot centre (finding F4).
 
 ### 1.2 Counts→degrees scale (two-point / multi-point)
 
@@ -27,7 +35,7 @@ The pot is near-linear over the small ±22.5° span, so a two-point fit is adequ
 2. Turn to **full right lock** → record `(θ_R, c_R)`; ideally `θ_R ≈ −22.5°`.
 3. Optionally record 3–5 intermediate points to check linearity (residual < ~0.5°).
 4. Fit `θ(counts) = k · (counts − c0)`, where `k = (θ_L − θ_R)/(c_L − c_R)` (degrees per count). If nonlinearity matters, store a small lookup/polynomial instead.
-5. Store `c0`, `k` (or the LUT) in `config/calibration/steering.yaml`. The Nano applies `θ = k·(raw − c0)` before emitting `steer_deg` in the feedback frame.
+5. Store `c0`, `k` (or the LUT) in `config/calibration/steering.yaml`. The Teensy applies `θ = k·(raw − c0)` before publishing `steering_angle` (radians) in `DbwStatus`.
 
 ### 1.3 Setpoint normalization check
 
@@ -102,29 +110,76 @@ For each sensor, measure the translation (x, y, z in meters) and orientation (ro
 
 ## 5. IMU calibration
 
-The IMU is internal to the Pixhawk 6C ([sensors.md](sensors.md)); calibration is via PX4/QGroundControl and feeds the PX4 EKF that the mrover bridge surfaces (`SensorCombined`, `mavlink_bridge.py:213-229`).
+The IMU is a **standalone BNO085-class module connected directly to the laptop**
+([sensors.md §3](sensors.md#3-imu)), publishing `sensor_msgs/Imu` on `/imu/data` into
+`robot_localization`.
 
-1. **Accel/gyro/mag calibration in QGroundControl:** run the standard PX4 sensor calibration (level, orientation sequence, compass rotation) — required for the PX4 EKF (`EKF2`) and for `VehicleAttitude`/`SensorGps` fusion.
-2. **Level horizon:** set the vehicle on a known-level surface and capture level trim so `0` pitch/roll matches the physical vehicle.
-3. **Gyro bias:** let the IMU sit still after power-up for the PX4 bias estimate to settle before driving (part of the arm sequence).
-4. **Mounting orientation:** set `SENS_BOARD_ROT`/board-rotation params to match how the Pixhawk is physically mounted on MRider; wrong board rotation corrupts yaw. Record the mounting orientation photo + param value.
-5. Store the exported QGC parameter file in `config/calibration/px4_params_<version>.params`, stamped with the **pinned PX4 version** ([dbw.md §9](dbw.md), [software.md](software.md)).
+!!! info "Revised 2026-08-07"
 
-**Verification:** with the vehicle stationary and level, `VehicleAttitude` roll/pitch ≈ 0 and stable; rotate the vehicle a known 90° and confirm yaw changes ~90° in the correct sign.
+    This procedure was previously QGroundControl-based, because the IMU lived inside the
+    Pixhawk. [D3](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07) removed the
+    Pixhawk, so calibration is now an in-repo procedure with no external ground-station tool.
+    The **estimator is unchanged** — it was always `robot_localization`, with PX4 supplying
+    raw IMU only (finding F11).
+
+1. **Onboard fusion calibration:** a BNO085-class part self-calibrates its accel/gyro/mag in
+   the background and reports a **calibration-status byte per sensor**. Drive the sequence the
+   vendor specifies (slow figure-8 for the magnetometer, brief rest for the gyro, a few static
+   orientations for the accel) until status reads fully calibrated. **Log the status byte** —
+   a partially-calibrated IMU is a silent yaw-drift source.
+2. **Level horizon:** set the vehicle on a known-level surface and record the residual
+   roll/pitch as a static offset so `0` matches the physical vehicle.
+3. **Gyro bias:** let the IMU sit still for ~10 s after power-up before driving. Confirm the
+   reported yaw rate settles to ≈ 0.
+4. **Mounting orientation:** publish the IMU→`base_link` rotation as a **static transform in
+   the URDF**, not as a driver parameter, so it lives with the rest of the frame tree. A wrong
+   rotation corrupts yaw silently — this is the highest-risk step here. Record a photo of the
+   physical mounting alongside the transform values.
+5. Store the calibration offsets and the mounting transform in
+   `config/calibration/imu.yaml`, stamped with date, operator, and the IMU part number.
+
+**Verification:** with the vehicle stationary and level, roll/pitch ≈ 0 and stable over 60 s;
+rotate the vehicle a known 90° and confirm yaw changes ~90° **in the correct sign**; drive a
+closed 20 m figure-8 and confirm heading error ≤ 5° (this is also an
+[acceptance gate](software.md#8-semester-1-scope-and-software-acceptance-gates)).
 
 ---
 
-## 6. Laptop↔Pixhawk time synchronization
+## 6. Time synchronization
 
-Odometry, LiDAR, camera, and IMU must share a common time base or the EKF/SLAM fuses stale data. Two clocks exist: the laptop (ROS 2 `/clock`) and the Pixhawk (PX4 boot-time microseconds, e.g. `msg.time_usec`/`time_boot_ms` used throughout `mavlink_bridge.py:143,215,237`).
+Odometry, LiDAR, camera, and IMU must share a common time base or the EKF/SLAM fuses stale
+data.
+
+!!! success "This got simpler under D3"
+
+    The superseded design had **two clocks** — the laptop and PX4 boot-time microseconds — and
+    required estimating a constant offset plus drift between them via MAVLink
+    `TIMESYNC`/`SYSTEM_TIME` round-trips. That machinery is gone. **micro-ROS provides session
+    time synchronisation**, so the Teensy stamps in a clock already related to the laptop's,
+    and every other sensor is physically connected to the laptop. One clock domain, no offset
+    estimation.
 
 **Approach (pinned):**
-1. **Single authoritative clock = the laptop.** All ROS 2 sensor drivers (camera, LiDAR) stamp with the laptop clock on arrival. Because most sensors are physically connected to the laptop ([overview.md](overview.md) requirement: "a laptop will be an on-board computer to which most sensors are connected"), their timestamps are already laptop-referenced.
-2. **PX4→laptop offset estimation:** the Micro-XRCE-DDS / MAVLink link exposes PX4 timestamps; estimate a constant offset + drift between PX4 boot-µs and laptop time by the standard MAVLink `TIMESYNC`/`SYSTEM_TIME` round-trip (or record the offset at bridge start and periodically correct). Apply the offset in the bridge so PX4-originated messages (`SensorCombined`, `VehicleAttitude`, `SensorGps`) carry laptop-referenced stamps before publication.
-3. **Nano feedback:** the Nano has no real-time clock; its USB feedback frames ([dbw.md §10.1](dbw.md)) are stamped by the ROS 2 node **on receipt** with the laptop clock. USB latency at 115200 baud and ≥20 Hz is small and roughly constant; record the mean latency once (loopback test) and, if needed, subtract it as a fixed offset.
-4. Keep everything on one machine's wall clock; do **not** enable ROS 2 simulated time (`use_sim_time=false`) on the real vehicle.
 
-**Verification:** wiggle a feature seen by both LiDAR and camera while driving; the events should align in time within one sensor period. Check that the EKF does not reject measurements for being out-of-sequence (PX4 EKF timestamp warnings absent).
+1. **Single authoritative clock = the laptop.** All ROS 2 sensor drivers (camera, LiDAR, IMU)
+   stamp with the laptop clock on arrival. Since every sensor is connected to the laptop
+   ([overview.md](overview.md): "a laptop will be an on-board computer to which most sensors
+   are connected"), their timestamps are already laptop-referenced.
+2. **Teensy:** use **micro-ROS session time sync** so `DbwStatus.stamp` is laptop-referenced.
+   Verify the sync is actually established at startup rather than assuming it — log the
+   reported offset once per session.
+3. **Residual link latency:** measure the USB round-trip once with a loopback test and record
+   the mean. If it is significant relative to a control period, subtract it as a fixed offset
+   and document the value. This is also the
+   [joystick→wheel-motion latency gate](software.md#8-semester-1-scope-and-software-acceptance-gates)
+   (≤ 100 ms at p95).
+4. Keep everything on one machine's wall clock; do **not** enable ROS 2 simulated time
+   (`use_sim_time=false`) on the real vehicle — **but do enable it in simulation**, which is
+   the one place the twin and the vehicle legitimately differ.
+
+**Verification:** wiggle a feature seen by both LiDAR and camera while driving; the events
+should align within one sensor period. Confirm `robot_localization` does not reject
+measurements as out-of-sequence.
 
 ---
 
@@ -136,7 +191,7 @@ Odometry, LiDAR, camera, and IMU must share a common time base or the EKF/SLAM f
 | Drive odometry | §2 | `config/calibration/odom.yaml` (`meters_per_tick`) |
 | Camera intrinsics | §3 | `config/calibration/camera_front.yaml` |
 | Extrinsics (cam/LiDAR→base_link) | §4 | `config/calibration/extrinsics.yaml` or URDF joints |
-| IMU / PX4 | §5 | `config/calibration/px4_params_<ver>.params` |
+| IMU | §5 | `config/calibration/imu.yaml` (offsets + mounting transform + part number) |
 | Time sync | §6 | offset recorded in bridge config; loopback-latency note |
 
 Each artifact is stamped with date, operator, vehicle serial, and the firmware/software git commit so a calibration can be reproduced or invalidated when hardware changes. Re-run the relevant section after any mechanical change (new tires, re-mounted sensor, re-flashed firmware).

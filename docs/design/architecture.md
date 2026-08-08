@@ -14,7 +14,9 @@ documents, cross-linked throughout:
 [`sensors.md`](sensors.md) (camera/LiDAR/IMU/GNSS),
 [`calibration.md`](calibration.md) (zeroing and extrinsics),
 [`software.md`](software.md) (ROS 2 stack),
-[`bom.md`](bom.md) (bill of materials).
+[`bom.md`](bom.md) (bill of materials),
+[`adr-dbw-architecture-review.md`](adr-dbw-architecture-review.md) (how the controller
+topology was decided).
 
 **Audience:** researchers reproducing the platform and students learning autonomous-vehicle
 engineering. Where a design choice is made, it is recorded as a short ADR
@@ -26,15 +28,35 @@ engineering. Where a design choice is made, it is recorded as a short ADR
 
 MRider is the 4th generation of the author's platform line:
 AVCS Kit (IEEE AFRICON 2017) → Ridon Vehicle (Energies 2021) → OSCAR/thesis platform
-(2022) → **B-MROVER** (`jrkwon/mrover`, ROS 2 Humble). The governing principle is
-**reuse before invent**: the validated B-MROVER PX4 + ROS 2 recipe is the default, and new
-design is introduced only where the new vehicle or a demonstrated gap demands it.
+(2022) → **B-MROVER** (`jrkwon/mrover`, ROS 2 Humble).
 
-The one genuinely new control problem is the **closed-loop steering-angle servo**. PX4
-supplies EKF/IMU fusion, RC override, failsafe logic, and (optionally) GNSS/RTK — it does
-**not** supply a steering position loop. MRider assigns that loop to the Arduino Nano as a
-local "smart servo" (ADR-E in [`dbw.md`](dbw.md)), which is the principal architectural
-departure from verbatim B-MROVER reuse.
+The governing principle remains **reuse before invent** — but a
+[direct re-reading of the B-MROVER source](adr-dbw-architecture-review.md) established
+where the reuse is real and where it was assumed. **Reuse is real** at the chassis
+conversion (connector taps, motor selection, shaft-adapter encoder method), the Sabertooth
+power stage, and the entire autonomy stack above the vehicle interface —
+`robot_localization`, slam_toolbox, Nav2, `data_collection`, and the `neural_net`
+behavior-cloning pipeline, all of which are transport-agnostic. **Reuse was weaker than
+documented** at the controller: B-MROVER's `carlikebot_system.cpp` is an unmodified upstream
+demo stub (F3), its estimator is `robot_localization` on the laptop with PX4 supplying raw
+IMU only (F11), and its MAVLink hop happens laptop-side rather than inside PX4 (F5).
+
+**Two genuinely new control problems**, neither of which B-MROVER solves:
+
+1. **A closed-loop steering-angle servo.** B-MROVER has *no steering position control of any
+   kind* — the stick maps to a raw effort and the human closes the loop by eye (F2, verified:
+   `joystick_control.py:70,75,100-109`; no PID anywhere in the repository). Nav2 commands an
+   angle, so this must be built.
+2. **Authority arbitration and failsafes.** Previously delegated to PX4; now explicit project
+   design, layered across hardware and firmware (§5, [`safety.md`](safety.md)).
+
+**Controller topology.** A **single Teensy 4.1 running micro-ROS** owns all actuation and
+low-level sensing, replacing the Pixhawk 6C + Arduino Nano pair of the superseded design.
+This is decision **D3**, adopted 2026-08-07 —
+[full reasoning, costs, and the conditions of adoption](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07).
+It was chosen because the previous three platform generations fell short on **sensing/feedback
+quality and integration complexity**, and the multi-board topology was the principal source
+of the second.
 
 All B-MROVER claims below were verified against the local checkout at
 `/mnt/data/projects/mrover`; concrete file paths are cited inline.
@@ -45,195 +67,198 @@ All B-MROVER claims below were verified against the local checkout at
 
 | # | Component | Role in MRider | B-MROVER lineage |
 |---|-----------|----------------|------------------|
-| 1 | **Autonomy laptop** | On-board computer. Runs ROS 2 Humble: perception, SLAM, Nav2, EKF, the Micro-XRCE-DDS agent, and the feedback driver. Master of the USB feedback link. Powered by its own internal battery (no 24V→19V rail in v1). | Same on-board-laptop topology as B-MROVER. |
-| 2 | **Pixhawk 6C (PX4)** | Flight-controller-as-rover-controller. Receives `MANUAL_CONTROL` over MAVLink, runs the rover mode, emits steering as **servo-PWM** and throttle as **motor-PWM**, hosts the IMU used by the EKF, arbitrates **RC override** and failsafes. | Same FC + PX4 rover recipe (`dev_ws/src/mrover/mrover/mavlink_bridge.py`). |
-| 3 | **Sabertooth 2x32** | Dual-channel motor driver. **S1** drives the steering gearmotor (from the Nano); **S2** drives the paralleled rear traction motors (from PX4). Configured in **independent R/C (PWM) mode** so the two channels have independent masters with no shared serial bus. | B-MROVER uses the Sabertooth 2x32 for steering + throttle DC motors. |
-| 4 | **Arduino Nano** | **Smart-servo controller** + sensor reader. Reads the servo-PWM steering setpoint from PX4, reads the absolute steering-angle sensor and the motor encoders, closes the steering **position loop locally at ≥100 Hz**, and drives Sabertooth S1. Streams all feedback to the laptop over **USB serial @115200**. | B-MROVER Nano is a *passive* encoder reader (I2C slave `0x02` / USB 115200, `code/code.ino`). MRider promotes it to an active controller. |
-| 5 | **Relay/contactor MUX** | Authority arbitration. A DPDT relay per motor circuit selects **STOCK** vs **DBW** source. Default (de-energized) = STOCK, so a power loss reverts to the parent remote. | New (B-MROVER has no stock-remote coexistence requirement). See [`safety.md`](safety.md). |
-| 6 | **RC transmitter + receiver** | Live manual override in DBW mode. RX binds to the Pixhawk; PX4 handles RC override + RC-loss failsafe. This is the *live* human override; the relay MUX is *reversibility*, not live dual authority. | Standard PX4 RC override. |
-| 7 | **Absolute steering-angle sensor** | Boot-absolute steering column angle (pot vs magnetic — ADR in [`dbw.md`](dbw.md)). Read by the Nano; enables a closed position loop and mapping-grade odometry with no homing. | New — fixes the B-MROVER weakness of incremental-only steering. |
-| 8 | **Motor encoders** | Incremental encoder on the drive-motor shaft (52 PPR, `code/code.ino:27`) for distance/velocity; incremental encoder on the steering path for velocity/stall detection. | B-MROVER `code/code.ino` (throttle encoder 52 PPR + steering encoder). |
-| 9 | **Sensors** | Minimum set: one front camera + one 2D LiDAR; Pixhawk internal IMU; optional GNSS/RTK. Detailed in [`sensors.md`](sensors.md). | B-MROVER camera + YDLidar + PX4 IMU. |
-| 10 | **24V battery pack** | Traction + logic source. Feeds the Sabertooth (traction) and, via the Pixhawk power module, the FC/servo logic. Laptop is **not** on this rail in v1. | Same 24V class. |
+| 1 | **Autonomy laptop** | On-board computer. Runs ROS 2 Humble: perception, SLAM, Nav2, EKF, the `micro_ros_agent`, and `ros2_control`. Powered by its own internal battery (no traction→19 V rail in v1). | Same on-board-laptop topology. |
+| 2 | **Teensy 4.1 (DBW controller)** | Single MCU owning all actuation and vehicle sensing. Subscribes `DbwCommand`, publishes `DbwStatus` over micro-ROS. Closes the steering **position loop at ≥ 200 Hz**, shapes throttle, reads the absolute angle sensor and both encoders, decodes SBUS, and runs the safety supervisor. Commands the Sabertooth over **packetized serial**. | Replaces both the Pixhawk 6C and the Nano (D3). Encoder-read *logic* traces to `code/code.ino`. |
+| 3 | **Sabertooth 2x32** | Dual-channel motor driver. **M1** steering gearmotor, **M2** paralleled rear traction motors. Configured in **packetized serial mode** with the Teensy as single bus master. | B-MROVER uses the Sabertooth 2x32 for steering + throttle. Mode changed — single master makes packetized serial available. |
+| 4 | **Relay/contactor MUX** | Authority arbitration. A DPDT relay per motor circuit selects **STOCK** vs **DBW** source. Default (de-energized) = STOCK, so power loss reverts to the parent remote. | New. See [`safety.md`](safety.md). |
+| 5 | **Hardware RC signal MUX** | **The condition of D3's adoption.** An RC channel drives a signal multiplexer selecting Teensy output *or* direct RC input into the Sabertooth — making override a *wiring* property, independent of Teensy firmware. | New. Replaces PX4's software RC override with a stronger guarantee ([dbw.md §11.2](dbw.md#112-hardware-rc-signal-mux-the-d3-condition)). |
+| 6 | **RC transmitter + receiver** | Two roles: SBUS into the Teensy for normal closed-loop manual override, and a dedicated channel driving the hardware MUX (#5) as the independent fallback. | B-MROVER binds RC to the Pixhawk; here the RX serves both layers directly. |
+| 7 | **Absolute steering-angle sensor** | Boot-absolute road-wheel angle, **mounted load-side** (downstream of the steering gearbox) so backlash appears as measured error, not invisible bias. AS5600-class magnetic, pot fallback — [ADR](dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer). | New — fixes B-MROVER's incremental-only steering and its runtime auto-ranging (F4). |
+| 8 | **IMU (BNO085 class)** | 9-DoF with onboard fusion, straight to the laptop, feeding `robot_localization`. | Replaces the Pixhawk's internal IMU. Note the estimator was *already* `robot_localization` (F11), so this is a driver swap, not an estimator change. |
+| 9 | **Motor encoders** | Incremental encoder on the drive-motor shaft for distance/velocity; incremental encoder on the steering motor for velocity/stall. Both on Teensy **hardware quadrature decoders**. | `code/code.ino` method and the shaft-adapter approach. **PPR must be verified on the part fitted** — the source project conflicts with itself (F7). |
+| 10 | **Sensors** | Minimum set: one front camera + one 2D LiDAR. Optional GNSS/RTK (phase 2). Detailed in [`sensors.md`](sensors.md). | B-MROVER camera + YDLidar. |
+| 11 | **Traction battery pack** | Traction source, feeding the Sabertooth. An **isolated logic rail** supplies the Teensy so motor transients cannot brown it out. Laptop is **not** on this rail in v1. | Same class. |
+
+**Deleted from the superseded design:** Pixhawk 6C, PM02 power module, Arduino Nano,
+USB-TTL adapter, the Micro-XRCE-DDS agent, `mavlink_bridge.py`, the `px4_msgs` dependency,
+PX4 version pinning, the PWM input-capture firmware block, the ASCII serial protocol, and the
+retained I²C register map. See
+[adr §4.3](adr-dbw-architecture-review.md#43-what-it-deletes).
 
 ---
 
 ## 3. Command path (laptop → motors)
 
-The autonomy stack produces a normalized steering + throttle command. Steering rides the
-`MANUAL_CONTROL.roll` channel and throttle rides `MANUAL_CONTROL.throttle`, exactly as in
-B-MROVER — verified in `mavlink_bridge.py:120-126`, where `msg.roll` is documented
-"*for ROVER is STEERING/SERVO*" and `msg.throttle` "*for ROVER is FORWARD/THROTTLE*".
-PX4 then emits steering as a **servo-PWM** output that the Nano consumes like a hobby servo,
-and throttle as a **motor-PWM** output straight to Sabertooth S2.
+The autonomy stack produces a steering angle (radians) and a speed (m/s). Both travel as a
+single typed ROS 2 message to the Teensy, which closes the steering loop locally and drives
+both Sabertooth channels over one serial link.
 
-**There is exactly one steering-command datapath.** There is *no* direct laptop→Nano
-steering setpoint; the Nano only ever sees the PX4 servo-PWM. RC override therefore covers
-steering *through PX4*. This single-path rule is the pinned ADR-E datapath in
-[`dbw.md`](dbw.md) and a hard acceptance gate.
+**There is exactly one command datapath.** No PWM round trip, no protocol translation, no
+second controller. This single-path rule is the pinned
+[ADR E datapath](dbw.md#3-adr-e-steering-control-loop-location-the-key-dbw-decision)
+and a hard acceptance gate.
 
 ```mermaid
 flowchart LR
     subgraph LAPTOP["Autonomy laptop — ROS 2 Humble"]
         AUT["Perception / SLAM / Nav2<br/>behavior-cloning policy"]
-        CMD["/mrider/cmd<br/>(steer, throttle)"]
-        MC["ManualControlSetpoint<br/>/fmu/in/manual_control_setpoint"]
-        AGENT["Micro-XRCE-DDS agent"]
-        AUT --> CMD --> MC --> AGENT
+        RC2["ros2_control<br/>ackermann_steering_controller"]
+        HW["mitt_hardware<br/>(hardware_interface)"]
+        CMD["/mitt/dbw/command<br/>DbwCommand (rad, m/s)"]
+        AGENT["micro_ros_agent"]
+        AUT --> RC2 --> HW --> CMD --> AGENT
     end
 
-    AGENT -- "XRCE-DDS / USB" --> PX["Pixhawk 6C (PX4 rover)"]
-    PX -- "MAVLink MANUAL_CONTROL<br/>roll = STEER, throttle = THROTTLE<br/>(mavlink_bridge.py:120-126)" --> PXOUT["PX4 output mixer"]
+    AGENT -- "micro-ROS / USB serial" --> TEENSY["Teensy 4.1<br/>position loop >=200 Hz<br/>throttle shaping, safety supervisor"]
 
-    PXOUT -- "servo-PWM<br/>(steering angle setpoint)" --> NANO["Arduino Nano<br/>smart-servo loop >=100 Hz"]
-    PXOUT -- "motor-PWM (throttle)" --> S2["Sabertooth S2"]
+    TEENSY -- "packetized serial<br/>(single master, both channels)" --> SABER["Sabertooth 2x32"]
+    SABER --> STEERM["M1 - Steering gearmotor"]
+    SABER --> DRIVEM["M2 - Rear traction motors (paralleled)"]
 
-    NANO -- "steering effort (PWM)" --> S1["Sabertooth S1"]
-    S1 --> STEERM["Steering gearmotor"]
-    S2 --> DRIVEM["Rear traction motors (paralleled)"]
+    ANG["Absolute angle sensor<br/>(load-side)"] -.-> TEENSY
 
-    RC["RC transmitter"] -. "override / failsafe<br/>via RX bound to Pixhawk" .-> PX
+    RC["RC transmitter"] -- "SBUS: closed-loop override" --> TEENSY
+    RC -- "MUX select channel" --> SMUX{{"Hardware RC signal MUX"}}
+    TEENSY -.-> SMUX
+    SMUX --> SABER
 ```
 
-**Key command-path facts** (detailed contract in [`dbw.md`](dbw.md)):
+**Key command-path facts** (full contract in [`dbw.md §12`](dbw.md#12-numeric-interface-contract)):
 
-- Upstream channel: `ManualControlSetpoint` on `/fmu/in/manual_control_setpoint`
-  (`mavlink_bridge.py:79-82`); `roll` = steering, `throttle` = throttle
-  (`mavlink_bridge.py:122-123`).
-- Steering setpoint reaches the Nano **only** as PX4 servo-PWM — the fast servo loop stays
-  off the laptop ↔ XRCE ↔ MAVLink chain.
-- Sabertooth in **independent R/C (PWM) mode**: S1 master = Nano, S2 master = PX4. Two
-  independent PWM inputs, no shared serial bus, no channel-arbitration conflict.
+- Command stream ≥ 50 Hz; staleness > 500 ms drops the vehicle to `ESTOP`.
+- The steering loop runs at ≥ 200 Hz on the Teensy, decoupled from the command rate.
+- **Actuation frame rate is pinned at ≥ 200 Hz.** The superseded design left this unpinned,
+  which silently capped closed-loop performance at the ~50 Hz servo frame rate regardless of
+  loop rate. Packetized serial removes that ceiling.
+- Sabertooth serial timeout stops both motors if the Teensy stops transmitting — **verify on
+  hardware** ([`dbw.md §4`](dbw.md#4-adr-sabertooth-control-mode-packetized-serial-single-master)).
 
 ---
 
 ## 4. Feedback path (sensors → ROS 2)
 
-MRider **reroutes feedback off MAVLink**. In B-MROVER, encoder feedback arrives as a MAVLink
-`WHEEL_DISTANCE` message and is unpacked in `wheel_distance_callback_mavlink`
-(`mavlink_bridge.py:231-260`), which maps the raw count to ±22.5° and republishes a
-`Control` message on the `/rover` topic (`mavlink_bridge.py:76`). MRider **replaces** that
-path: the Nano — which already holds the encoders and the absolute angle sensor — streams
-feedback directly to the laptop over **USB serial @115200**, where a ROS 2 driver publishes
-`/mrider/feedback`. This is classified **ADAPTED/REPLACED** (not reuse) in the
-[`software.md`](software.md) lineage table.
-
-Rationale: the Nano is the natural aggregation point once it owns the servo loop, and a
-direct USB link removes a MAVLink round-trip from the odometry path, lowering latency and
-decoupling feedback rate from the FC telemetry budget.
+All vehicle feedback aggregates on the Teensy and arrives in ROS 2 as a **typed message** —
+no framing to parse, no register map to decode, no MAVLink round trip.
 
 ```mermaid
 flowchart LR
-    ANG["Absolute steering-angle sensor<br/>(boot-absolute)"]
-    ENC_S["Steering encoder<br/>(velocity / stall)"]
-    ENC_D["Drive encoder<br/>52 PPR (code.ino:27)"]
+    ANG["Absolute steering-angle sensor<br/>(load-side, boot-absolute)"]
+    ENC_S["Steering motor encoder<br/>(velocity / stall)"]
+    ENC_D["Drive encoder<br/>(PPR verified on part fitted)"]
 
-    ANG --> NANO["Arduino Nano<br/>servo loop + sensor aggregation"]
-    ENC_S --> NANO
-    ENC_D --> NANO
+    ANG --> TEENSY["Teensy 4.1<br/>loop + sensor aggregation"]
+    ENC_S --> TEENSY
+    ENC_D --> TEENSY
 
-    NANO -- "USB serial @115200<br/>(ASCII/binary frame)" --> DRV["ROS 2 feedback driver<br/>(laptop)"]
-    DRV -- publishes --> FB["/mrider/feedback<br/>(angle deg, distance, velocity)"]
+    TEENSY -- "micro-ROS / USB serial" --> ST["/mitt/dbw/status<br/>DbwStatus (typed)"]
 
-    FB --> ODO["Odometry / EKF (robot_localization)"]
-    IMU["Pixhawk IMU<br/>/fmu/out/sensor_combined"] --> ODO
+    ST --> HW["mitt_hardware<br/>(ros2_control)"]
+    ST --> ODO["Odometry / EKF (robot_localization)"]
+    IMU["IMU (BNO085 class)<br/>direct to laptop"] --> ODO
     ODO --> NAV["SLAM + Nav2"]
 ```
 
 **Key feedback-path facts:**
 
-- Transport: Nano → **USB serial 115200** (primary). I2C slave mode (`0x02`) is retained in
-  firmware as an option for a future companion-computer topology (`code/code.ino`), but the
-  laptop is the master in v1.
-- MRider publishes `/mrider/feedback`; lineage traces to B-MROVER
-  `mrover_control/msg/Control.msg` (fields `timestamp, throttle, steer, steer_angle`) — see
-  [`software.md`](software.md).
+- Transport: micro-ROS over USB serial, ≥ 50 Hz — the *same* link and the *same* clock as the
+  command path. Under the superseded design, command and feedback shared neither, which is
+  what made latency and dropout faults hard to localize.
+- `DbwStatus` carries measured angle, setpoint, wheel speed, cumulative ticks, mode, and a
+  fault bitfield — so a single `ros2 topic echo` shows both sides of the loop.
+- Lineage traces to B-MROVER `mrover_control/msg/Control.msg` (fields
+  `timestamp, throttle, steer, steer_angle`); MRider extends it with mode and faults.
 - The B-MROVER `WHEEL_DISTANCE` → `/rover` path (`mavlink_bridge.py:231-260`) is **not**
-  reused as-is; it is the reference for the mapping math (count → ±22.5°) only.
+  reused; note in particular its runtime min/max auto-ranging (`:47-50`, `:243-250`), which
+  rescales past values and makes boot centre arbitrary (F4).
 
 ---
 
 ## 5. Power tree and safety/authority chain
 
 Power and authority are one diagram because the **relay MUX and E-stop sit on the traction
-rail**: the MUX chooses who commands the motors, and the E-stop cuts their power. The full
-per-rail current analysis, brownout isolation, and FMEA live in [`safety.md`](safety.md);
-this is the block-level view.
+rail**. Full per-rail current analysis, brownout isolation, and FMEA are in
+[`safety.md`](safety.md); this is the block-level view.
 
 ```mermaid
 flowchart TB
-    PACK["24V battery pack"]
+    PACK["Traction battery pack"]
+    LOGIC["Isolated logic battery<br/>+ DC-DC rails"]
 
     PACK --> ESTOP["E-stop contactor<br/>(cuts TRACTION only)"]
-    PACK --> PM["Pixhawk power module"]
-
     ESTOP --> MUX["Relay / contactor MUX<br/>DPDT per motor circuit<br/>default de-energized = STOCK"]
 
     MUX -- "STOCK (default)" --> STOCKRX["Stock parent-remote receiver + ESC"]
-    MUX -- "DBW (energized)" --> SABER["Sabertooth 2x32<br/>S1 steering / S2 throttle"]
+    MUX -- "DBW (energized)" --> SABER["Sabertooth 2x32<br/>M1 steering / M2 throttle"]
 
     STOCKRX --> MOTORS["Steering + traction motors"]
     SABER --> MOTORS
 
-    PM --> PX["Pixhawk 6C (logic rail)"]
-    PM --> NANO["Arduino Nano (logic rail)"]
-    PX --> RCRX["RC receiver (override)"]
+    LOGIC --> TEENSY["Teensy 4.1"]
+    LOGIC --> RCRX["RC receiver"]
+    LOGIC --> SMUX["Hardware RC signal MUX"]
 
-    LAPBAT["Laptop internal battery<br/>(isolated from 24V in v1)"] --> LAPTOP["Autonomy laptop"]
+    LAPBAT["Laptop internal battery<br/>(isolated in v1)"] --> LAPTOP["Autonomy laptop"]
 
-    RCRX -. "override / failsafe" .-> PX
+    RCRX -. "SBUS override" .-> TEENSY
+    RCRX -. "MUX select" .-> SMUX
+    ESTOP -. "de-energizes" .-> MUX
 ```
 
-**Authority arbitration (safety-critical).** The stock parent-remote receiver and the
-Sabertooth must never drive the motors simultaneously. The DPDT relay MUX selects one source
-per motor circuit; **de-energized default = STOCK**, so any loss of DBW power reverts to the
-parent remote. The *live* manual override in DBW mode is the **RC transmitter bound to the
-Pixhawk** (standard PX4 RC override + failsafe) — "parent-remote fallback" is reversibility
-via the relay, not live dual authority.
+**Authority arbitration (safety-critical).** Four layers, three of them independent of Teensy
+firmware — see the [authority table](dbw.md#113-authority-layers). The stock parent-remote
+receiver and the Sabertooth must never drive the motors simultaneously; the DPDT relay MUX
+selects one source per motor circuit, **de-energized default = STOCK**.
 
-**E-stop semantics.** The E-stop cuts **traction power only**. The steering column is
-non-self-centering, so which rail the steering motor sits on determines freewheel-vs-hold on
-power loss — that assignment is specified explicitly in [`safety.md`](safety.md). Traction-cut
-plus freewheel steering is acceptable at ≤ walking speed during bring-up; the bring-up
-protocol (wheels-off bench test first) is in [`safety.md`](safety.md).
+**Why the hardware RC MUX exists.** Under a single controller, one MCU would otherwise hold
+the steering loop, throttle output, override, and arming — a firmware hang loses all four.
+The MUX moves override out of firmware and into wiring, which is a *stronger* guarantee than
+the software override the superseded PX4 design relied on. The trade: through the MUX,
+override commands raw **effort**, open-loop, rather than an angle. That is acceptable for an
+emergency mode — and it is what B-MROVER does in *normal* operation (F2) — but it is a
+behavioral change to be re-analysed, not assumed.
 
-**Power isolation.** The laptop runs on its own internal battery (no 24V→19V conversion in
-v1). Logic rails (Pixhawk, Nano) are isolated from traction sag through the Pixhawk power
-module so motor brownout cannot reset the controllers — quantified in the
-[`safety.md`](safety.md) per-rail table.
+**E-stop semantics.** The E-stop cuts **traction power only**, and works with the laptop
+powered off and the Teensy hung. The steering column is non-self-centering, so which rail the
+steering motor sits on determines freewheel-vs-hold on power loss — specified explicitly in
+[`safety.md`](safety.md).
+
+**Power isolation.** The laptop runs on its own battery. The Teensy sits on an **isolated
+logic rail** with its own battery and DC-DC conversion, from day one rather than as a
+retrofit — motor transients must not reset the controller that holds the safety supervisor.
+This replaces the Pixhawk power module's role in the superseded design.
 
 ---
 
 ## 6. Timing / heartbeat contract
 
-Every control link has a rate and a loss behavior. These are the system-level numbers; the
-numeric interface contract (normalization, serial fields, encoder PPR) is pinned in
-[`dbw.md`](dbw.md).
+Every control link has a rate and a loss behavior. System-level numbers here; the full numeric
+interface contract is pinned in [`dbw.md §12`](dbw.md#12-numeric-interface-contract).
 
 ### 6.1 Rates and timeouts
 
 | Link / loop | Direction | Nominal rate | Timeout / failsafe | Owner |
 |-------------|-----------|--------------|--------------------|-------|
-| Setpoint stream (`MANUAL_CONTROL`) | laptop → PX4 | **≥ 10 Hz** | PX4 offboard/RC-loss failsafe on timeout → hold/disarm | PX4 |
-| Steering servo loop | Nano-local | **≥ 100 Hz** | on servo-PWM loss, hold last / center per config | Arduino Nano |
-| Encoder / odometry feedback | Nano → laptop | **≥ 20 Hz** | driver flags stale `/mrider/feedback`; EKF coasts on IMU | ROS 2 driver |
-| PX4 IMU (`sensor_combined`) | PX4 → laptop | **≥ 100 Hz** (EKF input) | EKF degrades; Nav2 slows/stops | robot_localization |
-| RC override | RX → PX4 | RC frame rate (~50 Hz) | RC-loss failsafe (PX4) | PX4 |
+| Command stream (`DbwCommand`) | laptop → Teensy | **≥ 50 Hz** | staleness > 500 ms → `ESTOP` | Teensy supervisor |
+| Steering position loop | Teensy-local | **≥ 200 Hz** | at limit → clamp effort toward center only | Teensy |
+| **Actuation frame (→ Sabertooth)** | Teensy → driver | **≥ 200 Hz** | Sabertooth serial timeout → motors stop | Sabertooth |
+| Status feedback (`DbwStatus`) | Teensy → laptop | **≥ 50 Hz** | driver flags stale; EKF coasts on IMU | ROS 2 driver |
+| IMU | IMU → laptop | **≥ 100 Hz** (EKF input) | EKF degrades; Nav2 slows/stops | robot_localization |
+| RC override (SBUS) | RX → Teensy | ~50 Hz | RC-loss → `ESTOP` | Teensy supervisor |
+| RC MUX select | RX → signal MUX | ~50 Hz | **hardware path — independent of firmware** | wiring |
 
 ### 6.2 Link-loss behavior
 
 | Loss scenario | Detected by | System behavior |
 |---------------|-------------|-----------------|
-| Setpoint stream stalls (< 10 Hz) | PX4 | PX4 failsafe: hold/disarm; motors to safe state |
-| Servo-PWM to Nano lost | Nano (no valid pulse) | Nano holds last commanded angle or centers per config; stops driving S1 on sustained loss |
-| USB feedback lost | ROS 2 driver | `/mrider/feedback` marked stale; EKF coasts on IMU; Nav2 halts on timeout |
-| RC link lost | PX4 | PX4 RC-loss failsafe (hold/return per params) |
+| Command stream stalls (> 500 ms) | Teensy supervisor | `ESTOP`: throttle zeroed, steering centered |
+| USB link lost entirely | Teensy (no session) + laptop driver | Teensy → `ESTOP`; `/mitt/dbw/status` stale; Nav2 halts |
+| **Teensy firmware hang** | Sabertooth serial timeout | Motors stop. RC MUX still selectable, relay MUX still revertible, E-stop still cuts traction |
+| RC link lost | Teensy supervisor | `ESTOP` per failsafe matrix |
 | DBW logic power lost | Relay MUX (de-energizes) | Reverts to **STOCK** (parent remote) |
 | E-stop pressed | Traction contactor | Traction power cut; steering freewheels/holds per rail assignment |
-| Traction brownout | Power isolation | Logic rails hold (Pixhawk power module); controllers do not reset |
+| Traction brownout | Isolated logic rail | Logic rail holds; controller does not reset |
 
-The full failsafe matrix (≥ 5 scenarios × behavior) and the ≥ 8-row FMEA are in
-[`safety.md`](safety.md); this table is the architecture-level summary.
+The full failsafe matrix and FMEA are in [`safety.md`](safety.md).
 
 ---
 
@@ -241,32 +266,44 @@ The full failsafe matrix (≥ 5 scenarios × behavior) and the ≥ 8-row FMEA ar
 
 | B-MROVER artifact | Path (in `/mnt/data/projects/mrover`) | Reuse in MRider |
 |-------------------|----------------------------------------|-----------------|
-| MAVLink ↔ ROS 2 bridge | `dev_ws/src/mrover/mrover/mavlink_bridge.py` | Command path reused (`:79-82`, `:120-126`); feedback path (`:231-260`) **ADAPTED/REPLACED**. |
-| Nano firmware | `code/code.ino` | Encoder-read logic reused; extended to smart-servo (52 PPR `:27`, I2C `0x02`, 115200). |
-| Control message | `dev_ws/src/mrover/mrover_control/msg/Control.msg` | Lineage for `/mrider/feedback` (fields `timestamp, throttle, steer, steer_angle`). |
-| Platform notes | `Note/overview.md`, `projects/vehicle_setup.md` | Vehicle-modification recipe reference ([`vehicle.md`](vehicle.md), [`dbw.md`](dbw.md)). |
-| ROS 2 stack config | `config/` (EKF, SLAM, Nav2) + `neural_net/` | Detailed in [`software.md`](software.md). |
+| Nano firmware | `code/code.ino` | **Encoder-read logic only**, ported to Teensy hardware quadrature decoders. PPR *not* inherited (F7). |
+| Control message | `mrover_control/msg/Control.msg` | Lineage for `DbwStatus`; extended with mode + faults. |
+| Platform notes | `Note/overview.md`, `projects/vehicle_setup.md` | Vehicle-modification recipe, connector taps, shaft-adapter method ([`vehicle.md`](vehicle.md), [`dbw.md`](dbw.md)). |
+| ROS 2 stack config | `config/` (EKF, SLAM, Nav2), `description/ackermann`, `worlds/` | Ported directly — same distro, minimal change ([`software.md`](software.md)). |
+| Behavior cloning | `neural_net/`, `data_collection` | Reused intact (phase 2) — sits above the vehicle interface. |
+| MAVLink ↔ ROS 2 bridge | `mavlink_bridge.py` | **Not reused.** Reference only, for the ±22.5° range and as the documented example of the auto-ranging defect (F4). |
+| `carlikebot_system.cpp` | `dev_ws/src/mrover/hardware/` | **Not reused** — unmodified upstream demo stub with no hardware I/O (F3). |
 
 ---
 
 ## 8. Architecture ADR (summary)
 
-- **Decision.** Pixhawk-based DBW on a 24V ride-on; Arduino-local steering-angle servo
-  ("smart-servo" datapath: `MANUAL_CONTROL.roll` → PX4 servo-PWM → Nano → Sabertooth S1);
-  relay-MUX authority with RC-via-PX4 live override; feedback rerouted Nano → USB →
-  `/mrider/feedback`.
-- **Alternatives.** Arduino-only DBW (loses PX4 EKF/failsafe/RC and the B-MROVER stack);
-  laptop-side or PX4-internal steering loop (latency/teachability — ADR-E in
-  [`dbw.md`](dbw.md)); keeping feedback on MAVLink `WHEEL_DISTANCE`.
-- **Rationale.** Maximizes reuse of the validated stack while assigning the one new control
-  problem (steering angle servo) to the layer that solves it best (local MCU). The single
-  pinned steering datapath removes authority ambiguity; the relay MUX preserves reversibility
-  without unsafe dual authority.
-- **Consequences.** Multi-board integration to document for students; Nano firmware grows
-  from sensor reader to servo controller; higher BOM cost — see [`bom.md`](bom.md).
+- **Decision.** Single **Teensy 4.1 + micro-ROS** DBW controller owning actuation and vehicle
+  sensing; steering position loop on the Teensy at ≥ 200 Hz against a **load-side absolute
+  angle sensor**; Sabertooth in **packetized serial**, single master; **layered authority** —
+  hardware E-stop, relay MUX to STOCK, hardware RC signal MUX, SBUS closed-loop override;
+  typed `DbwCommand`/`DbwStatus` on one transport with one clock.
+- **Alternatives.** Pixhawk + PX4 with a Nano smart-servo (the superseded design — full trade
+  in [the review](adr-dbw-architecture-review.md)); Arduino-only with ASCII serial (no timing
+  determinism, unframed protocol); laptop-side or PX4-internal steering loop (latency,
+  teachability); dedicated motion-controller hardware (**pre-registered fallback**, E4).
+- **Rationale.** The previous three generations fell short on sensing/feedback quality and
+  integration complexity. This topology attacks both: absolute load-side sensing removes the
+  homing and auto-ranging defects, and collapsing four boards into one removes the integration
+  surface. The reuse given up was thinner than documented (F2, F3, F5, F11); the one
+  load-bearing thing PX4 provided — RC override — is replaced by a hardware guarantee.
+- **Consequences.** Override, arming, and failsafes become project responsibility, layered
+  across hardware and firmware. The platform's replication claim now rests on **MRider's own
+  measured bring-up numbers** rather than an upstream autopilot's provenance — a heavier
+  documentation obligation, accepted deliberately, and the reason §7 of the acceptance
+  criteria gates on quantified accuracy. **BOM effect of D3 alone is −$123** (Pixhawk + PM02 +
+  Nano + USB-TTL out; Teensy, IMU, hardware RC MUX, and isolated logic rail in); the larger
+  −$488 total reduction comes mostly from scoping sensors to semester-1 needs — a deferral,
+  not an architectural saving. See
+  [`bom.md`](bom.md).
 
 ---
 
 *Cross-references:* [`dbw.md`](dbw.md) · [`safety.md`](safety.md) · [`vehicle.md`](vehicle.md) ·
 [`sensors.md`](sensors.md) · [`calibration.md`](calibration.md) · [`software.md`](software.md) ·
-[`bom.md`](bom.md)
+[`bom.md`](bom.md) · [`adr-dbw-architecture-review.md`](adr-dbw-architecture-review.md)

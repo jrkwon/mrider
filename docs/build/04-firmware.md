@@ -1,281 +1,281 @@
-# 4. Firmware Bring-up: Nano Smart-Servo + PX4
+# 4. Firmware Bring-up: Teensy DBW Controller
 
-**Goal:** flash and configure the two controllers that close the DBW loops.
+**Goal:** flash and validate the single controller that closes every DBW loop, in stages, with
+the motor disconnected until the software is trustworthy.
 
-Flash the Arduino Nano smart-servo firmware (reads the absolute angle sensor + encoders,
-closes the steering position loop, drives Sabertooth S1 from a PX4 servo-PWM setpoint).
-Flash and configure PX4 on the Pixhawk 6C (rover setup, RC binding, servo-PWM outputs,
-failsafes). Confirm the pinned datapath: `MANUAL_CONTROL.roll` → PX4 servo-PWM → Nano.
-
-- **Prerequisites:** Section 3 complete; Sabertooth in independent R/C (PWM) mode.
-- **Specification:** [design/dbw.md](../design/dbw.md)
-- **Expected outcome:** Nano closes a bench steering loop to a commanded angle; PX4 arms
-  and emits steering/throttle PWM; RC override verified.
+- **Prerequisites:** Section 3 complete; Sabertooth DIP switches set for packetized serial;
+  isolated logic rail built and verified.
+- **Specification:** [design/dbw.md](../design/dbw.md) · [design/safety.md](../design/safety.md)
+- **Expected outcome:** the Teensy holds a commanded steering angle against a hand
+  disturbance, publishes `DbwStatus` at ≥ 50 Hz with zero USB dropouts over 30 minutes, and
+  both override layers are demonstrated.
 
 !!! warning "Draft — not yet validated on hardware"
 
-    The firmware described here has not been written or flashed. PID gains, the exact PX4
-    parameter set, and the output-channel map are marked *(measure during bring-up)* or
-    *(record)*. The interface contract it must satisfy — rates, ranges, serial framing — **is**
-    pinned in [dbw.md §12](../design/dbw.md#12-numeric-interface-contract) and is not a draft.
+    This procedure is derived from the design documents. No MRider build has been brought up
+    yet, so timings, pin assignments, and library behavior are **unconfirmed**. Treat every
+    number as a target to verify, not a measurement.
 
-This step covers **Stages 0–2** of the
-[bring-up protocol](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first).
+!!! info "Architecture change"
+
+    This step previously covered two controllers — an Arduino Nano smart-servo *and* a Pixhawk
+    running PX4. [Decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)
+    replaced both with a single Teensy 4.1 running micro-ROS. If you are following an older
+    printout, discard it: there is no PX4, no MAVLink, no servo-PWM capture, and no I²C
+    register map in this build.
 
 ---
 
 ## 4.1 The datapath you are building
 
-Exactly one steering path exists. There is no alternate, and no direct laptop→Nano steering
-link ([ADR E](../design/dbw.md#3-adr-e-steering-control-loop-location-the-key-dbw-decision)):
+One command path, one feedback path, one transport, one clock.
 
 ```
-laptop /mrider/cmd  ──XRCE-DDS──▶  PX4 (ManualControlSetpoint.roll, [-1000,+1000])
-                                          │
-                                PX4 rover: roll → servo output
-                                          │  servo PWM 1000–2000 µs (1500 µs = 0°)
-                                          ▼
-                              Arduino Nano  ── reads PWM like a hobby servo
-                                          │  ── closes position loop ≥100 Hz vs. absolute column sensor
-                                          │  ── outputs signed effort as PWM
-                                          ▼
-                              Sabertooth 2x32  S1 → M1 → steering gearmotor
+laptop  /mitt/dbw/command  (DbwCommand: steering_angle rad, speed m/s)
+              │
+              │  micro-ROS over USB serial  (micro_ros_agent runs on the laptop)
+              ▼
+      Teensy 4.1  ── position loop >=200 Hz vs. absolute load-side angle sensor
+              │  ── throttle ramp / cap / direction interlock
+              │  ── SBUS decode, safety supervisor, watchdog
+              ▼
+      Sabertooth 2x32  ── packetized serial, single master
+              ├── M1 → steering gearmotor
+              └── M2 → paralleled rear traction motors
+
+      Teensy  ──▶ /mitt/dbw/status  (measured angle, setpoint, speed, ticks, mode, faults)
 ```
 
-!!! info "Why this matters for safety, not just architecture"
-
-    Because steering flows *through* PX4, an RC transmitter bound to the Pixhawk overrides
-    **both** steering and throttle using PX4's standard RC override — with no separate wiring
-    to the Nano. That is a direct payoff of pinning a single datapath
-    ([safety.md §1.2](../design/safety.md#12-live-override-inside-dbw-mode-rc-via-px4)).
-
-**Setpoint rate ≠ loop rate.** PX4 emits the servo frame at ≈50 Hz. The Nano's control loop
-runs at ≥100 Hz, using the *most recent* captured pulse and the *current* angle each
-iteration. The two are decoupled — that is what "reads it exactly as a hobby servo would"
-means.
-
-## 4.2 Stage 0 — Nano firmware alone, no motor wired
-
-**Nothing is connected to Sabertooth S1 yet.** This stage proves the sensing and framing
-before any actuator can respond to a bug.
-
-The Nano firmware grows from the mrover encoder reader (`code/code.ino`) by adding five
-blocks ([dbw.md §10.3](../design/dbw.md#103-new-firmware-blocks-added-for-adr-e)):
-
-1. **PWM input capture** on an interrupt pin — measure the servo pulse width (1000–2000 µs),
-   map to setpoint degrees.
-2. **Absolute-sensor read** — ADC read of the column pot, median + low-pass filter,
-   counts→degrees.
-3. **Position PID** at ≥100 Hz — error = setpoint − measured, output = signed effort.
-4. **Motor output** — effort → PWM on the S1 line (1500 µs = stop, ± toward each lock).
-5. **Safety interlocks** — PWM setpoint absent → hold last safe/center; at mechanical limit →
-   clamp effort toward center only.
-
-**Build and flash:**
-
-```bash
-# Nano V3 = ATmega328P, "Old Bootloader" on many clones
-arduino-cli compile --fqbn arduino:avr:nano:cpu=atmega328old firmware/mrider_nano
-arduino-cli upload  --fqbn arduino:avr:nano:cpu=atmega328old -p /dev/ttyUSB0 firmware/mrider_nano
-```
-
-**Verify the feedback frame.** The Nano emits one line per `\n` at **≥20 Hz**, 115200 baud
-([dbw.md §10.1](../design/dbw.md#101-primary-transport-usb-serial-115200-baud)):
-
-```
-F,<steer_deg>,<steer_counts>,<drive_ticks>,<drive_rpm>,<setpoint_deg>,<status>\n
-```
-
-| Field | Meaning |
-|---|---|
-| `steer_deg` | absolute column angle, degrees (float, +left/−right per calibration) |
-| `steer_counts` | raw absolute-sensor counts (calibration/debug) |
-| `drive_ticks` | cumulative drive-encoder ticks (int32, 52 PPR) |
-| `drive_rpm` | drive motor RPM |
-| `setpoint_deg` | the setpoint the Nano is tracking, decoded from PX4 servo PWM |
-| `status` | bitfield: bit0 setpoint-valid (PWM present), bit1 at-limit, bit2 stall-detected |
-
-```bash
-# Watch raw frames
-python3 -m serial.tools.miniterm /dev/ttyUSB0 115200
-
-# Confirm the rate is >= 20 Hz
-timeout 10 cat /dev/ttyUSB0 | grep -c '^F,'   # expect >= 200
-```
-
-**Stage 0 checks:**
-
-- [ ] Frames arrive at ≥20 Hz, well-formed, one per line
-- [ ] `steer_counts` changes smoothly and monotonically as the column is turned by hand
-- [ ] `steer_counts` is **stable** when the column is still — jitter here becomes loop dither
-- [ ] Feeding a bench servo tester into the PWM input pin moves `setpoint_deg` across its range
-- [ ] With the servo tester unplugged, `status` bit0 clears
-- [ ] Turning the drive wheel by hand increments `drive_ticks`
-
-!!! danger "Do not proceed with a noisy angle reading"
-
-    The absolute sensor is the authority for the entire system. If `steer_counts` jitters at
-    rest, fix it now — check the ratiometric reference, the filtering, and the cable routing.
-    A noisy sensor feeding a position loop produces a motor that hunts, and you will
-    misdiagnose it as a PID tuning problem for a long time.
-
-## 4.3 Stage 1 — steering motor on the bench, current-limited
-
-Wire Sabertooth S1 ← Nano and M1 → steering gearmotor, on a **bench supply with the current
-limit turned down**. The current limit is what turns a sign error into a buzz instead of a
-broken linkage.
-
-!!! danger "Check the effort sign before closing the loop"
-
-    With the loop **disabled**, command a small fixed positive effort and confirm the column
-    moves in the direction that *reduces* a positive error. If the sign is inverted, the
-    position loop will drive to the mechanical stop at full effort the instant you enable it.
-    Verify this open-loop, at low current limit, every time you re-wire.
-
-**Tune the position loop:**
-
-1. Start with P only, low gain. Command a small step. The column should move toward the
-   setpoint and stop short.
-2. Raise P until the response is brisk with slight overshoot, then back off.
-3. Add D to damp the overshoot. Add I only if a steady-state offset persists — integral wind-up
-   against a mechanical limit is its own hazard, so clamp it.
-4. Confirm the loop actually runs at ≥100 Hz. Instrument it: toggle a spare pin each iteration
-   and scope it, or count iterations per second and report it in a diagnostic frame.
-
-**Record sheet — steering loop**
-
-| Parameter | Value |
-|---|---|
-| `Kp` | *(measure during bring-up)* |
-| `Ki` | *(measure during bring-up)* |
-| `Kd` | *(measure during bring-up)* |
-| Measured loop rate | *(measure during bring-up)* Hz — target ≥100 |
-| Step response settling time | *(measure during bring-up)* ms |
-| Steady-state error | *(measure during bring-up)* ° — target ≤ 1° |
-| Overshoot | *(measure during bring-up)* ° |
-| Bench supply current limit used | *(record)* A |
-
-**Stage 1 checks** ([safety.md Stage 1](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first)):
-
-- [ ] Closed-loop position tracking at ≥100 Hz, no runaway
-- [ ] Limit-clamp works — at a mechanical stop, effort is clamped **toward center only**
-- [ ] Stall detection sets `status` bit2 (encoder velocity ≈ 0 under applied effort)
-- [ ] Setpoint-loss interlock: unplug the PWM input mid-hold → bit0 clears, motor de-energizes
-- [ ] Freewheel on power cut: kill motor power, confirm the column turns freely by hand
-      ([safety.md §4.4](../design/safety.md#44-test-procedure-freewheel-on-power-loss) steps 1–2)
-- [ ] Hardware watchdog: force a firmware hang, confirm the Nano resets and outputs neutral
-      (1500 µs) — [FMEA row 9](../design/safety.md#7-fmea-lightweight)
-
-## 4.4 Stage 2 — PX4 on the Pixhawk 6C
-
-**Airframe.** Select the PX4 **Rover** (Ackermann) frame, so `MANUAL_CONTROL.roll` → steering
-servo and `.throttle` → drive mapping holds as the bridge expects
-(`mavlink_bridge.py:122-124`).
-
-**Version pinning is mandatory, not optional.** Record the exact PX4 version tag and export
-the full parameter set. Do **not** float on `main` — the `roll`→servo-PWM behavior is exactly
-the kind of thing that drifts upstream
-([dbw.md §9](../design/dbw.md#9-pixhawk-6c-px4-rover-configuration-and-version-pinning)).
-
-```bash
-# Record what you actually flashed
-#   QGroundControl → Vehicle Setup → Summary → Firmware Version
-#   QGroundControl → Parameters → Tools → Save to file
-cp px4_params.params config/calibration/px4_params_<version>.params
-```
-
-**Record sheet — PX4 configuration**
-
-| Item | Value |
-|---|---|
-| PX4 version tag | *(record — pin this)* |
-| Airframe | Rover (Ackermann) |
-| Parameter file | `config/calibration/px4_params_<version>.params` |
-| Steering servo output channel | *(record)* |
-| Throttle output channel → Sabertooth S2 | *(record)* |
-| Servo PWM range | 1000–2000 µs, 1500 µs = 0° |
-| Servo output rate | *(record)* Hz — ≈50 nominal |
-| RC protocol | *(record: SBUS / ACCESS / CRSF)* |
-| `COM_RC_LOSS_T` | *(record)* s |
-| RC-loss failsafe action | Hold / Disarm — *(record)* |
-| Offboard-loss failsafe action | *(record)* |
-| Board rotation (`SENS_BOARD_ROT`) | *(record — wrong value corrupts yaw)* |
-
-!!! note "The custom wheel-encoder PX4 fork is probably unnecessary now"
-
-    mrover used a forked PX4 (`jomidokunMain/PX4-Autopilot`, branch `wheelEncoder`) to carry
-    encoder data up through `WHEEL_DISTANCE`. MRider reroutes feedback to Nano→USB
-    ([ADR-SW1](../design/software.md#adr-sw1-reroute-feedback-off-mavlink)), so that module
-    is **no longer required for steering feedback**. Prefer a **stock PX4 rover build** —
-    simpler to maintain and to teach. Record which you chose and why.
-
-**Bind and configure RC.** This is your live override authority. Bind the receiver, verify
-every channel maps correctly, and confirm the RC-loss failsafe action.
-
-**Calibrate the IMU now**, while the vehicle is accessible: accel/gyro/mag calibration in
-QGroundControl, level horizon, and — critically — set `SENS_BOARD_ROT` to match how the
-Pixhawk is physically mounted. Wrong board rotation corrupts yaw, and you will chase it
-through SLAM in step 8 instead of finding it here
-([calibration.md §5](../design/calibration.md#5-imu-calibration)). Photograph the mounting
-orientation alongside the parameter value.
-
-## 4.5 Stage 2 integration — the full pinned datapath
-
-Drive motor connected to the bench (wheels off), Sabertooth in independent R/C (PWM) mode.
-
-1. **Steering end-to-end.** Send `MANUAL_CONTROL.roll` and confirm the chain: roll →
-   PX4 servo PWM → Nano `setpoint_deg` → column moves → `steer_deg` converges.
-2. **Normalization spot-check.** `roll = +1000` → `+22.5°`; `roll = −1000` → `−22.5°`;
-   `roll = 0` → `0°` (1500 µs). Full calibration happens in
-   [step 6](06-bench-test.md), but a gross error should be caught now.
-3. **Throttle end-to-end.** `.throttle` → PX4 PWM → Sabertooth S2 → drive motor spins.
-4. **Independent masters, no bus conflict.** Command steering and throttle simultaneously and
-   confirm neither disturbs the other — the proof of
-   [the R/C-mode ADR](../design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-mode-per-channel-masters).
-5. **RC override preemption.** With the laptop commanding, take the RC sticks. The transmitter
-   must win on **both** axes immediately.
-6. **Sabertooth signal-loss failsafe.** Unplug S1, then S2. Each channel must stop its own
-   motor on the Sabertooth's built-in R/C timeout — a free layer of the failsafe stack
-   ([failsafe matrix row 6](../design/safety.md#2-failsafe-matrix)).
-
-**Record sheet — datapath verification**
-
-| Test | Expected | Observed | Pass |
-|---|---|---|---|
-| `roll=+1000` → steering | ≈ +22.5° | *(record)* | ☐ |
-| `roll=−1000` → steering | ≈ −22.5° | *(record)* | ☐ |
-| `roll=0` → steering | 0° (1500 µs) | *(record)* | ☐ |
-| `.throttle` → drive motor | spins proportionally | *(record)* | ☐ |
-| Simultaneous steer + throttle | no interaction | *(record)* | ☐ |
-| RC override, both axes | TX preempts laptop | *(record)* | ☐ |
-| S1 unplugged | steering motor stops | *(record)* | ☐ |
-| S2 unplugged | drive motor stops | *(record)* | ☐ |
-| Setpoint stream stopped (<10 Hz) | PX4 failsafe, throttle → 0 | *(record)* | ☐ |
-
-!!! note "If PX4 servo-PWM emission blocks you"
-
-    A documented contingency exists: drive the Nano steering setpoint **directly** from the
-    laptop (Arduino-direct), keeping PX4 for IMU/EKF/RC
-    ([software.md §6](../design/software.md#6-px4-firmware-pinning-and-fallback)). This
-    trades away the single-pinned-path property — and with it, free RC override on steering —
-    so it is a schedule-risk contingency, not a preference. If you take it, you must
-    re-analyze [safety.md §1.2](../design/safety.md#12-live-override-inside-dbw-mode-rc-via-px4)
-    and provide steering override another way.
-
-## 4.6 Gate to step 5
-
-- [ ] Nano feedback frames well-formed at ≥20 Hz; angle reading stable at rest
-- [ ] Position loop closes at ≥100 Hz; gains recorded; settling and steady-state error logged
-- [ ] Effort sign verified open-loop; limit-clamp and stall detect working
-- [ ] Setpoint-loss and watchdog interlocks verified
-- [ ] Freewheel-on-power-cut confirmed (or, for a wiper-motor build, hold-on-power-cut
-      **re-analyzed** against [safety.md §4](../design/safety.md#4-steering-motor-power-rail-assignment-and-power-loss-behavior-pinned))
-- [ ] PX4 version tag pinned; parameter file exported to `config/calibration/`
-- [ ] `SENS_BOARD_ROT` set and mounting photographed
-- [ ] RC bound; override preempts the laptop on both axes
-- [ ] Full pinned datapath verified end-to-end; independent-master operation confirmed
-- [ ] Sabertooth signal-loss failsafe confirmed on both channels
+**Why this matters for debugging.** Command and feedback share one link and one clock, so
+`ros2 topic echo /mitt/dbw/status` shows both sides of the loop and `ros2 bag` captures a
+complete record. The superseded design split them across four boards and two transports,
+which is what made latency and dropout faults nearly impossible to localize.
 
 ---
 
-**Previous:** [3. Electrical & wiring](03-electrical.md) · **Next:** [5. Software install](05-software.md)
+## 4.2 Toolchain setup
+
+```bash
+# PlatformIO (firmware)
+pip install --user platformio
+pio --version
+
+# micro-ROS agent — NOT available in the Humble apt repos, build from source
+mkdir -p ~/uros_ws/src && cd ~/uros_ws
+git clone -b humble https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
+rosdep install --from-paths src --ignore-src -y
+colcon build && source install/local_setup.bash
+ros2 run micro_ros_setup create_agent_ws.sh
+ros2 run micro_ros_setup build_agent.sh && source install/local_setup.bash
+```
+
+!!! danger "Verify this before writing any firmware"
+
+    - [ ] A **`micro_ros_arduino` release exists for Humble** with Teensy 4.1 support.
+    - [ ] The transport is **USB serial** — the official package does not ship native
+          Ethernet. Accept that, or scope a custom transport deliberately.
+
+    **If no Humble release exists**, fall back to a framed **binary** protocol with CRC and
+    sequence numbers over the same USB link — never unframed ASCII
+    ([dbw.md §9](../design/dbw.md#9-teensy-41-firmware-platform-and-version-pinning)). The
+    architecture does not depend on micro-ROS; only the typed-message convenience does.
+
+Record every version you flashed — this is now the platform's reproducibility claim, since
+there is no upstream autopilot provenance to lean on
+([software.md §6.3](../design/software.md#63-version-pinning)):
+
+```bash
+pio pkg list                     # platform + framework versions
+# record micro_ros_arduino release tag, Teensyduino version, agent commit
+```
+
+---
+
+## 4.3 Stage 0 — Teensy alone, no motor wired
+
+Corresponds to [safety.md Stage 0](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first).
+**Nothing is connected to the Sabertooth yet.**
+
+Wire only: absolute angle sensor (I²C), drive encoder, steering encoder, USB to laptop.
+
+### Verify the angle sensor first, in isolation
+
+```bash
+# With a simple sketch printing raw counts, rotate the sensed shaft by hand
+# through its FULL mechanical travel and watch for a wrap.
+```
+
+!!! danger "The wrap check is not optional"
+
+    The AS5600 is **single-turn absolute**. Rotate the sensed shaft lock-to-lock and confirm
+    the reading is **monotonic with no discontinuity**. A wrap here is FMEA row 2, severity 5:
+    a garbage angle feeding a position loop that drives a motor.
+
+    If it wraps, you mounted it on the wrong shaft. Move it load-side, or switch to the
+    potentiometer fallback. Do not proceed.
+
+Also check for magnetic interference: hold the steering motor near the sensor and confirm the
+reading does not shift.
+
+### Bring up micro-ROS
+
+```bash
+# Terminal 1 — agent
+ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0 -b 115200
+
+# Terminal 2 — confirm the vehicle appears
+ros2 topic list | grep mitt
+ros2 topic echo /mitt/dbw/status --once
+ros2 topic hz /mitt/dbw/status          # target: >= 50 Hz
+```
+
+### The 30-minute stability run
+
+```bash
+ros2 topic hz /mitt/dbw/status > /tmp/dbw_hz.log 2>&1 &
+sleep 1800 && kill %1
+```
+
+!!! warning "USB dropouts are a blocking defect, not a nuisance"
+
+    Under this architecture the USB link carries the **steering setpoint** as well as
+    feedback, so a dropout removes the setpoint and drops the vehicle to `ESTOP`
+    ([failsafe row 2](../design/safety.md#2-failsafe-matrix)). That is the safe behavior, but
+    a link that drops repeatedly is a vehicle that stops repeatedly.
+
+    **Target: zero dropped sessions over 30 minutes.** If you see any, fix the cable, the
+    port, or the transport before wiring a motor.
+
+**Stage 0 gate**
+
+- [ ] Angle sensor monotonic across full travel, no wrap, no motor interference
+- [ ] `counts → radians` conversion verified against a digital angle gauge
+- [ ] Range/plausibility check rejects an unplugged sensor (fault bit sets, mode → `ESTOP`)
+- [ ] `/mitt/dbw/status` ≥ 50 Hz, zero dropouts over 30 min
+- [ ] Encoder counts change in the correct sign for forward rotation
+
+---
+
+## 4.4 Stage 1 — steering motor on the bench, current-limited
+
+Corresponds to [safety.md Stage 1](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first).
+
+**Use a bench supply with an adjustable current limit.** This is what turns a runaway position
+loop into a harmless buzz. Set it low — just enough to move the motor unloaded.
+
+Wire the Sabertooth: packetized serial from the Teensy, M1 → steering motor.
+
+### Verify the Sabertooth serial timeout
+
+This is a required check, not an assumption. In the previous R/C-PWM design the Sabertooth's
+signal-loss timeout came for free; in packetized serial it must be **configured**.
+
+```bash
+# With the motor commanded to a steady effort, halt the Teensy (unplug USB / press reset)
+# and confirm the motor STOPS rather than latching at its last command.
+```
+
+!!! danger "If the timeout cannot be established, stop"
+
+    Revert to independent R/C (PWM) mode and accept the ~50 Hz actuation ceiling
+    ([dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-packetized-serial-single-master)).
+    [Failsafe row 6](../design/safety.md#2-failsafe-matrix) and FMEA row 9 both depend on this
+    behavior — it is one of the layers that makes a single-MCU architecture defensible.
+
+### Tune and measure the position loop
+
+Start with P only, add D, add I last and sparingly. Measure against the
+[numeric contract](../design/dbw.md#12-numeric-interface-contract):
+
+| Measurement | Target | How |
+|---|---|---|
+| Steady-state error | ≤ **1.0°** | Command a series of angles across ±20°, log measured vs. commanded |
+| RMS error over sweep | ≤ **1.5°** | Slow triangle sweep, compute RMS |
+| Step response (10°) | 90% in ≤ **400 ms**, overshoot ≤ **15%** | Log at ≥ 200 Hz, plot |
+| Backlash / hysteresis band | *record the number* | Approach the same angle from both directions |
+| Drift over 30 min | ≤ **0.5°** | Hold one angle, log; should be ≈ 0 by construction |
+| Disturbance rejection | returns to setpoint | Push the output arm by hand, release |
+
+!!! info "Pre-registered E4 decision point — this is the deadline"
+
+    **If the loop cannot hold ≤ 1° steady-state with no sustained oscillation, adopt the E4
+    fallback** — a dedicated closed-loop motion controller (Kangaroo x2 class) — rather than
+    continuing to tune
+    ([dbw.md §3](../design/dbw.md#3-adr-e-steering-control-loop-location-the-key-dbw-decision)).
+
+    Firmware tuning is unbounded work. This bounds it. Take the decision on the numbers, not
+    on how close it feels.
+
+Also verify the interlocks:
+
+- **Mechanical limit clamp** — drive toward a limit, confirm effort clamps *toward center
+  only* and the at-limit fault bit sets.
+- **Stall detection** — hold the output arm, confirm the stall bit sets and effort backs off.
+- **Setpoint staleness** — kill the publisher, confirm `ESTOP` within 500 ms, steering
+  centered then de-energized.
+- **Freewheel on power cut** — [safety.md §4.4](../design/safety.md#44-test-procedure-freewheel-on-power-loss)
+  steps 1–2.
+
+**Stage 1 gate**
+
+- [ ] All six measurements recorded in `docs/build/validation-report.md`
+- [ ] Sabertooth serial timeout verified to stop the motor
+- [ ] Limit clamp, stall detect, staleness watchdog, freewheel all demonstrated
+- [ ] E4 decision taken explicitly — adopted or not needed, recorded either way
+
+---
+
+## 4.5 Stage 2 — both channels and both override layers
+
+Corresponds to [safety.md Stage 2](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first).
+Add the drive motor on the bench, wheels off.
+
+### Layer A — SBUS closed-loop override
+
+Bind the RC set, wire SBUS to a Teensy hardware serial port. Verify:
+
+- Moving the mode switch puts the vehicle in `MANUAL_RC` (visible in `DbwStatus.mode`)
+- The sticks command an **angle** — the position loop is still closed behind them
+- Override engages within **≤ 200 ms** from any state
+- RC frame loss → `ESTOP`
+
+### Layer B — hardware RC signal MUX
+
+!!! danger "This is the condition on which the whole architecture was adopted"
+
+    D3 concentrates the steering loop, throttle, override, and arming on one MCU. The
+    justification for accepting that is that override is a **wiring property**, not a firmware
+    property. **That claim must be demonstrated here, not assumed.**
+
+**Test it with the Teensy deliberately halted.** Hold the Teensy in reset (or unplug it
+entirely), then:
+
+- [ ] Flip the MUX channel and confirm the RC transmitter drives the Sabertooth **directly**
+- [ ] Confirm steering responds to the sticks with the Teensy dead
+- [ ] Confirm the traction channel behaves as designed in this state
+
+Note what changes: through Layer B the override commands raw **effort**, open-loop — not an
+angle. Feel the difference on the bench before you need it on the ground. It is acceptable
+for an emergency mode, and it is exactly what B-MROVER does in normal operation — but it is a
+different control feel and you should not discover that during an incident.
+
+**Stage 2 gate**
+
+- [ ] Both Sabertooth channels driven correctly from the single serial master
+- [ ] Layer A: angle-commanding override, ≤ 200 ms, mode visible in `DbwStatus`
+- [ ] **Layer B: demonstrated with the Teensy halted**
+- [ ] Behavior of Layer B recorded in the validation report, including the effort-vs-angle note
+
+---
+
+## 4.6 Gate to step 5
+
+- [ ] Stage 0, 1, and 2 gates all passed and recorded
+- [ ] Toolchain versions pinned and written down (§4.2)
+- [ ] Measured steering numbers meet the [numeric contract](../design/dbw.md#12-numeric-interface-contract)
+- [ ] No motor has yet been driven with the vehicle on the ground — that is step 7, after the
+      relay MUX and E-stop are installed in step 5
+
+---
+
+**Next:** [5. Software & ROS 2 setup](05-software.md)

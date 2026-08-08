@@ -5,6 +5,15 @@ hide:
 
 # MRider — Michigan Rider
 
+!!! warning "Architecture updated 2026-08-07"
+
+    MRider's DBW controller is a **single Teensy 4.1 running micro-ROS**, replacing the
+    Pixhawk 6C + Arduino Nano topology described in earlier drafts. See
+    [decision D3](design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07).
+    The `design/` documents are current; some `build/` and `learn/` pages are still being
+    updated and carry their own notices.
+
+
 <p align="center">
   <img src="images/mrider.png" alt="MRider" height="44">
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

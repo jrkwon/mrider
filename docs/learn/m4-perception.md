@@ -1,5 +1,14 @@
 # M4 — Perception (Camera + 2D LiDAR)
 
+!!! warning "Partially superseded (2026-08-07)"
+
+    Some references on this page still assume the **Pixhawk + Arduino Nano** topology, replaced
+    by a **single Teensy 4.1 running micro-ROS**
+    ([decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)).
+    The substance of this page is unaffected; treat the [design set](../design/overview.md) as
+    authoritative where they disagree.
+
+
 **Learning objectives:**
 
 - Understand camera and 2D LiDAR sensing: fields of view, rates, and coordinate frames.

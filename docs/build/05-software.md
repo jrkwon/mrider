@@ -1,5 +1,23 @@
 # 5. Software Install: ROS 2 Humble Stack
 
+!!! danger "Superseded — pending rewrite (2026-08-07)"
+
+    This page still describes the **Pixhawk 6C + PX4 + Arduino Nano** topology. That was
+    replaced by a **single Teensy 4.1 running micro-ROS**
+    ([decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)).
+
+    **Do not follow the steps below as written.** Specifically, these no longer exist: PX4,
+    QGroundControl, MAVLink, the Micro-XRCE-DDS agent, `px4_msgs`, the Arduino Nano, the
+    USB-TTL adapter, the servo-PWM steering setpoint, and the ASCII/I2C feedback protocols.
+    New in their place: micro-ROS over USB, `DbwCommand`/`DbwStatus`, Sabertooth **packetized
+    serial**, an isolated logic rail, and a **hardware RC signal MUX**.
+
+    The [design set](../design/overview.md) is authoritative and current —
+    [dbw.md](../design/dbw.md), [architecture.md](../design/architecture.md),
+    [safety.md](../design/safety.md), [software.md](../design/software.md) — as are
+    [step 1](01-bom-sourcing.md) and [step 4](04-firmware.md).
+
+
 **Goal:** stand up the on-board ROS 2 Humble stack on the laptop.
 
 Install ROS 2 Humble and the MRider workspace (reusing `jrkwon/mrover` packages),
@@ -28,7 +46,7 @@ the Keras end-to-end pipeline. MRider changes exactly two things
 ([software.md §1](../design/software.md#1-reuse-posture)):
 
 1. **The feedback datapath** moves off MAVLink `WHEEL_DISTANCE` onto Nano → USB →
-   `/mrider/feedback` ([ADR-SW1](../design/software.md#adr-sw1-reroute-feedback-off-mavlink)).
+   `/mrider/feedback` ([ADR-SW1](../design/software.md#adr-sw1-one-transport-one-clock-typed-messages)).
 2. **Kinematic and frame parameters** are re-measured for the real chassis, and two B-MROVER
    config artifacts are corrected.
 
@@ -89,7 +107,7 @@ source install/setup.bash
 
 The transport between the laptop and PX4. B-MROVER pins **Agent v2.4.2**, TELEM2 =
 `/dev/ttyS2`, `SER_TEL2_BAUD` typically **2000000**, with client auto-start via SD
-`etc/extras.txt` ([dbw.md §9](../design/dbw.md#9-pixhawk-6c-px4-rover-configuration-and-version-pinning)).
+`etc/extras.txt` ([dbw.md §9](../design/dbw.md#9-teensy-41-firmware-platform-and-version-pinning)).
 
 ```bash
 git clone -b v2.4.2 https://github.com/eProsima/Micro-XRCE-DDS-Agent.git
@@ -157,7 +175,7 @@ encoder ([software.md §3.1](../design/software.md#31-topic-interface-contract))
 Three behaviors the driver must implement, because downstream safety depends on them:
 
 1. **Stamp on receipt with the laptop clock.** The Nano has no real-time clock. The laptop is
-   the single authoritative clock ([calibration.md §6](../design/calibration.md#6-laptoppixhawk-time-synchronization)).
+   the single authoritative clock ([calibration.md §6](../design/calibration.md#6-time-synchronization)).
 2. **Flag staleness.** No frame for `T_timeout` (e.g. 250 ms) → mark `/mrider/feedback` stale
    so the EKF coasts on IMU and Nav2 halts
    ([failsafe matrix row 2](../design/safety.md#2-failsafe-matrix)).
@@ -252,7 +270,7 @@ tree is *connected*, not that it is *accurate*.
 !!! danger "Never enable simulated time on the real vehicle"
 
     Keep `use_sim_time=false`. Everything stamps against the laptop wall clock
-    ([calibration.md §6](../design/calibration.md#6-laptoppixhawk-time-synchronization)).
+    ([calibration.md §6](../design/calibration.md#6-time-synchronization)).
 
 ## 5.10 Bring-up smoke test
 

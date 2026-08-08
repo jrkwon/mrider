@@ -60,7 +60,7 @@ Three things happen to a stock ride-on vehicle:
    ([safety.md §1](../design/safety.md#1-authority-arbitration-who-is-allowed-to-drive-the-motors)).
 3. **The vehicle becomes reversible.** Three inline connector taps — throttle, steering,
    power — intercept the stock harness without cutting it
-   ([dbw.md §11.3](../design/dbw.md#113-3-tap-connector-spec-minimally-invasive)). Unplug
+   ([dbw.md §11.3](../design/dbw.md#115-3-tap-connector-spec-minimally-invasive)). Unplug
    the three taps and the vehicle is factory-stock again.
 
 ## Recording your build
