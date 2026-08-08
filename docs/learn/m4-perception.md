@@ -1,14 +1,5 @@
 # M4 — Perception (Camera + 2D LiDAR)
 
-!!! warning "Partially superseded (2026-08-07)"
-
-    Some references on this page still assume the **Pixhawk + Arduino Nano** topology, replaced
-    by a **single Teensy 4.1 running micro-ROS**
-    ([decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)).
-    The substance of this page is unaffected; treat the [design set](../design/overview.md) as
-    authoritative where they disagree.
-
-
 **Learning objectives:**
 
 - Understand camera and 2D LiDAR sensing: fields of view, rates, and coordinate frames.
@@ -69,9 +60,9 @@ hard-to-debug form of label leakage, and it is why the BOM refuses a cheap webca
 | `/scan` (LiDAR) | scan rate, ~10 Hz class | slam_toolbox, Nav2 costmaps |
 | `/camera/color/image_raw` | camera fps | Data recorder, learned policy |
 | `/fmu/out/sensor_combined` (IMU) | ≥ 100 Hz | EKF |
-| `/mrider/feedback` (encoders) | ≥ 20 Hz | Odometry → EKF |
+| `/mitt/dbw/status` (encoders) | ≥ 50 Hz | Odometry → EKF |
 
-The IMU is **internal to the Pixhawk 6C** — it is not a separate purchase, and its
+The IMU is a **standalone BNO085-class module** connected directly to the laptop, and its
 calibration happens through QGroundControl
 ([sensors.md §3](../design/sensors.md#3-imu)). GNSS is optional and excluded from the minimum
 tier by design; the map-EKF runs GNSS-free until a receiver is added
@@ -190,7 +181,7 @@ Record what each sensor missed. This table is the most useful thing you will pro
 
 ```bash
 ros2 bag record -o m4_run \
-  /scan /camera/color/image_raw /mrider/feedback /tf /tf_static \
+  /scan /camera/color/image_raw /mitt/dbw/status /tf /tf_static \
   /fmu/out/sensor_combined
 ```
 

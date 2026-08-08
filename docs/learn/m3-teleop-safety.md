@@ -8,25 +8,15 @@
 
 **Reference:** [design/safety.md](../design/safety.md)
 
-!!! info "Architecture updated 2026-08-07 — this module gains its most important lesson"
+!!! tip "What makes this module different from a checklist"
 
-    Override is no longer delegated to PX4. Under the
-    [single-Teensy architecture](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)
-    authority arbitration is **layered explicitly**, and three of the four layers are
-    independent of the controller's firmware:
+    MRider concentrates the steering loop, throttle, override, and arming on a **single MCU**.
+    That is only defensible because three of the four authority layers are *independent of that
+    MCU's firmware* — and one of them exists purely to make it so.
 
-    | Layer | Mechanism | Survives a firmware hang? |
-    |---|---|---|
-    | 1 | Hardware E-stop → contactor | **Yes** |
-    | 2 | Relay MUX → STOCK | **Yes** |
-    | 3 | **Hardware RC signal MUX** | **Yes** |
-    | 4 | SBUS override into the Teensy | No |
-
-    The teaching point is the one the design turned on: **a single MCU holding the loop,
-    throttle, override, and arming is only acceptable if the override is wiring rather than
-    software.** Layer 3 is the condition on which the whole architecture was adopted, and the
-    lab demonstrates it *with the Teensy deliberately halted* — because a safety claim you
-    have not tested with the component dead is not a safety claim.
+    The lab therefore does something unusual: it asks you to **kill the controller on purpose**
+    and confirm you can still steer. A safety claim you have not tested with the component dead
+    is not a safety claim.
 
 !!! warning "Draft — lab not yet run on hardware"
 
@@ -44,8 +34,8 @@ Three different controllers can drive MRider's motors, and **at most one may rea
 any instant**:
 
 1. The **stock parent-remote** / factory ECU — the vehicle as shipped
-2. **DBW autonomy** — laptop → PX4 → Sabertooth
-3. An **RC transmitter** bound to the Pixhawk — the live human override inside DBW mode
+2. **DBW autonomy** — laptop → Teensy → Sabertooth
+3. An **RC transmitter** — the live human override inside DBW mode, in **two layers**
 
 If two of them can command the motors simultaneously, you do not have a vehicle, you have a
 race condition with wheels. So the design must answer: *who wins, and what happens when a
@@ -75,40 +65,73 @@ deliberate abort drops the coil and reverts to the factory-safe vehicle.
 
 ### The priority ladder
 
-| Priority | Authority | Mechanism |
-|---|---|---|
-| 1 (highest) | **Hardware E-stop** | Cuts traction power + drops the MUX coil |
-| 2 | **Relay MUX position** | De-energized = STOCK; overrides DBW entirely |
-| 3 | **RC transmitter (via PX4)** | PX4 RC override preempts offboard/laptop |
-| 4 (lowest) | **Laptop autonomy** | Only drives when 1–3 all permit |
+| Priority | Authority | Mechanism | Independent of Teensy firmware? |
+|---|---|---|---|
+| 1 (highest) | **Hardware E-stop** | Cuts traction power + drops the MUX coil | **Yes** |
+| 2 | **Relay MUX position** | De-energized = STOCK; overrides DBW entirely | **Yes** |
+| 3 | **Hardware RC signal MUX** | Selects RC effort directly into the Sabertooth | **Yes** |
+| 4 | **RC via SBUS** | Teensy switches to `MANUAL_RC`, loop still closed | No |
+| 5 (lowest) | **Laptop autonomy** | Only drives when 1–4 all permit | No |
 
 Autonomy is at the **bottom**. The most sophisticated component in the system has the least
 authority — because it is the component most likely to be wrong in a novel way.
 
-**RC override covers steering for free.** Because MRider's steering command flows *through*
-PX4 ([ADR E](../design/dbw.md#3-adr-e-steering-control-loop-location-the-key-dbw-decision)),
-an operator grabbing the sticks overrides the laptop on **both** axes with no separate wiring
-to the Nano. This is the safety payoff of pinning a single datapath — an architectural choice
-in M2 turned into a safety property in M3.
+### Why the override has two layers
+
+This is the most important thing in the module, and it comes from a real argument.
+
+MRider puts the steering loop, the throttle output, RC override, and arming **all on one
+MCU**. The obvious objection: a firmware hang loses all four at once. Under the earlier
+Pixhawk design, a hung Arduino still left PX4 able to cut throttle and honour RC.
+
+That objection is **only fatal if the override lives in software on that same MCU.** So it
+does not:
+
+- **Layer A — SBUS into the Teensy.** Normal manual mode. The sticks command an *angle*, with
+  the position loop still closed behind them. Better than raw effort — when it works.
+- **Layer B — a hardware RC signal MUX.** A dedicated RC channel drives a multiplexer that
+  selects Teensy output *or* the receiver's output into the Sabertooth. This is **wiring**. It
+  works with the firmware hung, crashed, or never flashed.
+
+!!! success "The general move: convert a software guarantee into a physical one"
+
+    PX4's RC override was *software* — good software, but software. Layer B is a signal path.
+    Ask of any safety claim: **what has to be executing correctly for this to work?** If the
+    answer includes the thing that might fail, it is not a mitigation.
+
+!!! danger "And state the cost honestly"
+
+    Through Layer B the override commands raw **effort**, open-loop — not an angle. It feels
+    different, and an operator meeting that difference for the first time during an emergency
+    is a hazard you created. That is why the lab makes you feel it on the bench, deliberately,
+    with the Teensy halted.
 
 ### Reading a failsafe matrix
 
 A [failsafe matrix](../design/safety.md#2-failsafe-matrix) enumerates every way a link can
-die and states the defined behavior. MRider's has seven rows. Three worth studying:
+die and states the defined behavior. MRider's has nine rows. Three worth studying:
 
-**Row 1 — command/heartbeat loss.** The laptop stops streaming (< 10 Hz). PX4's offboard-loss
-timeout fires: throttle → 0, enter hold. PX4 stops emitting the servo setpoint, so the Nano's
-PWM-valid bit clears and **steering holds its last angle** as the motor de-energizes.
+**Row 1 — command loss.** The laptop stops publishing, or drops below rate. The Teensy's
+staleness watchdog fires at **500 ms**: mode → `ESTOP`, throttle → 0, **steering centered**,
+then the motor de-energizes.
 
-**Row 2 — USB loss.** The Nano↔laptop serial drops. Feedback is lost, so autonomy degrades to
-a safe stop. But **steering is unaffected** — the setpoint arrives via PX4 servo PWM, not
-USB, so the column keeps tracking while the laptop goes blind on odometry.
+**Row 2 — USB loss.** The link carries *both* the command and the feedback, so losing it
+removes the setpoint. The Teensy detects the dead session and enters `ESTOP` on its own; the
+laptop separately sees stale status and halts Nav2.
 
-!!! danger "Row 2 is the counter-intuitive one"
+!!! danger "Row 2 reversed direction, and that is worth dwelling on"
 
-    Unplugging the Nano's USB cable does **not** stop the steering. Every operator's intuition
-    says it should. That intuition, held during an actual incident, produces exactly the wrong
-    response. This is why you exercise the matrix on a bench rather than reading it.
+    Under the earlier design, unplugging USB left **steering still tracking**, because the
+    setpoint arrived on a separate wire from PX4. Now it stops the vehicle.
+
+    Which is safer? The design argues the new behaviour is: a stale setpoint driving a live
+    actuator is worse than a stop, and now there is **one link with one timeout** instead of a
+    fault that manifests differently depending on which of two paths died.
+
+    But notice the real lesson: **the same physical action — pulling a cable — produced
+    opposite behaviours under two reasonable designs.** An operator who learned one and is
+    working with the other will do the wrong thing. This is why you exercise the matrix on a
+    bench rather than reading it, and why changing a failsafe means retraining the humans.
 
 **Row 5 — E-stop.** Traction power cut, MUX coil dropped, Sabertooth unpowered on the motor
 rail. The steering motor loses power and the **column freewheels**.
@@ -122,7 +145,9 @@ explicitly ([safety.md §4](../design/safety.md#4-steering-motor-power-rail-assi
 **The steering gearmotor is on the traction rail**, not the logic rail. Consequences:
 
 - E-stop cuts traction → steering de-energizes → column freewheels.
-- A steering stall cannot brown out the Nano and PX4, because they are on the other rail.
+- A steering stall cannot brown out the Teensy, because it is on the other rail. This matters
+  *more* than it did with two controllers: the Teensy holds the entire safety supervisor, and
+  there is no second board to survive its reset.
 - Steering cannot remain live after an E-stop cut traction — which would be an inconsistent,
   more dangerous state.
 
@@ -157,8 +182,11 @@ stuck live. Mitigation: **the E-stop cuts traction power independently of the MU
 remains authoritative even then. This is precisely why the E-stop is in the power path and
 not merely commanding the coil.
 
-**Row 9 — Nano firmware hang.** Severity 4. The steering loop freezes. Mitigation: a hardware
-watchdog resets the Nano to neutral output (1500 µs), with PX4 servo-loss and the E-stop as
+**Row 9 — Teensy firmware hang.** Severity **5**, and the single most important row in the
+document, because one MCU now holds the loop, throttle, override, and arming. Four independent
+mitigations: the Sabertooth's serial timeout stops the motors, the hardware RC signal MUX hands
+steering back, the relay MUX reverts to STOCK, and the E-stop cuts traction. A hardware
+watchdog resets the Teensy to neutral output, with the layers above as
 outer layers.
 
 The pattern: **each mitigation is independent of the component that failed.** A watchdog
@@ -172,9 +200,9 @@ before vehicle; wheels-off before wheels-on; walking pace before anything faster
 
 | Stage | What is connected | What you prove |
 |---|---|---|
-| 0 | Nano alone, **no motor** | Sensor reads, PWM capture, feedback frames |
-| 1 | + steering motor, bench supply | Closed-loop tracking, limits, stall, freewheel |
-| 2 | + PX4, Sabertooth R/C mode | Full datapath, independent masters, RC override |
+| 0 | Teensy alone, **no motor** | Sensor reads, **no wrap across full travel**, 30 min of USB stability |
+| 1 | + steering motor, bench supply | Closed-loop tracking, limits, stall, freewheel, **Sabertooth serial timeout** |
+| 2 | + drive motor, RC bound | Both channels from one master; **both override layers, Layer B with the Teensy halted** |
 | 3 | + relay MUX and E-stop | Every failsafe row; default = STOCK on every fault |
 | 4 | Full vehicle, wheels on stands | Repeat matrix; no brownout under steering stall |
 | 5 | Ground, walking pace, operator alongside | E-stop under motion |
@@ -200,49 +228,58 @@ Then test. The gap between prediction and observation is the actual learning.
 
 | # | Scenario | Your prediction | Observed | Match? |
 |---|---|---|---|---|
-| 1 | Command/heartbeat loss (< 10 Hz) | | | |
-| 2 | USB unplugged (Nano ↔ laptop) | | | |
+| 1 | Command stream stopped (> 500 ms) | | | |
+| 2 | USB unplugged (Teensy ↔ laptop) | | | |
 | 3 | RC transmitter powered off | | | |
 | 4 | Logic-rail brownout | | | |
-| 5 | E-stop pressed | | | |
-| 6 | Sabertooth S1 signal unplugged | | | |
+| 5 | E-stop pressed — **also with the laptop off** | | | |
+| 6 | Teensy halted while a motor is commanded | | | |
 | 7 | Steering commanded past its limit | | | |
+| 8 | Teensy held in reset (firmware hang) | | | |
+| 9 | Angle sensor unplugged | | | |
 
 ### Part 2 — Manual control
 
 1. **Confirm STOCK first.** With the MUX de-energized, the parent remote must drive the
    vehicle normally. This proves the taps and the authority chain before DBW is involved.
 2. **Energize the MUX** to enter DBW. Confirm on telemetry.
-3. **RC steering sweep**, no throttle. Watch `steer_deg` track `setpoint_deg`.
-4. **Joystick teleop** publishing to `/mrider/cmd`. Note that it must have a **dead-man gate**
-   and a **software speed cap** — and note *why* the cap exists (the freewheel argument above
-   only holds at walking speed).
+3. **RC steering sweep**, no throttle. Watch `steering_angle` track `steering_setpoint` in
+   `DbwStatus`.
+4. **Joystick teleop** through `ros2_control`. Note that it must have a **dead-man gate** and a
+   **software speed cap** — and note *why* the cap exists (the freewheel argument above only
+   holds at walking speed).
 
 ### Part 3 — Exercise the failsafe matrix
 
-Work the seven rows. Suggested inductions:
+Work all nine rows. Suggested inductions:
 
 ```bash
-# Row 1 — kill the heartbeat
-#   stop the command shim; watch PX4 failsafe and the Nano's bit0
+# Row 1 — command staleness
+#   stop the publisher; watch DbwStatus.mode go to ESTOP within 500 ms
 
 # Row 2 — USB loss
-#   unplug /dev/mrider_nano. Does steering stop? (Predict first!)
+#   unplug /dev/mitt_dbw. Does steering stop? (Predict first!)
 
 # Row 3 — RC loss
-#   power off the transmitter; observe PX4 COM_RC_LOSS_T behavior
+#   power off the transmitter; watch mode and faults
 
-# Row 6 — Sabertooth signal loss
-#   unplug S1, then S2; each channel should stop its own motor
+# Rows 6 and 8 — halt the Teensy
+#   hold the reset button while a motor is commanded.
+#   The Sabertooth's serial timeout should stop it. If the motor LATCHES
+#   at its last command instead, stop the lab and report it -- that is a
+#   failed precondition of the architecture, not a tuning issue.
+
+# Row 9 — sensor fault
+#   unplug the angle sensor; the loop must refuse to run on a bad angle
 ```
 
-For rows 4 and 5, use the bench supply and the E-stop respectively.
+For rows 4, 5 and 7, use the bench supply, the E-stop, and a commanded over-travel.
 
 ### Part 4 — The freewheel test
 
 [safety.md §4.4](../design/safety.md#44-test-procedure-freewheel-on-power-loss), steps 1–2:
 
-1. Command a mid-range steering angle; confirm the Nano holds it.
+1. Command a mid-range steering angle; confirm the Teensy holds it.
 2. Press the E-stop. Confirm all four:
    traction dead · MUX shows STOCK · steering motor de-energized · **column turns freely by
    hand** with light force.
@@ -254,17 +291,28 @@ Verify the priority order holds, from the bottom up:
 
 | Test | Expected | Observed |
 |---|---|---|
-| Joystick commands, then take the RC sticks | RC wins, **both axes**, < 1 s | *(record)* |
+| Joystick commands, then take the RC sticks (Layer A) | RC wins, **both axes**, ≤ 200 ms; sticks command an *angle* | *(record)* |
+| **Halt the Teensy, then flip the MUX channel (Layer B)** | Transmitter drives the Sabertooth directly, with the controller dead | *(record)* |
+| Compare the feel of Layer A vs Layer B | B is raw **effort**, open-loop — noticeably different | *(record)* |
 | RC commands, then de-energize the MUX | Reverts to STOCK mid-command | *(record)* |
-| Anything commands, then E-stop | Traction cut + STOCK | *(record)* |
+| Anything commands, then E-stop | Traction cut + STOCK, **works with the laptop off** | *(record)* |
+
+!!! danger "Layer B is the row that matters"
+
+    Every other line in this table tests something that also existed under the previous
+    architecture. **Layer B is the one that makes a single-MCU design defensible at all**, and
+    it is the only one that must be tested with the controller deliberately dead. If you skip
+    one test in this module, do not let it be this one.
 
 ### Expected output
 
-- A completed prediction-vs-observation table for all seven rows
-- At least two predictions that were **wrong** — if all seven matched, you were probably
+- A completed prediction-vs-observation table for all nine rows
+- At least two predictions that were **wrong** — if all nine matched, you were probably
   reading the matrix while predicting
 - Freewheel test passed with the hand-steer force recorded
 - Authority ladder verified in order
+- **Layer B demonstrated with the Teensy halted**, and the effort-vs-angle difference described
+  in your own words
 
 ### Check yourself
 
@@ -274,6 +322,12 @@ Verify the priority order holds, from the bottom up:
 - [ ] A MUX relay welds closed. What still protects you, and why is it independent?
 - [ ] Under what conditions does the "freewheel is acceptable" argument stop holding?
 - [ ] Autonomy is the lowest authority in the ladder. Argue for that, then against it.
+- [ ] One MCU holds the loop, throttle, override, and arming. List every mitigation that still
+      works when its firmware hangs — then say which one you actually tested.
+- [ ] Pulling the USB cable used to leave steering tracking; now it stops the vehicle. Argue
+      which is safer, then say what you would do about operators trained on the other one.
+- [ ] Layer B override commands effort, not angle. Name a situation where that difference
+      matters, and one where it does not.
 
 ---
 
@@ -283,15 +337,16 @@ Verify the priority order holds, from the bottom up:
 2. **The relay MUX** — NC/NO contacts, default de-energized
 3. **Failure direction** — why physics beats software for failing safe
 4. **The priority ladder** — and why autonomy sits at the bottom
-5. **RC override covers steering for free** — the M2 datapath decision paying off
-6. **Reading a failsafe matrix** — rows 1, 2, 5 in detail
-7. **Row 2 is counter-intuitive** — USB loss does not stop the steering
-8. **Rail assignment decides freewheel vs. hold** — and the conditions that make freewheel OK
-9. **Safety claims are conditional** — change the speed cap, break the argument
-10. **FMEA** — rows 8 and 9, and independence of mitigations
-11. **Staged bring-up** — six stages, no skipping
-12. **Lab brief** — predict, then break it on purpose
-13. **Looking ahead** — M4: the vehicle is safe to drive; now let it see
+5. **Two override layers** — SBUS for control, hardware MUX for survival
+6. **Converting a software guarantee into a physical one** — what must be executing for this to work?
+7. **Reading a failsafe matrix** — rows 1, 2, 5 in detail
+8. **Row 2 reversed** — the same cable pull, opposite behaviour, under two reasonable designs
+9. **Rail assignment decides freewheel vs. hold** — and the conditions that make freewheel OK
+10. **Safety claims are conditional** — change the speed cap, break the argument
+11. **FMEA** — rows 8, 9 and 10, and independence of mitigations
+12. **Staged bring-up** — six stages, no skipping
+13. **Lab brief** — predict, then break it on purpose. Kill the controller deliberately.
+14. **Looking ahead** — M4: the vehicle is safe to drive; now let it see
 
 ---
 

@@ -154,7 +154,7 @@ point.
 
 ```bash
 ros2 bag record -o m5_loop \
-  /mrider/feedback /wheel/odometry /odometry/filtered \
+  /mitt/dbw/status /wheel/odometry /odometry/filtered \
   /fmu/out/sensor_combined /scan /tf /tf_static
 ```
 

@@ -1,14 +1,5 @@
 # M7 — Behavior Cloning / End-to-End Driving
 
-!!! warning "Partially superseded (2026-08-07)"
-
-    Some references on this page still assume the **Pixhawk + Arduino Nano** topology, replaced
-    by a **single Teensy 4.1 running micro-ROS**
-    ([decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)).
-    The substance of this page is unaffected; treat the [design set](../design/overview.md) as
-    authoritative where they disagree.
-
-
 **Learning objectives:**
 
 - Understand imitation learning and end-to-end driving (mrover `neural_net/` lineage).
@@ -68,7 +59,7 @@ Nearly verbatim from B-MROVER
 
 ```
 /camera/color/image_raw  ─┐
-/mrider/feedback (label) ─┼─▶ data_collection_main.py ─▶ e2e_data
+/mitt/dbw/status (label) ─┼─▶ data_collection_main.py ─▶ e2e_data
 EKF odometry             ─┘                                 │
                                                             ▼
                                           neural_net/train.py (PilotNet)
@@ -77,19 +68,20 @@ EKF odometry             ─┘                                 │
                                                   trained weights
                                                             │
                                                             ▼
-                                     run_neural.py ─▶ /mrider/cmd ─▶ command shim
+                                     run_neural.py ─▶ ros2_control ─▶ /mitt/dbw/command
 ```
 
 **The one MRider change:** the recorder's `vehicle_control_topic` moves from `/rover` to
-**`/mrider/feedback`** — the new steering-angle-labeled source from
+**`/mitt/dbw/status`** — the new steering-angle-labeled source from
 [ADR-SW1](../design/software.md#adr-sw1-one-transport-one-clock-typed-messages) — and `base_pose_topic`
 points at the EKF odometry output.
 
 !!! info "The learned policy gets no special privileges"
 
-    Inference output goes to `/mrider/cmd` → command shim → `ManualControlSetpoint` — **the
+    Inference output drives `ros2_control`, the same as Nav2 and teleop — **the
     exact same datapath as Nav2 and as your joystick**. The network cannot reach the motors
-    any more directly than a human can, and the RC transmitter still preempts it through PX4.
+    any more directly than a human can, and the RC transmitter still preempts it through both
+    override layers.
     Single pinned datapath, again paying off.
 
 ### The model
@@ -110,7 +102,7 @@ dataset is small, and it must run in real time on the onboard laptop.
 
 ### Your label is the absolute steering angle
 
-The steering label comes from `steer_deg` in the Nano's feedback frame — the **absolute column
+The steering label comes from `steering_angle` in `DbwStatus` — the **absolute load-side
 sensor** reading from M2, not the commanded value.
 
 That distinction matters. The label is what the wheels **actually did**, including the position
@@ -123,8 +115,8 @@ to reproduce commands that the vehicle does not actually follow.
     predict what the driver did **half a second ago**. It will still converge — the loss goes
     down, the plots look fine — and the resulting policy will consistently turn late.
 
-    MRider's answer: the **laptop is the single authoritative clock**; Nano frames are stamped
-    on receipt; PX4 timestamps are offset-corrected in the bridge; `use_sim_time=false`
+    MRider's answer: the **laptop is the single authoritative clock**; the Teensy uses
+    micro-ROS session time sync, so there is only one clock domain; `use_sim_time=false`
     ([calibration.md §6](../design/calibration.md#6-time-synchronization)).
 
 ### Dataset problems, in order of how often they bite
@@ -152,7 +144,7 @@ inference; measure lap completion.
 ### Part 1 — Collect
 
 ```yaml title="config/data_collection/mrider.yaml"
-vehicle_control_topic: /mrider/feedback      # NOT /rover
+vehicle_control_topic: /mitt/dbw/status      # NOT /rover
 base_pose_topic:       /odometry/filtered
 camera_image_topic:    /camera/color/image_raw
 steering_angle_max:    22.5
@@ -273,7 +265,7 @@ the course. Nav2 replans around it. The policy has never seen it.
 - [ ] Why does the label come from the absolute sensor rather than the commanded angle?
 - [ ] Your dataset is 80% near-zero steering. Predict the trained policy's behavior at corners.
 - [ ] What does a 200 ms image/label misalignment do, and why won't the loss curve reveal it?
-- [ ] Why must the policy publish to `/mrider/cmd` rather than driving the Nano directly?
+- [ ] Why must the policy go through `ros2_control` rather than publishing `DbwCommand` directly?
 - [ ] Name one situation where end-to-end clearly beats Nav2, and one where it clearly loses.
 
 ---
