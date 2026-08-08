@@ -1,0 +1,2286 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Michigan Rider — a drive-by-wire research and education vehicle platform">
+      
+      
+      
+        <link rel="canonical" href="https://jrkwon.github.io/mrider/build/03-electrical/">
+      
+      
+        <link rel="prev" href="../02-mechanical/">
+      
+      
+        <link rel="next" href="../04-firmware/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../images/mrider.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>3. Electrical & Wiring - MRider</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#3-electrical-wiring" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="MRider" class="md-header__button md-logo" aria-label="MRider" data-md-component="logo">
+      
+  <img src="../../images/mrider.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MRider
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              3. Electrical & Wiring
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jrkwon/mrider" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jrkwon/mrider
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="MRider" class="md-nav__button md-logo" aria-label="MRider" data-md-component="logo">
+      
+  <img src="../../images/mrider.png" alt="logo">
+
+    </a>
+    MRider
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jrkwon/mrider" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jrkwon/mrider
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/adr-dbw-architecture-review/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DBW Architecture Review (2026-08)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/vehicle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vehicle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/dbw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Drive-by-Wire
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/software/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Software
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/bom/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bill of Materials
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Build Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-bom-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. BOM & Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-mechanical/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Vehicle Prep & Mechanical
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Electrical & Wiring
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Electrical & Wiring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#31-the-two-rails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 The two rails
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#32-per-rail-fuse-and-gauge-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Per-rail fuse and gauge table
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#33-the-three-taps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 The three taps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#34-wire-the-e-stop-and-mux-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Wire the E-stop and MUX first
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#35-signal-wiring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 Signal wiring
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.5 Signal wiring">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#351-hardware-rc-signal-mux-wire-this-it-is-not-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5.1 Hardware RC signal MUX — wire this, it is not optional
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#36-continuity-and-isolation-checks-before-any-power" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 Continuity and isolation checks — before any power
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#37-relay-mux-bench-test-procedure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7 Relay-MUX bench test procedure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#38-first-power-on-of-the-traction-rail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.8 First power-on of the traction rail
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#39-gate-to-step-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.9 Gate to step 4
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-firmware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Firmware Bring-up
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-software/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Software Install
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-bench-test/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Bench Test & Calibration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-manual-drive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Manual Drive
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-autonomous/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Autonomous Bring-up
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learn
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Learn
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m1-ros2-intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M1 — Intro to MRider & ROS 2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m2-dbw-steering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M2 — Drive-by-Wire & Smart-Servo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m3-teleop-safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M3 — Teleop Control & Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m4-perception/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M4 — Perception
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m5-slam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M5 — Localization & SLAM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m6-nav2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M6 — Navigation (Nav2)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m7-behavior-cloning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M7 — Behavior Cloning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m8-capstone/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M8 — Capstone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#31-the-two-rails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 The two rails
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#32-per-rail-fuse-and-gauge-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Per-rail fuse and gauge table
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#33-the-three-taps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 The three taps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#34-wire-the-e-stop-and-mux-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Wire the E-stop and MUX first
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#35-signal-wiring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 Signal wiring
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.5 Signal wiring">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#351-hardware-rc-signal-mux-wire-this-it-is-not-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5.1 Hardware RC signal MUX — wire this, it is not optional
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#36-continuity-and-isolation-checks-before-any-power" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 Continuity and isolation checks — before any power
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#37-relay-mux-bench-test-procedure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7 Relay-MUX bench test procedure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#38-first-power-on-of-the-traction-rail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.8 First power-on of the traction rail
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#39-gate-to-step-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.9 Gate to step 4
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/jrkwon/mrider/edit/main/docs/build/03-electrical.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="3-electrical-wiring">3. Electrical &amp; Wiring<a class="headerlink" href="#3-electrical-wiring" title="Permanent link">&para;</a></h1>
+<p><strong>Goal:</strong> build the power and signal harness, including the authority MUX and E-stop.</p>
+<p>Wire the 24V traction rail, the isolated logic rail, the Sabertooth 2x32, the Teensy,
+the relay-MUX (STOCK vs. DBW), the hardware RC signal MUX, and the hardware E-stop. Verify
+rail isolation and default-to-stock behavior before energizing anything downstream.</p>
+<ul>
+<li><strong>Prerequisites:</strong> Section 2 complete.</li>
+<li><strong>Specification:</strong> <a href="../../design/dbw/">design/dbw.md</a>, <a href="../../design/safety/">design/safety.md</a></li>
+<li><strong>Expected outcome:</strong> harness continuity-checked; relay defaults to STOCK; E-stop cuts
+  traction power only.</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Draft — not yet validated on hardware</p>
+<p>This wiring plan is derived from the
+<a href="../../design/architecture/#5-power-tree-and-safetyauthority-chain">architecture.md power tree</a>
+and <a href="../../design/safety/">safety.md</a>. It has <strong>not</strong> been built. Fuse values, wire gauges,
+and relay contact ratings depend on the stall currents you measured in step 2 and are
+marked <em>(measure during bring-up)</em>.</p>
+</div>
+<div class="admonition danger">
+<p class="admonition-title">This is the step where mistakes become dangerous</p>
+<p>Everything before this was mechanical. From here the vehicle can move under power. Wire
+the E-stop and the MUX <strong>first</strong>, verify default-to-STOCK <strong>before</strong> energizing the
+Sabertooth, and keep the vehicle wheels-off until step 7.</p>
+</div>
+<hr />
+<h2 id="31-the-two-rails">3.1 The two rails<a class="headerlink" href="#31-the-two-rails" title="Permanent link">&para;</a></h2>
+<p>MRider has exactly two power rails, and the split is safety-critical.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>24 V traction pack
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  └──▶ E-stop contactor (cuts TRACTION only) ──▶ Relay MUX ──┬──▶ STOCK: parent-remote receiver + ESC
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                                                             └──▶ DBW:   Sabertooth 2x32 B+
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                                                                          ├─ M1 → steering gearmotor
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                                                                          └─ M2 → paralleled drive motors
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>12 V logic battery ──▶ DC-DC ──▶ ISOLATED LOGIC RAIL
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>                                   ├─ Teensy 4.1 (5 V in, 3.3 V logic)
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>                                   ├─ absolute angle sensor (3.3 V, I²C)
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>                                   ├─ RC receiver
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>                                   ├─ hardware RC signal MUX
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>                                   ├─ Sabertooth signal logic
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>                                   └─ MUX coil driver
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>Laptop ──▶ its own internal battery (NOT wired to traction in v1)
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Rail</th>
+<th>Feeds</th>
+<th>Dies when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Traction / motor</strong></td>
+<td>Sabertooth B+, M1 (steering gearmotor), M2 (drive motors)</td>
+<td>E-stop pressed, MUX drops, pack disconnected</td>
+</tr>
+<tr>
+<td><strong>Isolated logic</strong></td>
+<td>Teensy, angle sensor, RC receiver, signal MUX, Sabertooth signal logic, MUX coil driver</td>
+<td>Logic battery disconnected only</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition danger">
+<p class="admonition-title">The logic rail is now a separate battery, not a tap off the pack</p>
+<p>The superseded design got logic isolation from the Pixhawk's PM02 power module. <strong>That
+part is deleted</strong>, so the isolation must be built explicitly — a dedicated 12 V battery and
+DC-DC, from day one, not as a retrofit
+(<a href="../../design/safety/#5-power-rail-isolation-and-brownout-protection">safety.md §5</a>).</p>
+<p>This matters more than it did before. The Teensy holds the <strong>entire</strong> safety supervisor —
+the position loop, throttle shaping, the staleness watchdog, SBUS decode, arming. A reset
+mid-drive loses every firmware-layer protection at once (FMEA row 4, severity 5). There is
+no second controller to survive it.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">The steering gearmotor is on the traction rail — deliberately</p>
+<p><a href="../../design/safety/#4-steering-motor-power-rail-assignment-and-power-loss-behavior-pinned">safety.md §4.1</a>
+pins this. The consequence is that <strong>E-stop de-energizes the steering motor and the
+column freewheels</strong>. That is the intended, analyzed behavior — acceptable at ≤ walking
+speed with an operator alongside. Putting the steering motor on the logic rail would risk
+browning out the Teensy on a steering stall, and would leave a live actuator after an
+emergency stop. Do not "improve" this.</p>
+</div>
+<p><strong>Brownout isolation is the point of the split.</strong> Motor stalls sag the traction rail. The
+logic rail must not follow. Use adequate hold-up capacitance and put the undervoltage monitor
+on the <strong>logic</strong> rail.</p>
+<h2 id="32-per-rail-fuse-and-gauge-table">3.2 Per-rail fuse and gauge table<a class="headerlink" href="#32-per-rail-fuse-and-gauge-table" title="Permanent link">&para;</a></h2>
+<p>Fuse for the <strong>stall</strong> current, not the nominal draw, and size wire for the fuse.</p>
+<table>
+<thead>
+<tr>
+<th>Rail / branch</th>
+<th>Nominal</th>
+<th>Stall / peak</th>
+<th>Fuse</th>
+<th>Wire gauge</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pack → E-stop contactor → MUX</td>
+<td><em>(measure during bring-up)</em></td>
+<td><em>(measure during bring-up)</em></td>
+<td><em>(size to measured)</em></td>
+<td><em>(size to fuse)</em></td>
+</tr>
+<tr>
+<td>MUX → Sabertooth B+</td>
+<td><em>(measure during bring-up)</em></td>
+<td><em>(measure during bring-up)</em></td>
+<td><em>(size to measured)</em></td>
+<td><em>(size to fuse)</em></td>
+</tr>
+<tr>
+<td>Sabertooth M2 → paralleled drive motors</td>
+<td><em>(measure during bring-up)</em></td>
+<td><strong>must be &lt; 32 A</strong> (<a href="../../design/dbw/#7-throttle-path">dbw.md §7</a>)</td>
+<td><em>(size to measured)</em></td>
+<td><em>(size to fuse)</em></td>
+</tr>
+<tr>
+<td>Sabertooth M1 → steering gearmotor</td>
+<td><em>(measure during bring-up)</em></td>
+<td><em>(measure during bring-up)</em></td>
+<td><em>(size to measured)</em></td>
+<td><em>(size to fuse)</em></td>
+</tr>
+<tr>
+<td>Logic battery → DC-DC input</td>
+<td>&lt; 2 A typical</td>
+<td>—</td>
+<td>3–5 A</td>
+<td>18–20 AWG</td>
+</tr>
+<tr>
+<td>Logic rail → Teensy / sensor / RC RX / signal MUX</td>
+<td>&lt; 1 A typical</td>
+<td>—</td>
+<td>1–2 A</td>
+<td>22–24 AWG</td>
+</tr>
+<tr>
+<td>MUX coil circuit</td>
+<td>per relay coil spec</td>
+<td>—</td>
+<td><em>(size to coil)</em></td>
+<td>22 AWG</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition danger">
+<p class="admonition-title">Verify paralleled drive-motor stall current against 32 A/channel</p>
+<p>This is <a href="../../design/safety/#7-fmea-lightweight">FMEA row 7</a> and an explicit cross-check
+in <a href="../../design/dbw/#13-cross-checks-and-open-follow-ups">dbw.md §13</a>. If the two
+paralleled rear motors can exceed 32 A stalled, you must either current-limit in the
+Sabertooth configuration or select lower-draw motors. Measure it — a locked-rotor test
+with a clamp meter and a current-limited supply — do not assume.</p>
+</div>
+<h2 id="33-the-three-taps">3.3 The three taps<a class="headerlink" href="#33-the-three-taps" title="Permanent link">&para;</a></h2>
+<p>Reversibility comes from three keyed inline connectors that intercept the stock harness
+without cutting it (<a href="../../design/dbw/#115-3-tap-connector-spec-minimally-invasive">dbw.md §11.5</a>).</p>
+<table>
+<thead>
+<tr>
+<th>Tap</th>
+<th>Intercepts</th>
+<th>MUX side</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Throttle tap</strong></td>
+<td>stock throttle motor leads</td>
+<td>NC → stock ECU, NO → Sabertooth M2</td>
+<td>paralleled rear motors</td>
+</tr>
+<tr>
+<td><strong>Steering tap</strong></td>
+<td>stock steering motor leads</td>
+<td>NC → stock ECU, NO → Sabertooth M1</td>
+<td>MRider adds the gearmotor if the column had none. <strong>Note the M1/M2 assignment is inverted vs. mrover</strong> — intentional, see <a href="../../design/dbw/#21-actuator">dbw.md §2.1</a> (finding F6)</td>
+</tr>
+<tr>
+<td><strong>Power tap</strong></td>
+<td>24 V battery pack</td>
+<td>feeds Sabertooth B+ only</td>
+<td>fused. The logic rail is a <strong>separate battery</strong> (§3.1), not tapped from here</td>
+</tr>
+</tbody>
+</table>
+<p>Use <strong>keyed</strong> connectors — not generic bullets. During bring-up you will unplug and re-plug
+these many times, and a reversed steering tap means the position loop runs away from its
+setpoint instead of toward it.</p>
+<h2 id="34-wire-the-e-stop-and-mux-first">3.4 Wire the E-stop and MUX first<a class="headerlink" href="#34-wire-the-e-stop-and-mux-first" title="Permanent link">&para;</a></h2>
+<p>Build the authority chain before anything can be commanded.</p>
+<p><strong>E-stop.</strong> A latching mushroom-head contactor, hardwired in the <strong>traction</strong> power path —
+not a software command. It must work when the laptop and the Teensy have both hung. It does
+two things at once:</p>
+<ol>
+<li>cuts traction power, and</li>
+<li>drops the MUX coil, reverting authority to STOCK.</li>
+</ol>
+<p><strong>Relay MUX.</strong> Two DPDT relays/contactors, one per motor circuit:</p>
+<ul>
+<li><strong>NC (normally closed) contacts</strong> → stock controller drives the motors. This is the state
+  when the coil is de-energized, which is the <strong>default</strong>.</li>
+<li><strong>NO (normally open) contacts</strong> → Sabertooth drives the motors. Coil energized = DBW mode.</li>
+<li><strong>Flyback diode across every coil</strong>, oriented correctly. A relay coil without a flyback
+  diode will eventually kill the transistor driving it, and that failure can leave the MUX
+  in an indeterminate state.</li>
+<li>Drive the coils from the <strong>logic</strong> rail through a logic-level MOSFET/transistor, so any
+  logic-rail collapse drops the coil.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Default de-energized = STOCK is the whole safety story</p>
+<p>Every failure direction leads back to the factory-controlled vehicle: E-stop, logic
+brownout, a pulled connector, a dead Teensy. If you wire the relays inverted — energize for
+STOCK — you invert the entire failsafe analysis in
+<a href="../../design/safety/">safety.md</a>. Check this twice.</p>
+</div>
+<h2 id="35-signal-wiring">3.5 Signal wiring<a class="headerlink" href="#35-signal-wiring" title="Permanent link">&para;</a></h2>
+<p>The Sabertooth runs in <strong>independent R/C (PWM) mode</strong>. Both signal lines come from the Teensy,
+and <strong>both pass through the hardware RC signal MUX</strong> on the way
+(<a href="../../design/dbw/#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters">dbw.md §4</a>).
+Set the DIP switches for R/C mode before wiring — consult the Sabertooth manual for the table.</p>
+<table>
+<thead>
+<tr>
+<th>Sabertooth input</th>
+<th>Normal source</th>
+<th>Override source</th>
+<th>Motor output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S1</td>
+<td>Teensy PWM (via MUX)</td>
+<td>RC receiver (via MUX)</td>
+<td>M1 — steering gearmotor</td>
+</tr>
+<tr>
+<td>S2</td>
+<td>Teensy PWM (via MUX)</td>
+<td>RC receiver (via MUX)</td>
+<td>M2 — drive motors, paralleled</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">Why not packetized serial?</p>
+<p>Single-master packetized serial was briefly adopted — it gives exact, high-rate commands
+and would close the actuation-rate question outright. It was <strong>reverted</strong> because every
+available RC signal multiplexer switches <em>servo pulses</em>, and none can select between a
+serial stream and RC PWM. Packetized serial and the RC signal MUX are mutually exclusive,
+and the MUX is the condition D3 was adopted on. See
+<a href="../../design/dbw/#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters">dbw.md §4</a>.</p>
+<p>The consolation: in R/C mode the Sabertooth's <strong>signal-loss timeout is inherent</strong> — motors
+stop when pulses stop, with nothing to configure.</p>
+</div>
+<p><strong>Signal connections to make:</strong></p>
+<table>
+<thead>
+<tr>
+<th>From</th>
+<th>To</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Teensy PWM out ×2</td>
+<td>RC signal MUX <strong>master</strong> inputs</td>
+<td>Servo-style pulses — steering and throttle</td>
+</tr>
+<tr>
+<td>Absolute angle sensor</td>
+<td>Teensy <strong>I²C</strong> (SDA/SCL)</td>
+<td>3.3 V from the logic rail. Pot fallback → an analog input instead</td>
+</tr>
+<tr>
+<td>Drive encoder A/B</td>
+<td>Teensy <strong>hardware quadrature decoder</strong> pins</td>
+<td>Not software interrupts — the Teensy has 4 dedicated QDC channels</td>
+</tr>
+<tr>
+<td>Steering motor encoder A/B</td>
+<td>Teensy hardware quadrature decoder pins</td>
+<td>Second QDC channel</td>
+</tr>
+<tr>
+<td>RC receiver <strong>SBUS</strong></td>
+<td>Teensy hardware serial RX</td>
+<td>Layer A override (closed-loop)</td>
+</tr>
+<tr>
+<td>RC receiver <strong>MUX channel</strong></td>
+<td>Hardware RC signal MUX select</td>
+<td>Layer B override — see below</td>
+</tr>
+<tr>
+<td>RC receiver PWM out ×2</td>
+<td>RC signal MUX <strong>slave</strong> inputs</td>
+<td>Emergency path</td>
+</tr>
+<tr>
+<td>Signal MUX outputs ×2</td>
+<td>Sabertooth <strong>S1</strong> and <strong>S2</strong></td>
+<td>Whichever source the MUX selects</td>
+</tr>
+<tr>
+<td>Teensy <strong>USB</strong></td>
+<td>Laptop</td>
+<td>micro-ROS — carries <strong>command <em>and</em> feedback</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition danger">
+<p class="admonition-title">Give the Teensy USB a direct laptop port, not a hub</p>
+<p>This single link carries the steering setpoint as well as the feedback. A dropout removes
+the setpoint and drops the vehicle to <code>ESTOP</code>
+(<a href="../../design/safety/#2-failsafe-matrix">failsafe row 2</a>). That is the safe behavior, but a
+flaky cable or a marginal hub becomes a vehicle that stops repeatedly. Use a good cable and
+a direct port, and log 30 minutes of session stability at
+<a href="../../design/safety/#6-bring-up-protocol-staged-wheels-off-first">bring-up Stage 0</a>.</p>
+</div>
+<h3 id="351-hardware-rc-signal-mux-wire-this-it-is-not-optional">3.5.1 Hardware RC signal MUX — wire this, it is not optional<a class="headerlink" href="#351-hardware-rc-signal-mux-wire-this-it-is-not-optional" title="Permanent link">&para;</a></h3>
+<div class="admonition danger">
+<p class="admonition-title">This is the condition on which the architecture was adopted</p>
+<p>D3 concentrates the steering loop, throttle, override, and arming on one MCU. The
+justification for accepting that is that override is a <strong>wiring property</strong>, not a firmware
+property (<a href="../../design/safety/#12-live-override-inside-dbw-mode-two-layers">safety.md §1.2</a>).
+A build without this MUX has no independent override and does not match the safety analysis
+the design was approved against.</p>
+</div>
+<p>The MUX sits <strong>between the Teensy and the Sabertooth</strong>, selecting which source reaches the
+motor driver:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Teensy output ──▶ MUX input A ─┐
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>                               ├──▶ MUX output ──▶ Sabertooth
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>RC receiver   ──▶ MUX input B ─┘
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>                     ▲
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>RC channel ──────────┘  (select: A = normal, B = emergency)
+</code></pre></div>
+<ul>
+<li>Power the MUX from the <strong>logic rail</strong>, so it survives an E-stop and a traction brownout.</li>
+<li>Choose the <strong>failsafe direction deliberately</strong>: on RC signal loss the MUX should fall back to
+  a defined state, and you must know which. Set the receiver's failsafe values before wiring.</li>
+<li>Verify at <a href="../../design/safety/#6-bring-up-protocol-staged-wheels-off-first">Stage 2</a> <strong>with
+  the Teensy deliberately halted</strong> — held in reset or unplugged. A safety claim you have not
+  tested with the component dead is not a safety claim.</li>
+</ul>
+<div class="admonition danger">
+<p class="admonition-title">Star-ground at the Sabertooth</p>
+<p>Tie the signal grounds of the Teensy, the RC receiver, the signal MUX, and the Sabertooth to
+a <strong>single</strong> point at the Sabertooth. This is
+<a href="../../design/safety/#7-fmea-lightweight">FMEA row 5</a> — a ground loop between logic and a
+24 V power stage produces erratic motor commands that are extremely hard to diagnose later,
+because they look like a firmware bug.</p>
+</div>
+<h2 id="36-continuity-and-isolation-checks-before-any-power">3.6 Continuity and isolation checks — before any power<a class="headerlink" href="#36-continuity-and-isolation-checks-before-any-power" title="Permanent link">&para;</a></h2>
+<p>Battery <strong>disconnected</strong>, multimeter in continuity mode.</p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> No continuity between traction rail and logic rail anywhere except the intended DC-DC input</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> No continuity between Sabertooth M1 and M2 outputs</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> MUX NC contacts connect stock ECU → motors with the coil de-energized</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> MUX NO contacts connect Sabertooth → motors only with the coil energized</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> E-stop, when latched in, opens the traction path <strong>and</strong> the coil circuit</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Every flyback diode is present and correctly oriented (diode-test across each coil)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Signal grounds meet at exactly one point</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> All three taps are keyed and cannot be plugged in reversed</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Every fuse holder is populated with the value from §3.2</li>
+</ul>
+<h2 id="37-relay-mux-bench-test-procedure">3.7 Relay-MUX bench test procedure<a class="headerlink" href="#37-relay-mux-bench-test-procedure" title="Permanent link">&para;</a></h2>
+<p>Perform this on a <strong>bench supply with a current limit</strong>, with the motor outputs connected to
+either nothing or a dummy load — <strong>not</strong> to the vehicle's motors, and with the vehicle
+wheels off the ground regardless.</p>
+<ol>
+<li><strong>Cold state.</strong> Apply logic power only. Confirm with a meter that the MUX contacts are in
+   the <strong>STOCK</strong> position. Nothing energized the coil, so nothing should have moved.</li>
+<li><strong>Deliberate mode switch.</strong> Energize the coil. Confirm contacts transfer to the DBW
+   position, and that they transfer back when de-energized.</li>
+<li><strong>Logic-loss revert.</strong> With the coil energized, cut the logic rail. Confirm the coil drops
+   and the contacts return to STOCK. This is <a href="../../design/safety/#2-failsafe-matrix">failsafe matrix row 4</a>.</li>
+<li><strong>E-stop revert.</strong> With the coil energized, press the E-stop. Confirm both traction power
+   is cut <strong>and</strong> the coil drops to STOCK. This is
+   <a href="../../design/safety/#2-failsafe-matrix">failsafe matrix row 5</a>.</li>
+<li><strong>Latch behavior.</strong> Confirm the E-stop stays latched — nothing re-energizes until it is
+   manually reset.</li>
+<li><strong>Repeat 10×.</strong> Relay contacts that work once are not the same as relay contacts that work
+   reliably. Watch for chatter or slow transfer.</li>
+</ol>
+<p><strong>Record sheet — MUX bench test</strong></p>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Expected</th>
+<th>Observed</th>
+<th>Pass</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Power-up default state</td>
+<td>STOCK</td>
+<td><em>(record)</em></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>Coil energize → DBW</td>
+<td>contacts transfer</td>
+<td><em>(record)</em></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>Coil de-energize → STOCK</td>
+<td>contacts return</td>
+<td><em>(record)</em></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>Logic-rail loss with coil energized</td>
+<td>reverts to STOCK</td>
+<td><em>(record)</em></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>E-stop with coil energized</td>
+<td>traction cut <strong>and</strong> STOCK</td>
+<td><em>(record)</em></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>E-stop latches until manual reset</td>
+<td>latched</td>
+<td><em>(record)</em></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>10× repeat, no chatter</td>
+<td>consistent</td>
+<td><em>(record)</em></td>
+<td>☐</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Relay welding is the one failure the MUX cannot self-protect against</p>
+<p><a href="../../design/safety/#7-fmea-lightweight">FMEA row 8</a> rates a welded-closed MUX relay as
+severity 5 — you cannot revert to STOCK, and DBW is stuck live. The mitigation is that
+the <strong>E-stop cuts traction power independently of the MUX</strong>, so it remains authoritative
+even then. This is why the E-stop must be in the power path and not merely commanding the
+coil. Use an adequately rated contactor and check the contacts during every bring-up.</p>
+</div>
+<h2 id="38-first-power-on-of-the-traction-rail">3.8 First power-on of the traction rail<a class="headerlink" href="#38-first-power-on-of-the-traction-rail" title="Permanent link">&para;</a></h2>
+<p>Only after §3.6 and §3.7 pass.</p>
+<ol>
+<li>Wheels off the ground, vehicle on stands.</li>
+<li>Connect the pack. Do <strong>not</strong> energize the MUX coil — the vehicle should be in STOCK mode.</li>
+<li>Confirm the stock parent remote still drives the vehicle normally. If it does not, your
+   taps are wrong, and you have learned that before involving the Sabertooth.</li>
+<li>Confirm the logic rail is up and stable, and that the Teensy powers on and enumerates over USB.</li>
+<li>Measure the logic rail while someone forces a stock steering stall. <strong>The logic rail must
+   not sag.</strong> If it does, your isolation is inadequate — add hold-up capacitance before
+   continuing.</li>
+</ol>
+<p><strong>Record sheet — rail measurements</strong></p>
+<table>
+<thead>
+<tr>
+<th>Measurement</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Traction rail, at rest</td>
+<td><em>(measure during bring-up)</em> V</td>
+</tr>
+<tr>
+<td>Traction rail, under drive-motor stall</td>
+<td><em>(measure during bring-up)</em> V</td>
+</tr>
+<tr>
+<td>Logic rail, at rest</td>
+<td><em>(measure during bring-up)</em> V</td>
+</tr>
+<tr>
+<td>Logic rail, during traction stall</td>
+<td><em>(measure during bring-up)</em> V</td>
+</tr>
+<tr>
+<td>Logic-rail sag under stall</td>
+<td><em>(measure during bring-up)</em> V — target: negligible</td>
+</tr>
+<tr>
+<td>Undervoltage monitor trip point</td>
+<td><em>(record setting)</em> V</td>
+</tr>
+</tbody>
+</table>
+<h2 id="39-gate-to-step-4">3.9 Gate to step 4<a class="headerlink" href="#39-gate-to-step-4" title="Permanent link">&para;</a></h2>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Two-rail split built; steering gearmotor confirmed on the <strong>traction</strong> rail</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Fuse table complete with measured values; every holder populated</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Paralleled drive-motor stall current measured and confirmed &lt; 32 A/channel</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Three keyed taps installed; no stock wire cut</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> E-stop hardwired in the traction path, latching, drops the MUX coil</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> MUX defaults to STOCK de-energized; verified 10× without chatter</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> All flyback diodes present and correctly oriented</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Signal grounds star-tied at the Sabertooth</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Continuity/isolation checklist (§3.6) passes</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Stock parent remote still drives the vehicle through the taps</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Logic rail does not sag under traction stall</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>Logic rail is its own battery</strong>, not tapped from the traction pack (§3.1)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Sabertooth DIP switches set for <strong>independent R/C (PWM) mode</strong></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>Hardware RC signal MUX installed and powered from the logic rail</strong> (§3.5.1) — its
+      Stage 2 test with the Teensy halted is the condition D3 was adopted on</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> RC receiver failsafe values set, and the MUX's failsafe direction known and written down</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Teensy USB on a <strong>direct laptop port</strong>, not a hub</li>
+</ul>
+<hr />
+<p><strong>Previous:</strong> <a href="../02-mechanical/">2. Vehicle prep &amp; mechanical</a> · <strong>Next:</strong> <a href="../04-firmware/">4. Firmware bring-up</a></p>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 8, 2026 05:51:09 UTC">August 8, 2026</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 7, 2026 12:38:10 UTC">August 7, 2026</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../02-mechanical/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 2. Vehicle Prep &amp; Mechanical">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                2. Vehicle Prep & Mechanical
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../04-firmware/" class="md-footer__link md-footer__link--next" aria-label="Next: 4. Firmware Bring-up">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                4. Firmware Bring-up
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Bio-Inspired Machine Intelligence Lab (BIMI), University of Michigan-Dearborn
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/jrkwon/mrider" target="_blank" rel="noopener" title="MRider on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.instant", "navigation.tracking", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.action.edit", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

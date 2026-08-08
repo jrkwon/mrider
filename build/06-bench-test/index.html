@@ -1,0 +1,2477 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Michigan Rider — a drive-by-wire research and education vehicle platform">
+      
+      
+      
+        <link rel="canonical" href="https://jrkwon.github.io/mrider/build/06-bench-test/">
+      
+      
+        <link rel="prev" href="../05-software/">
+      
+      
+        <link rel="next" href="../07-manual-drive/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../images/mrider.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>6. Bench Test & Calibration - MRider</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#6-bench-test-wheels-off-calibration" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="MRider" class="md-header__button md-logo" aria-label="MRider" data-md-component="logo">
+      
+  <img src="../../images/mrider.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MRider
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              6. Bench Test & Calibration
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jrkwon/mrider" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jrkwon/mrider
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="MRider" class="md-nav__button md-logo" aria-label="MRider" data-md-component="logo">
+      
+  <img src="../../images/mrider.png" alt="logo">
+
+    </a>
+    MRider
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jrkwon/mrider" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jrkwon/mrider
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/adr-dbw-architecture-review/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DBW Architecture Review (2026-08)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/vehicle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vehicle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/dbw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Drive-by-Wire
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/software/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Software
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/bom/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bill of Materials
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Build Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-bom-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. BOM & Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-mechanical/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Vehicle Prep & Mechanical
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-electrical/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Electrical & Wiring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-firmware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Firmware Bring-up
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-software/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Software Install
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Bench Test & Calibration
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Bench Test & Calibration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#part-a-failsafe-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part A — Failsafe verification
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#61-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#62-failsafe-matrix-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Failsafe matrix verification
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.2 Failsafe matrix verification">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#621-override-layer-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2.1 Override layer verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#63-freewheel-on-power-loss-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Freewheel-on-power-loss test
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#64-stage-3-and-4-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Stage 3 and 4 checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-b-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part B — Calibration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#65-steering-zero-and-countsdegrees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 Steering: zero and counts→degrees
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#66-drive-distance-ticksmeters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.6 Drive distance: ticks→meters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#67-camera-intrinsics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.7 Camera intrinsics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#68-extrinsics-sensors-base_link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.8 Extrinsics: sensors → base_link
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#69-imu-and-time-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.9 IMU and time sync
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#610-calibration-artifact-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.10 Calibration artifact index
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#611-gate-to-step-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.11 Gate to step 7
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-manual-drive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Manual Drive
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-autonomous/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Autonomous Bring-up
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learn
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Learn
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m1-ros2-intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M1 — Intro to MRider & ROS 2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m2-dbw-steering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M2 — Drive-by-Wire & Smart-Servo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m3-teleop-safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M3 — Teleop Control & Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m4-perception/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M4 — Perception
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m5-slam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M5 — Localization & SLAM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m6-nav2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M6 — Navigation (Nav2)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m7-behavior-cloning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M7 — Behavior Cloning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m8-capstone/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M8 — Capstone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#part-a-failsafe-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part A — Failsafe verification
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#61-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#62-failsafe-matrix-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Failsafe matrix verification
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.2 Failsafe matrix verification">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#621-override-layer-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2.1 Override layer verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#63-freewheel-on-power-loss-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Freewheel-on-power-loss test
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#64-stage-3-and-4-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Stage 3 and 4 checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-b-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part B — Calibration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#65-steering-zero-and-countsdegrees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 Steering: zero and counts→degrees
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#66-drive-distance-ticksmeters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.6 Drive distance: ticks→meters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#67-camera-intrinsics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.7 Camera intrinsics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#68-extrinsics-sensors-base_link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.8 Extrinsics: sensors → base_link
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#69-imu-and-time-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.9 IMU and time sync
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#610-calibration-artifact-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.10 Calibration artifact index
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#611-gate-to-step-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.11 Gate to step 7
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/jrkwon/mrider/edit/main/docs/build/06-bench-test.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="6-bench-test-wheels-off-calibration">6. Bench Test (Wheels-Off) &amp; Calibration<a class="headerlink" href="#6-bench-test-wheels-off-calibration" title="Permanent link">&para;</a></h1>
+<p><strong>Goal:</strong> validate the full command/feedback chain safely, then calibrate.</p>
+<p>With the vehicle on a stand, exercise steering and throttle end-to-end and confirm every
+failsafe in the matrix. Then calibrate: steering zero/center and counts→degrees,
+encoder ticks→distance, camera intrinsics, and camera/LiDAR→base_link extrinsics.</p>
+<ul>
+<li><strong>Prerequisites:</strong> Section 5 complete.</li>
+<li><strong>Specification:</strong> <a href="../../design/safety/">design/safety.md</a>, <a href="../../design/calibration/">design/calibration.md</a></li>
+<li><strong>Expected outcome:</strong> all failsafes pass wheels-off; calibration constants recorded.</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Draft — not yet validated on hardware</p>
+<p>The procedures below come from
+<a href="../../design/safety/#6-bring-up-protocol-staged-wheels-off-first">safety.md §6</a> and
+<a href="../../design/calibration/">calibration.md</a>. <strong>Every result cell is empty because no
+vehicle has been tested.</strong> The record sheets are the deliverable of this step — fill them
+in and commit them.</p>
+</div>
+<div class="admonition danger">
+<p class="admonition-title">This is the last step before the vehicle touches the ground</p>
+<p>Everything the vehicle will do wrong at walking speed in step 7, it will do wrong here
+first — on a stand, where it is harmless. Do not shorten this step. <strong>Failsafes first,
+calibration second</strong>: there is no point calibrating a vehicle that cannot be stopped.</p>
+</div>
+<p>This step covers <strong>Stages 3–4</strong> of the bring-up protocol.</p>
+<hr />
+<h2 id="part-a-failsafe-verification">Part A — Failsafe verification<a class="headerlink" href="#part-a-failsafe-verification" title="Permanent link">&para;</a></h2>
+<h2 id="61-setup">6.1 Setup<a class="headerlink" href="#61-setup" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Vehicle on stands, <strong>wheels off the ground</strong>, verified by lifting each corner.</li>
+<li>Traction pack connected, E-stop within arm's reach of the operator.</li>
+<li>A second person present whose only job is the E-stop.</li>
+<li>Bench supply current limits still in place if you can keep them.</li>
+</ul>
+<h2 id="62-failsafe-matrix-verification">6.2 Failsafe matrix verification<a class="headerlink" href="#62-failsafe-matrix-verification" title="Permanent link">&para;</a></h2>
+<p>Test <strong>every row</strong> of <a href="../../design/safety/#2-failsafe-matrix">safety.md §2</a>. Each row is a
+specific way this vehicle can fail; each has a defined behavior; each is testable here.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Loss scenario</th>
+<th>How to induce</th>
+<th>Expected immediate behavior</th>
+<th>Expected steering behavior</th>
+<th>Observed</th>
+<th>Pass</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Command loss</strong></td>
+<td>Kill the publisher (staleness &gt; 500 ms)</td>
+<td>Teensy → <code>ESTOP</code>: throttle → 0</td>
+<td><strong>Centered</strong>, then motor de-energized</td>
+<td></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>USB link loss</strong></td>
+<td>Unplug <code>/dev/mitt_dbw</code></td>
+<td>Teensy → <code>ESTOP</code> autonomously; laptop halts Nav2</td>
+<td>Centered, then de-energized</td>
+<td></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>RC loss</strong></td>
+<td>Power off the transmitter</td>
+<td>Teensy → <code>ESTOP</code>: throttle → 0</td>
+<td>Centered, then de-energized</td>
+<td></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Battery sag / brownout</strong></td>
+<td>Force a stall while watching the logic rail; or bench-drop the logic rail</td>
+<td>Logic rail below threshold → MUX coil drops → <strong>revert to STOCK</strong>; Sabertooth LVC also stops motors</td>
+<td>steering motor de-energizes with the coil → <strong>freewheel</strong></td>
+<td></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>E-stop pressed</strong></td>
+<td>Press it — <strong>also repeat with the laptop powered off</strong></td>
+<td>Traction power cut; MUX coil dropped → STOCK</td>
+<td>steering motor loses power → <strong>freewheel</strong></td>
+<td></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Sabertooth signal loss</strong></td>
+<td>Halt the Teensy (hold reset) while a motor is commanded</td>
+<td><strong>R/C signal-loss timeout</strong> stops both motors</td>
+<td>steering motor stops</td>
+<td></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Steering at limit / jam</strong></td>
+<td>Command beyond the mechanical stop</td>
+<td>Teensy clamps effort <strong>toward center only</strong>, sets stall bit</td>
+<td>holds at limit, no further drive into the stop</td>
+<td></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Teensy firmware hang</strong></td>
+<td>Hold the Teensy in reset</td>
+<td>Motors stop (row 6); watchdog resets outputs to neutral</td>
+<td>freewheel or held per §6.3</td>
+<td></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Angle sensor fault</strong></td>
+<td>Unplug the sensor / short I²C</td>
+<td>Teensy → <code>ESTOP</code>, encoder-fault bit set</td>
+<td>de-energized — <strong>must not</strong> drive to a garbage target</td>
+<td></td>
+<td>☐</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition danger">
+<p class="admonition-title">Row 2 changed direction — verify it deliberately</p>
+<p>Under the superseded design, unplugging USB left steering still tracking, because the
+setpoint arrived separately via PX4 servo PWM. <strong>It no longer does.</strong> The same link now
+carries the setpoint, so a dropout removes it and the vehicle goes to <code>ESTOP</code> — centered
+and de-energized.</p>
+<p>This is an accepted, analysed regression
+(<a href="../../design/safety/#2-failsafe-matrix">failsafe row 2</a>): a stale setpoint with a live
+actuator is more dangerous than a stop. But an operator who learned the old behavior will
+misread it. Show them on the bench.</p>
+</div>
+<div class="admonition danger">
+<p class="admonition-title">Rows 6 and 8 are the ones that justify the whole architecture</p>
+<p>A single MCU holds the loop, throttle, override, and arming. The claim that this is
+acceptable rests on layers <em>independent</em> of that MCU. <strong>Test them by actually halting the
+Teensy</strong>, not by reasoning about it. If row 6 fails — the Sabertooth latches its last
+command instead of timing out — stop and diagnose before going further. In R/C mode this
+timeout is inherent to the driver, so a failure here means the wiring or the mode switches
+are wrong, not that a setting needs tuning.</p>
+</div>
+<h3 id="621-override-layer-verification">6.2.1 Override layer verification<a class="headerlink" href="#621-override-layer-verification" title="Permanent link">&para;</a></h3>
+<p>Both layers, tested separately. Layer B is the <strong>condition D3 was adopted on</strong>
+(<a href="../../design/safety/#12-live-override-inside-dbw-mode-two-layers">safety.md §1.2</a>).</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Test</th>
+<th>Expected</th>
+<th>Observed</th>
+<th>Pass</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A — SBUS</strong></td>
+<td>Take the sticks in <code>AUTONOMOUS</code></td>
+<td>Mode → <code>MANUAL_RC</code> within <strong>≤ 200 ms</strong>; sticks command an <strong>angle</strong>, loop still closed</td>
+<td></td>
+<td>☐</td>
+</tr>
+<tr>
+<td><strong>B — hardware MUX</strong></td>
+<td><strong>Hold the Teensy in reset</strong>, flip the MUX channel</td>
+<td>Transmitter drives the Sabertooth <strong>directly</strong>; steering responds with the Teensy dead</td>
+<td></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>B — feel</td>
+<td>Compare A and B by hand</td>
+<td>B commands raw <strong>effort</strong>, open-loop — a different feel. Record it</td>
+<td></td>
+<td>☐</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Record:</strong> Layer B behavior in the validation report, including the effort-vs-angle
+difference. An operator should never meet that difference for the first time during an
+incident.</p>
+<h2 id="63-freewheel-on-power-loss-test">6.3 Freewheel-on-power-loss test<a class="headerlink" href="#63-freewheel-on-power-loss-test" title="Permanent link">&para;</a></h2>
+<p>The pinned test from <a href="../../design/safety/#44-test-procedure-freewheel-on-power-loss">safety.md §4.4</a>,
+steps 1–2 (step 3 happens in <a href="../07-manual-drive/">step 7</a> on the ground):</p>
+<ol>
+<li>Wheels off the ground. Command a mid-range steering angle; confirm the Teensy holds it.</li>
+<li>Press E-stop. Confirm all four:<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> traction dead</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> MUX shows STOCK</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> steering motor de-energized</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> column <strong>turns freely by hand</strong> with light force</li>
+</ul>
+</li>
+</ol>
+<p><strong>Record:</strong> hand-steer force at the rim after E-stop = <em>(measure during bring-up)</em> N
+(spring-scale check; expect a few N).</p>
+<div class="admonition note">
+<p class="admonition-title">Wiper-motor builds behave differently — and that is a re-analysis, not a variation</p>
+<p>If you took the <a href="../../design/dbw/#24-wiper-motor-fallback">wiper-motor fallback</a>, the
+worm gear is largely non-back-drivable and the column will <strong>hold</strong> rather than freewheel.
+That invalidates the analysis in
+<a href="../../design/safety/#43-why-traction-cut-freewheel-steering-is-acceptable">safety.md §4.3</a>.
+Write down the actual behavior and re-derive whether it is acceptable <strong>before</strong> step 7.</p>
+</div>
+<h2 id="64-stage-3-and-4-checks">6.4 Stage 3 and 4 checks<a class="headerlink" href="#64-stage-3-and-4-checks" title="Permanent link">&para;</a></h2>
+<p><strong>Stage 3 — MUX + E-stop, wheels off:</strong></p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Every failsafe-matrix row (§6.2) passes</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Freewheel test (§6.3) passes</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Default = STOCK confirmed on <strong>every</strong> power-up and <strong>every</strong> fault</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> E-stop verified <strong>with the laptop powered off</strong> — 10/10 trials, cut within ≤ 200 ms</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Both override layers (§6.2.1) pass, Layer B with the Teensy halted</li>
+</ul>
+<p><strong>Stage 4 — full integration on the chassis, wheels on stands:</strong></p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Failsafe matrix repeated on the fully assembled vehicle</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Steering mechanical limits measured — actual travel vs. the ±22.5° design target</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Drive-encoder ticks increment correctly under powered rotation</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Angle sensor monotonic across full travel — <strong>no wrap</strong> (FMEA row 2)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>No logic-rail brownout under steering stall</strong> — measure it, do not assume</li>
+</ul>
+<p><strong>Record sheet — Stage 4</strong></p>
+<table>
+<thead>
+<tr>
+<th>Measurement</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Measured full-left road-wheel angle</td>
+<td><em>(measure during bring-up)</em> °</td>
+</tr>
+<tr>
+<td>Measured full-right road-wheel angle</td>
+<td><em>(measure during bring-up)</em> °</td>
+</tr>
+<tr>
+<td>Logic rail during steering stall</td>
+<td><em>(measure during bring-up)</em> V</td>
+</tr>
+<tr>
+<td>Logic rail sag vs. rest</td>
+<td><em>(measure during bring-up)</em> V</td>
+</tr>
+<tr>
+<td>Steering stall current</td>
+<td><em>(measure during bring-up)</em> A</td>
+</tr>
+<tr>
+<td>Drive stall current (paralleled)</td>
+<td><em>(measure during bring-up)</em> A — must be &lt; 32 A</td>
+</tr>
+<tr>
+<td>Measured sensor-shaft travel, lock-to-lock</td>
+<td><em>(measure)</em> ° — must be ≤ 340° for AS5600</td>
+</tr>
+<tr>
+<td>Drive-encoder PPR (measured, not inherited)</td>
+<td><em>(measure)</em></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="part-b-calibration">Part B — Calibration<a class="headerlink" href="#part-b-calibration" title="Permanent link">&para;</a></h2>
+<p>Only begin once every failsafe passes. Each calibration produces a <strong>stored artifact</strong> the
+runtime loads, plus a <strong>verification step</strong>. Store everything under <code>config/calibration/</code>,
+stamped with date, operator, vehicle serial, and the firmware/software git commit
+(<a href="../../design/calibration/#7-calibration-artifact-index">calibration.md §7</a>).</p>
+<h2 id="65-steering-zero-and-countsdegrees">6.5 Steering: zero and counts→degrees<a class="headerlink" href="#65-steering-zero-and-countsdegrees" title="Permanent link">&para;</a></h2>
+<p><strong>Find mechanical center</strong> (<a href="../../design/calibration/#11-find-mechanical-center-zero">calibration.md §1.1</a>):</p>
+<ol>
+<li>Wheels off the ground, steering motor <strong>unpowered</strong> (freewheel).</li>
+<li>By hand, set the front wheels physically straight — use a straightedge across both front
+   tires.</li>
+<li>Read the absolute-sensor raw counts. Record as <code>c0</code>.</li>
+<li>Store it via the Teensy's ROS 2 zeroing service. The Teensy persists <code>c0</code> in EEPROM, so
+   center survives reboot — this boot-stable center is exactly what
+   <a href="../../design/dbw/#5-adr-b-steering-angle-encoding">ADR B</a> bought, and the direct fix for
+   B-MROVER's arbitrary boot centre (finding F4).</li>
+</ol>
+<p><strong>Counts→degrees scale</strong> (<a href="../../design/calibration/#12-countsdegrees-scale-two-point-multi-point">calibration.md §1.2</a>):</p>
+<ol>
+<li>Full <strong>left</strong> lock — measure the actual road-wheel angle with a digital angle gauge →
+   record <code>(θ_L, c_L)</code>.</li>
+<li>Full <strong>right</strong> lock → record <code>(θ_R, c_R)</code>.</li>
+<li>Take 3–5 intermediate points to check linearity (residual &lt; ~0.5°).</li>
+<li>Fit <code>θ(counts) = k · (counts − c0)</code> where <code>k = (θ_L − θ_R) / (c_L − c_R)</code>.</li>
+<li>Store <code>c0</code> and <code>k</code> in <code>config/calibration/steering.yaml</code>.</li>
+</ol>
+<p><strong>Record sheet — steering calibration</strong></p>
+<table>
+<thead>
+<tr>
+<th>Point</th>
+<th>Road-wheel angle θ (°)</th>
+<th>Raw counts</th>
+<th>Residual (°)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Full left</td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Intermediate 1</td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(compute)</em></td>
+</tr>
+<tr>
+<td>Center</td>
+<td>0</td>
+<td><code>c0</code> = <em>(measure)</em></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Intermediate 2</td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(compute)</em></td>
+</tr>
+<tr>
+<td>Full right</td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><code>k</code> = <em>(compute)</em> °/count · linearity residual max = <em>(compute)</em> ° · artifact:
+<code>config/calibration/steering.yaml</code></p>
+<p><strong>Setpoint normalization check</strong> (<a href="../../design/calibration/#13-setpoint-normalization-check">calibration.md §1.3</a>):
+<code>MANUAL_CONTROL.roll = +1000</code> must produce a <strong>measured</strong> +22.5° at the wheels; <code>−1000</code> →
+−22.5°; <code>0</code> → 0° (1500 µs servo pulse). Log the commanded-vs-measured curve — it should be
+linear through the origin. <strong>Any offset means re-check <code>c0</code>.</strong></p>
+<p><strong>Verification:</strong> command a sweep 0 → +22.5 → −22.5 → 0. Measured road-wheel angle must match
+within <strong>±1°</strong> and return to 0° at center. Store the sweep log.</p>
+<h2 id="66-drive-distance-ticksmeters">6.6 Drive distance: ticks→meters<a class="headerlink" href="#66-drive-distance-ticksmeters" title="Permanent link">&para;</a></h2>
+<p>The roll-out calibration is authoritative because it <strong>bypasses guessing the gear ratio</strong>
+(<a href="../../design/calibration/#21-effective-distance-per-tick">calibration.md §2.1</a>):</p>
+<ol>
+<li>Measure the <strong>loaded</strong> rolling circumference directly — mark the tire, roll one full
+   revolution on the floor, measure. More accurate than <code>πD</code> because of tire squish.</li>
+<li>Drive or push the vehicle a <strong>measured straight distance</strong> <code>L</code> (e.g. 10.0 m by tape),
+   recording the tick delta <code>Δticks</code> from the feedback frame.</li>
+<li><code>meters_per_tick = L / Δticks</code>. <strong>Repeat 3× and average.</strong></li>
+<li>Store in <code>config/calibration/odom.yaml</code>.</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Do not assume a 4× quadrature factor</p>
+<p>Use the effective counts the <strong>firmware actually reports</strong>. The mrover firmware divides
+count by PPR before reporting (<code>code.ino:83,141</code>), so an assumed decode factor will put
+your odometry off by an integer multiple — a scale error large enough to look like a
+mechanical problem.</p>
+</div>
+<p><strong>Record sheet — odometry calibration</strong></p>
+<table>
+<thead>
+<tr>
+<th>Run</th>
+<th>Measured distance <code>L</code> (m)</th>
+<th><code>Δticks</code></th>
+<th><code>meters_per_tick</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(compute)</em></td>
+</tr>
+<tr>
+<td>2</td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(compute)</em></td>
+</tr>
+<tr>
+<td>3</td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(compute)</em></td>
+</tr>
+<tr>
+<td><strong>Mean</strong></td>
+<td></td>
+<td></td>
+<td><em>(compute)</em></td>
+</tr>
+</tbody>
+</table>
+<p>Loaded rolling circumference = <em>(measure)</em> m · artifact: <code>config/calibration/odom.yaml</code></p>
+<p><strong>Verification:</strong> drive a fresh measured 20 m straight line; integrated odometry must match
+within <strong>~2%</strong>. Then drive a known square loop — the closure error is the <em>fused</em> odometry
+check (EKF), not a calibration check.</p>
+<div class="admonition info">
+<p class="admonition-title">What calibration can and cannot fix</p>
+<p><code>meters_per_tick</code> captures straight-line <strong>scale</strong>. It cannot capture per-turn
+differential slip or gearbox backlash, because only one motor shaft of a paralleled pair
+is instrumented (<a href="../../design/dbw/#8-adr-c-drive-distance-encoding">ADR C</a>). That is why
+odometry is fused with the IMU in the EKF: <strong>calibration bounds the scale error, the EKF
+bounds the drift.</strong> Nobody should expect raw wheel odometry to close a loop.</p>
+</div>
+<h2 id="67-camera-intrinsics">6.7 Camera intrinsics<a class="headerlink" href="#67-camera-intrinsics" title="Permanent link">&para;</a></h2>
+<p>Use ROS 2 <code>camera_calibration</code> with a printed checkerboard of known square size (e.g. 8×6
+inner corners, 25 mm squares) mounted rigidly flat
+(<a href="../../design/calibration/#3-camera-intrinsics">calibration.md §3</a>).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>ros2<span class="w"> </span>run<span class="w"> </span>camera_calibration<span class="w"> </span>cameracalibrator<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span>--size<span class="w"> </span>8x6<span class="w"> </span>--square<span class="w"> </span><span class="m">0</span>.025<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span>--ros-args<span class="w"> </span>-r<span class="w"> </span>image:<span class="o">=</span>/camera/color/image_raw<span class="w"> </span>-r<span class="w"> </span>camera:<span class="o">=</span>/camera
+</code></pre></div>
+<p>Move the board across the <strong>full</strong> field of view and depth range — near/far, all corners,
+tilts — until the X/Y/size/skew bars are full. Commit, then save as
+<code>config/calibration/camera_front.yaml</code> in ROS <code>CameraInfo</code> format.</p>
+<p><strong>Verification:</strong> rectify a checkerboard image; straight board edges must appear straight.
+Reprojection error &lt; ~0.3 px as reported by the tool.</p>
+<p>Record: reprojection error = <em>(measure)</em> px · squares = <em>(record)</em> · resolution = <em>(record)</em></p>
+<div class="admonition tip">
+<p class="admonition-title">RealSense users: re-verify anyway</p>
+<p>Factory intrinsics are available from the driver, but re-run the checkerboard for the
+exact lens and resolution you will actually stream.</p>
+</div>
+<h2 id="68-extrinsics-sensors-base_link">6.8 Extrinsics: sensors → <code>base_link</code><a class="headerlink" href="#68-extrinsics-sensors-base_link" title="Permanent link">&para;</a></h2>
+<p><strong>Define <code>base_link</code> first</strong> (<a href="../../design/calibration/#41-base_link-definition">calibration.md §4.1</a>):
+center of the <strong>rear axle, on the ground plane, X forward, Z up, Y left</strong> (REP-103/105). The
+Ackermann parameters from step 2 are measured from this origin.</p>
+<p><strong>Coarse, by measurement:</strong> for each sensor, tape-and-level the translation (x, y, z) and
+orientation (roll, pitch, yaw) from <code>base_link</code> to the sensor frame. This gets you to a few
+cm and a few degrees.</p>
+<p><strong>LiDAR refinement</strong> (<a href="../../design/calibration/#43-lidarbase_link-refinement">calibration.md §4.3</a>):</p>
+<ol>
+<li>Park a known distance from a flat wall, perpendicular. The scan of the wall should be a
+   straight line at the measured range, centered. Adjust yaw/x/y until it matches.</li>
+<li>Confirm zero-heading points <strong>forward (+X)</strong> and that left/right are not mirrored.</li>
+</ol>
+<p><strong>Camera↔LiDAR refinement</strong> (<a href="../../design/calibration/#44-cameralidar-cross-sensor-refinement">calibration.md §4.4</a>):
+place a target visible to both at several known positions; verify a LiDAR return projects
+onto the correct camera pixel through the intrinsics and both extrinsics chained via
+<code>base_link</code>. Adjust until projection error is a few pixels / few cm.</p>
+<p><strong>Record sheet — extrinsics</strong> (artifact: <code>config/calibration/extrinsics.yaml</code> or URDF joints)</p>
+<table>
+<thead>
+<tr>
+<th>Sensor</th>
+<th>x (m)</th>
+<th>y (m)</th>
+<th>z (m)</th>
+<th>roll (°)</th>
+<th>pitch (°)</th>
+<th>yaw (°)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>camera_link</code></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+</tr>
+<tr>
+<td><code>laser</code>/<code>lidar_link</code></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+</tr>
+<tr>
+<td><code>imu_link</code></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+</tr>
+<tr>
+<td><code>gnss_link</code> (optional)</td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+<td><em>(measure)</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Verification:</strong> overlay projected LiDAR points on a camera image of a known scene; points
+must land on the corresponding structure.</p>
+<div class="admonition danger">
+<p class="admonition-title">Extrinsics are only valid while the mast holds its geometry</p>
+<p>Re-run this section after <strong>any</strong> mechanical change — a re-mounted sensor, a bumped mast,
+new tires (which change <code>base_link</code> height). A silently invalidated extrinsic looks like a
+SLAM problem in step 8.</p>
+</div>
+<h2 id="69-imu-and-time-sync">6.9 IMU and time sync<a class="headerlink" href="#69-imu-and-time-sync" title="Permanent link">&para;</a></h2>
+<p><strong>IMU</strong> (<a href="../../design/calibration/#5-imu-calibration">calibration.md §5</a>) — a standalone
+BNO085-class module on the laptop, calibrated in-repo. There is no ground-station tool.</p>
+<ol>
+<li>Drive the vendor calibration sequence (slow figure-8 for the magnetometer, rest for the
+   gyro, static orientations for the accel) until the <strong>calibration-status byte</strong> reads fully
+   calibrated. <strong>Log that byte</strong> — a partially-calibrated IMU is a silent yaw-drift source.</li>
+<li>Level: with the vehicle stationary and level, roll/pitch ≈ 0 and stable over 60 s. Record
+   any residual as a static offset.</li>
+<li>Rotate the vehicle a known 90°; confirm yaw changes ~90° <strong>in the correct sign</strong>.</li>
+<li>Publish the IMU→<code>base_link</code> rotation as a <strong>static transform in the URDF</strong>, not a driver
+   parameter. A wrong rotation corrupts yaw silently — the highest-risk step here. Photograph
+   the physical mounting alongside the values.</li>
+</ol>
+<p><strong>Time sync</strong> (<a href="../../design/calibration/#6-time-synchronization">calibration.md §6</a>) — much
+simpler than it was, because there is only one clock domain now:</p>
+<ul>
+<li>Single authoritative clock = <strong>the laptop</strong>. Every sensor is physically connected to it, so
+  they are already laptop-referenced.</li>
+<li>The Teensy uses <strong>micro-ROS session time sync</strong>, replacing the MAVLink <code>TIMESYNC</code> offset
+  estimation the two-clock design required. <strong>Verify the sync is actually established</strong> at
+  startup rather than assuming it; log the reported offset once per session.</li>
+<li>Record the mean USB round-trip latency once via a loopback test; subtract as a fixed offset
+  if it is significant relative to a control period.</li>
+<li><code>use_sim_time=false</code> on the vehicle — but <strong>true in simulation</strong>, the one place the twin and
+  the vehicle legitimately differ.</li>
+</ul>
+<p><strong>Verification:</strong> wiggle a feature seen by both LiDAR and camera while driving; the events
+should align within one sensor period. Confirm <code>robot_localization</code> is not rejecting
+measurements as out-of-sequence.</p>
+<p>Record: mean USB round-trip latency = <em>(measure)</em> ms · micro-ROS session offset = <em>(record)</em> ·
+IMU calibration-status byte = <em>(record)</em></p>
+<h2 id="610-calibration-artifact-index">6.10 Calibration artifact index<a class="headerlink" href="#610-calibration-artifact-index" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Subsystem</th>
+<th>Procedure</th>
+<th>Artifact</th>
+<th>Done</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Steering zero + scale</td>
+<td>§6.5</td>
+<td><code>config/calibration/steering.yaml</code> (<code>c0</code>, <code>k</code>)</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>Drive odometry</td>
+<td>§6.6</td>
+<td><code>config/calibration/odom.yaml</code> (<code>meters_per_tick</code>)</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>Camera intrinsics</td>
+<td>§6.7</td>
+<td><code>config/calibration/camera_front.yaml</code></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>Extrinsics</td>
+<td>§6.8</td>
+<td><code>config/calibration/extrinsics.yaml</code> or URDF joints</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>IMU</td>
+<td>§6.9</td>
+<td><code>config/calibration/imu.yaml</code> (offsets, mounting transform, part number)</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>Time sync</td>
+<td>§6.9</td>
+<td>loopback-latency note; micro-ROS session offset</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>Sensor-shaft travel (wrap check)</td>
+<td>§6.4</td>
+<td>recorded in <code>steering.yaml</code> alongside <code>c0</code>, <code>k</code></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>As-built BOM</td>
+<td><a href="../01-bom-sourcing/">step 1</a></td>
+<td><code>config/calibration/bom_asbuilt.md</code></td>
+<td>☐</td>
+</tr>
+</tbody>
+</table>
+<p>Every artifact carries date, operator, vehicle serial, and firmware/software git commit.
+<strong>Re-run the relevant section after any mechanical change</strong> — new tires, re-mounted sensor,
+re-flashed firmware.</p>
+<h2 id="611-gate-to-step-7">6.11 Gate to step 7<a class="headerlink" href="#611-gate-to-step-7" title="Permanent link">&para;</a></h2>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> All seven failsafe-matrix rows verified wheels-off</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Freewheel-on-E-stop confirmed (or hold-behavior re-analyzed for a wiper-motor build)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Default = STOCK on every power-up and every fault</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Steering mechanical limits measured against the ±22.5° target</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> No logic-rail brownout under steering stall</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Drive stall current confirmed &lt; 32 A/channel</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Steering sweep verifies within ±1° and returns to 0° at center</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Odometry verifies within ~2% over a fresh 20 m straight line</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Camera reprojection error &lt; ~0.3 px</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> LiDAR points project onto the correct camera structure</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> IMU verified; yaw changes correctly through a known 90°</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> All seven calibration artifacts committed with full stamps</li>
+</ul>
+<hr />
+<p><strong>Previous:</strong> <a href="../05-software/">5. Software install</a> · <strong>Next:</strong> <a href="../07-manual-drive/">7. Manual drive</a></p>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 8, 2026 05:51:09 UTC">August 8, 2026</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 7, 2026 12:38:10 UTC">August 7, 2026</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../05-software/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 5. Software Install">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                5. Software Install
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../07-manual-drive/" class="md-footer__link md-footer__link--next" aria-label="Next: 7. Manual Drive">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                7. Manual Drive
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Bio-Inspired Machine Intelligence Lab (BIMI), University of Michigan-Dearborn
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/jrkwon/mrider" target="_blank" rel="noopener" title="MRider on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.instant", "navigation.tracking", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.action.edit", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

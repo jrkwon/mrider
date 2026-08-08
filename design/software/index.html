@@ -1,0 +1,2744 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Michigan Rider — a drive-by-wire research and education vehicle platform">
+      
+      
+      
+        <link rel="canonical" href="https://jrkwon.github.io/mrider/design/software/">
+      
+      
+        <link rel="prev" href="../calibration/">
+      
+      
+        <link rel="next" href="../bom/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../images/mrider.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Software - MRider</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#mrider-software-design" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="MRider" class="md-header__button md-logo" aria-label="MRider" data-md-component="logo">
+      
+  <img src="../../images/mrider.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MRider
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Software
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jrkwon/mrider" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jrkwon/mrider
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="MRider" class="md-nav__button md-logo" aria-label="MRider" data-md-component="logo">
+      
+  <img src="../../images/mrider.png" alt="logo">
+
+    </a>
+    MRider
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jrkwon/mrider" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jrkwon/mrider
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr-dbw-architecture-review/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DBW Architecture Review (2026-08)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vehicle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vehicle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dbw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Drive-by-Wire
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Software
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Software
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-reuse-posture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Reuse posture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-ros-2-stack-reused-adapted-new" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. ROS 2 stack: reused / adapted / new
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. ROS 2 stack: reused / adapted / new">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#adr-sw1-one-transport-one-clock-typed-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-SW1 — One transport, one clock, typed messages
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-interfaces-topics-and-kinematics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Interfaces, topics, and kinematics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Interfaces, topics, and kinematics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-topic-interface-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Topic / interface contract
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-ackermann-kinematic-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Ackermann kinematic parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-tf-tree" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 TF tree
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-slam-nav2-ekf-configuration-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. SLAM / Nav2 / EKF configuration plan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. SLAM / Nav2 / EKF configuration plan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-robot_localization-ekf-configekfyaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 robot_localization EKF — config/ekf.yaml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-slam_toolbox-configslammapper_params_online_asyncyaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 slam_toolbox — config/slam/mapper_params_online_async.yaml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-nav2-configslamnav2_paramsyaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Nav2 — config/slam/nav2_params.yaml
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.3 Nav2 — config/slam/nav2_params.yaml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#adr-sw2-nav2-local-controller-for-ackermann" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-SW2 — Nav2 local controller for Ackermann
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-data-collection-end-to-end-nn-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Data collection + end-to-end NN pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Data collection + end-to-end NN pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-data-collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Data collection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-end-to-end-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 End-to-end model
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-toolchain-environment-and-version-pinning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Toolchain, environment, and version pinning
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Toolchain, environment, and version pinning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-verified-on-the-lab-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Verified on the lab machine
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-gazebo-pairing-week-1-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Gazebo pairing — week-1 gate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-version-pinning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Version pinning
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-fallbacks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Fallbacks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-software-adr-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Software ADR summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-semester-1-scope-and-software-acceptance-gates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Semester-1 scope and software acceptance gates
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Semester-1 scope and software acceptance gates">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#software-acceptance-gates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Software acceptance gates
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bom/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bill of Materials
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Build Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/01-bom-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. BOM & Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/02-mechanical/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Vehicle Prep & Mechanical
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/03-electrical/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Electrical & Wiring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/04-firmware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Firmware Bring-up
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/05-software/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Software Install
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/06-bench-test/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Bench Test & Calibration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/07-manual-drive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Manual Drive
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/08-autonomous/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Autonomous Bring-up
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learn
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Learn
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m1-ros2-intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M1 — Intro to MRider & ROS 2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m2-dbw-steering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M2 — Drive-by-Wire & Smart-Servo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m3-teleop-safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M3 — Teleop Control & Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m4-perception/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M4 — Perception
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m5-slam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M5 — Localization & SLAM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m6-nav2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M6 — Navigation (Nav2)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m7-behavior-cloning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M7 — Behavior Cloning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m8-capstone/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M8 — Capstone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-reuse-posture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Reuse posture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-ros-2-stack-reused-adapted-new" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. ROS 2 stack: reused / adapted / new
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. ROS 2 stack: reused / adapted / new">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#adr-sw1-one-transport-one-clock-typed-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-SW1 — One transport, one clock, typed messages
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-interfaces-topics-and-kinematics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Interfaces, topics, and kinematics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Interfaces, topics, and kinematics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-topic-interface-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Topic / interface contract
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-ackermann-kinematic-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Ackermann kinematic parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-tf-tree" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 TF tree
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-slam-nav2-ekf-configuration-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. SLAM / Nav2 / EKF configuration plan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. SLAM / Nav2 / EKF configuration plan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-robot_localization-ekf-configekfyaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 robot_localization EKF — config/ekf.yaml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-slam_toolbox-configslammapper_params_online_asyncyaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 slam_toolbox — config/slam/mapper_params_online_async.yaml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-nav2-configslamnav2_paramsyaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Nav2 — config/slam/nav2_params.yaml
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.3 Nav2 — config/slam/nav2_params.yaml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#adr-sw2-nav2-local-controller-for-ackermann" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-SW2 — Nav2 local controller for Ackermann
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-data-collection-end-to-end-nn-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Data collection + end-to-end NN pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Data collection + end-to-end NN pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-data-collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Data collection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-end-to-end-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 End-to-end model
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-toolchain-environment-and-version-pinning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Toolchain, environment, and version pinning
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Toolchain, environment, and version pinning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-verified-on-the-lab-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Verified on the lab machine
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-gazebo-pairing-week-1-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Gazebo pairing — week-1 gate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-version-pinning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Version pinning
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-fallbacks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Fallbacks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-software-adr-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Software ADR summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-semester-1-scope-and-software-acceptance-gates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Semester-1 scope and software acceptance gates
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Semester-1 scope and software acceptance gates">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#software-acceptance-gates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Software acceptance gates
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/jrkwon/mrider/edit/main/docs/design/software.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="mrider-software-design">MRider Software Design<a class="headerlink" href="#mrider-software-design" title="Permanent link">&para;</a></h1>
+<p>This document specifies the <strong>ROS 2 software stack</strong> for MRider: which B-MROVER
+(<code>jrkwon/mrover</code>) packages are reused verbatim, which are adapted, and which are new; the
+topic/interface contract between the autonomy laptop and the vehicle; the TF tree and
+Ackermann kinematics; the SLAM / Nav2 / EKF configuration plan; and the data-collection +
+end-to-end neural-network pipeline for behavior cloning.</p>
+<p>It is a sibling of <a href="../architecture/"><code>architecture.md</code></a> (system architecture),
+<a href="../dbw/"><code>dbw.md</code></a> (drive-by-wire + numeric interface contract),
+<a href="../safety/"><code>safety.md</code></a>, <a href="../sensors/"><code>sensors.md</code></a>, <a href="../calibration/"><code>calibration.md</code></a>,
+<a href="../vehicle/"><code>vehicle.md</code></a>, and <a href="../bom/"><code>bom.md</code></a>.</p>
+<p><strong>Target:</strong> ROS 2 <strong>Humble</strong> on Ubuntu 22.04 (B-MROVER's validated distro), vehicle interface
+via <strong>micro-ROS</strong>. All reuse claims were verified against the local checkout at
+<code>/mnt/data/projects/mrover</code>; file paths are cited inline.</p>
+<hr />
+<h2 id="1-reuse-posture">1. Reuse posture<a class="headerlink" href="#1-reuse-posture" title="Permanent link">&para;</a></h2>
+<p>The guiding rule is <strong>reuse before invent</strong> — applied honestly. A
+<a href="../adr-dbw-architecture-review/">direct re-reading of the B-MROVER source</a> established which
+reuse claims hold and which did not survive contact with the code.</p>
+<p><strong>Reuse that is real, and carries most of MRider's autonomy.</strong> <code>robot_localization</code> EKF,
+slam_toolbox mapping, Nav2 navigation, the URDF/xacro Ackermann structure, the Gazebo worlds,
+the data-collection recorder, and the Keras end-to-end training/inference pipeline. All of it
+sits <strong>above</strong> the vehicle interface and is transport-agnostic, so the controller change
+below does not touch it. Same distro (Humble), so these port with minimal change.</p>
+<p><strong>Three things change:</strong></p>
+<ol>
+<li><strong>The controller topology</strong> — a single <strong>Teensy 4.1 running micro-ROS</strong> replaces the
+   Pixhawk 6C + Arduino Nano pair (<a href="../adr-dbw-architecture-review/#46-decision-adopted-2026-08-07">D3</a>).
+   This retires <code>mavlink_bridge.py</code>, the <code>px4_msgs</code> dependency, and the XRCE agent from the
+   command path (ADR-SW1).</li>
+<li><strong>The vehicle interface</strong> — typed <code>DbwCommand</code>/<code>DbwStatus</code> on one transport with one clock,
+   replacing the split MAVLink-command / I²C-feedback arrangement.</li>
+<li><strong>Kinematic and frame parameters</strong> — re-parameterized for the chassis, and three B-MROVER
+   config artifacts corrected (§4).</li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">One reuse claim was withdrawn (finding F3)</p>
+<p>Earlier drafts marked the <code>ros2_control</code> hardware interface <strong>REUSE</strong>, citing B-MROVER's
+<code>carlikebot_system.cpp</code>. That file is the <strong>unmodified upstream demo stub</strong>: namespace
+<code>ros2_control_demo_example_11</code> (<code>:27</code>), <code>read()</code> assigns
+<code>state.position = command.position</code> — echoing the command back as state (<code>:280</code>) — and
+<code>write()</code> only calls <code>RCLCPP_INFO</code> (<code>:304</code>). Both are bracketed by the upstream comment
+<em>"This part here is for exemplary purposes - Please do not copy to your production code"</em>.
+<strong>There is no hardware I/O in it</strong>, so B-MROVER's <code>steering_position_controller</code> is wired
+to a mock. What was reusable is an interface <em>shape</em>, not working code. That row is now
+<strong>NEW</strong>.</p>
+</div>
+<hr />
+<h2 id="2-ros-2-stack-reused-adapted-new">2. ROS 2 stack: reused / adapted / new<a class="headerlink" href="#2-ros-2-stack-reused-adapted-new" title="Permanent link">&para;</a></h2>
+<p>Legend: <strong>REUSE</strong> = used essentially as-is; <strong>ADAPT</strong> = kept but reconfigured/retargeted;
+<strong>NEW</strong> = MRider-authored.</p>
+<table>
+<thead>
+<tr>
+<th>Subsystem</th>
+<th>B-MROVER artifact (verified path)</th>
+<th>Status</th>
+<th>MRider change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MAVLink ↔ ROS 2 command bridge</td>
+<td><code>dev_ws/src/mrover/mrover/mavlink_bridge.py:79-126</code></td>
+<td><strong>RETIRED</strong></td>
+<td>Not used. Note the path it implemented was <strong>MAVLink emitted laptop-side</strong> (<code>:79-82</code>, <code>:105-126</code> call <code>mav.manual_control_send()</code> over its own <code>mavutil</code> connection), not XRCE-to-PX4 as earlier diagrams showed (finding F5). Retained as reference for the ±22.5° range only.</td>
+</tr>
+<tr>
+<td><strong>Encoder feedback path</strong></td>
+<td><code>mavlink_bridge.py:231-260</code> (<code>wheel_distance_callback_mavlink</code>) → <code>Control</code> on <code>/rover</code> (<code>:76</code>)</td>
+<td><strong>RETIRED</strong></td>
+<td>Replaced by typed <code>DbwStatus</code> over micro-ROS. Its runtime auto-ranging (<code>:47-50</code>, <code>:243-250</code>) expands min/max <em>during operation</em> and rescales past values, with asymmetric defaults (<code>-600</code>, <code>180</code>) making boot centre arbitrary (F4) — a defect to avoid, not a design to inherit.</td>
+</tr>
+<tr>
+<td>Micro-XRCE-DDS agent</td>
+<td><code>agent_config.xml</code> (domainId 10)</td>
+<td><strong>REPLACED</strong></td>
+<td><code>micro_ros_agent</code> (USB serial transport) instead. Must be <strong>built from source</strong> via <code>micro_ros_setup</code> — not available in the Humble apt repositories.</td>
+</tr>
+<tr>
+<td>PX4 message set</td>
+<td><code>dev_ws/src/px4_msgs/</code></td>
+<td><strong>RETIRED</strong></td>
+<td>Replaced by <code>mitt_msgs</code> (<code>DbwCommand</code>, <code>DbwStatus</code>). Dependency removed entirely.</td>
+</tr>
+<tr>
+<td>Robot-localization EKF</td>
+<td><code>dev_ws/src/mrover/config/ekf.yaml</code></td>
+<td><strong>ADAPT</strong></td>
+<td>Reuse dual-EKF structure (local <code>odom</code> + global <code>map</code>+GPS) and <code>two_d_mode</code>; retarget inputs (§4), fix magnetic declination. <strong>Note this was already the estimator</strong> — PX4 supplied raw IMU only (F11) — so removing PX4 changes the IMU <em>driver</em>, not the estimator.</td>
+</tr>
+<tr>
+<td>SLAM (slam_toolbox)</td>
+<td><code>dev_ws/src/mrover/config/slam/mapper_params_online_async.yaml</code></td>
+<td><strong>ADAPT</strong></td>
+<td>Reuse CeresSolver online-async mapping; reconcile <code>base_frame</code> (§4.1).</td>
+</tr>
+<tr>
+<td>Nav2</td>
+<td><code>dev_ws/src/mrover/config/slam/nav2_params.yaml</code></td>
+<td><strong>ADAPT</strong></td>
+<td>Reuse NavFn planner + costmaps; re-evaluate DWB controller for Ackermann (§4.3); re-parameterize <code>robot_radius</code>/velocities.</td>
+</tr>
+<tr>
+<td>ros2_control hardware interface</td>
+<td><code>dev_ws/src/mrover/hardware/carlikebot_system.cpp</code></td>
+<td><strong>NEW</strong> (was mis-marked REUSE — F3)</td>
+<td><code>mitt_hardware</code>: a real <code>hardware_interface</code> bridging <code>ros2_control</code> to the micro-ROS <code>DbwCommand</code>/<code>DbwStatus</code> topics. B-MROVER's file is an unmodified demo stub with no hardware I/O — see the §1 warning. The reusable part is the <em>interface shape</em>: front steer = <strong>position</strong>, rear drive = <strong>velocity</strong>.</td>
+</tr>
+<tr>
+<td>ros2_control <strong>sim</strong> interface</td>
+<td>—</td>
+<td><strong>REUSE (upstream)</strong></td>
+<td><code>gz_ros2_control</code> in simulation. The same controller stack and configs run in sim and on hardware; only this plugin swaps. This is what makes the twin a development vehicle rather than a demo.</td>
+</tr>
+<tr>
+<td>Ackermann controller</td>
+<td><code>dev_ws/src/mrover/config/ackermann/carlike_controllers.yaml</code></td>
+<td><strong>REPLACE with upstream</strong></td>
+<td>Use <code>ackermann_steering_controller</code> from <code>ros2_controllers</code> (<code>ros-humble-ackermann-steering-controller</code>, available from apt) rather than B-MROVER's fork of <code>ros2_control_demo_example_11</code>.</td>
+</tr>
+<tr>
+<td>Bicycle steering controller</td>
+<td><code>dev_ws/src/mrover/config/ackermann/carlike_controllers.yaml</code></td>
+<td><strong>ADAPT</strong></td>
+<td><code>BicycleSteeringController</code>; re-parameterize <code>wheelbase</code>/<code>wheel_radius</code> for real chassis (§3.2).</td>
+</tr>
+<tr>
+<td>URDF / xacro</td>
+<td><code>dev_ws/src/mrover/description/ackermann/robot_core2_urdf.xacro</code></td>
+<td><strong>ADAPT</strong></td>
+<td>Reuse Ackermann structure; replace placeholder dimensions with measured chassis values (§3.2).</td>
+</tr>
+<tr>
+<td>LiDAR driver</td>
+<td><code>dev_ws/src/ydlidar_ros2_driver/</code>, <code>config/ydlidar_params.yaml</code></td>
+<td><strong>REUSE/ADAPT</strong></td>
+<td>Reuse if YDLidar retained; swap driver if a different LiDAR is chosen (<a href="../sensors/"><code>sensors.md</code></a>).</td>
+</tr>
+<tr>
+<td>Data-collection recorder</td>
+<td><code>dev_ws/src/data_collection/data_collection/data_collection_main.py:69-71</code></td>
+<td><strong>ADAPT</strong></td>
+<td>Reuse ROS 2 recorder (Control + Odometry + Image); retarget <code>vehicle_control_topic</code> to <code>/mitt/dbw/status</code>. Phase 2.</td>
+</tr>
+<tr>
+<td>End-to-end NN training</td>
+<td><code>neural_net/net_model.py</code>, <code>neural_net/train.py</code>, <code>drive_train.py</code></td>
+<td><strong>REUSE</strong></td>
+<td>Keras PilotNet-class models unchanged. Phase 2.</td>
+</tr>
+<tr>
+<td>End-to-end NN inference</td>
+<td><code>dev_ws/src/run_neural/run_neural/run_neural.py</code> (+ <code>run_neural_rn.py</code>)</td>
+<td><strong>REUSE</strong></td>
+<td>Runtime inference node. Phase 2.</td>
+</tr>
+<tr>
+<td>Teensy firmware</td>
+<td><code>code/code.ino</code></td>
+<td><strong>PORT (logic only)</strong></td>
+<td>Encoder-read logic ported to Teensy hardware quadrature decoders. <strong>PPR not inherited</strong> — the source conflicts with itself (52 PPR in <code>code.ino:27</code> vs 16 PPR in its own BOM), so it must be verified on the part fitted (F7). The I²C register map and ASCII prints are dropped.</td>
+</tr>
+<tr>
+<td>Vehicle interface messages</td>
+<td><code>mrover_control/msg/Control.msg</code></td>
+<td><strong>ADAPT</strong></td>
+<td><code>mitt_msgs/DbwCommand</code>, <code>DbwStatus</code> — lineage from <code>Control.msg</code> (<code>timestamp, throttle, steer, steer_angle</code>), extended with setpoint, ticks, mode, and a fault bitfield.</td>
+</tr>
+<tr>
+<td>Odometry node</td>
+<td>—</td>
+<td><strong>NEW</strong></td>
+<td>Bicycle-model odometry from <code>DbwStatus</code> (steer angle + drive ticks) → <code>wheel/odometry</code> for the EKF.</td>
+</tr>
+<tr>
+<td>Validation bench</td>
+<td>—</td>
+<td><strong>NEW</strong></td>
+<td><code>mitt_bench</code>: scripts producing the quantified acceptance numbers (steering accuracy, odometry drift, latency). See §8.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="adr-sw1-one-transport-one-clock-typed-messages">ADR-SW1 — One transport, one clock, typed messages<a class="headerlink" href="#adr-sw1-one-transport-one-clock-typed-messages" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Decision.</strong> The entire vehicle interface is two typed micro-ROS topics —
+  <code>/mitt/dbw/command</code> and <code>/mitt/dbw/status</code> — over a single USB serial link to the Teensy.
+  Retire the MAVLink command path, the <code>WHEEL_DISTANCE</code> feedback path, the ASCII serial
+  protocol, and the I²C register map.</li>
+<li><strong>Alternatives.</strong> (a) The superseded split arrangement: MAVLink command via PX4, feedback via
+  a separate Nano→I²C/USB path. (b) A hand-rolled framed binary protocol on the same link
+  (<strong>retained as the fallback</strong> if no Humble <code>micro_ros_arduino</code> release exists — see
+  <a href="../dbw/#9-teensy-41-firmware-platform-and-version-pinning"><code>dbw.md §9</code></a>).</li>
+<li><strong>Rationale.</strong> Under the split arrangement, command and feedback shared <strong>neither a clock nor
+  a transport</strong>. A symptom observed at the ROS layer could originate in any of four subsystems,
+  and no single log contained both sides of the loop — which is precisely the "integration
+  complexity" the lab diagnosed as a root cause of the previous generations falling short.
+  One transport with one clock makes <code>ros2 topic echo</code> authoritative and <code>ros2 bag</code> complete.</li>
+<li><strong>Consequence.</strong> The link now carries the <strong>steering setpoint</strong> as well as feedback, so a USB
+  dropout removes the setpoint — a genuine regression analysed and accepted in
+  <a href="../safety/#2-failsafe-matrix">safety.md failsafe row 2</a>. USB session stability is a Stage 0
+  measured gate, not an assumption.</li>
+</ul>
+<hr />
+<h2 id="3-interfaces-topics-and-kinematics">3. Interfaces, topics, and kinematics<a class="headerlink" href="#3-interfaces-topics-and-kinematics" title="Permanent link">&para;</a></h2>
+<h3 id="31-topic-interface-contract">3.1 Topic / interface contract<a class="headerlink" href="#31-topic-interface-contract" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Type</th>
+<th>Direction</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/mitt/dbw/command</code></td>
+<td><code>mitt_msgs/DbwCommand</code></td>
+<td><code>mitt_hardware</code> → Teensy (micro-ROS)</td>
+<td><code>steering_angle</code> (<strong>rad</strong>), <code>speed</code> (m/s). ≥ 50 Hz; staleness &gt; 500 ms → <code>ESTOP</code>.</td>
+</tr>
+<tr>
+<td><code>/mitt/dbw/status</code></td>
+<td><code>mitt_msgs/DbwStatus</code></td>
+<td>Teensy → stack (micro-ROS)</td>
+<td>Measured angle, setpoint, wheel speed, cumulative ticks, mode, fault bitfield. ≥ 50 Hz.</td>
+</tr>
+<tr>
+<td><code>/imu/data</code></td>
+<td><code>sensor_msgs/Imu</code></td>
+<td>IMU driver → EKF</td>
+<td>BNO085-class, direct to laptop. EKF <code>imu0</code>.</td>
+</tr>
+<tr>
+<td><code>/scan</code></td>
+<td><code>sensor_msgs/LaserScan</code></td>
+<td>LiDAR → SLAM</td>
+<td>slam_toolbox <code>scan_topic: /scan</code>.</td>
+</tr>
+<tr>
+<td><code>/camera/color/image_raw</code></td>
+<td><code>sensor_msgs/Image</code></td>
+<td>camera → recorder/NN</td>
+<td>Data-collection default (<code>config/data_collection/rover_template.yaml</code>).</td>
+</tr>
+<tr>
+<td><code>wheel/odometry</code></td>
+<td><code>nav_msgs/Odometry</code></td>
+<td>odometry node → EKF</td>
+<td>Bicycle model from <code>DbwStatus</code>. EKF <code>odom0</code> (<code>ekf.yaml</code>).</td>
+</tr>
+<tr>
+<td><code>odometry/gps</code></td>
+<td><code>nav_msgs/Odometry</code></td>
+<td>navsat → map-EKF</td>
+<td>EKF <code>odom1</code> (global). Phase 2.</td>
+</tr>
+</tbody>
+</table>
+<p>Nav2 and the behavior-cloning policy both drive <code>ros2_control</code>'s
+<code>ackermann_steering_controller</code>, which reaches the vehicle through <code>mitt_hardware</code> — so
+teleop, Nav2, and the learned policy all use <strong>the same single datapath</strong>, in both simulation
+and hardware.</p>
+<p><strong>Message lineage.</strong> <code>DbwStatus</code> descends from <code>dev_ws/src/mrover_control/msg/Control.msg</code>,
+whose verified fields are:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>uint64  timestamp     # microseconds since system start
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>float64 throttle
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>float64 steer
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>float64 steer_angle
+</code></pre></div>
+<p>MRider retains <code>timestamp</code> and <code>steer_angle</code> (now <strong>radians</strong>, from the absolute load-side
+sensor) and adds <code>steering_setpoint</code>, <code>wheel_speed</code>, <code>drive_ticks</code>, <code>mode</code>, and <code>faults</code>.
+Full field tables are in <a href="../dbw/#101-primary-transport-micro-ros-typed-messages"><code>dbw.md §10.1</code></a>.</p>
+<h3 id="32-ackermann-kinematic-parameters">3.2 Ackermann kinematic parameters<a class="headerlink" href="#32-ackermann-kinematic-parameters" title="Permanent link">&para;</a></h3>
+<p>The chassis is <strong>TBD</strong> (<a href="../vehicle/"><code>vehicle.md</code></a>), so kinematics are <strong>parameterized</strong>.
+B-MROVER's values are the reference model, to be replaced with measured values after purchase
+and set once in <a href="../calibration/"><code>calibration.md</code></a>.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>B-MROVER reference (verified)</th>
+<th>Source</th>
+<th>MRider action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Steering range</td>
+<td><strong>±22.5°</strong></td>
+<td><code>robot_core2_urdf.xacro:26</code> (<code>steer_limit_deg=22.5</code>); cross-confirmed by the bridge count→±22.5° map (<code>mavlink_bridge.py:251-253</code>) and <code>steering_angle_max: 22.5</code> (<code>config/data_collection/rover_template.yaml</code>)</td>
+<td>Keep as design target; re-verify mechanical limit on real column (<a href="../calibration/"><code>calibration.md</code></a>).</td>
+</tr>
+<tr>
+<td>Wheelbase</td>
+<td><code>0.325</code> m (controller) / placeholder <code>1.3</code> m chassis in URDF</td>
+<td><code>carlike_controllers.yaml:13</code>; <code>robot_core2_urdf.xacro:15</code></td>
+<td>Measure on real chassis; set <code>wheelbase</code>.</td>
+</tr>
+<tr>
+<td>Track (wheel separation)</td>
+<td><code>wheel_separation_w = 0.4</code> m (sim placeholder)</td>
+<td><code>robot_core2_urdf.xacro:9-10</code></td>
+<td>Measure; set track.</td>
+</tr>
+<tr>
+<td>Wheel radius</td>
+<td><code>0.1397</code> m</td>
+<td><code>robot_core2_urdf.xacro:19</code></td>
+<td>Measure; also drives <code>robot_radius</code> sanity in Nav2.</td>
+</tr>
+<tr>
+<td>Steer joint type</td>
+<td><code>revolute</code>, limits ±22.5°</td>
+<td><code>robot_core2_urdf.xacro:148-156</code> (<code>virtual_front_wheel_joint</code>)</td>
+<td>Keep.</td>
+</tr>
+<tr>
+<td>Drive joint type</td>
+<td><code>continuous</code></td>
+<td><code>robot_core2_urdf.xacro:187-193</code> (<code>virtual_rear_wheel_joint</code>)</td>
+<td>Keep.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Note (honest caveat):</strong> B-MROVER's URDF mixes a simulation chassis (<code>chassis_length=1.3</code>)
+with a much smaller controller <code>wheelbase=0.325</code>; these are simulation artifacts, not a
+real measurement. MRider treats <strong>all</strong> dimensions as placeholders until measured. The one
+value that is consistent across three independent files — the <strong>±22.5° steering range</strong> — is
+adopted as the design target.</p>
+</blockquote>
+<h3 id="33-tf-tree">3.3 TF tree<a class="headerlink" href="#33-tf-tree" title="Permanent link">&para;</a></h3>
+<p>MRider follows REP-105: <code>map</code> → <code>odom</code> → <code>base_link</code> → sensor frames. The <code>map</code>→<code>odom</code>
+transform is published by the global (map) EKF / SLAM; <code>odom</code>→<code>base_link</code> by the local EKF;
+sensor frames are static (URDF).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>flowchart TD
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    map[&quot;map&quot;] --&gt; odom[&quot;odom&quot;]
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    odom --&gt; base[&quot;base_link&quot;]
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    base --&gt; cam[&quot;camera_link&lt;br/&gt;(front camera)&quot;]
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    base --&gt; lidar[&quot;laser / lidar_link&lt;br/&gt;(/scan)&quot;]
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    base --&gt; imu[&quot;imu_link&lt;br/&gt;(BNO085-class IMU)&quot;]
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    base --&gt; gnss[&quot;gnss_link&lt;br/&gt;(optional GNSS)&quot;]
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    base --&gt; fsteer[&quot;front_steer&lt;br/&gt;(virtual_front_wheel_joint, ±22.5°)&quot;]
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    base --&gt; rwheel[&quot;rear_wheel&lt;br/&gt;(virtual_rear_wheel_joint)&quot;]
+</code></pre></div>
+<p>Extrinsics (camera/LiDAR → <code>base_link</code>), IMU alignment, and steering zero are established in
+<a href="../calibration/"><code>calibration.md</code></a>.</p>
+<hr />
+<h2 id="4-slam-nav2-ekf-configuration-plan">4. SLAM / Nav2 / EKF configuration plan<a class="headerlink" href="#4-slam-nav2-ekf-configuration-plan" title="Permanent link">&para;</a></h2>
+<p>Grounded in B-MROVER's existing configs, with three specific corrections MRider must make.</p>
+<h3 id="41-robot_localization-ekf-configekfyaml">4.1 robot_localization EKF — <code>config/ekf.yaml</code><a class="headerlink" href="#41-robot_localization-ekf-configekfyaml" title="Permanent link">&para;</a></h3>
+<p>B-MROVER runs a <strong>dual-EKF</strong> setup (verified):</p>
+<ul>
+<li><code>ekf_filter_node</code> (local): <code>world_frame: odom</code>, fuses <code>odom0: wheel/odometry</code> (vx, vy,
+  vyaw) and <code>imu0: imu/data</code> (yaw, vyaw, ax). <code>two_d_mode: true</code>, <code>frequency: 30.0</code>,
+  <code>sensor_timeout: 0.1</code>, frames <code>map</code>/<code>odom</code>/<code>base_link</code>.</li>
+<li><code>ekf_filter_node_map</code> (global): <code>world_frame: map</code>, adds <code>odom1: odometry/gps</code> (x, y) plus
+  a <code>navsat_transform</code> node for GNSS fusion.</li>
+</ul>
+<p><strong>MRider plan:</strong>
+- Keep the dual-EKF structure and <code>two_d_mode</code> (planar ride-on).
+- Retarget <code>odom0: wheel/odometry</code> to odometry derived from <code>/mitt/dbw/status</code> (bicycle model
+  from steer angle + drive ticks) — a new odometry node performs the conversion.
+- Keep <code>imu0: imu/data</code>, now sourced from the <strong>BNO085-class IMU driver</strong> directly. Note this
+  is a <em>driver</em> swap only: B-MROVER's estimator was already <code>robot_localization</code> with PX4
+  supplying raw <code>sensor_combined</code> (finding F11), so the fusion structure is unchanged.
+- <strong>Correction:</strong> <code>navsat_transform.magnetic_declination_radians</code> is set for <strong>Lisbon</strong> in
+  B-MROVER (<code>ekf.yaml</code>, <code># For lat/long of Lisbon, Portugal</code>). MRider must set the local
+  (Ann Arbor) declination — tracked in <a href="../calibration/"><code>calibration.md</code></a>. GNSS is optional
+  (<a href="../sensors/"><code>sensors.md</code></a>); the map-EKF runs GNSS-free until a receiver is added.</p>
+<h3 id="42-slam_toolbox-configslammapper_params_online_asyncyaml">4.2 slam_toolbox — <code>config/slam/mapper_params_online_async.yaml</code><a class="headerlink" href="#42-slam_toolbox-configslammapper_params_online_asyncyaml" title="Permanent link">&para;</a></h3>
+<p>Verified: <code>solver_plugin: CeresSolver</code>, <code>mode: mapping</code>, <code>odom_frame: odom</code>, <code>map_frame: map</code>,
+<code>scan_topic: /scan</code>, <code>resolution: 0.05</code>, <code>max_laser_range: 10.0</code>, <code>transform_publish_period:
+0.02</code>.</p>
+<p><strong>MRider plan:</strong> reuse as-is for mapping; switch <code>mode</code> to <code>localization</code> (with a saved map)
+for repeat runs. <strong>Correction:</strong> <code>base_frame: base_footprint</code> here, but the EKF uses
+<code>base_link</code>. MRider must reconcile these to one convention (recommend <code>base_link</code> throughout,
+or add a static <code>base_link</code>→<code>base_footprint</code> transform) so TF stays consistent.</p>
+<h3 id="43-nav2-configslamnav2_paramsyaml">4.3 Nav2 — <code>config/slam/nav2_params.yaml</code><a class="headerlink" href="#43-nav2-configslamnav2_paramsyaml" title="Permanent link">&para;</a></h3>
+<p>Verified plugins: controller <code>FollowPath: dwb_core::DWBLocalPlanner</code> (<code>max_vel_x: 0.26</code>,
+<code>max_vel_theta: 1.0</code>, <code>max_vel_y: 0.0</code>), planner <code>GridBased: NavfnPlanner</code>
+(<code>expected_planner_frequency: 20.0</code>), recoveries <code>spin</code>/<code>back_up</code>/<code>wait</code>, <code>robot_radius:
+0.1397</code>.</p>
+<p><strong>MRider plan:</strong> reuse NavFn planner and costmap layers; re-parameterize <code>robot_radius</code> and
+velocity limits for the real (larger) chassis. <strong>Design note (ADR-SW2 below):</strong> DWB is a
+diff-drive/omni-oriented local planner; on a true Ackermann vehicle with a ±22.5° steering
+limit, a curvature-aware controller (e.g., Regulated Pure Pursuit) is often a better fit.
+MRider keeps DWB as the reused default for first bring-up and flags RPP as the evaluation
+alternative.</p>
+<h4 id="adr-sw2-nav2-local-controller-for-ackermann">ADR-SW2 — Nav2 local controller for Ackermann<a class="headerlink" href="#adr-sw2-nav2-local-controller-for-ackermann" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Decision.</strong> Start with B-MROVER's DWB (reuse), evaluate Regulated Pure Pursuit as a
+  swap after basic navigation works.</li>
+<li><strong>Alternatives.</strong> DWB only (max reuse, but ignores the non-holonomic turning constraint);
+  RPP from the start (better kinematic fit, less directly reused).</li>
+<li><strong>Rationale.</strong> Reuse-first for bring-up velocity; the ±22.5° minimum-turn-radius constraint
+  is real and may make DWB paths infeasible, so RPP is pre-registered as the fallback with a
+  concrete trigger (path-tracking error or infeasible commands during turning tests).</li>
+</ul>
+<hr />
+<h2 id="5-data-collection-end-to-end-nn-pipeline">5. Data collection + end-to-end NN pipeline<a class="headerlink" href="#5-data-collection-end-to-end-nn-pipeline" title="Permanent link">&para;</a></h2>
+<p>MRider reuses B-MROVER's behavior-cloning pipeline nearly verbatim.</p>
+<h3 id="51-data-collection">5.1 Data collection<a class="headerlink" href="#51-data-collection" title="Permanent link">&para;</a></h3>
+<p><code>dev_ws/src/data_collection/data_collection/data_collection_main.py</code> (ROS 2) subscribes
+(verified <code>:69-71</code>):</p>
+<ul>
+<li><code>Control</code> on <code>vehicle_control_topic</code> (steering + throttle label),</li>
+<li><code>Odometry</code> on <code>base_pose_topic</code> (pose/velocity),</li>
+<li><code>Image</code> on <code>camera_image_topic</code> (front camera),</li>
+</ul>
+<p>and records synchronized samples to <code>e2e_data</code>. Config
+<code>config/data_collection/rover_template.yaml</code> sets <code>camera_image_topic:
+/camera/color/image_raw</code>, <code>vehicle_control_topic: /rover</code>, <code>steering_angle_max: 22.5</code>, and the
+image crop/size.</p>
+<p><strong>MRider change:</strong> retarget <code>vehicle_control_topic</code> from <code>/rover</code> to <strong><code>/mitt/dbw/status</code></strong>
+(the steering-angle-labeled source), and <code>base_pose_topic</code> to the EKF odometry output.
+The legacy ROS 1 <code>data_collection_board.py</code> (rospy / <code>ScoutControl</code>) is <strong>not</strong> used.</p>
+<div class="admonition note">
+<p class="admonition-title">Phase 2</p>
+<p>Behavior cloning is deferred out of semester 1 (§8). It is documented here because the
+pipeline is reused intact and the <strong>label quality depends on the DBW work</strong>: B-MROVER's
+steering labels came from a runtime-auto-ranged incremental encoder whose zero drifts
+(F4), which is a poor training signal. MRider's absolute load-side angle is a materially
+better label, and that is a research contribution in its own right.</p>
+</div>
+<h3 id="52-end-to-end-model">5.2 End-to-end model<a class="headerlink" href="#52-end-to-end-model" title="Permanent link">&para;</a></h3>
+<p><code>neural_net/net_model.py</code> defines Keras models (verified): <code>model_ce491</code> is the classic
+PilotNet architecture (Conv 24→36→48→64→64 with a normalization <code>Lambda x/127.5−1.0</code>, then
+Dense 100→50→10→<code>num_outputs</code>), plus <code>model_agribot</code> and <code>model_jaerock</code> variants and a
+ResNet inference path (<code>run_neural_rn.py</code>). Config <code>config/neural_net/rover_template.yaml</code>:
+<code>num_outputs: 1</code> (steering; optionally throttle), input image <code>160×160×3</code>, selectable
+<code>network_type</code>.</p>
+<p><strong>Pipeline (reused):</strong> <code>neural_net/train.py</code> / <code>drive_train.py</code> train from <code>e2e_data</code>;
+<code>dev_ws/src/run_neural/run_neural/run_neural.py</code> runs inference at drive time. In MRider the
+inference output drives the <strong>same <code>ros2_control</code> stack</strong> as Nav2 and teleop, so the learned
+policy uses the exact single pinned datapath (<a href="../dbw/"><code>dbw.md</code></a>) — and can be exercised in
+simulation first, because the twin and the vehicle differ only in the <code>hardware_interface</code>
+plugin.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>flowchart LR
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    subgraph COLLECT[&quot;Data collection&quot;]
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>        IMG[&quot;/camera/color/image_raw&quot;] --&gt; REC[&quot;data_collection_main.py&quot;]
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        FB[&quot;/mitt/dbw/status (absolute steer label)&quot;] --&gt; REC
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        ODO[&quot;EKF odometry&quot;] --&gt; REC
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        REC --&gt; DS[&quot;e2e_data (image + steer/throttle)&quot;]
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    end
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    DS --&gt; TRAIN[&quot;neural_net/train.py&lt;br/&gt;PilotNet (model_ce491)&quot;]
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    TRAIN --&gt; WTS[&quot;trained weights&quot;]
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    WTS --&gt; INF[&quot;run_neural.py (inference)&quot;]
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    INF --&gt; RC2[&quot;ros2_control&lt;br/&gt;ackermann_steering_controller&quot;]
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    RC2 --&gt; HW[&quot;mitt_hardware -&gt; /mitt/dbw/command&quot;]
+</code></pre></div>
+<hr />
+<h2 id="6-toolchain-environment-and-version-pinning">6. Toolchain, environment, and version pinning<a class="headerlink" href="#6-toolchain-environment-and-version-pinning" title="Permanent link">&para;</a></h2>
+<h3 id="61-verified-on-the-lab-machine">6.1 Verified on the lab machine<a class="headerlink" href="#61-verified-on-the-lab-machine" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ubuntu 22.04.5, ROS 2 Humble</td>
+<td>installed</td>
+</tr>
+<tr>
+<td><code>slam_toolbox</code>, <code>nav2_bringup</code>, <code>ros_gz</code>, <code>controller_manager</code></td>
+<td>installed</td>
+</tr>
+<tr>
+<td><code>ackermann_steering_controller</code>, <code>gz_ros2_control</code>, <code>robot_localization</code>, <code>rplidar_ros</code>, <code>joint_state_broadcaster</code></td>
+<td>available from apt</td>
+</tr>
+<tr>
+<td><code>micro_ros_agent</code></td>
+<td><strong>not in apt</strong> — build from source via <code>micro_ros_setup</code></td>
+</tr>
+<tr>
+<td>Gazebo</td>
+<td><strong>Harmonic (gz-sim 8.14.0) installed</strong>; Humble's apt <code>ros_gz</code> (0.244.x) and <code>gz_ros2_control</code> (0.7.x) target <strong>Fortress</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-gazebo-pairing-week-1-gate">6.2 Gazebo pairing — week-1 gate<a class="headerlink" href="#62-gazebo-pairing-week-1-gate" title="Permanent link">&para;</a></h3>
+<p>Humble's officially paired Gazebo is <strong>Fortress</strong>; the lab machine has <strong>Harmonic</strong>. Resolve in
+the first two days with this rule, and spend no more than one day on it:</p>
+<ol>
+<li>Test the installed <code>ros_gz</code> against Harmonic with a trivial world and a <code>gz_ros2_control</code> demo.</li>
+<li><strong>If it works</strong> — keep Harmonic, pin the versions, record them in <code>docs/build/</code>.</li>
+<li><strong>If it does not</strong> — install <strong>Gazebo Fortress</strong> and use the apt binaries. Fortress is the
+   supported Humble pairing and entirely adequate for a 14-week indoor-navigation project.</li>
+</ol>
+<p><strong>Do not</strong> attempt a source build of <code>ros_gz</code> + <code>gz_ros2_control</code> against Harmonic on a
+semester timeline.</p>
+<h3 id="63-version-pinning">6.3 Version pinning<a class="headerlink" href="#63-version-pinning" title="Permanent link">&para;</a></h3>
+<p>Pin and record: the <code>micro_ros_arduino</code> release, the PlatformIO Teensy platform version,
+Teensyduino version, ROS 2 package versions for the controllers, and the Gazebo pairing chosen
+in §6.2. Do not float on <code>main</code>.</p>
+<p>This obligation is <strong>heavier than it was under PX4</strong>, and deliberately so. As recorded in
+<a href="../adr-dbw-architecture-review/#46-decision-adopted-2026-08-07">adr §4.6</a>, the platform's
+replication claim no longer rests on an upstream autopilot's provenance — it rests on MRider's
+own pinned toolchain and its measured bring-up numbers (§8).</p>
+<h3 id="64-fallbacks">6.4 Fallbacks<a class="headerlink" href="#64-fallbacks" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>No Humble <code>micro_ros_arduino</code> release</strong> → framed <strong>binary</strong> protocol with CRC and sequence
+  numbers over the same USB serial link. Never unframed ASCII. Keeps every architectural gain
+  of D3 except typed-message convenience.</li>
+<li><strong>Steering loop cannot meet accuracy at bring-up Stage 1</strong> → adopt the pre-registered E4
+  motion-controller fallback rather than tuning without bound
+  (<a href="../dbw/#3-adr-e-steering-control-loop-location-the-key-dbw-decision"><code>dbw.md §3</code></a>).</li>
+<li><strong>Actuation frame rate caps below what the loop needs</strong> → accept it and restate the loop
+  figure as a sampling rate, per option 2 of the
+  <a href="../dbw/#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters">§4 warning</a>.
+  Packetized serial is <em>not</em> an available escape — it cannot coexist with the RC signal MUX.</li>
+</ul>
+<hr />
+<h2 id="7-software-adr-summary">7. Software ADR summary<a class="headerlink" href="#7-software-adr-summary" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Decision</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADR-SW1</td>
+<td>One transport, one clock: typed <code>DbwCommand</code>/<code>DbwStatus</code> over micro-ROS; retire MAVLink, ASCII framing, and the I²C register map</td>
+<td>The split command/feedback arrangement shared neither clock nor transport, which is what made faults unlocalizable.</td>
+</tr>
+<tr>
+<td>ADR-SW2</td>
+<td>Nav2: DWB first (reuse), RPP as pre-registered Ackermann swap</td>
+<td>Reuse-first bring-up; ±22.5° turn constraint may need a curvature-aware controller.</td>
+</tr>
+<tr>
+<td>ADR-SW3</td>
+<td><code>mitt_hardware</code> is <strong>NEW</strong>, not reused</td>
+<td>B-MROVER's <code>carlikebot_system.cpp</code> is an unmodified demo stub with no hardware I/O (F3). Only the interface <em>shape</em> was reusable.</td>
+</tr>
+<tr>
+<td>ADR-SW4</td>
+<td>Same <code>ros2_control</code> stack in sim and on hardware; only the plugin swaps (<code>gz_ros2_control</code> ↔ <code>mitt_hardware</code>)</td>
+<td>Makes the twin a real development vehicle and gives sim-to-real parity by construction rather than by discipline.</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Reuse EKF/SLAM/Nav2/NN configs, re-parameterize for real chassis</td>
+<td>These carry most of MRider's autonomy and are transport-agnostic, so D3 does not touch them.</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Pin the full toolchain (§6.3); three named fallbacks (§6.4)</td>
+<td>Reproducibility now rests on MRider's own pinning, not upstream provenance.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Config corrections MRider must make (found during verification):</strong></p>
+<ol>
+<li>SLAM <code>base_frame: base_footprint</code> vs EKF <code>base_link</code> — reconcile to one convention (§4.2).</li>
+<li><code>navsat_transform</code> magnetic declination set for Lisbon — set local (Ann Arbor) value (§4.1).</li>
+<li>Nav2 DWB controller — re-evaluate for Ackermann kinematics (§4.3).</li>
+<li>Treat <strong>all</strong> B-MROVER URDF dimensions as placeholders until measured (§3.2 caveat), and
+   <strong>do not inherit 52 PPR</strong> — the source project conflicts with itself (F7).</li>
+</ol>
+<hr />
+<h2 id="8-semester-1-scope-and-software-acceptance-gates">8. Semester-1 scope and software acceptance gates<a class="headerlink" href="#8-semester-1-scope-and-software-acceptance-gates" title="Permanent link">&para;</a></h2>
+<p>Semester 1 (~14 weeks, 1–3 students) commits to a <strong>trustworthy DBW, a working twin, and an
+indoor SLAM map</strong>. Nav2 autonomous goal-seeking is the stretch. <strong>Deferred to phase 2:</strong>
+outdoor GNSS waypoint following, the <code>docs/learn/</code> course kit, and behavior cloning.</p>
+<p>The scoping rationale is that the previous generations did not fall short on planning or
+perception — so the semester's prize is a vehicle whose feedback can be <em>believed</em>, evidenced
+by numbers. Autonomy on trustworthy feedback is comparatively fast; autonomy on untrustworthy
+feedback is what burned the earlier attempts.</p>
+<p><strong>Two tracks run in parallel from week 1</strong>, because a simulator structurally cannot test
+backlash, encoder noise, USB latency, or motor stall — the layers that actually failed:</p>
+<table>
+<thead>
+<tr>
+<th>Weeks</th>
+<th>Track A — Twin (no hardware needed)</th>
+<th>Track B — Hardware</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1–4</td>
+<td>Settle the Gazebo pairing (§6.2); build <code>micro_ros_agent</code> from source; scaffold <code>ros2_ws</code>; port <code>mitt_description</code> Ackermann URDF with parameterized dimensions; <code>gz_ros2_control</code> + <code>ackermann_steering_controller</code>; joystick teleop in sim</td>
+<td><strong>Bench gate: measure steering-shaft travel before ordering</strong> (<a href="../dbw/#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer">dbw.md §6</a>); order parts; steering spike — AS5600 + PID on the bench, no ROS (<a href="../safety/#6-bring-up-protocol-staged-wheels-off-first">safety.md Stage 0–1</a>)</td>
+</tr>
+<tr>
+<td>5–8</td>
+<td><code>mitt_hardware</code> plugin; odometry node; EKF bring-up</td>
+<td>micro-ROS on the Teensy; throttle shaping; <strong>both override layers demonstrated</strong> (Stage 2); relay MUX + E-stop (Stage 3); teleop on the real vehicle (Stage 5)</td>
+</tr>
+<tr>
+<td>9–11</td>
+<td>Feed measured values back into the twin so sim and real agree within 10%</td>
+<td><code>mitt_bench</code> validation — the numbers below</td>
+</tr>
+<tr>
+<td>12–14</td>
+<td>Nav2 params for the real chassis</td>
+<td>LiDAR + camera, TF/extrinsics, <code>slam_toolbox</code> hallway map</td>
+</tr>
+</tbody>
+</table>
+<h3 id="software-acceptance-gates">Software acceptance gates<a class="headerlink" href="#software-acceptance-gates" title="Permanent link">&para;</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>colcon build &amp;&amp; colcon test</code> clean; twin teleop launch runs headless in a scripted check</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>ros2 topic hz /mitt/dbw/status</code> sustains <strong>≥ 50 Hz</strong>; <strong>zero USB session dropouts over ≥ 30 min</strong> (safety.md row 2)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Joystick → wheel motion latency <strong>≤ 100 ms at p95</strong></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Identical teleop launch runs in sim and on hardware, differing <strong>only</strong> in the <code>hardware_interface</code> plugin (ADR-SW4)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Twin's steering range, rate limit, wheelbase, and command latency match measured hardware within <strong>10%</strong></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Odometry: translational drift <strong>≤ 2%</strong> of distance over 20 m straight; heading error <strong>≤ 5°</strong> after a closed 20 m figure-8</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>slam_toolbox</code> closes a <strong>≥ 30 m</strong> hallway loop; repeated observations of the same wall agree within <strong>≤ 10 cm</strong>; map loads in Nav2 without manual editing</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> All numbers recorded in <code>docs/build/</code> — this report <em>is</em> the replication claim (§6.3)</li>
+</ul>
+<p>Hardware and safety gates are in <a href="../dbw/#12-numeric-interface-contract"><code>dbw.md §12</code></a> and
+<a href="../safety/"><code>safety.md</code></a>.</p>
+<hr />
+<p><em>Cross-references:</em> <a href="../architecture/"><code>architecture.md</code></a> · <a href="../dbw/"><code>dbw.md</code></a> ·
+<a href="../safety/"><code>safety.md</code></a> · <a href="../sensors/"><code>sensors.md</code></a> · <a href="../calibration/"><code>calibration.md</code></a> ·
+<a href="../vehicle/"><code>vehicle.md</code></a> · <a href="../bom/"><code>bom.md</code></a></p>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 8, 2026 05:51:09 UTC">August 8, 2026</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 22, 2026 05:51:31 UTC">July 22, 2026</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../calibration/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Calibration">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Calibration
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../bom/" class="md-footer__link md-footer__link--next" aria-label="Next: Bill of Materials">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Bill of Materials
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Bio-Inspired Machine Intelligence Lab (BIMI), University of Michigan-Dearborn
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/jrkwon/mrider" target="_blank" rel="noopener" title="MRider on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.instant", "navigation.tracking", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.action.edit", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

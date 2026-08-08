@@ -1,0 +1,2114 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Michigan Rider — a drive-by-wire research and education vehicle platform">
+      
+      
+      
+        <link rel="canonical" href="https://jrkwon.github.io/mrider/design/sensors/">
+      
+      
+        <link rel="prev" href="../safety/">
+      
+      
+        <link rel="next" href="../calibration/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../images/mrider.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Sensors - MRider</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#sensors-onboard-compute" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="MRider" class="md-header__button md-logo" aria-label="MRider" data-md-component="logo">
+      
+  <img src="../../images/mrider.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MRider
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Sensors
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jrkwon/mrider" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jrkwon/mrider
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="MRider" class="md-nav__button md-logo" aria-label="MRider" data-md-component="logo">
+      
+  <img src="../../images/mrider.png" alt="logo">
+
+    </a>
+    MRider
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jrkwon/mrider" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jrkwon/mrider
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr-dbw-architecture-review/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DBW Architecture Review (2026-08)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vehicle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vehicle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dbw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Drive-by-Wire
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensors
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-front-camera" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Front Camera
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Front Camera">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rolling-shutter-vs-global-shutter-why-it-matters-here" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rolling shutter vs global shutter — why it matters here
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adr-camera-intel-realsense-d435i-vs-global-shutter-usb-camera" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR (camera) — Intel RealSense D435i vs global-shutter USB camera
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-2d-lidar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 2D LiDAR
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 2D LiDAR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-comparison-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Comparison table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-adr-lidar-recommendation-for-min-and-full-tiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 ADR (LiDAR) — recommendation for min and full tiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-imu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. IMU
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-gnss-optional-rtk-growth-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. GNSS (optional) &amp; RTK Growth Path
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-mounting-mast-concept" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Mounting / Mast Concept
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-onboard-computer-laptop-selection-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Onboard Computer (Laptop) Selection Criteria
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../software/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Software
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bom/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bill of Materials
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Build Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/01-bom-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. BOM & Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/02-mechanical/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Vehicle Prep & Mechanical
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/03-electrical/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Electrical & Wiring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/04-firmware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Firmware Bring-up
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/05-software/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Software Install
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/06-bench-test/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Bench Test & Calibration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/07-manual-drive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Manual Drive
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/08-autonomous/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Autonomous Bring-up
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learn
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Learn
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m1-ros2-intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M1 — Intro to MRider & ROS 2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m2-dbw-steering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M2 — Drive-by-Wire & Smart-Servo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m3-teleop-safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M3 — Teleop Control & Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m4-perception/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M4 — Perception
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m5-slam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M5 — Localization & SLAM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m6-nav2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M6 — Navigation (Nav2)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m7-behavior-cloning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M7 — Behavior Cloning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m8-capstone/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M8 — Capstone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-front-camera" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Front Camera
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Front Camera">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rolling-shutter-vs-global-shutter-why-it-matters-here" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rolling shutter vs global shutter — why it matters here
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adr-camera-intel-realsense-d435i-vs-global-shutter-usb-camera" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR (camera) — Intel RealSense D435i vs global-shutter USB camera
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-2d-lidar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 2D LiDAR
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 2D LiDAR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-comparison-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Comparison table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-adr-lidar-recommendation-for-min-and-full-tiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 ADR (LiDAR) — recommendation for min and full tiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-imu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. IMU
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-gnss-optional-rtk-growth-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. GNSS (optional) &amp; RTK Growth Path
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-mounting-mast-concept" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Mounting / Mast Concept
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-onboard-computer-laptop-selection-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Onboard Computer (Laptop) Selection Criteria
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/jrkwon/mrider/edit/main/docs/design/sensors.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="sensors-onboard-compute">Sensors &amp; Onboard Compute<a class="headerlink" href="#sensors-onboard-compute" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Part of the MRider design set. Siblings: <a href="../architecture/">architecture.md</a> ·
+<a href="../vehicle/">vehicle.md</a> · <a href="../dbw/">dbw.md</a> · <a href="../safety/">safety.md</a> ·
+<a href="../software/">software.md</a> · <a href="../calibration/">calibration.md</a> · <a href="../bom/">bom.md</a> ·
+<a href="../overview/">overview.md</a></p>
+<p>Prices are <strong>estimates as of July 2026</strong> and vary by retailer and stock.</p>
+</blockquote>
+<p>This document specifies the MRider perception and localization sensor set and the
+onboard computer. Per <a href="../overview/">overview.md</a>, the <strong>minimum sensor package is
+one front camera and one 2D LiDAR</strong>; the IMU is a standalone BNO085-class module
+(§3); GNSS is optional for the indoor target and required for phase-2 outdoor
+waypoint following (§4). Each major choice is an ADR. Frame definitions,
+intrinsics/extrinsics, and time-sync are handled in <a href="../calibration/">calibration.md</a>;
+how these topics flow through ROS 2 is in <a href="../software/">software.md</a>.</p>
+<p>Design goals: reuse the mrover/OSCAR sensor lineage where proven, keep the
+minimum tier cheap and teachable, and record an honest reason for every upgrade
+in the full tier (<a href="../bom/">bom.md</a>).</p>
+<hr />
+<h2 id="1-front-camera">1. Front Camera<a class="headerlink" href="#1-front-camera" title="Permanent link">&para;</a></h2>
+<p>The front camera feeds both classical perception and the <strong>end-to-end behavior
+cloning</strong> pipeline reused from mrover's <code>neural_net/</code> (Keras). Behavior cloning
+learns steering from raw forward images, which makes <strong>shutter type</strong> a
+first-class concern.</p>
+<h3 id="rolling-shutter-vs-global-shutter-why-it-matters-here">Rolling shutter vs global shutter — why it matters here<a class="headerlink" href="#rolling-shutter-vs-global-shutter-why-it-matters-here" title="Permanent link">&para;</a></h3>
+<p>A rolling-shutter sensor exposes the frame row-by-row, so during motion (and
+especially vibration on a ride-on chassis) straight edges skew and the image the
+network sees is geometrically inconsistent with the steering label. A global
+shutter exposes all rows simultaneously, eliminating that skew. For a
+behavior-cloning dataset collected while driving and vibrating, global shutter
+removes a systematic label-noise source.</p>
+<h3 id="adr-camera-intel-realsense-d435i-vs-global-shutter-usb-camera">ADR (camera) — Intel RealSense D435i vs global-shutter USB camera<a class="headerlink" href="#adr-camera-intel-realsense-d435i-vs-global-shutter-usb-camera" title="Permanent link">&para;</a></h3>
+<p><strong>Status:</strong> Accepted with tiering.</p>
+<p><strong>Context.</strong> We need a forward camera usable for (a) behavior-cloning image
+capture and (b) optional depth for obstacle context. The mrover/OSCAR pipeline
+trains on RGB frames.</p>
+<p><strong>Decision.</strong> <strong>Semester 1: a $30 rolling-shutter USB camera.</strong> <strong>Phase 2 (behavior cloning):
+a color global-shutter USB3 camera</strong> (e.g., <strong>Arducam AR0234</strong>, 2.3 MP, global shutter, up to
+80 fps, ~$160–180). RealSense D435i remains the option if depth is wanted later.</p>
+<div class="admonition info">
+<p class="admonition-title">Re-tiered 2026-08-07 — deferred, not deleted</p>
+<p>Behavior cloning is <strong>phase 2</strong>
+(<a href="../software/#8-semester-1-scope-and-software-acceptance-gates">software.md §8</a>), and the
+global-shutter argument below is <em>entirely</em> about training-label quality. Semester 1
+delivers teleop and LiDAR SLAM, neither of which cares about rolling-shutter skew, so the
+$150 premium buys nothing this term.</p>
+<p><strong>The reasoning below still stands and still applies at phase 2.</strong> Do not train a
+behavior-cloning policy on rolling-shutter data and attribute the result to the platform —
+budget the +$150 when the pipeline comes back (<a href="../bom/#phase-2-growth-path">bom.md</a>).</p>
+</div>
+<p><strong>Key finding (verified July 2026):</strong> the RealSense D435i uses a <strong>global-shutter
+stereo depth pair but a <em>rolling-shutter</em> RGB sensor</strong> (1920×1080). So if the
+behavior-cloning network trains on the D435i <strong>RGB</strong> stream, it inherits rolling
+shutter anyway. To get global-shutter <em>imagery</em> for cloning, either (i) train on
+a D435i <strong>infrared/depth-aligned</strong> global-shutter stream, or (ii) use a dedicated
+global-shutter color USB camera. This is the reason the <strong>minimum tier picks the
+dedicated global-shutter color camera</strong> rather than "just the RealSense."</p>
+<p><strong>Alternatives.</strong>
+- <strong>Global-shutter color USB3 (Arducam AR0234)</strong> — global-shutter RGB (correct for
+  cloning), cheap, plain UVC (works in ROS 2 via <code>usb_cam</code>/<code>v4l2_camera</code>), no
+  depth, no IMU. <em>Chosen for minimum tier.</em>
+- <strong>RealSense D435i</strong> — adds stereo depth + Bosch BMI055 IMU + global-shutter
+  depth; RGB is rolling shutter; heavier USB/CPU load; needs <code>realsense-ros</code>.
+  <em>Chosen for full tier</em> (depth for obstacle context; IMU as a cross-check to the
+  Pixhawk).
+- <strong>Raspberry-Pi/CSI rolling-shutter webcam</strong> — cheapest, but rolling shutter on
+  the cloning stream; rejected as the primary forward camera.</p>
+<p><strong>Rationale.</strong> The cloning label quality depends on global-shutter <em>imagery</em>; the
+cheapest way to get that is a dedicated global-shutter color camera, which also
+keeps the minimum tier simple (UVC, no SDK). Depth is a genuine capability jump,
+so it earns its place only in the full tier via the D435i.</p>
+<p><strong>Consequences.</strong> Minimum tier has <strong>no depth</strong> — obstacle sensing is
+LiDAR-only (§2), acceptable at ≤ walking speed. Full tier adds a second IMU
+(D435i) that <a href="../calibration/">calibration.md</a>/<a href="../software/">software.md</a> treat as
+a cross-check, with the <strong>Pixhawk IMU remaining the EKF primary</strong> (§3). If a
+future build wants both cheap global-shutter RGB <em>and</em> depth, run the AR0234 for
+cloning alongside the D435i for depth.</p>
+<p><strong>Mounting summary:</strong> forward-facing, on the mast (§4), ~1.0–1.2 m height, slight
+downward pitch (~10–15°) so the road ~2–8 m ahead fills the frame (matches the
+OSCAR/behavior-cloning framing). Fix intrinsics/extrinsics in
+<a href="../calibration/">calibration.md</a>.</p>
+<hr />
+<h2 id="2-2d-lidar">2. 2D LiDAR<a class="headerlink" href="#2-2d-lidar" title="Permanent link">&para;</a></h2>
+<p>The 2D LiDAR is the primary obstacle sensor and the scan source for
+<code>slam_toolbox</code> + Nav2 (reused from mrover — see <a href="../software/">software.md</a>). The
+mrover checkout ships a <strong>YDLidar</strong> config (<code>dev_ws/src/mrover/config/ydlidar_params.yaml</code>),
+with the model commented as <strong>G4</strong> (and an X4 variant), 10 Hz, single-channel
+serial at 230400 baud — so YDLidar is the heritage part.</p>
+<h3 id="21-comparison-table">2.1 Comparison table<a class="headerlink" href="#21-comparison-table" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Spec</th>
+<th><strong>YDLidar G4</strong> (heritage)</th>
+<th><strong>RPLidar S2</strong></th>
+<th><strong>RPLidar S3</strong></th>
+<th><strong>Hokuyo UST-10LX</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ranging principle</td>
+<td>Triangulation</td>
+<td>ToF</td>
+<td>ToF</td>
+<td>ToF</td>
+</tr>
+<tr>
+<td>Max range</td>
+<td>~16 m (12 m @ low reflect.)</td>
+<td>~30 m</td>
+<td>~40 m (15 m @ 10%)</td>
+<td>~10 m (30 m max)</td>
+</tr>
+<tr>
+<td>FOV</td>
+<td>360°</td>
+<td>360°</td>
+<td>360°</td>
+<td><strong>270°</strong></td>
+</tr>
+<tr>
+<td>Scan rate</td>
+<td>5–12 Hz (cfg 10 Hz)</td>
+<td>10 Hz (up to 20)</td>
+<td>10 Hz (up to 20)</td>
+<td>40 Hz</td>
+</tr>
+<tr>
+<td>Sample rate</td>
+<td>~9 kHz</td>
+<td>32 kHz</td>
+<td>32 kHz</td>
+<td>~40.5 kHz-equiv</td>
+</tr>
+<tr>
+<td>Angular res.</td>
+<td>~0.28°–0.5°</td>
+<td>0.12°</td>
+<td>0.1125°</td>
+<td>0.25°</td>
+</tr>
+<tr>
+<td>Interface</td>
+<td>USB-serial (230400)</td>
+<td>USB-serial / UART</td>
+<td>USB-serial / UART</td>
+<td><strong>Ethernet</strong></td>
+</tr>
+<tr>
+<td>Ingress</td>
+<td>None rated</td>
+<td>IP65</td>
+<td>IP65</td>
+<td>IP65</td>
+</tr>
+<tr>
+<td>Eye safety</td>
+<td>Class 1</td>
+<td>Class 1</td>
+<td>Class 1</td>
+<td>Class 1</td>
+</tr>
+<tr>
+<td>Est. price (Jul 2026)</td>
+<td><strong>~$250–320</strong></td>
+<td>~$320–370</td>
+<td>~$450–500</td>
+<td>~$1,600–1,900</td>
+</tr>
+<tr>
+<td>ROS 2 driver</td>
+<td><code>ydlidar_ros2_driver</code> (in mrover)</td>
+<td><code>sllidar_ros2</code></td>
+<td><code>sllidar_ros2</code></td>
+<td><code>urg_node2</code></td>
+</tr>
+</tbody>
+</table>
+<p>Notes: ranges/rates are vendor-typical at ~70% reflectance and drop on dark/low-
+reflectivity surfaces; treat as estimates. The Hokuyo is 270° (not 360°) but is
+the industrial-grade accuracy/rate reference.</p>
+<h3 id="22-adr-lidar-recommendation-for-min-and-full-tiers">2.2 ADR (LiDAR) — recommendation for min and full tiers<a class="headerlink" href="#22-adr-lidar-recommendation-for-min-and-full-tiers" title="Permanent link">&para;</a></h3>
+<p><strong>Status:</strong> Accepted with tiering.</p>
+<p><strong>Context.</strong> Need a 2D scan for SLAM/Nav2 obstacle avoidance at ≤ walking speed,
+outdoors and indoors, on a vibrating ride-on. Reuse of the mrover
+<code>ydlidar_ros2_driver</code> config is a plus.</p>
+<p><strong>Decision.</strong>
+- <strong>Minimum tier — YDLidar G4.</strong> Cheapest, and the <strong>driver + params already
+  exist in the mrover checkout</strong> (near-zero integration cost). Its ~16 m
+  triangulation range and 10 Hz are adequate for walking-speed navigation.
+- <strong>Full tier — RPLidar S3.</strong> ToF (more robust in sunlight and on low-
+  reflectivity surfaces than triangulation), ~40 m range, 0.1125° resolution,
+  IP65 for outdoor use — a clean accuracy/robustness upgrade at ~$460 without
+  the Hokuyo's Ethernet/PoE integration cost and ~$1,700 price.</p>
+<p><strong>Alternatives.</strong>
+- <strong>RPLidar S2</strong> — a middle option (ToF, 30 m, IP65, ~$350); pick over G4 if
+  triangulation glare outdoors is a problem but S3's range isn't needed.
+- <strong>Hokuyo UST-10LX</strong> — best rate (40 Hz) and industrial accuracy, but <strong>~5–7×
+  the S3 price</strong>, only 270° FOV, and Ethernet (adds <code>urg_node2</code> + a network
+  interface). Rejected for both tiers as overkill for an education platform;
+  named as the "if budget were no object / research-grade" reference.</p>
+<p><strong>Rationale.</strong> Minimum tier leans entirely on <strong>existing mrover integration</strong>
+(G4) to keep cost and setup effort lowest. The full-tier jump buys the two things
+triangulation LiDAR is weakest at — <strong>outdoor sunlight robustness and low-
+reflectivity range</strong> — via ToF (S3), which matters once MRider drives outdoors
+for mapping. The Hokuyo's advantages (rate, accuracy) don't change behavior at
+walking speed enough to justify its cost.</p>
+<p><strong>Consequences.</strong> Minimum tier reuses the mrover YDLidar launch/params verbatim.
+Full tier swaps to <code>sllidar_ros2</code> (S3) — a driver change tracked in
+<a href="../software/">software.md</a>, and a frame-id/params change in
+<a href="../calibration/">calibration.md</a>. Both mount at the same mast position (§4) so
+extrinsics are tier-independent.</p>
+<hr />
+<h2 id="3-imu">3. IMU<a class="headerlink" href="#3-imu" title="Permanent link">&para;</a></h2>
+<p><strong>Decision:</strong> a <strong>standalone BNO085-class 9-DoF IMU</strong> with onboard sensor fusion,
+connected directly to the laptop and publishing <code>sensor_msgs/Imu</code> on <code>/imu/data</code>.</p>
+<div class="admonition info">
+<p class="admonition-title">Revised 2026-08-07 — this ADR was reversed by D3</p>
+<p>This previously specified "use the Pixhawk 6C's internal IMUs — no separate standalone
+IMU," on the rationale that PX4's EKF2 was being reused. <a href="../adr-dbw-architecture-review/#46-decision-adopted-2026-08-07">D3</a>
+removed the Pixhawk, so a standalone IMU is now required.</p>
+<p><strong>The reuse argument was weaker than it read even before D3.</strong> Finding F11 verified that
+MRider's estimator was always <code>robot_localization</code> on the laptop
+(<a href="../software/#41-robot_localization-ekf-configekfyaml">software.md §4.1</a>), with PX4
+supplying <strong>raw <code>SensorCombined</code> only</strong> — EKF2's output was not what the stack consumed.
+So this is a <strong>driver swap, not an estimator change</strong>, and the "PX4 gives you the EKF"
+leg of the original topology argument did not hold.</p>
+</div>
+<p>Wheel/steering odometry from <a href="../dbw/#101-primary-transport-micro-ros-typed-messages"><code>DbwStatus</code></a>
+fuses with this IMU in <code>robot_localization</code>'s EKF to bound the paralleled-motor /
+single-encoder odometry error noted in <a href="../dbw/#8-adr-c-drive-distance-encoding">ADR C</a>.</p>
+<p><strong>Rationale.</strong> Onboard fusion (BNO085 class) provides a stable quaternion and calibrated
+rates without project code, at ~$28. It connects straight to the laptop, so it sits in the
+<strong>laptop's clock domain</strong> — which is simpler than the previous arrangement, where PX4 boot-time
+microseconds had to be offset-estimated against the laptop clock
+(<a href="../calibration/">calibration.md §6</a>).</p>
+<p><strong>Consequence.</strong> Mounting orientation and vibration isolation are now MRider's responsibility
+rather than inherited from a flight-controller design — see §5. Calibration moves from
+QGroundControl to a documented in-repo procedure (<a href="../calibration/">calibration.md §5</a>).</p>
+<hr />
+<h2 id="4-gnss-optional-rtk-growth-path">4. GNSS (optional) &amp; RTK Growth Path<a class="headerlink" href="#4-gnss-optional-rtk-growth-path" title="Permanent link">&para;</a></h2>
+<p>Per <a href="../overview/">overview.md</a>, <strong>GNSS is optional</strong> and therefore <strong>excluded
+from the minimum tier</strong>, included in the <strong>full tier</strong>.</p>
+<p><strong>Amended:</strong> optional for the semester-1 <strong>indoor</strong> target; <strong>required</strong> for the phase-2
+<strong>outdoor waypoint-following</strong> target, where dead reckoning from wheel odometry + IMU alone
+drifts out of a lane-width corridor within tens of meters.</p>
+<ul>
+<li><strong>Phase 2 — a USB/UART GNSS receiver</strong> connected directly to the laptop, feeding
+  <code>navsat_transform</code> and the global EKF. Without PX4 in the system there is no GPS port to
+  use and no MAVLink injection path; the receiver is just another laptop peripheral.</li>
+<li><strong>RTK (recommended for lane-level accuracy):</strong> a <strong>u-blox ZED-F9P-class rover</strong> (~$220–300)
+  plus an <strong>NTRIP correction source</strong> or a local base station. The laptop runs the NTRIP
+  client and feeds corrections to the receiver directly — <strong>simpler than the MAVLink RTK
+  injection path</strong> the Pixhawk design would have used, since there is no autopilot in the
+  middle. Documented as a phase-2 growth item; <strong>not</strong> in the semester-1 totals
+  (<a href="../bom/#phase-2-growth-path">bom.md</a>).</li>
+</ul>
+<p><strong>ADR note.</strong> GNSS is a tiering decision rather than a technology contest: the
+question is only <em>present (full) vs absent (min)</em>, and the RTK path is a labeled
+future upgrade. No standalone ADR block is warranted; the LiDAR and camera ADRs
+carry the sensor-selection weight.</p>
+<hr />
+<h2 id="5-mounting-mast-concept">5. Mounting / Mast Concept<a class="headerlink" href="#5-mounting-mast-concept" title="Permanent link">&para;</a></h2>
+<p>The sensors share a single <strong>mast</strong> on the deck/bed (<a href="../vehicle/">vehicle.md</a> C5)
+so their extrinsics are fixed once (<a href="../calibration/">calibration.md</a>).</p>
+<ul>
+<li><strong>Front camera:</strong> top of mast or a forward boom, <strong>~1.0–1.2 m</strong> height,
+  <strong>~10–15° downward pitch</strong>, forward-facing, unobstructed by the mast tube.
+  Height/pitch chosen to frame the road 2–8 m ahead for behavior cloning.</li>
+<li><strong>2D LiDAR:</strong> mounted so its scan plane has a <strong>clear 360°</strong> sightline
+  (270° for the Hokuyo) — above the body line and roll bar, below the camera, so
+  the vehicle body and mast tube occlude as little as possible. On a UTV bed,
+  mount on a short riser above the cargo box lip. Record any permanent occlusion
+  sector for Nav2 masking (<a href="../software/">software.md</a>).</li>
+<li><strong>IMU:</strong> rigidly on the deck near the vehicle's center, <strong>vibration-isolated</strong>
+  (foam/gel mount) and orientation-aligned to <code>base_link</code> — it is the EKF
+  attitude source (§3), so mounting rigor directly affects state estimation.
+  <strong>Record the mounting orientation</strong> and apply it as a static transform; a wrong
+  IMU rotation corrupts yaw silently. This responsibility was previously inherited
+  from the flight-controller design and is now MRider's own.</li>
+<li><strong>Vibration:</strong> ride-on drivetrains are buzzy. Use foam/rubber isolation under
+  the mast base and the IMU, keep the mast short and stiff (minimize camera shake
+  and LiDAR wobble), and torque-check after the first drive. Vibration is also why
+  global-shutter imagery (§1) matters for phase-2 behavior cloning.</li>
+<li><strong>E-stop &amp; control box:</strong> E-stop mushroom head reachable from outside the
+  vehicle (<a href="../safety/">safety.md</a>); control enclosure (Teensy, Sabertooth, relay
+  MUX, RC signal MUX, logic battery) low and central for weight distribution.</li>
+</ul>
+<p>A mermaid mount/frame diagram and the full TF tree live in
+<a href="../architecture/">architecture.md</a>/<a href="../software/">software.md</a>;
+numeric offsets in <a href="../calibration/">calibration.md</a>.</p>
+<hr />
+<h2 id="6-onboard-computer-laptop-selection-criteria">6. Onboard Computer (Laptop) Selection Criteria<a class="headerlink" href="#6-onboard-computer-laptop-selection-criteria" title="Permanent link">&para;</a></h2>
+<p>The laptop is the ROS 2 host, runs the <strong><code>micro_ros_agent</code></strong> that terminates the vehicle link
+(<a href="../dbw/">dbw.md</a>), and is the behavior-cloning inference/training box. The <strong>laptop runs on
+its own internal battery in v1</strong> (no traction→19 V conversion), so runtime and efficiency are
+real constraints.</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Target</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GPU (NN inference)</strong></td>
+<td>Discrete NVIDIA GPU (e.g., RTX 3050/4050+), CUDA-capable</td>
+<td>Real-time behavior-cloning inference and on-vehicle Keras/TensorRT; CUDA is the path of least resistance for the reused <code>neural_net/</code> stack.</td>
+</tr>
+<tr>
+<td><strong>USB ports</strong></td>
+<td>≥ 4× USB-A/USB-C (USB3): camera + LiDAR + Teensy + IMU, plus spare</td>
+<td>Camera (USB3), LiDAR (USB-serial), <strong>Teensy (micro-ROS — carries command <em>and</em> feedback)</strong>, IMU. Give the Teensy a <strong>direct port, not a hub</strong>: this link carries the steering setpoint, and a dropout stops the vehicle (<a href="../safety/#2-failsafe-matrix">failsafe row 2</a>).</td>
+</tr>
+<tr>
+<td><strong>Battery runtime</strong></td>
+<td>≥ ~2 h under sensor + light-inference load</td>
+<td>Full data-collection/mapping session without a 24 V tap; drives the <a href="../safety/">power budget</a> assumption that logic and traction rails are isolated.</td>
+</tr>
+<tr>
+<td><strong>RAM / storage</strong></td>
+<td>≥ 16 GB RAM, ≥ 512 GB NVMe</td>
+<td>ROS 2 + rosbag logging of camera/LiDAR is storage-hungry; SLAM and training want RAM.</td>
+</tr>
+<tr>
+<td><strong>OS</strong></td>
+<td>Ubuntu 22.04 (ROS 2 Humble)</td>
+<td>Matches the mrover/OSCAR reused stack (<a href="../software/">software.md</a>).</td>
+</tr>
+<tr>
+<td><strong>Ruggedness/thermals</strong></td>
+<td>Sustained GPU load without thermal throttle; secure mount</td>
+<td>It rides on a vibrating vehicle; sustained inference must not throttle.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommendation:</strong> a mid-range gaming/mobile-workstation laptop with an RTX-class
+GPU, ≥16 GB RAM, ≥3 USB3 ports, and ≥2 h battery. Treated in <a href="../bom/">bom.md</a> as
+<strong>existing/reuse (lab-supplied)</strong> rather than a purchased line item, since the
+lab already runs the mrover/OSCAR stack on such a machine.</p>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 8, 2026 04:27:14 UTC">August 8, 2026</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 22, 2026 05:51:31 UTC">July 22, 2026</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../safety/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Safety">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Safety
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../calibration/" class="md-footer__link md-footer__link--next" aria-label="Next: Calibration">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Calibration
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Bio-Inspired Machine Intelligence Lab (BIMI), University of Michigan-Dearborn
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/jrkwon/mrider" target="_blank" rel="noopener" title="MRider on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.instant", "navigation.tracking", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.action.edit", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

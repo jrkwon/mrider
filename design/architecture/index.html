@@ -1,0 +1,2215 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Michigan Rider — a drive-by-wire research and education vehicle platform">
+      
+      
+      
+        <link rel="canonical" href="https://jrkwon.github.io/mrider/design/architecture/">
+      
+      
+        <link rel="prev" href="../adr-dbw-architecture-review/">
+      
+      
+        <link rel="next" href="../vehicle/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../images/mrider.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Architecture - MRider</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#mrider-system-architecture" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="MRider" class="md-header__button md-logo" aria-label="MRider" data-md-component="logo">
+      
+  <img src="../../images/mrider.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MRider
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Architecture
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jrkwon/mrider" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jrkwon/mrider
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="MRider" class="md-nav__button md-logo" aria-label="MRider" data-md-component="logo">
+      
+  <img src="../../images/mrider.png" alt="logo">
+
+    </a>
+    MRider
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jrkwon/mrider" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jrkwon/mrider
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr-dbw-architecture-review/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DBW Architecture Review (2026-08)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-design-provenance-and-reuse-posture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Design provenance and reuse posture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-component-inventory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Component inventory
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-command-path-laptop-motors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Command path (laptop → motors)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-feedback-path-sensors-ros-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Feedback path (sensors → ROS 2)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-power-tree-and-safetyauthority-chain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Power tree and safety/authority chain
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-timing-heartbeat-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Timing / heartbeat contract
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Timing / heartbeat contract">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-rates-and-timeouts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Rates and timeouts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-link-loss-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Link-loss behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-b-mrover-files-reused-verified-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. B-MROVER files reused (verified locally)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-architecture-adr-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Architecture ADR (summary)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vehicle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vehicle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dbw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Drive-by-Wire
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../software/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Software
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bom/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bill of Materials
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Build Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/01-bom-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. BOM & Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/02-mechanical/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Vehicle Prep & Mechanical
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/03-electrical/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Electrical & Wiring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/04-firmware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Firmware Bring-up
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/05-software/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Software Install
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/06-bench-test/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Bench Test & Calibration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/07-manual-drive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Manual Drive
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/08-autonomous/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Autonomous Bring-up
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learn
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Learn
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m1-ros2-intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M1 — Intro to MRider & ROS 2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m2-dbw-steering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M2 — Drive-by-Wire & Smart-Servo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m3-teleop-safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M3 — Teleop Control & Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m4-perception/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M4 — Perception
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m5-slam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M5 — Localization & SLAM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m6-nav2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M6 — Navigation (Nav2)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m7-behavior-cloning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M7 — Behavior Cloning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m8-capstone/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M8 — Capstone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-design-provenance-and-reuse-posture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Design provenance and reuse posture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-component-inventory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Component inventory
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-command-path-laptop-motors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Command path (laptop → motors)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-feedback-path-sensors-ros-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Feedback path (sensors → ROS 2)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-power-tree-and-safetyauthority-chain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Power tree and safety/authority chain
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-timing-heartbeat-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Timing / heartbeat contract
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Timing / heartbeat contract">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-rates-and-timeouts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Rates and timeouts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-link-loss-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Link-loss behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-b-mrover-files-reused-verified-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. B-MROVER files reused (verified locally)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-architecture-adr-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Architecture ADR (summary)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/jrkwon/mrider/edit/main/docs/design/architecture.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="mrider-system-architecture">MRider System Architecture<a class="headerlink" href="#mrider-system-architecture" title="Permanent link">&para;</a></h1>
+<p>MRider ("MITT" — Michigan Intelligent Transportation Tech) converts a kids' ride-on
+electric vehicle into a drive-by-wire (DBW), self-driving-ready research and education
+platform. This document defines the <strong>system architecture</strong>: the command path from the
+autonomy laptop down to the motors, the feedback path back up, the power tree, the
+safety/authority chain, and the timing contract that binds them together.</p>
+<p>It is the top of the design-document tree. Subsystem detail lives in the sibling
+documents, cross-linked throughout:
+<a href="../dbw/"><code>dbw.md</code></a> (drive-by-wire core),
+<a href="../safety/"><code>safety.md</code></a> (failsafe matrix, authority arbitration),
+<a href="../vehicle/"><code>vehicle.md</code></a> (chassis selection),
+<a href="../sensors/"><code>sensors.md</code></a> (camera/LiDAR/IMU/GNSS),
+<a href="../calibration/"><code>calibration.md</code></a> (zeroing and extrinsics),
+<a href="../software/"><code>software.md</code></a> (ROS 2 stack),
+<a href="../bom/"><code>bom.md</code></a> (bill of materials),
+<a href="../adr-dbw-architecture-review/"><code>adr-dbw-architecture-review.md</code></a> (how the controller
+topology was decided).</p>
+<p><strong>Audience:</strong> researchers reproducing the platform and students learning autonomous-vehicle
+engineering. Where a design choice is made, it is recorded as a short ADR
+(Decision / Alternatives / Rationale).</p>
+<hr />
+<h2 id="1-design-provenance-and-reuse-posture">1. Design provenance and reuse posture<a class="headerlink" href="#1-design-provenance-and-reuse-posture" title="Permanent link">&para;</a></h2>
+<p>MRider is the 4th generation of the author's platform line:
+AVCS Kit (IEEE AFRICON 2017) → Ridon Vehicle (Energies 2021) → OSCAR/thesis platform
+(2022) → <strong>B-MROVER</strong> (<code>jrkwon/mrover</code>, ROS 2 Humble).</p>
+<p>The governing principle remains <strong>reuse before invent</strong> — but a
+<a href="../adr-dbw-architecture-review/">direct re-reading of the B-MROVER source</a> established
+where the reuse is real and where it was assumed. <strong>Reuse is real</strong> at the chassis
+conversion (connector taps, motor selection, shaft-adapter encoder method), the Sabertooth
+power stage, and the entire autonomy stack above the vehicle interface —
+<code>robot_localization</code>, slam_toolbox, Nav2, <code>data_collection</code>, and the <code>neural_net</code>
+behavior-cloning pipeline, all of which are transport-agnostic. <strong>Reuse was weaker than
+documented</strong> at the controller: B-MROVER's <code>carlikebot_system.cpp</code> is an unmodified upstream
+demo stub (F3), its estimator is <code>robot_localization</code> on the laptop with PX4 supplying raw
+IMU only (F11), and its MAVLink hop happens laptop-side rather than inside PX4 (F5).</p>
+<p><strong>Two genuinely new control problems</strong>, neither of which B-MROVER solves:</p>
+<ol>
+<li><strong>A closed-loop steering-angle servo.</strong> B-MROVER has <em>no steering position control of any
+   kind</em> — the stick maps to a raw effort and the human closes the loop by eye (F2, verified:
+   <code>joystick_control.py:70,75,100-109</code>; no PID anywhere in the repository). Nav2 commands an
+   angle, so this must be built.</li>
+<li><strong>Authority arbitration and failsafes.</strong> Previously delegated to PX4; now explicit project
+   design, layered across hardware and firmware (§5, <a href="../safety/"><code>safety.md</code></a>).</li>
+</ol>
+<p><strong>Controller topology.</strong> A <strong>single Teensy 4.1 running micro-ROS</strong> owns all actuation and
+low-level sensing, replacing the Pixhawk 6C + Arduino Nano pair of the superseded design.
+This is decision <strong>D3</strong>, adopted 2026-08-07 —
+<a href="../adr-dbw-architecture-review/#46-decision-adopted-2026-08-07">full reasoning, costs, and the conditions of adoption</a>.
+It was chosen because the previous three platform generations fell short on <strong>sensing/feedback
+quality and integration complexity</strong>, and the multi-board topology was the principal source
+of the second.</p>
+<p>All B-MROVER claims below were verified against the local checkout at
+<code>/mnt/data/projects/mrover</code>; concrete file paths are cited inline.</p>
+<hr />
+<h2 id="2-component-inventory">2. Component inventory<a class="headerlink" href="#2-component-inventory" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Component</th>
+<th>Role in MRider</th>
+<th>B-MROVER lineage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Autonomy laptop</strong></td>
+<td>On-board computer. Runs ROS 2 Humble: perception, SLAM, Nav2, EKF, the <code>micro_ros_agent</code>, and <code>ros2_control</code>. Powered by its own internal battery (no traction→19 V rail in v1).</td>
+<td>Same on-board-laptop topology.</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Teensy 4.1 (DBW controller)</strong></td>
+<td>Single MCU owning all actuation and vehicle sensing. Subscribes <code>DbwCommand</code>, publishes <code>DbwStatus</code> over micro-ROS. Closes the steering <strong>position loop at ≥ 200 Hz</strong>, shapes throttle, reads the absolute angle sensor and both encoders, decodes SBUS, and runs the safety supervisor. Commands the Sabertooth over <strong>servo PWM through the RC signal MUX</strong>.</td>
+<td>Replaces both the Pixhawk 6C and the Nano (D3). Encoder-read <em>logic</em> traces to <code>code/code.ino</code>.</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Sabertooth 2x32</strong></td>
+<td>Dual-channel motor driver. <strong>M1</strong> steering gearmotor, <strong>M2</strong> paralleled rear traction motors. Configured in <strong>independent R/C (PWM) mode</strong>; both signal lines come from the Teensy via the hardware RC signal MUX.</td>
+<td>Same as B-MROVER's mode. Packetized serial was briefly adopted and reverted — it cannot coexist with an RC signal MUX (<a href="../dbw/#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters">dbw.md §4</a>).</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Relay/contactor MUX</strong></td>
+<td>Authority arbitration. A DPDT relay per motor circuit selects <strong>STOCK</strong> vs <strong>DBW</strong> source. Default (de-energized) = STOCK, so power loss reverts to the parent remote.</td>
+<td>New. See <a href="../safety/"><code>safety.md</code></a>.</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Hardware RC signal MUX</strong></td>
+<td><strong>The condition of D3's adoption.</strong> An RC channel drives a signal multiplexer selecting Teensy output <em>or</em> direct RC input into the Sabertooth — making override a <em>wiring</em> property, independent of Teensy firmware.</td>
+<td>New. Replaces PX4's software RC override with a stronger guarantee (<a href="../dbw/#112-hardware-rc-signal-mux-the-d3-condition">dbw.md §11.2</a>).</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>RC transmitter + receiver</strong></td>
+<td>Two roles: SBUS into the Teensy for normal closed-loop manual override, and a dedicated channel driving the hardware MUX (#5) as the independent fallback.</td>
+<td>B-MROVER binds RC to the Pixhawk; here the RX serves both layers directly.</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Absolute steering-angle sensor</strong></td>
+<td>Boot-absolute road-wheel angle, <strong>mounted load-side</strong> (downstream of the steering gearbox) so backlash appears as measured error, not invisible bias. AS5600-class magnetic, pot fallback — <a href="../dbw/#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer">ADR</a>.</td>
+<td>New — fixes B-MROVER's incremental-only steering and its runtime auto-ranging (F4).</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>IMU (BNO085 class)</strong></td>
+<td>9-DoF with onboard fusion, straight to the laptop, feeding <code>robot_localization</code>.</td>
+<td>Replaces the Pixhawk's internal IMU. Note the estimator was <em>already</em> <code>robot_localization</code> (F11), so this is a driver swap, not an estimator change.</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Motor encoders</strong></td>
+<td>Incremental encoder on the drive-motor shaft for distance/velocity; incremental encoder on the steering motor for velocity/stall. Both on Teensy <strong>hardware quadrature decoders</strong>.</td>
+<td><code>code/code.ino</code> method and the shaft-adapter approach. <strong>PPR must be verified on the part fitted</strong> — the source project conflicts with itself (F7).</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>Sensors</strong></td>
+<td>Minimum set: one front camera + one 2D LiDAR. Optional GNSS/RTK (phase 2). Detailed in <a href="../sensors/"><code>sensors.md</code></a>.</td>
+<td>B-MROVER camera + YDLidar.</td>
+</tr>
+<tr>
+<td>11</td>
+<td><strong>Traction battery pack</strong></td>
+<td>Traction source, feeding the Sabertooth. An <strong>isolated logic rail</strong> supplies the Teensy so motor transients cannot brown it out. Laptop is <strong>not</strong> on this rail in v1.</td>
+<td>Same class.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Deleted from the superseded design:</strong> Pixhawk 6C, PM02 power module, Arduino Nano,
+USB-TTL adapter, the Micro-XRCE-DDS agent, <code>mavlink_bridge.py</code>, the <code>px4_msgs</code> dependency,
+PX4 version pinning, the PWM input-capture firmware block, the ASCII serial protocol, and the
+retained I²C register map. See
+<a href="../adr-dbw-architecture-review/#43-what-it-deletes">adr §4.3</a>.</p>
+<hr />
+<h2 id="3-command-path-laptop-motors">3. Command path (laptop → motors)<a class="headerlink" href="#3-command-path-laptop-motors" title="Permanent link">&para;</a></h2>
+<p>The autonomy stack produces a steering angle (radians) and a speed (m/s). Both travel as a
+single typed ROS 2 message to the Teensy, which closes the steering loop locally and drives
+both Sabertooth channels over one serial link.</p>
+<p><strong>There is exactly one command datapath.</strong> No PWM round trip, no protocol translation, no
+second controller. This single-path rule is the pinned
+<a href="../dbw/#3-adr-e-steering-control-loop-location-the-key-dbw-decision">ADR E datapath</a>
+and a hard acceptance gate.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>flowchart LR
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    subgraph LAPTOP[&quot;Autonomy laptop — ROS 2 Humble&quot;]
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        AUT[&quot;Perception / SLAM / Nav2&lt;br/&gt;behavior-cloning policy&quot;]
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        RC2[&quot;ros2_control&lt;br/&gt;ackermann_steering_controller&quot;]
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        HW[&quot;mitt_hardware&lt;br/&gt;(hardware_interface)&quot;]
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        CMD[&quot;/mitt/dbw/command&lt;br/&gt;DbwCommand (rad, m/s)&quot;]
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        AGENT[&quot;micro_ros_agent&quot;]
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        AUT --&gt; RC2 --&gt; HW --&gt; CMD --&gt; AGENT
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    end
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    AGENT -- &quot;micro-ROS / USB serial&quot; --&gt; TEENSY[&quot;Teensy 4.1&lt;br/&gt;position loop &gt;=200 Hz&lt;br/&gt;throttle shaping, safety supervisor&quot;]
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    TEENSY -- &quot;servo PWM x2&quot; --&gt; SMUX
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    SMUX -- &quot;selected source&quot; --&gt; SABER[&quot;Sabertooth 2x32 (R/C mode)&quot;]
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    SABER --&gt; STEERM[&quot;M1 - Steering gearmotor&quot;]
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    SABER --&gt; DRIVEM[&quot;M2 - Rear traction motors (paralleled)&quot;]
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    ANG[&quot;Absolute angle sensor&lt;br/&gt;(load-side)&quot;] -.-&gt; TEENSY
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    RC[&quot;RC transmitter&quot;] -- &quot;SBUS: closed-loop override&quot; --&gt; TEENSY
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    RC -- &quot;MUX select channel&quot; --&gt; SMUX{{&quot;Hardware RC signal MUX&quot;}}
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    TEENSY -.-&gt; SMUX
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    SMUX --&gt; SABER
+</code></pre></div>
+<p><strong>Key command-path facts</strong> (full contract in <a href="../dbw/#12-numeric-interface-contract"><code>dbw.md §12</code></a>):</p>
+<ul>
+<li>Command stream ≥ 50 Hz; staleness &gt; 500 ms drops the vehicle to <code>ESTOP</code>.</li>
+<li>The steering loop runs at ≥ 200 Hz on the Teensy, decoupled from the command rate.</li>
+<li><strong>The actuation frame rate is an open item, and deliberately visible.</strong> A standard servo
+  frame is ~50 Hz, which would cap closed-loop performance regardless of loop rate — the defect
+  the superseded design carried unstated. <strong>Measure it at Stage 1 and pin it</strong>
+  (<a href="../dbw/#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters"><code>dbw.md §4</code></a>).</li>
+<li>The Sabertooth's <strong>R/C signal-loss timeout is inherent in this mode</strong> — motors stop when
+  pulses stop, with no configuration. One more layer independent of Teensy firmware.</li>
+</ul>
+<hr />
+<h2 id="4-feedback-path-sensors-ros-2">4. Feedback path (sensors → ROS 2)<a class="headerlink" href="#4-feedback-path-sensors-ros-2" title="Permanent link">&para;</a></h2>
+<p>All vehicle feedback aggregates on the Teensy and arrives in ROS 2 as a <strong>typed message</strong> —
+no framing to parse, no register map to decode, no MAVLink round trip.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>flowchart LR
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    ANG[&quot;Absolute steering-angle sensor&lt;br/&gt;(load-side, boot-absolute)&quot;]
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    ENC_S[&quot;Steering motor encoder&lt;br/&gt;(velocity / stall)&quot;]
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    ENC_D[&quot;Drive encoder&lt;br/&gt;(PPR verified on part fitted)&quot;]
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    ANG --&gt; TEENSY[&quot;Teensy 4.1&lt;br/&gt;loop + sensor aggregation&quot;]
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    ENC_S --&gt; TEENSY
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    ENC_D --&gt; TEENSY
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    TEENSY -- &quot;micro-ROS / USB serial&quot; --&gt; ST[&quot;/mitt/dbw/status&lt;br/&gt;DbwStatus (typed)&quot;]
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    ST --&gt; HW[&quot;mitt_hardware&lt;br/&gt;(ros2_control)&quot;]
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    ST --&gt; ODO[&quot;Odometry / EKF (robot_localization)&quot;]
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    IMU[&quot;IMU (BNO085 class)&lt;br/&gt;direct to laptop&quot;] --&gt; ODO
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    ODO --&gt; NAV[&quot;SLAM + Nav2&quot;]
+</code></pre></div>
+<p><strong>Key feedback-path facts:</strong></p>
+<ul>
+<li>Transport: micro-ROS over USB serial, ≥ 50 Hz — the <em>same</em> link and the <em>same</em> clock as the
+  command path. Under the superseded design, command and feedback shared neither, which is
+  what made latency and dropout faults hard to localize.</li>
+<li><code>DbwStatus</code> carries measured angle, setpoint, wheel speed, cumulative ticks, mode, and a
+  fault bitfield — so a single <code>ros2 topic echo</code> shows both sides of the loop.</li>
+<li>Lineage traces to B-MROVER <code>mrover_control/msg/Control.msg</code> (fields
+  <code>timestamp, throttle, steer, steer_angle</code>); MRider extends it with mode and faults.</li>
+<li>The B-MROVER <code>WHEEL_DISTANCE</code> → <code>/rover</code> path (<code>mavlink_bridge.py:231-260</code>) is <strong>not</strong>
+  reused; note in particular its runtime min/max auto-ranging (<code>:47-50</code>, <code>:243-250</code>), which
+  rescales past values and makes boot centre arbitrary (F4).</li>
+</ul>
+<hr />
+<h2 id="5-power-tree-and-safetyauthority-chain">5. Power tree and safety/authority chain<a class="headerlink" href="#5-power-tree-and-safetyauthority-chain" title="Permanent link">&para;</a></h2>
+<p>Power and authority are one diagram because the <strong>relay MUX and E-stop sit on the traction
+rail</strong>. Full per-rail current analysis, brownout isolation, and FMEA are in
+<a href="../safety/"><code>safety.md</code></a>; this is the block-level view.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>flowchart TB
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    PACK[&quot;Traction battery pack&quot;]
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    LOGIC[&quot;Isolated logic battery&lt;br/&gt;+ DC-DC rails&quot;]
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    PACK --&gt; ESTOP[&quot;E-stop contactor&lt;br/&gt;(cuts TRACTION only)&quot;]
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    ESTOP --&gt; MUX[&quot;Relay / contactor MUX&lt;br/&gt;DPDT per motor circuit&lt;br/&gt;default de-energized = STOCK&quot;]
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    MUX -- &quot;STOCK (default)&quot; --&gt; STOCKRX[&quot;Stock parent-remote receiver + ESC&quot;]
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    MUX -- &quot;DBW (energized)&quot; --&gt; SABER[&quot;Sabertooth 2x32&lt;br/&gt;M1 steering / M2 throttle&quot;]
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    STOCKRX --&gt; MOTORS[&quot;Steering + traction motors&quot;]
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    SABER --&gt; MOTORS
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    LOGIC --&gt; TEENSY[&quot;Teensy 4.1&quot;]
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    LOGIC --&gt; RCRX[&quot;RC receiver&quot;]
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    LOGIC --&gt; SMUX[&quot;Hardware RC signal MUX&quot;]
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>    LAPBAT[&quot;Laptop internal battery&lt;br/&gt;(isolated in v1)&quot;] --&gt; LAPTOP[&quot;Autonomy laptop&quot;]
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>    RCRX -. &quot;SBUS override&quot; .-&gt; TEENSY
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>    RCRX -. &quot;MUX select&quot; .-&gt; SMUX
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>    ESTOP -. &quot;de-energizes&quot; .-&gt; MUX
+</code></pre></div>
+<p><strong>Authority arbitration (safety-critical).</strong> Four layers, three of them independent of Teensy
+firmware — see the <a href="../dbw/#113-authority-layers">authority table</a>. The stock parent-remote
+receiver and the Sabertooth must never drive the motors simultaneously; the DPDT relay MUX
+selects one source per motor circuit, <strong>de-energized default = STOCK</strong>.</p>
+<p><strong>Why the hardware RC MUX exists.</strong> Under a single controller, one MCU would otherwise hold
+the steering loop, throttle output, override, and arming — a firmware hang loses all four.
+The MUX moves override out of firmware and into wiring, which is a <em>stronger</em> guarantee than
+the software override the superseded PX4 design relied on. The trade: through the MUX,
+override commands raw <strong>effort</strong>, open-loop, rather than an angle. That is acceptable for an
+emergency mode — and it is what B-MROVER does in <em>normal</em> operation (F2) — but it is a
+behavioral change to be re-analysed, not assumed.</p>
+<p><strong>E-stop semantics.</strong> The E-stop cuts <strong>traction power only</strong>, and works with the laptop
+powered off and the Teensy hung. The steering column is non-self-centering, so which rail the
+steering motor sits on determines freewheel-vs-hold on power loss — specified explicitly in
+<a href="../safety/"><code>safety.md</code></a>.</p>
+<p><strong>Power isolation.</strong> The laptop runs on its own battery. The Teensy sits on an <strong>isolated
+logic rail</strong> with its own battery and DC-DC conversion, from day one rather than as a
+retrofit — motor transients must not reset the controller that holds the safety supervisor.
+This replaces the Pixhawk power module's role in the superseded design.</p>
+<hr />
+<h2 id="6-timing-heartbeat-contract">6. Timing / heartbeat contract<a class="headerlink" href="#6-timing-heartbeat-contract" title="Permanent link">&para;</a></h2>
+<p>Every control link has a rate and a loss behavior. System-level numbers here; the full numeric
+interface contract is pinned in <a href="../dbw/#12-numeric-interface-contract"><code>dbw.md §12</code></a>.</p>
+<h3 id="61-rates-and-timeouts">6.1 Rates and timeouts<a class="headerlink" href="#61-rates-and-timeouts" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Link / loop</th>
+<th>Direction</th>
+<th>Nominal rate</th>
+<th>Timeout / failsafe</th>
+<th>Owner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Command stream (<code>DbwCommand</code>)</td>
+<td>laptop → Teensy</td>
+<td><strong>≥ 50 Hz</strong></td>
+<td>staleness &gt; 500 ms → <code>ESTOP</code></td>
+<td>Teensy supervisor</td>
+</tr>
+<tr>
+<td>Steering position loop</td>
+<td>Teensy-local</td>
+<td><strong>≥ 200 Hz</strong></td>
+<td>at limit → clamp effort toward center only</td>
+<td>Teensy</td>
+</tr>
+<tr>
+<td><strong>Actuation frame (→ Sabertooth)</strong></td>
+<td>Teensy → MUX → driver</td>
+<td><strong>measure &amp; pin at Stage 1</strong></td>
+<td>R/C signal-loss timeout → motors stop</td>
+<td>Sabertooth</td>
+</tr>
+<tr>
+<td>Status feedback (<code>DbwStatus</code>)</td>
+<td>Teensy → laptop</td>
+<td><strong>≥ 50 Hz</strong></td>
+<td>driver flags stale; EKF coasts on IMU</td>
+<td>ROS 2 driver</td>
+</tr>
+<tr>
+<td>IMU</td>
+<td>IMU → laptop</td>
+<td><strong>≥ 100 Hz</strong> (EKF input)</td>
+<td>EKF degrades; Nav2 slows/stops</td>
+<td>robot_localization</td>
+</tr>
+<tr>
+<td>RC override (SBUS)</td>
+<td>RX → Teensy</td>
+<td>~50 Hz</td>
+<td>RC-loss → <code>ESTOP</code></td>
+<td>Teensy supervisor</td>
+</tr>
+<tr>
+<td>RC MUX select</td>
+<td>RX → signal MUX</td>
+<td>~50 Hz</td>
+<td><strong>hardware path — independent of firmware</strong></td>
+<td>wiring</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-link-loss-behavior">6.2 Link-loss behavior<a class="headerlink" href="#62-link-loss-behavior" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Loss scenario</th>
+<th>Detected by</th>
+<th>System behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Command stream stalls (&gt; 500 ms)</td>
+<td>Teensy supervisor</td>
+<td><code>ESTOP</code>: throttle zeroed, steering centered</td>
+</tr>
+<tr>
+<td>USB link lost entirely</td>
+<td>Teensy (no session) + laptop driver</td>
+<td>Teensy → <code>ESTOP</code>; <code>/mitt/dbw/status</code> stale; Nav2 halts</td>
+</tr>
+<tr>
+<td><strong>Teensy firmware hang</strong></td>
+<td>Sabertooth serial timeout</td>
+<td>Motors stop. RC MUX still selectable, relay MUX still revertible, E-stop still cuts traction</td>
+</tr>
+<tr>
+<td>RC link lost</td>
+<td>Teensy supervisor</td>
+<td><code>ESTOP</code> per failsafe matrix</td>
+</tr>
+<tr>
+<td>DBW logic power lost</td>
+<td>Relay MUX (de-energizes)</td>
+<td>Reverts to <strong>STOCK</strong> (parent remote)</td>
+</tr>
+<tr>
+<td>E-stop pressed</td>
+<td>Traction contactor</td>
+<td>Traction power cut; steering freewheels/holds per rail assignment</td>
+</tr>
+<tr>
+<td>Traction brownout</td>
+<td>Isolated logic rail</td>
+<td>Logic rail holds; controller does not reset</td>
+</tr>
+</tbody>
+</table>
+<p>The full failsafe matrix and FMEA are in <a href="../safety/"><code>safety.md</code></a>.</p>
+<hr />
+<h2 id="7-b-mrover-files-reused-verified-locally">7. B-MROVER files reused (verified locally)<a class="headerlink" href="#7-b-mrover-files-reused-verified-locally" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>B-MROVER artifact</th>
+<th>Path (in <code>/mnt/data/projects/mrover</code>)</th>
+<th>Reuse in MRider</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nano firmware</td>
+<td><code>code/code.ino</code></td>
+<td><strong>Encoder-read logic only</strong>, ported to Teensy hardware quadrature decoders. PPR <em>not</em> inherited (F7).</td>
+</tr>
+<tr>
+<td>Control message</td>
+<td><code>mrover_control/msg/Control.msg</code></td>
+<td>Lineage for <code>DbwStatus</code>; extended with mode + faults.</td>
+</tr>
+<tr>
+<td>Platform notes</td>
+<td><code>Note/overview.md</code>, <code>projects/vehicle_setup.md</code></td>
+<td>Vehicle-modification recipe, connector taps, shaft-adapter method (<a href="../vehicle/"><code>vehicle.md</code></a>, <a href="../dbw/"><code>dbw.md</code></a>).</td>
+</tr>
+<tr>
+<td>ROS 2 stack config</td>
+<td><code>config/</code> (EKF, SLAM, Nav2), <code>description/ackermann</code>, <code>worlds/</code></td>
+<td>Ported directly — same distro, minimal change (<a href="../software/"><code>software.md</code></a>).</td>
+</tr>
+<tr>
+<td>Behavior cloning</td>
+<td><code>neural_net/</code>, <code>data_collection</code></td>
+<td>Reused intact (phase 2) — sits above the vehicle interface.</td>
+</tr>
+<tr>
+<td>MAVLink ↔ ROS 2 bridge</td>
+<td><code>mavlink_bridge.py</code></td>
+<td><strong>Not reused.</strong> Reference only, for the ±22.5° range and as the documented example of the auto-ranging defect (F4).</td>
+</tr>
+<tr>
+<td><code>carlikebot_system.cpp</code></td>
+<td><code>dev_ws/src/mrover/hardware/</code></td>
+<td><strong>Not reused</strong> — unmodified upstream demo stub with no hardware I/O (F3).</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8-architecture-adr-summary">8. Architecture ADR (summary)<a class="headerlink" href="#8-architecture-adr-summary" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Decision.</strong> Single <strong>Teensy 4.1 + micro-ROS</strong> DBW controller owning actuation and vehicle
+  sensing; steering position loop on the Teensy at ≥ 200 Hz against a <strong>load-side absolute
+  angle sensor</strong>; Sabertooth in <strong>independent R/C (PWM)</strong> behind the signal MUX; <strong>layered authority</strong> —
+  hardware E-stop, relay MUX to STOCK, hardware RC signal MUX, SBUS closed-loop override;
+  typed <code>DbwCommand</code>/<code>DbwStatus</code> on one transport with one clock.</li>
+<li><strong>Alternatives.</strong> Pixhawk + PX4 with a Nano smart-servo (the superseded design — full trade
+  in <a href="../adr-dbw-architecture-review/">the review</a>); Arduino-only with ASCII serial (no timing
+  determinism, unframed protocol); laptop-side or PX4-internal steering loop (latency,
+  teachability); dedicated motion-controller hardware (<strong>pre-registered fallback</strong>, E4).</li>
+<li><strong>Rationale.</strong> The previous three generations fell short on sensing/feedback quality and
+  integration complexity. This topology attacks both: absolute load-side sensing removes the
+  homing and auto-ranging defects, and collapsing four boards into one removes the integration
+  surface. The reuse given up was thinner than documented (F2, F3, F5, F11); the one
+  load-bearing thing PX4 provided — RC override — is replaced by a hardware guarantee.</li>
+<li><strong>Consequences.</strong> Override, arming, and failsafes become project responsibility, layered
+  across hardware and firmware. The platform's replication claim now rests on <strong>MRider's own
+  measured bring-up numbers</strong> rather than an upstream autopilot's provenance — a heavier
+  documentation obligation, accepted deliberately, and the reason §7 of the acceptance
+  criteria gates on quantified accuracy. <strong>BOM effect of D3 alone is −$123</strong> (Pixhawk + PM02 +
+  Nano + USB-TTL out; Teensy, IMU, hardware RC MUX, and isolated logic rail in); the larger
+  −$488 total reduction comes mostly from scoping sensors to semester-1 needs — a deferral,
+  not an architectural saving. See
+  <a href="../bom/"><code>bom.md</code></a>.</li>
+</ul>
+<hr />
+<p><em>Cross-references:</em> <a href="../dbw/"><code>dbw.md</code></a> · <a href="../safety/"><code>safety.md</code></a> · <a href="../vehicle/"><code>vehicle.md</code></a> ·
+<a href="../sensors/"><code>sensors.md</code></a> · <a href="../calibration/"><code>calibration.md</code></a> · <a href="../software/"><code>software.md</code></a> ·
+<a href="../bom/"><code>bom.md</code></a> · <a href="../adr-dbw-architecture-review/"><code>adr-dbw-architecture-review.md</code></a></p>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 8, 2026 05:51:09 UTC">August 8, 2026</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 22, 2026 05:51:31 UTC">July 22, 2026</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../adr-dbw-architecture-review/" class="md-footer__link md-footer__link--prev" aria-label="Previous: DBW Architecture Review (2026-08)">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                DBW Architecture Review (2026-08)
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../vehicle/" class="md-footer__link md-footer__link--next" aria-label="Next: Vehicle">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Vehicle
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Bio-Inspired Machine Intelligence Lab (BIMI), University of Michigan-Dearborn
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/jrkwon/mrider" target="_blank" rel="noopener" title="MRider on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.instant", "navigation.tracking", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.action.edit", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

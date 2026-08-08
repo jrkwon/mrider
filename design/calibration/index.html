@@ -1,0 +1,2149 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Michigan Rider — a drive-by-wire research and education vehicle platform">
+      
+      
+      
+        <link rel="canonical" href="https://jrkwon.github.io/mrider/design/calibration/">
+      
+      
+        <link rel="prev" href="../sensors/">
+      
+      
+        <link rel="next" href="../software/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../images/mrider.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Calibration - MRider</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#mrider-calibration-design" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="MRider" class="md-header__button md-logo" aria-label="MRider" data-md-component="logo">
+      
+  <img src="../../images/mrider.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MRider
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Calibration
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jrkwon/mrider" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jrkwon/mrider
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="MRider" class="md-nav__button md-logo" aria-label="MRider" data-md-component="logo">
+      
+  <img src="../../images/mrider.png" alt="logo">
+
+    </a>
+    MRider
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jrkwon/mrider" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jrkwon/mrider
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr-dbw-architecture-review/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DBW Architecture Review (2026-08)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vehicle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vehicle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dbw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Drive-by-Wire
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibration
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-steering-zerocenter-and-countsdegrees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Steering: zero/center and counts→degrees
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Steering: zero/center and counts→degrees">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-find-mechanical-center-zero" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Find mechanical center (zero)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-countsdegrees-scale-two-point-multi-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Counts→degrees scale (two-point / multi-point)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-setpoint-normalization-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 Setpoint normalization check
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4 Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-drive-distance-encoder-ticksmeters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Drive distance: encoder ticks→meters
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Drive distance: encoder ticks→meters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-effective-distance-per-tick" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Effective distance-per-tick
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-consequence-to-document-not-a-defect-to-calibrate-away" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Consequence to document (not a defect to calibrate away)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-camera-intrinsics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Camera intrinsics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-extrinsics-camera-lidar-base_link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Extrinsics: camera / LiDAR → base_link
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Extrinsics: camera / LiDAR → base_link">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-base_link-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 base_link definition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-coarse-extrinsics-by-measurement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Coarse extrinsics by measurement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-lidarbase_link-refinement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 LiDAR→base_link refinement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-cameralidar-cross-sensor-refinement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Camera→LiDAR (cross-sensor) refinement
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-imu-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. IMU calibration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-time-synchronization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Time synchronization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-calibration-artifact-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Calibration artifact index
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../software/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Software
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bom/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bill of Materials
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Build Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/01-bom-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. BOM & Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/02-mechanical/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Vehicle Prep & Mechanical
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/03-electrical/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Electrical & Wiring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/04-firmware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Firmware Bring-up
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/05-software/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Software Install
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/06-bench-test/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Bench Test & Calibration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/07-manual-drive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Manual Drive
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../build/08-autonomous/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Autonomous Bring-up
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learn
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Learn
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m1-ros2-intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M1 — Intro to MRider & ROS 2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m2-dbw-steering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M2 — Drive-by-Wire & Smart-Servo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m3-teleop-safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M3 — Teleop Control & Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m4-perception/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M4 — Perception
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m5-slam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M5 — Localization & SLAM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m6-nav2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M6 — Navigation (Nav2)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m7-behavior-cloning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M7 — Behavior Cloning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/m8-capstone/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M8 — Capstone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-steering-zerocenter-and-countsdegrees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Steering: zero/center and counts→degrees
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Steering: zero/center and counts→degrees">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-find-mechanical-center-zero" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Find mechanical center (zero)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-countsdegrees-scale-two-point-multi-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Counts→degrees scale (two-point / multi-point)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-setpoint-normalization-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 Setpoint normalization check
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4 Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-drive-distance-encoder-ticksmeters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Drive distance: encoder ticks→meters
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Drive distance: encoder ticks→meters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-effective-distance-per-tick" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Effective distance-per-tick
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-consequence-to-document-not-a-defect-to-calibrate-away" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Consequence to document (not a defect to calibrate away)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-camera-intrinsics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Camera intrinsics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-extrinsics-camera-lidar-base_link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Extrinsics: camera / LiDAR → base_link
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Extrinsics: camera / LiDAR → base_link">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-base_link-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 base_link definition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-coarse-extrinsics-by-measurement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Coarse extrinsics by measurement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-lidarbase_link-refinement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 LiDAR→base_link refinement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-cameralidar-cross-sensor-refinement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Camera→LiDAR (cross-sensor) refinement
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-imu-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. IMU calibration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-time-synchronization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Time synchronization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-calibration-artifact-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Calibration artifact index
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/jrkwon/mrider/edit/main/docs/design/calibration.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="mrider-calibration-design">MRider Calibration Design<a class="headerlink" href="#mrider-calibration-design" title="Permanent link">&para;</a></h1>
+<p>Concrete calibration procedures for MRider — steering zero/center and counts→degrees, drive-encoder ticks→distance, camera intrinsics, camera/LiDAR→<code>base_link</code> extrinsics, IMU calibration, and time synchronization. Each section is a procedure a student or researcher can execute and log, not a hand-wave. Every calibration produces a <strong>stored artifact</strong> (a YAML/param file or a recorded constant) that the runtime loads, plus a <strong>verification step</strong>.</p>
+<p>Cross-links: <a href="../dbw/">dbw.md</a> (angle range, encoder PPR, serial contract), <a href="../sensors/">sensors.md</a> (camera/LiDAR models), <a href="../software/">software.md</a> (TF tree, EKF), <a href="../safety/">safety.md</a> (bring-up staging), <a href="../architecture/">architecture.md</a>.</p>
+<p>Store all calibration artifacts under <code>config/calibration/</code> in the repo, one file per subsystem, each stamped with date, operator, vehicle serial, and the git commit of the firmware/software used.</p>
+<hr />
+<h2 id="1-steering-zerocenter-and-countsdegrees">1. Steering: zero/center and counts→degrees<a class="headerlink" href="#1-steering-zerocenter-and-countsdegrees" title="Permanent link">&para;</a></h2>
+<p>The absolute angle sensor (AS5600-class magnetic, mounted <strong>load-side</strong>; potentiometer as the fallback — <a href="../dbw/#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer">dbw.md §6</a>) reports raw counts; the Teensy and ROS 2 need <strong>radians</strong>, with <code>0</code> = wheels straight. Working range is <strong>±22.5°</strong> (±0.3927 rad) at the road wheels (<a href="../dbw/#12-numeric-interface-contract">dbw.md §12</a>).</p>
+<div class="admonition danger">
+<p class="admonition-title">Do this before anything else: the wrap check</p>
+<p>Rotate the sensed shaft through its <strong>full mechanical travel</strong> and confirm the raw reading
+is <strong>monotonic with no discontinuity</strong>. The AS5600 is single-turn absolute — a wrap means
+a garbage angle feeding a position loop that drives a motor (FMEA row 2, severity 5). If
+it wraps, the sensor is on the wrong shaft: move it load-side or switch to the pot
+fallback. <strong>Record the measured travel here.</strong></p>
+</div>
+<h3 id="11-find-mechanical-center-zero">1.1 Find mechanical center (zero)<a class="headerlink" href="#11-find-mechanical-center-zero" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Vehicle wheels <strong>off the ground</strong> (bench stands), steering motor <strong>unpowered</strong> (freewheel).</li>
+<li>By hand, set the front wheels physically straight — use a straightedge across both front tires, or drive a short straight line first and mark the neutral.</li>
+<li>With the wheels straight, read the absolute-sensor raw counts. Record as <code>c0</code> (zero-offset counts).</li>
+<li>Store <code>c0</code> via the Teensy's ROS 2 zeroing service (<a href="../dbw/#101-primary-transport-micro-ros-typed-messages">dbw.md §10.1</a>); the Teensy persists it (EEPROM) so center survives reboot — this is the boot-stable center that ADR B buys us, and the direct fix for B-MROVER's arbitrary boot centre (finding F4).</li>
+</ol>
+<h3 id="12-countsdegrees-scale-two-point-multi-point">1.2 Counts→degrees scale (two-point / multi-point)<a class="headerlink" href="#12-countsdegrees-scale-two-point-multi-point" title="Permanent link">&para;</a></h3>
+<p>The pot is near-linear over the small ±22.5° span, so a two-point fit is adequate; take extra points to confirm linearity.</p>
+<ol>
+<li>Turn wheels to <strong>full left lock</strong>, measure the actual road-wheel angle with a digital angle gauge (protractor/inclinometer on the wheel) → record <code>(θ_L, c_L)</code>; ideally <code>θ_L ≈ +22.5°</code>.</li>
+<li>Turn to <strong>full right lock</strong> → record <code>(θ_R, c_R)</code>; ideally <code>θ_R ≈ −22.5°</code>.</li>
+<li>Optionally record 3–5 intermediate points to check linearity (residual &lt; ~0.5°).</li>
+<li>Fit <code>θ(counts) = k · (counts − c0)</code>, where <code>k = (θ_L − θ_R)/(c_L − c_R)</code> (degrees per count). If nonlinearity matters, store a small lookup/polynomial instead.</li>
+<li>Store <code>c0</code>, <code>k</code> (or the LUT) in <code>config/calibration/steering.yaml</code>. The Teensy applies <code>θ = k·(raw − c0)</code> before publishing <code>steering_angle</code> (radians) in <code>DbwStatus</code>.</li>
+</ol>
+<h3 id="13-setpoint-normalization-check">1.3 Setpoint normalization check<a class="headerlink" href="#13-setpoint-normalization-check" title="Permanent link">&para;</a></h3>
+<p>Confirm the full command chain: <code>MANUAL_CONTROL.roll = +1000</code> should command <code>+22.5°</code> and produce a measured <code>+22.5°</code> at the wheels; <code>−1000 → −22.5°</code>; <code>0 → 0°</code> (1500 µs servo pulse). Log the commanded-vs-measured curve; it should be linear through the origin. Any offset means re-check <code>c0</code>.</p>
+<h3 id="14-verification">1.4 Verification<a class="headerlink" href="#14-verification" title="Permanent link">&para;</a></h3>
+<p>Command a sweep (0 → +22.5 → −22.5 → 0) and confirm the measured road-wheel angle matches within <strong>±1°</strong> and returns to <code>0°</code> at center. Store the sweep log.</p>
+<hr />
+<h2 id="2-drive-distance-encoder-ticksmeters">2. Drive distance: encoder ticks→meters<a class="headerlink" href="#2-drive-distance-encoder-ticksmeters" title="Permanent link">&para;</a></h2>
+<p>The drive encoder is <strong>52 PPR</strong> on the motor shaft (<code>code.ino:27</code>, verified). Distance needs the wheel-diameter and the gear/coupling ratio between the instrumented motor shaft and the wheel.</p>
+<h3 id="21-effective-distance-per-tick">2.1 Effective distance-per-tick<a class="headerlink" href="#21-effective-distance-per-tick" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Measure the <strong>loaded</strong> wheel diameter <code>D</code> (person/payload aboard, correct tire pressure) — measure rolling circumference directly by marking the tire and rolling one full revolution on the floor; <code>C_wheel =</code> measured rollout (more accurate than <code>πD</code> because of tire squish).</li>
+<li>Determine ticks-per-wheel-revolution <code>N_wheel</code>. If the encoder is on the motor shaft through gear ratio <code>G</code> (motor:wheel), then <code>N_wheel = 52 × G × (quadrature factor)</code>. If the firmware counts one edge (as <code>code.ino</code> divides count by PPR for the throttle wheel, <code>code.ino:83,141</code>), use the effective counts the firmware actually reports — do <strong>not</strong> assume 4× unless the firmware decodes all quadrature edges.</li>
+<li><strong>Roll-out calibration (authoritative, bypasses guessing G):</strong> drive/push the vehicle a <strong>measured straight distance</strong> <code>L</code> (e.g. 10.0 m marked with a tape), record the tick delta <code>Δticks</code> from the feedback frame. Then <code>meters_per_tick = L / Δticks</code>. Repeat 3× and average.</li>
+<li>Store <code>meters_per_tick</code> in <code>config/calibration/odom.yaml</code>.</li>
+</ol>
+<h3 id="22-consequence-to-document-not-a-defect-to-calibrate-away">2.2 Consequence to document (not a defect to calibrate away)<a class="headerlink" href="#22-consequence-to-document-not-a-defect-to-calibrate-away" title="Permanent link">&para;</a></h3>
+<p>Only one motor shaft is instrumented and the two rear motors are paralleled (<a href="../dbw/">dbw.md ADR C</a>). <code>meters_per_tick</code> captures straight-line scale but <strong>cannot</strong> capture per-turn differential slip or backlash. This is why odometry is <strong>fused with the IMU in the EKF</strong> (<a href="../software/">software.md</a>); calibration bounds the <em>scale</em> error, the EKF bounds the <em>drift</em>. State this in the student notes so no one expects raw wheel odometry to be exact.</p>
+<h3 id="23-verification">2.3 Verification<a class="headerlink" href="#23-verification" title="Permanent link">&para;</a></h3>
+<p>Drive a fresh measured 20 m straight line; integrated odometry distance should match within <strong>~2%</strong>. Drive a known square loop; the closure error is the fused-odometry check (EKF, not calibration alone).</p>
+<hr />
+<h2 id="3-camera-intrinsics">3. Camera intrinsics<a class="headerlink" href="#3-camera-intrinsics" title="Permanent link">&para;</a></h2>
+<p>For the front camera (<a href="../sensors/">sensors.md</a>).</p>
+<ol>
+<li>Use the ROS 2 <code>camera_calibration</code> (<code>cameracalibrator</code>) tool with a printed <strong>checkerboard</strong> of known square size (e.g. 8×6 inner corners, 25 mm squares) mounted rigidly flat.</li>
+<li>Stream the camera, move the board across the full field of view and depth range (near/far, all corners, tilts) until the tool's X/Y/size/skew bars are full.</li>
+<li>Commit → produces <code>camera_matrix</code> (fx, fy, cx, cy), <code>distortion_coefficients</code>, <code>rectification</code>, <code>projection</code>. Save as <code>config/calibration/camera_front.yaml</code> (ROS <code>CameraInfo</code> format).</li>
+<li>If using a RealSense D435i, the factory intrinsics are available from the driver, but re-verify with the checkerboard for the exact lens/resolution used.</li>
+</ol>
+<p><strong>Verification:</strong> rectify a checkerboard image; straight board edges must appear straight (reprojection error &lt; ~0.3 px reported by the tool).</p>
+<hr />
+<h2 id="4-extrinsics-camera-lidar-base_link">4. Extrinsics: camera / LiDAR → <code>base_link</code><a class="headerlink" href="#4-extrinsics-camera-lidar-base_link" title="Permanent link">&para;</a></h2>
+<p>Every sensor frame must be located relative to <code>base_link</code> for the TF tree (<a href="../software/">software.md</a>: <code>map → odom → base_link → sensor frames</code>). Define <code>base_link</code> first, then each sensor's static transform.</p>
+<h3 id="41-base_link-definition">4.1 base_link definition<a class="headerlink" href="#41-base_link-definition" title="Permanent link">&para;</a></h3>
+<p>Pin <code>base_link</code> at the <strong>center of the rear axle, on the ground plane, X forward, Z up, Y left</strong> (REP-103 / REP-105). The Ackermann kinematics (wheelbase, track) in <a href="../software/">software.md</a> are measured from this origin.</p>
+<h3 id="42-coarse-extrinsics-by-measurement">4.2 Coarse extrinsics by measurement<a class="headerlink" href="#42-coarse-extrinsics-by-measurement" title="Permanent link">&para;</a></h3>
+<p>For each sensor, measure the translation (x, y, z in meters) and orientation (roll, pitch, yaw) from <code>base_link</code> to the sensor's optical/scan frame with a tape and level. Publish as <code>static_transform_publisher</code> entries (or a URDF joint). This gets you to a few cm / few degrees.</p>
+<h3 id="43-lidarbase_link-refinement">4.3 LiDAR→base_link refinement<a class="headerlink" href="#43-lidarbase_link-refinement" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Place the vehicle a <strong>known distance</strong> from a flat wall, perpendicular. The 2D LiDAR scan of the wall should be a straight line at the measured range and centered — adjust yaw/x/y until the scan matches ground truth.</li>
+<li>Confirm the scan's zero-heading points <strong>forward</strong> (+X) and that left/right are not mirrored.</li>
+</ol>
+<h3 id="44-cameralidar-cross-sensor-refinement">4.4 Camera→LiDAR (cross-sensor) refinement<a class="headerlink" href="#44-cameralidar-cross-sensor-refinement" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Place a target visible to both (e.g. a board/pole) at several known positions.</li>
+<li>Verify a LiDAR return of the target projects onto the correct camera pixel using the intrinsics (§3) and the two extrinsics chained through <code>base_link</code>.</li>
+<li>Adjust the camera extrinsic until projection error is within a few pixels / few cm. Store <code>config/calibration/extrinsics.yaml</code> (or the URDF <code>&lt;joint&gt;</code> origins).</li>
+</ol>
+<p><strong>Verification:</strong> overlay projected LiDAR points on the camera image of a known scene; points land on the corresponding structure.</p>
+<hr />
+<h2 id="5-imu-calibration">5. IMU calibration<a class="headerlink" href="#5-imu-calibration" title="Permanent link">&para;</a></h2>
+<p>The IMU is a <strong>standalone BNO085-class module connected directly to the laptop</strong>
+(<a href="../sensors/#3-imu">sensors.md §3</a>), publishing <code>sensor_msgs/Imu</code> on <code>/imu/data</code> into
+<code>robot_localization</code>.</p>
+<div class="admonition info">
+<p class="admonition-title">Revised 2026-08-07</p>
+<p>This procedure was previously QGroundControl-based, because the IMU lived inside the
+Pixhawk. <a href="../adr-dbw-architecture-review/#46-decision-adopted-2026-08-07">D3</a> removed the
+Pixhawk, so calibration is now an in-repo procedure with no external ground-station tool.
+The <strong>estimator is unchanged</strong> — it was always <code>robot_localization</code>, with PX4 supplying
+raw IMU only (finding F11).</p>
+</div>
+<ol>
+<li><strong>Onboard fusion calibration:</strong> a BNO085-class part self-calibrates its accel/gyro/mag in
+   the background and reports a <strong>calibration-status byte per sensor</strong>. Drive the sequence the
+   vendor specifies (slow figure-8 for the magnetometer, brief rest for the gyro, a few static
+   orientations for the accel) until status reads fully calibrated. <strong>Log the status byte</strong> —
+   a partially-calibrated IMU is a silent yaw-drift source.</li>
+<li><strong>Level horizon:</strong> set the vehicle on a known-level surface and record the residual
+   roll/pitch as a static offset so <code>0</code> matches the physical vehicle.</li>
+<li><strong>Gyro bias:</strong> let the IMU sit still for ~10 s after power-up before driving. Confirm the
+   reported yaw rate settles to ≈ 0.</li>
+<li><strong>Mounting orientation:</strong> publish the IMU→<code>base_link</code> rotation as a <strong>static transform in
+   the URDF</strong>, not as a driver parameter, so it lives with the rest of the frame tree. A wrong
+   rotation corrupts yaw silently — this is the highest-risk step here. Record a photo of the
+   physical mounting alongside the transform values.</li>
+<li>Store the calibration offsets and the mounting transform in
+   <code>config/calibration/imu.yaml</code>, stamped with date, operator, and the IMU part number.</li>
+</ol>
+<p><strong>Verification:</strong> with the vehicle stationary and level, roll/pitch ≈ 0 and stable over 60 s;
+rotate the vehicle a known 90° and confirm yaw changes ~90° <strong>in the correct sign</strong>; drive a
+closed 20 m figure-8 and confirm heading error ≤ 5° (this is also an
+<a href="../software/#8-semester-1-scope-and-software-acceptance-gates">acceptance gate</a>).</p>
+<hr />
+<h2 id="6-time-synchronization">6. Time synchronization<a class="headerlink" href="#6-time-synchronization" title="Permanent link">&para;</a></h2>
+<p>Odometry, LiDAR, camera, and IMU must share a common time base or the EKF/SLAM fuses stale
+data.</p>
+<div class="admonition success">
+<p class="admonition-title">This got simpler under D3</p>
+<p>The superseded design had <strong>two clocks</strong> — the laptop and PX4 boot-time microseconds — and
+required estimating a constant offset plus drift between them via MAVLink
+<code>TIMESYNC</code>/<code>SYSTEM_TIME</code> round-trips. That machinery is gone. <strong>micro-ROS provides session
+time synchronisation</strong>, so the Teensy stamps in a clock already related to the laptop's,
+and every other sensor is physically connected to the laptop. One clock domain, no offset
+estimation.</p>
+</div>
+<p><strong>Approach (pinned):</strong></p>
+<ol>
+<li><strong>Single authoritative clock = the laptop.</strong> All ROS 2 sensor drivers (camera, LiDAR, IMU)
+   stamp with the laptop clock on arrival. Since every sensor is connected to the laptop
+   (<a href="../overview/">overview.md</a>: "a laptop will be an on-board computer to which most sensors
+   are connected"), their timestamps are already laptop-referenced.</li>
+<li><strong>Teensy:</strong> use <strong>micro-ROS session time sync</strong> so <code>DbwStatus.stamp</code> is laptop-referenced.
+   Verify the sync is actually established at startup rather than assuming it — log the
+   reported offset once per session.</li>
+<li><strong>Residual link latency:</strong> measure the USB round-trip once with a loopback test and record
+   the mean. If it is significant relative to a control period, subtract it as a fixed offset
+   and document the value. This is also the
+   <a href="../software/#8-semester-1-scope-and-software-acceptance-gates">joystick→wheel-motion latency gate</a>
+   (≤ 100 ms at p95).</li>
+<li>Keep everything on one machine's wall clock; do <strong>not</strong> enable ROS 2 simulated time
+   (<code>use_sim_time=false</code>) on the real vehicle — <strong>but do enable it in simulation</strong>, which is
+   the one place the twin and the vehicle legitimately differ.</li>
+</ol>
+<p><strong>Verification:</strong> wiggle a feature seen by both LiDAR and camera while driving; the events
+should align within one sensor period. Confirm <code>robot_localization</code> does not reject
+measurements as out-of-sequence.</p>
+<hr />
+<h2 id="7-calibration-artifact-index">7. Calibration artifact index<a class="headerlink" href="#7-calibration-artifact-index" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Subsystem</th>
+<th>Procedure</th>
+<th>Stored artifact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Steering zero + scale</td>
+<td>§1</td>
+<td><code>config/calibration/steering.yaml</code> (<code>c0</code>, <code>k</code>/LUT)</td>
+</tr>
+<tr>
+<td>Drive odometry</td>
+<td>§2</td>
+<td><code>config/calibration/odom.yaml</code> (<code>meters_per_tick</code>)</td>
+</tr>
+<tr>
+<td>Camera intrinsics</td>
+<td>§3</td>
+<td><code>config/calibration/camera_front.yaml</code></td>
+</tr>
+<tr>
+<td>Extrinsics (cam/LiDAR→base_link)</td>
+<td>§4</td>
+<td><code>config/calibration/extrinsics.yaml</code> or URDF joints</td>
+</tr>
+<tr>
+<td>IMU</td>
+<td>§5</td>
+<td><code>config/calibration/imu.yaml</code> (offsets + mounting transform + part number)</td>
+</tr>
+<tr>
+<td>Time sync</td>
+<td>§6</td>
+<td>offset recorded in bridge config; loopback-latency note</td>
+</tr>
+</tbody>
+</table>
+<p>Each artifact is stamped with date, operator, vehicle serial, and the firmware/software git commit so a calibration can be reproduced or invalidated when hardware changes. Re-run the relevant section after any mechanical change (new tires, re-mounted sensor, re-flashed firmware).</p>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 8, 2026 04:27:14 UTC">August 8, 2026</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 22, 2026 05:51:31 UTC">July 22, 2026</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../sensors/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Sensors">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Sensors
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../software/" class="md-footer__link md-footer__link--next" aria-label="Next: Software">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Software
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Bio-Inspired Machine Intelligence Lab (BIMI), University of Michigan-Dearborn
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/jrkwon/mrider" target="_blank" rel="noopener" title="MRider on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.instant", "navigation.tracking", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.action.edit", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
