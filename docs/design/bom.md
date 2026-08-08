@@ -33,7 +33,7 @@ Tier 2 has not been bought yet.
 
 | # | Item | Spec / Model | Design ref | Reuse? (mrover) | Est. ($) | Source / note |
 |---|------|--------------|-----------|-----------------|---------:|---------------|
-| 1 | **Vehicle (chassis)** | 24 V 2-seater ride-on, dual motors, parent remote | [vehicle.md ADR D](vehicle.md#adr-d-24-v-two-seater-vs-12-v-single-seater) | Yes (class) | 300 | Target A-1002549549 / Amazon B0CJTWDC38 class; ~$260–450. **Used units cut this to ~$150–200.** |
+| 1 | **Vehicle (chassis)** | **12 V single-seat** ride-on, dual motors, parent remote | [vehicle.md ADR D-R](vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08) | **No** — class changed | 165 | Land Rover Defender, 98×56×47 cm, 10 kg, ₩229,000. **ADR D was reversed**; see the note below |
 | 2 | **Teensy 4.1** | 600 MHz Cortex-M7, 4× hardware QDC, 8× serial | [dbw.md §9](dbw.md#9-teensy-41-firmware-platform-and-version-pinning) | New | 32 | Replaces Pixhawk 6C + PM02 + Nano + USB-TTL |
 | 3 | **Sabertooth 2x32** | Dimension Eng. 2×32 A dual motor driver | [dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters) | Yes | 125 | **Do not substitute a bare H-bridge** — see the note below |
 | 4 | **Steering gearmotor + encoder** | Geared DC motor w/ encoder (RS-385/390 class) or wiper-motor fallback | [dbw.md §2](dbw.md#2-steering-actuation-design) | Partial | 35 | Sized ≥2× measured column torque ([dbw.md §2.2](dbw.md#22-torque-measurement-procedure-before-sizing-the-gearmotor)) |
@@ -48,6 +48,20 @@ Tier 2 has not been bought yet.
 | 13 | **Steering shaft coupler / adapter** | Column coupler, set screws, bracket, magnet mount | [dbw.md](dbw.md) · [calibration.md](calibration.md) | New | 15 | Couples gearmotor + angle sensor. Magnet mount needs concentricity — see [dbw.md §6](dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer) |
 | 14 | **Mounts / 3D prints** | Sensor mast + camera/LiDAR mounts + enclosures | [sensors.md §5](sensors.md) | Partial | 30 | Print filament/hardware; mrover STLs need reworking for the new controller |
 | | | | | **Tier 1** | **$773** | |
+
+!!! info "Vehicle class changed — ADR D reversed 2026-08-08"
+
+    This line was a **24 V two-seater at $300**. The project moved to a **12 V single-seater
+    at ~$165** ([ADR D-R](vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08)),
+    saving ~$135 and giving a smaller, easier-to-store vehicle.
+
+    What it costs is **not** in this table, which is the point of flagging it here: the mast
+    comes down to ~0.65 m, the seat must be replaced with an equipment plate, and finding F1
+    (B-MROVER validated on the 24 V two-seater class) no longer transfers.
+
+    The Sabertooth below is now oversized for this drivetrain. **Keep it anyway** — its
+    current limiting and R/C signal-loss timeout are load-bearing in the failsafe matrix, and
+    headroom is not a defect.
 
 !!! warning "Do not substitute a cheap H-bridge for the Sabertooth"
 

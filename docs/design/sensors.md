@@ -92,7 +92,8 @@ a cross-check, with the **Pixhawk IMU remaining the EKF primary** (§3). If a
 future build wants both cheap global-shutter RGB *and* depth, run the AR0234 for
 cloning alongside the D435i for depth.
 
-**Mounting summary:** forward-facing, on the mast (§4), ~1.0–1.2 m height, slight
+**Mounting summary:** forward-facing, on the mast (§4), **~0.55 m** height (see the §5
+mast-height note — reduced from 1.0–1.2 m by the vehicle-class reversal), slight
 downward pitch (~10–15°) so the road ~2–8 m ahead fills the frame (matches the
 OSCAR/behavior-cloning framing). Fix intrinsics/extrinsics in
 [calibration.md](calibration.md).
@@ -229,10 +230,34 @@ carry the sensor-selection weight.
 
 ## 5. Mounting / Mast Concept
 
+!!! danger "Mast height reduced to ~0.65 m — 2026-08-08"
+
+    This section was written for a **24 V two-seater**. [ADR D was reversed](vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08)
+    and MRider now uses a **12 V single-seater**: 98 × 56 × 47 cm, 10 kg.
+
+    **A 1.0–1.2 m mast does not belong on a 47 cm tall, 56 cm wide, 10 kg chassis.** With
+    ~6 kg of equipment already riding high on the plate, a mast that tall puts the combined
+    centre of mass well above the roofline on a track of only ~46 cm. That is a tip-over
+    risk in exactly the manoeuvre the vehicle performs most — a full-lock turn.
+
+    **Mast total height is now ~0.65 m**, giving roughly 0.55 m for the camera and LiDAR
+    above the plate. Every height figure below should be read against that.
+
+    **Consequence, stated rather than buried:** the camera sits lower and pitches down ~12°,
+    so it frames the floor closer in. That changes the input distribution for phase-2
+    behavior cloning — a policy trained on 1.2 m framing would not transfer. Not a problem
+    today (behavior cloning is phase 2), but it must not be rediscovered later.
+
+    The [digital twin](software.md#8-semester-1-scope-and-software-acceptance-gates) models
+    the equipment plate as a real 6 kg link so this margin is testable in simulation before
+    anything is bolted to the real car.
+
+
 The sensors share a single **mast** on the deck/bed ([vehicle.md](vehicle.md) C5)
 so their extrinsics are fixed once ([calibration.md](calibration.md)).
 
-- **Front camera:** top of mast or a forward boom, **~1.0–1.2 m** height,
+- **Front camera:** top of mast or a forward boom, **~0.55 m** height (see the mast-height
+  note below),
   **~10–15° downward pitch**, forward-facing, unobstructed by the mast tube.
   Height/pitch chosen to frame the road 2–8 m ahead for behavior cloning.
 - **2D LiDAR:** mounted so its scan plane has a **clear 360°** sightline

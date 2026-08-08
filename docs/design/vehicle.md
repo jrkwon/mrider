@@ -147,7 +147,9 @@ motor leads are tapped:
 
 ## ADR D — 24 V two-seater vs 12 V single-seater
 
-**Status:** Accepted (chassis class). Instance SKU chosen at purchase per §2/§3.
+**Status:** ~~Accepted~~ — **REVERSED 2026-08-08. D2 (12 V single-seater) adopted.**
+See [§ADR D-R](#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08) below. The original
+reasoning is retained unedited, because it is still correct about what the reversal costs.
 
 **Context.** MRider must carry an onboard laptop plus a camera, 2D LiDAR, mast,
 Teensy, Sabertooth, and relay MUX, and drive that mass at walking speed
@@ -176,6 +178,63 @@ comfortably meets payload and torque margin while preserving the exact
 Sabertooth-2x32 electrical recipe MRider reuses. The extra ~$100–200
 over a 12 V single-seater buys margin on every axis that is expensive to add
 later (payload, torque, deck area) and costs nothing MRider needs.
+
+
+---
+
+## ADR D-R — Reversal to the 12 V single-seater (2026-08-08)
+
+**Status:** Accepted. Supersedes the decision in ADR D above; that section's reasoning is
+preserved because it correctly predicts what this costs.
+
+**Context.** Two candidate vehicles were evaluated against the §1 criteria:
+
+| | Benz NEW GTR AMG | Land Rover Defender |
+|---|---|---|
+| Price | ₩198,000 (~$145) | ₩229,000 (~$165) |
+| Size (L×W×H) | 99 × 55 × 41 cm | 98 × 56 × 47 cm |
+| Battery | **12 V** | same class |
+| Vehicle weight | **10 kg** | — |
+| Motors / remote | dual / 2.4 GHz | dual / yes |
+| Seats | **1** | **1** |
+
+Both fail ADR D outright: 12 V not 24 V, single-seat not two, and a wheelbase of roughly
+63 cm against the ≥ 70 cm criterion. **The lab elected to adopt the class anyway**, trading
+margin for cost and storage footprint.
+
+**Decision.** Adopt a **12 V single-seat ride-on**, and of these two the **Land Rover
+Defender** — boxy body, 47 cm roofline, and a flat-ish hood and roof to mount to. The GT-R's
+sloping sports shell is actively hostile to a sensor mast, and the ₩31k difference is noise
+against the build.
+
+**Consequences — three of which are favourable, which is why this is defensible.**
+
+| | Direction |
+|---|---|
+| **Sensor mast drops from 1.0–1.2 m to ~0.65 m.** A 1.2 m mast on a 47 cm tall, 56 cm wide chassis is a tip-over risk. [sensors.md §5](sensors.md#5-mounting-mast-concept) amended. Changes camera framing for phase-2 behavior cloning. | ✗ real cost |
+| **No flat deck.** The seat is the only flat area; it is removed and replaced with an equipment plate. | ✗ real work |
+| **Finding F1 is lost.** B-MROVER is validated on a 24 V two-seater, so that chassis-class validation no longer transfers. After [D3](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07) removed the autopilot-lineage claim, this was the *remaining* reuse argument. | ✗ significant |
+| Steering torque **falls** — less tyre scrub on a lighter, narrower car. Gearmotor sizing gets easier, and the [§2.2 torque procedure](dbw.md#22-torque-measurement-procedure-before-sizing-the-gearmotor) should come in well under the 24 V case. | ✓ |
+| Wheelbase ~63 cm gives **R_min ≈ 1.52 m** instead of ~1.7 m — a tighter turning circle, which is better in indoor corridors within the same ±22.5° limit. | ✓ |
+| 12 V at ≤ walking speed is **inherently less dangerous** than 24 V for a student-operated platform. | ✓ |
+| Sabertooth 2x32 is now **heavily oversized** for RS-390-class motors. Retained regardless: its current limiting and R/C signal-loss timeout are load-bearing in the [failsafe matrix](safety.md#2-failsafe-matrix). Headroom is not a defect. | – |
+
+**Payload is not the problem it first appears.** These cars are rated for a child (~25–30 kg);
+~6 kg of kit is well inside that. The real risks are **centre of mass** and **mounting
+surface**, not mass — which is why the fix is mast height, not a payload budget. The
+[digital twin](software.md#8-semester-1-scope-and-software-acceptance-gates) models the
+equipment plate as a real 6 kg link specifically so the tip-over margin is visible in
+simulation rather than discovered on the floor.
+
+**What must still be verified on the delivered vehicle** (§3 procedures apply unchanged):
+
+- [ ] Confirm 12 V at the motor terminals, and whether the two drive motors are 12 V in
+      parallel — §3.2's warning matters more here, not less.
+- [ ] Paralleled stall current (§3.1). Lower than the 24 V case, but still measure it.
+- [ ] Steering column travel lock-to-lock — gates the
+      [angle-sensor choice](dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer).
+- [ ] Whether the laptop still fits once the seat is removed, or whether an SBC is warranted.
+      This one may reopen a stated requirement in [overview.md](overview.md).
 
 **Consequences.**
 - Paralleled dual-motor draw must be verified against the 32 A/channel Sabertooth

@@ -69,7 +69,7 @@ apt list --installed 2>/dev/null | grep -E "ros-humble-(ackermann|gz-ros2|ros-gz
     `gz sim 8.14.0` (Harmonic) is installed, but Humble's apt `ros_gz` (0.244.x) and
     `gz_ros2_control` (0.7.x) are built against **Fortress**. This is a known mismatch, and
     resolving it is a **week-1 gate with a one-day cap**
-    ([software.md §6.2](../design/software.md#62-gazebo-pairing-week-1-gate)).
+    ([software.md §6.2](../design/software.md#62-gazebo-pairing-resolved-2026-08-08)).
 
 ```bash
 gz sim --version                       # what is actually installed
@@ -77,14 +77,19 @@ ros2 pkg prefix ros_gz_sim             # what ROS thinks it has
 ros2 launch ros_gz_sim gz_sim.launch.py gz_args:="-r empty.sdf"
 ```
 
-**Decision rule — do not spend more than one day here:**
+!!! success "Resolved 2026-08-08 — narrower than this section assumed"
 
-1. It works against Harmonic → keep it, pin the versions, record them in `docs/build/`.
-2. It does not → **install Gazebo Fortress and use the apt binaries.** Fortress is the
-   supported Humble pairing and is entirely adequate for a 14-week indoor-navigation project.
+    **`ros_gz` was never at risk.** The machine has `ros-humble-ros-gzharmonic` 0.244.12,
+    the Harmonic-paired variant OSRF publishes under a different name from the
+    Fortress-targeted `ros-humble-ros-gz-*`. It works against Harmonic as installed.
 
-**Do not** attempt a source build of `ros_gz` + `gz_ros2_control` against Harmonic on a
-semester timeline. The twin is a means, not the deliverable.
+    **`gz_ros2_control` was the whole gate** and it needed the source build this section
+    advised against — there is no Harmonic build of it for Humble in apt. It builds cleanly
+    (all `libgz-sim8-dev` headers were already present) and links against `libgz-sim8`.
+    See [software.md §6.2](../design/software.md#62-gazebo-pairing-resolved-2026-08-08).
+
+    The "do not source-build" advice was written to protect the schedule and would instead
+    have cost the twin its defining property (ADR-SW4). One package is not a fork of `ros_gz`.
 
 ## 5.4 Build the micro-ROS agent from source
 

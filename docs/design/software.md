@@ -319,18 +319,39 @@ flowchart LR
 | `micro_ros_agent` | **not in apt** — build from source via `micro_ros_setup` |
 | Gazebo | **Harmonic (gz-sim 8.14.0) installed**; Humble's apt `ros_gz` (0.244.x) and `gz_ros2_control` (0.7.x) target **Fortress** |
 
-### 6.2 Gazebo pairing — week-1 gate
+### 6.2 Gazebo pairing — RESOLVED 2026-08-08
 
-Humble's officially paired Gazebo is **Fortress**; the lab machine has **Harmonic**. Resolve in
-the first two days with this rule, and spend no more than one day on it:
+!!! success "Closed. Humble + Harmonic works, and the gate was narrower than written."
 
-1. Test the installed `ros_gz` against Harmonic with a trivial world and a `gz_ros2_control` demo.
-2. **If it works** — keep Harmonic, pin the versions, record them in `docs/build/`.
-3. **If it does not** — install **Gazebo Fortress** and use the apt binaries. Fortress is the
-   supported Humble pairing and entirely adequate for a 14-week indoor-navigation project.
+    This section previously treated the whole Gazebo stack as at risk, and advised against a
+    source build. Both halves turned out to be wrong, in opposite directions.
 
-**Do not** attempt a source build of `ros_gz` + `gz_ros2_control` against Harmonic on a
-semester timeline.
+    **`ros_gz` was never the problem.** The lab machine has
+    **`ros-humble-ros-gzharmonic` 0.244.12** — OSRF publishes a Harmonic-paired variant under
+    that name, distinct from the Fortress-targeted `ros-humble-ros-gz-*`. Bridge, sim and
+    interfaces all work against Harmonic out of the box.
+
+    **`gz_ros2_control` was the whole gate.** There is *no* Harmonic build of it for Humble in
+    apt — only 0.7.20, which targets Fortress. Since [ADR-SW4](#7-software-adr-summary) makes
+    the shared controller stack the entire justification for the twin, that package had to be
+    built from source:
+
+    ```bash
+    cd ros2_ws/src && git clone -b humble https://github.com/ros-controls/gz_ros2_control.git
+    cd .. && GZ_VERSION=harmonic colcon build --packages-select gz_ros2_control
+    ```
+
+    It builds cleanly — all `libgz-sim8-dev` headers were already present — and the resulting
+    plugin links against **`libgz-sim8`**, confirming Harmonic. Verified by running the twin:
+    both controllers activate and `slam_toolbox` maps the depot world.
+
+    Set `COLCON_IGNORE` in `gz_ros2_control_demos`, `gz_ros2_control_tests`,
+    `ign_ros2_control` and `ign_ros2_control_demos` — the demos need `control_toolbox`
+    (absent, and unnecessary), and the `ign_*` packages are the Fortress variants.
+
+    **The advice not to source-build was wrong for this package specifically.** It was written
+    to protect the schedule, and would instead have cost the twin its main property.
+    A one-package source build is not the same risk as forking `ros_gz`.
 
 ### 6.3 Version pinning
 
