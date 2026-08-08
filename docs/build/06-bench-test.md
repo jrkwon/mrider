@@ -1,23 +1,5 @@
 # 6. Bench Test (Wheels-Off) & Calibration
 
-!!! danger "Superseded — pending rewrite (2026-08-07)"
-
-    This page still describes the **Pixhawk 6C + PX4 + Arduino Nano** topology. That was
-    replaced by a **single Teensy 4.1 running micro-ROS**
-    ([decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)).
-
-    **Do not follow the steps below as written.** Specifically, these no longer exist: PX4,
-    QGroundControl, MAVLink, the Micro-XRCE-DDS agent, `px4_msgs`, the Arduino Nano, the
-    USB-TTL adapter, the servo-PWM steering setpoint, and the ASCII/I2C feedback protocols.
-    New in their place: micro-ROS over USB, `DbwCommand`/`DbwStatus`, Sabertooth **packetized
-    serial**, an isolated logic rail, and a **hardware RC signal MUX**.
-
-    The [design set](../design/overview.md) is authoritative and current —
-    [dbw.md](../design/dbw.md), [architecture.md](../design/architecture.md),
-    [safety.md](../design/safety.md), [software.md](../design/software.md) — as are
-    [step 1](01-bom-sourcing.md) and [step 4](04-firmware.md).
-
-
 **Goal:** validate the full command/feedback chain safely, then calibrate.
 
 With the vehicle on a stand, exercise steering and throttle end-to-end and confirm every
@@ -62,27 +44,58 @@ specific way this vehicle can fail; each has a defined behavior; each is testabl
 
 | # | Loss scenario | How to induce | Expected immediate behavior | Expected steering behavior | Observed | Pass |
 |---|---|---|---|---|---|---|
-| 1 | **Command/heartbeat loss** | Kill the command shim (stream < 10 Hz) | PX4 offboard-loss failsafe: throttle → 0, enter hold | PX4 stops emitting servo setpoint → Nano bit0 clears → steering **holds last angle**, motor de-energizes | | ☐ |
-| 2 | **USB loss** (Nano ↔ laptop) | Unplug `/dev/mrider_nano` | Feedback lost → autonomy degrades to safe-stop (throttle 0 via PX4) | **Steering unaffected** — setpoint comes via PX4 servo PWM, not USB | | ☐ |
-| 3 | **RC loss** | Power off the transmitter | PX4 `COM_RC_LOSS_T` → configured Hold/Disarm: throttle → 0 | setpoint goes to hold/center per PX4 config → Nano holds | | ☐ |
+| 1 | **Command loss** | Kill the publisher (staleness > 500 ms) | Teensy → `ESTOP`: throttle → 0 | **Centered**, then motor de-energized | | ☐ |
+| 2 | **USB link loss** | Unplug `/dev/mitt_dbw` | Teensy → `ESTOP` autonomously; laptop halts Nav2 | Centered, then de-energized | | ☐ |
+| 3 | **RC loss** | Power off the transmitter | Teensy → `ESTOP`: throttle → 0 | Centered, then de-energized | | ☐ |
 | 4 | **Battery sag / brownout** | Force a stall while watching the logic rail; or bench-drop the logic rail | Logic rail below threshold → MUX coil drops → **revert to STOCK**; Sabertooth LVC also stops motors | steering motor de-energizes with the coil → **freewheel** | | ☐ |
-| 5 | **E-stop pressed** | Press it | Traction power cut; MUX coil dropped → STOCK; Sabertooth unpowered on motor rail | steering motor loses power → **freewheel** | | ☐ |
-| 6 | **Sabertooth signal loss** | Unplug S1, then S2 | Affected channel stops its motor (built-in R/C timeout) | S1 lost → steering motor stops | | ☐ |
-| 7 | **Steering at limit / jam** | Command beyond the mechanical stop | Nano clamps effort **toward center only**, sets stall bit | holds at limit, no further drive into the stop | | ☐ |
+| 5 | **E-stop pressed** | Press it — **also repeat with the laptop powered off** | Traction power cut; MUX coil dropped → STOCK | steering motor loses power → **freewheel** | | ☐ |
+| 6 | **Sabertooth command loss** | Halt the Teensy (hold reset) while a motor is commanded | **Serial timeout** stops both motors | steering motor stops | | ☐ |
+| 7 | **Steering at limit / jam** | Command beyond the mechanical stop | Teensy clamps effort **toward center only**, sets stall bit | holds at limit, no further drive into the stop | | ☐ |
+| 8 | **Teensy firmware hang** | Hold the Teensy in reset | Motors stop (row 6); watchdog resets outputs to neutral | freewheel or held per §6.3 | | ☐ |
+| 9 | **Angle sensor fault** | Unplug the sensor / short I²C | Teensy → `ESTOP`, encoder-fault bit set | de-energized — **must not** drive to a garbage target | | ☐ |
 
-!!! danger "Row 2 is the counter-intuitive one — verify it deliberately"
+!!! danger "Row 2 changed direction — verify it deliberately"
 
-    Unplugging the Nano's USB cable does **not** stop the steering. The setpoint arrives via
-    PX4 servo PWM, so the column keeps tracking while the laptop goes blind on odometry. This
-    is by design — and it is exactly the behavior an operator will misread in an emergency if
-    they have not seen it on the bench.
+    Under the superseded design, unplugging USB left steering still tracking, because the
+    setpoint arrived separately via PX4 servo PWM. **It no longer does.** The same link now
+    carries the setpoint, so a dropout removes it and the vehicle goes to `ESTOP` — centered
+    and de-energized.
+
+    This is an accepted, analysed regression
+    ([failsafe row 2](../design/safety.md#2-failsafe-matrix)): a stale setpoint with a live
+    actuator is more dangerous than a stop. But an operator who learned the old behavior will
+    misread it. Show them on the bench.
+
+!!! danger "Rows 6 and 8 are the ones that justify the whole architecture"
+
+    A single MCU holds the loop, throttle, override, and arming. The claim that this is
+    acceptable rests on layers *independent* of that MCU. **Test them by actually halting the
+    Teensy**, not by reasoning about it. If row 6 fails — the Sabertooth latches its last
+    command instead of timing out — revert to independent R/C mode
+    ([dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-packetized-serial-single-master))
+    before going further.
+
+### 6.2.1 Override layer verification
+
+Both layers, tested separately. Layer B is the **condition D3 was adopted on**
+([safety.md §1.2](../design/safety.md#12-live-override-inside-dbw-mode-two-layers)).
+
+| Layer | Test | Expected | Observed | Pass |
+|---|---|---|---|---|
+| **A — SBUS** | Take the sticks in `AUTONOMOUS` | Mode → `MANUAL_RC` within **≤ 200 ms**; sticks command an **angle**, loop still closed | | ☐ |
+| **B — hardware MUX** | **Hold the Teensy in reset**, flip the MUX channel | Transmitter drives the Sabertooth **directly**; steering responds with the Teensy dead | | ☐ |
+| B — feel | Compare A and B by hand | B commands raw **effort**, open-loop — a different feel. Record it | | ☐ |
+
+**Record:** Layer B behavior in the validation report, including the effort-vs-angle
+difference. An operator should never meet that difference for the first time during an
+incident.
 
 ## 6.3 Freewheel-on-power-loss test
 
 The pinned test from [safety.md §4.4](../design/safety.md#44-test-procedure-freewheel-on-power-loss),
 steps 1–2 (step 3 happens in [step 7](07-manual-drive.md) on the ground):
 
-1. Wheels off the ground. Command a mid-range steering angle; confirm the Nano holds it.
+1. Wheels off the ground. Command a mid-range steering angle; confirm the Teensy holds it.
 2. Press E-stop. Confirm all four:
     - [ ] traction dead
     - [ ] MUX shows STOCK
@@ -107,12 +120,15 @@ steps 1–2 (step 3 happens in [step 7](07-manual-drive.md) on the ground):
 - [ ] Every failsafe-matrix row (§6.2) passes
 - [ ] Freewheel test (§6.3) passes
 - [ ] Default = STOCK confirmed on **every** power-up and **every** fault
+- [ ] E-stop verified **with the laptop powered off** — 10/10 trials, cut within ≤ 200 ms
+- [ ] Both override layers (§6.2.1) pass, Layer B with the Teensy halted
 
 **Stage 4 — full integration on the chassis, wheels on stands:**
 
 - [ ] Failsafe matrix repeated on the fully assembled vehicle
 - [ ] Steering mechanical limits measured — actual travel vs. the ±22.5° design target
 - [ ] Drive-encoder ticks increment correctly under powered rotation
+- [ ] Angle sensor monotonic across full travel — **no wrap** (FMEA row 2)
 - [ ] **No logic-rail brownout under steering stall** — measure it, do not assume
 
 **Record sheet — Stage 4**
@@ -125,6 +141,8 @@ steps 1–2 (step 3 happens in [step 7](07-manual-drive.md) on the ground):
 | Logic rail sag vs. rest | *(measure during bring-up)* V |
 | Steering stall current | *(measure during bring-up)* A |
 | Drive stall current (paralleled) | *(measure during bring-up)* A — must be < 32 A |
+| Measured sensor-shaft travel, lock-to-lock | *(measure)* ° — must be ≤ 340° for AS5600 |
+| Drive-encoder PPR (measured, not inherited) | *(measure)* |
 
 ---
 
@@ -143,9 +161,10 @@ stamped with date, operator, vehicle serial, and the firmware/software git commi
 2. By hand, set the front wheels physically straight — use a straightedge across both front
    tires.
 3. Read the absolute-sensor raw counts. Record as `c0`.
-4. Store it via the Nano config command `C,ZERO`. The Nano persists `c0` in EEPROM, so center
-   survives reboot — this boot-stable center is exactly what
-   [ADR B](../design/dbw.md#5-adr-b-steering-angle-encoding) bought.
+4. Store it via the Teensy's ROS 2 zeroing service. The Teensy persists `c0` in EEPROM, so
+   center survives reboot — this boot-stable center is exactly what
+   [ADR B](../design/dbw.md#5-adr-b-steering-angle-encoding) bought, and the direct fix for
+   B-MROVER's arbitrary boot centre (finding F4).
 
 **Counts→degrees scale** ([calibration.md §1.2](../design/calibration.md#12-countsdegrees-scale-two-point-multi-point)):
 
@@ -286,26 +305,38 @@ must land on the corresponding structure.
 
 ## 6.9 IMU and time sync
 
-**IMU** — done in [step 4](04-firmware.md) via QGroundControl. Confirm here that it survived:
-with the vehicle stationary and level, `VehicleAttitude` roll/pitch ≈ 0 and stable; rotate
-the vehicle a known 90° and confirm yaw changes ~90° **in the correct sign**. Export the
-parameter file to `config/calibration/px4_params_<version>.params`.
+**IMU** ([calibration.md §5](../design/calibration.md#5-imu-calibration)) — a standalone
+BNO085-class module on the laptop, calibrated in-repo. There is no ground-station tool.
 
-**Time sync** ([calibration.md §6](../design/calibration.md#6-time-synchronization)):
+1. Drive the vendor calibration sequence (slow figure-8 for the magnetometer, rest for the
+   gyro, static orientations for the accel) until the **calibration-status byte** reads fully
+   calibrated. **Log that byte** — a partially-calibrated IMU is a silent yaw-drift source.
+2. Level: with the vehicle stationary and level, roll/pitch ≈ 0 and stable over 60 s. Record
+   any residual as a static offset.
+3. Rotate the vehicle a known 90°; confirm yaw changes ~90° **in the correct sign**.
+4. Publish the IMU→`base_link` rotation as a **static transform in the URDF**, not a driver
+   parameter. A wrong rotation corrupts yaw silently — the highest-risk step here. Photograph
+   the physical mounting alongside the values.
 
-- Single authoritative clock = **the laptop**. Sensors physically connected to it are already
-  laptop-referenced.
-- PX4 → laptop offset estimated via MAVLink `TIMESYNC`/`SYSTEM_TIME` round-trip and applied
-  in the bridge, so PX4-originated messages carry laptop-referenced stamps.
-- Nano frames are stamped **on receipt**. Record the mean USB latency once via a loopback
-  test and subtract it as a fixed offset if needed.
-- `use_sim_time=false`. Always.
+**Time sync** ([calibration.md §6](../design/calibration.md#6-time-synchronization)) — much
+simpler than it was, because there is only one clock domain now:
+
+- Single authoritative clock = **the laptop**. Every sensor is physically connected to it, so
+  they are already laptop-referenced.
+- The Teensy uses **micro-ROS session time sync**, replacing the MAVLink `TIMESYNC` offset
+  estimation the two-clock design required. **Verify the sync is actually established** at
+  startup rather than assuming it; log the reported offset once per session.
+- Record the mean USB round-trip latency once via a loopback test; subtract as a fixed offset
+  if it is significant relative to a control period.
+- `use_sim_time=false` on the vehicle — but **true in simulation**, the one place the twin and
+  the vehicle legitimately differ.
 
 **Verification:** wiggle a feature seen by both LiDAR and camera while driving; the events
-should align within one sensor period. Confirm the EKF is not rejecting measurements as
-out-of-sequence (no PX4 EKF timestamp warnings).
+should align within one sensor period. Confirm `robot_localization` is not rejecting
+measurements as out-of-sequence.
 
-Record: mean Nano USB latency = *(measure)* ms · PX4↔laptop offset method = *(record)*
+Record: mean USB round-trip latency = *(measure)* ms · micro-ROS session offset = *(record)* ·
+IMU calibration-status byte = *(record)*
 
 ## 6.10 Calibration artifact index
 
@@ -315,8 +346,9 @@ Record: mean Nano USB latency = *(measure)* ms · PX4↔laptop offset method = *
 | Drive odometry | §6.6 | `config/calibration/odom.yaml` (`meters_per_tick`) | ☐ |
 | Camera intrinsics | §6.7 | `config/calibration/camera_front.yaml` | ☐ |
 | Extrinsics | §6.8 | `config/calibration/extrinsics.yaml` or URDF joints | ☐ |
-| IMU / PX4 | §6.9 | `config/calibration/px4_params_<ver>.params` | ☐ |
-| Time sync | §6.9 | offset in bridge config; loopback-latency note | ☐ |
+| IMU | §6.9 | `config/calibration/imu.yaml` (offsets, mounting transform, part number) | ☐ |
+| Time sync | §6.9 | loopback-latency note; micro-ROS session offset | ☐ |
+| Sensor-shaft travel (wrap check) | §6.4 | recorded in `steering.yaml` alongside `c0`, `k` | ☐ |
 | As-built BOM | [step 1](01-bom-sourcing.md) | `config/calibration/bom_asbuilt.md` | ☐ |
 
 Every artifact carries date, operator, vehicle serial, and firmware/software git commit.
