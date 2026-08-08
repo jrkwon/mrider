@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!--
+  Inertia macros. Ported in STRUCTURE from B-MROVER's inertial_macros.xacro,
+  but every mass that feeds them comes from config/mitt_dimensions.yaml.
+
+  B-MROVER's own numbers were simulation artifacts (chassis_mass=300 kg,
+  wheel_mass=11 kg on a ride-on car) - see docs/design/software.md 3.2.
+  Reusing its arithmetic is fine; reusing its masses is not.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="inertial_box" params="mass x y z *origin">
+    <inertial>
+      <xacro:insert_block name="origin"/>
+      <mass value="${mass}"/>
+      <inertia
+        ixx="${(1/12) * mass * (y*y + z*z)}" ixy="0.0" ixz="0.0"
+        iyy="${(1/12) * mass * (x*x + z*z)}" iyz="0.0"
+        izz="${(1/12) * mass * (x*x + y*y)}"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="inertial_cylinder" params="mass length radius *origin">
+    <inertial>
+      <xacro:insert_block name="origin"/>
+      <mass value="${mass}"/>
+      <inertia
+        ixx="${(1/12) * mass * (3*radius*radius + length*length)}" ixy="0.0" ixz="0.0"
+        iyy="${(1/12) * mass * (3*radius*radius + length*length)}" iyz="0.0"
+        izz="${(1/2) * mass * (radius*radius)}"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="inertial_sphere" params="mass radius *origin">
+    <inertial>
+      <xacro:insert_block name="origin"/>
+      <mass value="${mass}"/>
+      <inertia
+        ixx="${(2/5) * mass * (radius*radius)}" ixy="0.0" ixz="0.0"
+        iyy="${(2/5) * mass * (radius*radius)}" iyz="0.0"
+        izz="${(2/5) * mass * (radius*radius)}"/>
+    </inertial>
+  </xacro:macro>
+
+</robot>

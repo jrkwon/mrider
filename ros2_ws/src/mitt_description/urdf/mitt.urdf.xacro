@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+  MITT (Michigan Intelligent Transportation Tech) - top-level description.
+
+  Build with:
+    xacro mitt.urdf.xacro sim:=true   > /tmp/mitt.urdf
+    check_urdf /tmp/mitt.urdf
+
+  All geometry derives from mitt_description/config/mitt_dimensions.yaml.
+  Nothing in that file has been measured yet - see its header.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mitt">
+
+  <!-- true  = Gazebo simulation (gz_ros2_control)
+       false = real vehicle    (mitt_hardware, Track B) -->
+  <xacro:arg name="sim" default="true"/>
+
+  <xacro:include filename="$(find mitt_description)/urdf/mitt_base.xacro"/>
+  <xacro:include filename="$(find mitt_description)/urdf/mitt_sensors.xacro"/>
+  <xacro:include filename="$(find mitt_description)/urdf/mitt_ros2_control.xacro"/>
+
+  <xacro:mitt_ros2_control sim="$(arg sim)"/>
+
+</robot>

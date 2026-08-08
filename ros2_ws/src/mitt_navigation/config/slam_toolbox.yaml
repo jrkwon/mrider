@@ -1,0 +1,75 @@
+# MITT slam_toolbox - online async mapping.
+#
+# Ported from B-MROVER config/slam/mapper_params_online_async.yaml with one
+# correction carried from the design verification (docs/design/software.md 7):
+#
+#   base_frame is base_link, NOT base_footprint. B-MROVER mixed the two -
+#   SLAM used base_footprint while its EKF used base_link. MRider standardises
+#   on base_link everywhere; there is no base_footprint in this stack.
+#
+# This node owns map->odom. mitt_localization's EKF owns odom->base_link.
+
+slam_toolbox:
+  ros__parameters:
+    use_sim_time: true
+
+    solver_plugin: solver_plugins::CeresSolver
+    ceres_linear_solver: SPARSE_NORMAL_CHOLESKY
+    ceres_preconditioner: SCHUR_JACOBI
+    ceres_trust_strategy: LEVENBERG_MARQUARDT
+    ceres_dogleg_type: TRADITIONAL_DOGLEG
+    ceres_loss_function: None
+
+    odom_frame: odom
+    map_frame: map
+    base_frame: base_link          # see header - NOT base_footprint
+    scan_topic: /scan
+    mode: mapping                  # switch to localization with a saved map
+
+    debug_logging: false
+    throttle_scans: 1
+    transform_publish_period: 0.02
+    map_update_interval: 1.0
+    resolution: 0.05
+    max_laser_range: 12.0          # matches the RPLIDAR A1 profile in the URDF
+    minimum_time_interval: 0.5
+    transform_timeout: 0.2
+    tf_buffer_duration: 30.0
+    stack_size_to_use: 40000000
+    enable_interactive_mode: true
+
+    # --- Scan matching -----------------------------------------------------
+    # Thresholds are tighter than the defaults because this vehicle moves at
+    # <= walking speed: waiting 0.5 m between scans would throw away most of
+    # the data on a slow indoor run.
+    use_scan_matching: true
+    use_scan_barycenter: true
+    minimum_travel_distance: 0.2
+    minimum_travel_heading: 0.2
+    scan_buffer_size: 15
+    scan_buffer_maximum_scan_distance: 12.0
+    link_match_minimum_response_fine: 0.1
+    link_scan_maximum_distance: 1.5
+    loop_search_maximum_distance: 3.0
+    do_loop_closing: true
+    loop_match_minimum_chain_size: 10
+    loop_match_maximum_variance_coarse: 3.0
+    loop_match_minimum_response_coarse: 0.35
+    loop_match_minimum_response_fine: 0.45
+
+    correlation_search_space_dimension: 0.5
+    correlation_search_space_resolution: 0.01
+    correlation_search_space_smear_deviation: 0.1
+
+    loop_search_space_dimension: 8.0
+    loop_search_space_resolution: 0.05
+    loop_search_space_smear_deviation: 0.03
+
+    distance_variance_penalty: 0.5
+    angle_variance_penalty: 1.0
+    fine_search_angle_offset: 0.00349
+    coarse_search_angle_offset: 0.349
+    coarse_angle_resolution: 0.0349
+    minimum_angle_penalty: 0.9
+    minimum_distance_penalty: 0.5
+    use_response_expansion: true

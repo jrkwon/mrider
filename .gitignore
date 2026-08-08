@@ -19,3 +19,10 @@ __pycache__/
 
 # MkDocs build output
 /site/
+
+# ROS 2 colcon build artifacts
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+# Upstream source cloned for the Harmonic build, not vendored
+ros2_ws/src/gz_ros2_control/

@@ -1,0 +1,82 @@
+# MITT robot_localization EKF - INDOOR profile (no GNSS).
+#
+# Ported from B-MROVER config/ekf.yaml, with the corrections that the design
+# verification already identified (docs/design/software.md 7):
+#
+#   1. FRAME RECONCILIATION. B-MROVER's SLAM used base_footprint while its EKF
+#      used base_link. MRider standardises on base_link everywhere. There is no
+#      base_footprint anywhere in this stack - if you see one, something is
+#      importing an unported config.
+#
+#   2. NO navsat_transform HERE. B-MROVER's magnetic declination was set for
+#      LISBON, which would silently rotate the global frame. Rather than fix a
+#      number we cannot verify, the indoor profile drops the GNSS EKF entirely.
+#      GNSS is phase 2 (docs/design/sensors.md 4); a separate ekf_outdoor.yaml
+#      gets written then, with the Ann Arbor declination measured, not guessed.
+#
+#   3. Single EKF only. map->odom is published by slam_toolbox; this node owns
+#      odom->base_link.
+#
+# NOTE the ackermann_steering_controller is configured with enable_odom_tf:
+# false precisely so this node is the sole publisher of odom->base_link. Two
+# publishers for one transform produces a jittering robot that is very hard to
+# diagnose.
+
+ekf_filter_node:
+  ros__parameters:
+    frequency: 50.0
+    sensor_timeout: 0.1
+    two_d_mode: true            # planar indoor vehicle
+    publish_tf: true
+
+    map_frame: map
+    odom_frame: odom
+    base_link_frame: base_link
+    world_frame: odom           # local pose only; SLAM owns map->odom
+
+    # --- Wheel odometry from ackermann_steering_controller -----------------
+    # Fuse VELOCITIES, not pose. Integrated wheel position drifts without
+    # bound and there is no absolute reference indoors to correct it.
+    odom0: /ackermann_steering_controller/odometry
+    odom0_config: [false, false, false,   # x, y, z
+                   false, false, false,   # roll, pitch, yaw
+                   true,  true,  false,   # vx, vy, vz
+                   false, false, true,    # vroll, vpitch, vyaw
+                   false, false, false]   # ax, ay, az
+    odom0_differential: false
+    odom0_relative: false
+    odom0_queue_size: 10
+
+    # --- IMU ---------------------------------------------------------------
+    # BNO085-class, mounted low and central (docs/design/sensors.md 3).
+    # Yaw rate and yaw are taken; accelerations are NOT - on a vibrating
+    # ride-on chassis they are mostly drivetrain buzz.
+    imu0: /imu/data
+    imu0_config: [false, false, false,
+                  false, false, true,     # yaw
+                  false, false, false,
+                  false, false, true,     # vyaw
+                  false, false, false]
+    imu0_differential: false
+    imu0_relative: true         # relative to first measurement; no magnetometer
+                                # heading reference is trusted indoors
+    imu0_queue_size: 10
+    imu0_remove_gravitational_acceleration: true
+
+    # Placeholders sized to be plausible. Revisit once mitt_bench reports the
+    # real odometry drift figure (target: <= 2% of distance over 20 m).
+    process_noise_covariance: [0.02, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.02, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.01, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.01, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.01, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.03, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.03, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.03, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.02, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.01, 0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.01, 0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.02, 0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.01, 0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.01, 0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.01]

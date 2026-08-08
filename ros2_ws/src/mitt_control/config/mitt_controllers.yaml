@@ -1,0 +1,83 @@
+# MITT ros2_control configuration.
+#
+# Upstream ackermann_steering_controller, NOT B-MROVER's bicycle_steering
+# fork. Two reasons, both from docs/design/software.md 2 and 7:
+#   - the design selects the upstream controller over the fork
+#   - the fork ran at update_rate: 10 Hz and carried wheelbase: 0.325 with
+#     front_wheel_radius: 0.05, contradicting its own URDF's 0.1397
+#
+# THIS FILE IS USED UNCHANGED IN SIM AND ON HARDWARE (ADR-SW4). Only the
+# hardware_interface plugin differs. If a value here needs to be different
+# on the real vehicle, that is a signal something is wrong with the model,
+# not a reason to fork the file.
+#
+# Geometry MUST stay in sync with mitt_description/config/mitt_dimensions.yaml.
+# It is duplicated here because ros2_control params cannot read that yaml
+# directly; mitt_bringup checks the two agree at launch.
+
+controller_manager:
+  ros__parameters:
+    # 100 Hz. The timing contract in docs/design/dbw.md 12 puts the command
+    # stream at >= 50 Hz; the controller runs faster so it is never the
+    # bottleneck. B-MROVER ran 10 Hz, which would be.
+    update_rate: 100
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    ackermann_steering_controller:
+      type: ackermann_steering_controller/AckermannSteeringController
+
+
+ackermann_steering_controller:
+  ros__parameters:
+    reference_timeout: 0.5          # s. Matches the firmware staleness
+                                    # watchdog in docs/design/safety.md row 1.
+
+    front_steering: true
+    open_loop: false
+    velocity_rolling_window_size: 10
+    position_feedback: true
+    use_stamped_vel: false
+
+    # Front = steering joints, rear = traction. Matches mitt_ros2_control.xacro.
+    #
+    # ORDER IS [RIGHT, LEFT], NOT [LEFT, RIGHT]. steering_controllers_library
+    # takes right-then-left throughout its API:
+    #   update_odometry(right_traction_wheel_pos, left_traction_wheel_pos,
+    #                   right_steer_pos, left_steer_pos, dt)
+    #
+    # Getting this backwards does NOT stop the vehicle turning, which is what
+    # makes it nasty: it inverts the Ackermann inner/outer compensation, so
+    # both wheels steer the right way but by each other's angle. Caught here
+    # by commanding a left turn and seeing front_left_steer (0.275 rad) come
+    # out SMALLER than front_right_steer (0.342) - on a left turn the inner
+    # (left) wheel must turn tighter. On hardware that is permanent tyre
+    # scrub in every corner.
+    #
+    # B-MROVER never hit this: its bicycle_steering_controller used
+    # single-element lists, so no ordering existed to get wrong.
+    front_wheels_names: ["front_right_steer_joint", "front_left_steer_joint"]
+    rear_wheels_names: ["rear_right_wheel_joint", "rear_left_wheel_joint"]
+
+    # --- Geometry: keep in sync with mitt_dimensions.yaml ------------------
+    # NONE of these are measured. See that file's header.
+    wheelbase: 0.63                 # TODO measure
+    front_wheel_track: 0.46         # TODO measure
+    rear_wheel_track: 0.46          # TODO measure
+    front_wheels_radius: 0.09       # TODO measure
+    rear_wheels_radius: 0.09        # TODO measure
+
+    base_frame_id: base_link
+    odom_frame_id: odom
+
+    # The EKF in mitt_localization owns map->odom->base_link. Letting the
+    # controller also publish odom->base_link would give two publishers for
+    # one transform, which shows up as a jittering robot that is maddening
+    # to debug. Controller publishes the topic; EKF publishes the TF.
+    enable_odom_tf: false
+
+    # Diagonal only. These are placeholders sized to be plausible, not
+    # measured; revisit once mitt_bench reports real odometry drift.
+    twist_covariance_diagonal: [0.05, 0.05, 0.0, 0.0, 0.0, 0.1]
+    pose_covariance_diagonal: [0.05, 0.05, 0.0, 0.0, 0.0, 0.1]

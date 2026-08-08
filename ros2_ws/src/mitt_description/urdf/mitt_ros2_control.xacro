@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!--
+  ros2_control hardware interface.
+
+  This file is the ONE place sim and hardware differ (ADR-SW4,
+  docs/design/software.md 7). The joints, their command/state interfaces, and
+  everything above them - ackermann_steering_controller, Nav2, SLAM, the
+  learned policy - are identical in both cases. Only the <plugin> swaps:
+
+      sim=true   -> gz_ros2_control/GazeboSimSystem
+      sim=false  -> mitt_hardware/MittSystem   (Track B, bridges micro-ROS)
+
+  If you ever need a sim-only or vehicle-only node ABOVE this line, stop: that
+  is re-introducing exactly the divergence the twin exists to prevent.
+
+  NOTE on rear wheels: the real vehicle parallels both rear motors onto one
+  motor-driver channel with a SINGLE encoder (docs/design/dbw.md 7, ADR C).
+  Two joints are declared here because the controller and the physics need
+  them, but hardware feedback for the two is shared, not independent. Do not
+  build anything that assumes per-rear-wheel sensing.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="mitt_ros2_control" params="sim:=true">
+
+    <ros2_control name="MittSystem" type="system">
+      <hardware>
+        <xacro:if value="${sim}">
+          <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+        </xacro:if>
+        <xacro:unless value="${sim}">
+          <!-- Track B. Bridges to /mitt/dbw/command and /mitt/dbw/status. -->
+          <plugin>mitt_hardware/MittSystem</plugin>
+        </xacro:unless>
+      </hardware>
+
+      <!-- Front steering: POSITION commanded, matching the Teensy's local
+           position loop. The controller asks for an angle; firmware closes
+           the loop against the load-side absolute sensor. -->
+      <joint name="front_left_steer_joint">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+      </joint>
+      <joint name="front_right_steer_joint">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+      </joint>
+
+      <!-- Rear traction: VELOCITY commanded. -->
+      <joint name="rear_left_wheel_joint">
+        <command_interface name="velocity"/>
+        <state_interface name="velocity"/>
+        <state_interface name="position"/>
+      </joint>
+      <joint name="rear_right_wheel_joint">
+        <command_interface name="velocity"/>
+        <state_interface name="velocity"/>
+        <state_interface name="position"/>
+      </joint>
+    </ros2_control>
+
+    <xacro:if value="${sim}">
+      <gazebo>
+        <plugin filename="gz_ros2_control-system"
+                name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+          <parameters>$(find mitt_control)/config/mitt_controllers.yaml</parameters>
+        </plugin>
+      </gazebo>
+    </xacro:if>
+
+  </xacro:macro>
+
+</robot>

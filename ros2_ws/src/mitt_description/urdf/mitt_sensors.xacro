@@ -1,0 +1,177 @@
+<?xml version="1.0"?>
+<!--
+  MITT sensor mast and sensor frames.
+
+  Mast height comes from config/mitt_dimensions.yaml and is REDUCED to ~0.65 m
+  from the 1.0-1.2 m in docs/design/sensors.md 5. That figure was specified for
+  a 24 V two-seater; on this 47 cm tall, 56 cm wide chassis a 1.2 m mast is a
+  tip-over risk. Consequence: camera framing changes for phase-2 behavior
+  cloning, and sensors.md 5 needs amending to match.
+
+  Sensor choices track the Tier 2 BOM so the sim models what will be bought:
+    LiDAR  - RPLIDAR A1M8 profile: 360 deg, ~12 m, 10 Hz
+    Camera - 1080p USB, rolling shutter (global shutter is a phase-2 upgrade)
+    IMU    - BNO085 class, mounted low and central
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="ds" value="${xacro.load_yaml('$(find mitt_description)/config/mitt_dimensions.yaml')}"/>
+  <xacro:property name="mast_h"      value="${ds['mast_height']}"/>
+  <xacro:property name="cam_pitch"   value="${radians(ds['camera_pitch_deg'])}"/>
+  <xacro:property name="wb"          value="${ds['wheelbase']}"/>
+  <xacro:property name="wheel_rr"    value="${ds['wheel_radius']}"/>
+  <xacro:property name="body_hh"     value="${ds['chassis_height']}"/>
+
+  <material name="mast_grey"><color rgba="0.35 0.35 0.35 1.0"/></material>
+
+  <!-- ==== Mast ============================================================ -->
+  <xacro:property name="mast_r" value="0.015"/>
+  <xacro:property name="mast_base_z" value="${wheel_rr + body_hh*0.75}"/>
+  <xacro:property name="mast_len" value="${mast_h - mast_base_z}"/>
+
+  <link name="mast_link">
+    <visual>
+      <origin xyz="0 0 ${mast_len/2}" rpy="0 0 0"/>
+      <geometry><cylinder radius="${mast_r}" length="${mast_len}"/></geometry>
+      <material name="mast_grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${mast_len/2}" rpy="0 0 0"/>
+      <geometry><cylinder radius="${mast_r}" length="${mast_len}"/></geometry>
+    </collision>
+    <xacro:inertial_cylinder mass="0.4" length="${mast_len}" radius="${mast_r}">
+      <origin xyz="0 0 ${mast_len/2}" rpy="0 0 0"/>
+    </xacro:inertial_cylinder>
+  </link>
+
+  <joint name="mast_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="mast_link"/>
+    <origin xyz="${wb*0.45} 0 ${mast_base_z}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ==== 2D LiDAR ======================================================== -->
+  <link name="laser_link">
+    <visual>
+      <geometry><cylinder radius="0.038" length="0.041"/></geometry>
+      <material name="mast_grey"/>
+    </visual>
+    <collision>
+      <geometry><cylinder radius="0.038" length="0.041"/></geometry>
+    </collision>
+    <xacro:inertial_cylinder mass="0.19" length="0.041" radius="0.038">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_cylinder>
+  </link>
+
+  <joint name="laser_joint" type="fixed">
+    <parent link="mast_link"/>
+    <child link="laser_link"/>
+    <origin xyz="0 0 ${mast_len - 0.06}" rpy="0 0 0"/>
+  </joint>
+
+  <gazebo reference="laser_link">
+    <sensor name="lidar" type="gpu_lidar">
+      <topic>scan</topic>
+      <update_rate>10</update_rate>
+      <always_on>true</always_on>
+      <visualize>false</visualize>
+      <gz_frame_id>laser_link</gz_frame_id>
+      <lidar>
+        <scan>
+          <horizontal>
+            <samples>720</samples>
+            <resolution>1</resolution>
+            <min_angle>${-pi}</min_angle>
+            <max_angle>${pi}</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.15</min>
+          <max>12.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <!-- A1M8 is a triangulation unit; 1 cm sigma is optimistic at
+               range and should be re-tuned against real scans. -->
+          <stddev>0.01</stddev>
+        </noise>
+      </lidar>
+    </sensor>
+  </gazebo>
+
+  <!-- ==== Front camera ==================================================== -->
+  <link name="camera_link">
+    <visual>
+      <geometry><box size="0.03 0.09 0.025"/></geometry>
+      <material name="mast_grey"/>
+    </visual>
+    <xacro:inertial_box mass="0.08" x="0.03" y="0.09" z="0.025">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+
+  <joint name="camera_joint" type="fixed">
+    <parent link="mast_link"/>
+    <child link="camera_link"/>
+    <origin xyz="0.02 0 ${mast_len - 0.14}" rpy="0 ${-cam_pitch} 0"/>
+  </joint>
+
+  <!-- REP-103 optical frame: z forward, x right, y down. -->
+  <link name="camera_optical_link"/>
+  <joint name="camera_optical_joint" type="fixed">
+    <parent link="camera_link"/>
+    <child link="camera_optical_link"/>
+    <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+  </joint>
+
+  <gazebo reference="camera_link">
+    <sensor name="front_camera" type="camera">
+      <topic>camera/image_raw</topic>
+      <update_rate>30</update_rate>
+      <always_on>true</always_on>
+      <gz_frame_id>camera_optical_link</gz_frame_id>
+      <camera>
+        <horizontal_fov>1.396</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip><near>0.05</near><far>50.0</far></clip>
+      </camera>
+    </sensor>
+  </gazebo>
+
+  <!-- ==== IMU ============================================================= -->
+  <!-- Mounted low and central. Orientation relative to base_link is published
+       as a static transform here rather than as a driver parameter, because a
+       wrong IMU rotation corrupts yaw silently (docs/design/calibration.md 5). -->
+  <link name="imu_link">
+    <visual>
+      <geometry><box size="0.02 0.02 0.006"/></geometry>
+      <material name="mast_grey"/>
+    </visual>
+    <xacro:inertial_box mass="0.01" x="0.02" y="0.02" z="0.006">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="${wb*0.35} 0 ${wheel_rr + 0.06}" rpy="0 0 0"/>
+  </joint>
+
+  <gazebo reference="imu_link">
+    <sensor name="imu" type="imu">
+      <topic>imu/data</topic>
+      <update_rate>100</update_rate>
+      <always_on>true</always_on>
+      <gz_frame_id>imu_link</gz_frame_id>
+    </sensor>
+  </gazebo>
+
+</robot>

@@ -1,0 +1,72 @@
+# MITT vehicle dimensions — SINGLE SOURCE OF TRUTH for the URDF.
+#
+# ============================================================================
+#  NOTHING IN THIS FILE HAS BEEN MEASURED.
+#
+#  Every value is an ESTIMATE derived from the vendor's published overall
+#  dimensions for the Land Rover Defender ride-on (98 x 56 x 47 cm, 10 kg,
+#  12 V, single seat — daehotoys product_no=1058).
+#
+#  Replace each one after teardown, then delete its TODO. The URDF reads
+#  only from here, so measured values drop in without touching geometry.
+#  See docs/design/software.md 3.2 — B-MROVER's own URDF numbers are
+#  simulation artifacts (chassis_mass=300 kg on a ride-on car), which is
+#  exactly the trap this file exists to avoid repeating.
+# ============================================================================
+#
+# VEHICLE CLASS NOTE: this is a 12 V SINGLE-SEATER — the D2 option that
+# vehicle.md ADR D originally rejected. ADR D was reopened and reversed;
+# see the record there for what that costs (mast height, loss of finding F1).
+
+# --- Chassis geometry -------------------------------------------------------
+# Wheelbase estimated at ~64% of the 98 cm overall length, which is typical
+# for this body style. This is the value Ackermann kinematics is most
+# sensitive to — measure it first, axle centre to axle centre.
+wheelbase: 0.63          # m   TODO measure
+
+# Track = body width minus wheel inset. 56 cm body, wheels tucked inside.
+track_width: 0.46        # m   TODO measure (centre-to-centre, front axle)
+
+# ~18 cm diameter is typical for this class. Measure LOADED, on the floor —
+# these are hollow plastic wheels and they deflect under the equipment mass.
+wheel_radius: 0.09       # m   TODO measure
+wheel_width: 0.05        # m   TODO measure
+
+# Body box used for collision/visual until a mesh exists.
+chassis_length: 0.98     # m   vendor spec
+chassis_width: 0.56      # m   vendor spec
+chassis_height: 0.47     # m   vendor spec (roofline)
+
+# Height of base_link above the ground = wheel radius. base_link sits at the
+# REAR AXLE CENTRE on the ground plane (REP-105, docs/design/software.md 3.3).
+base_link_height: 0.09   # m   derived: equals wheel_radius
+
+# --- Masses -----------------------------------------------------------------
+# 10 kg is the vendor's whole-vehicle figure; the bare chassis is less once
+# wheels are accounted separately. Weigh the stripped shell.
+chassis_mass: 8.0        # kg  TODO weigh (10 kg total minus wheels)
+wheel_mass: 0.5          # kg  TODO weigh
+
+# Equipment plate replacing the removed seat: laptop ~2 kg + LiDAR/camera/mast
+# + Teensy/Sabertooth/relay MUX/logic battery ~3-4 kg (vehicle.md C1).
+# THIS IS 60% OF THE VEHICLE'S OWN MASS, carried high. Modelled as a real link
+# so the sim reports the tip-over margin honestly rather than hiding it.
+payload_mass: 6.0        # kg  TODO weigh as built
+
+# --- Sensor mast ------------------------------------------------------------
+# REDUCED from the 1.0-1.2 m in sensors.md 5. That height was specified for a
+# 24 V two-seater; on a 47 cm tall, 56 cm wide chassis it is a tip-over risk.
+# Consequence: camera framing changes for phase-2 behavior cloning.
+mast_height: 0.65        # m   TODO confirm against measured tip-over margin
+camera_pitch_deg: -12.0  #     downward tilt to frame the floor 2-8 m ahead
+
+# --- Steering ---------------------------------------------------------------
+# Design target inherited from B-MROVER, consistent across three of its files.
+# Verify against the ACTUAL mechanical lock — this chassis is not that one.
+steer_limit_deg: 22.5    #     TODO verify on the real column
+
+# --- Drivetrain limits (simulation) ----------------------------------------
+# Operating envelope is <= walking speed with an operator alongside
+# (docs/design/safety.md). Not a vehicle capability claim.
+max_speed: 1.4           # m/s  ~walking pace
+max_steer_rate: 1.0      # rad/s TODO measure once the gearmotor is fitted
