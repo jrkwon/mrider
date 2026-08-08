@@ -5,7 +5,7 @@
   <version>0.1.0</version>
   <description>MITT simulation worlds and Gazebo bringup</description>
   <maintainer email="jrkwon@umich.edu">Jaerock Kwon</maintainer>
-  <license>MIT</license>
+  <license>Apache-2.0</license>
   <buildtool_depend>ament_cmake</buildtool_depend>
   <exec_depend>ros_gz_sim</exec_depend>
   <exec_depend>ros_gz_bridge</exec_depend>
