@@ -353,6 +353,34 @@ flowchart LR
     to protect the schedule, and would instead have cost the twin its main property.
     A one-package source build is not the same risk as forking `ros_gz`.
 
+### 6.2.1 RMW: use FastRTPS, not CycloneDDS — open issue
+
+`~/.bashrc` sets `RMW_IMPLEMENTATION=rmw_cyclonedds_cpp`. CycloneDDS is installed and works
+for ordinary topics and services, but **the twin does not come up under it.**
+
+`controller_manager` runs inside the Gazebo process (the `gz_ros2_control` plugin), and the
+spawner's calls to `/controller_manager/list_controllers` never receive a *response*:
+
+```
+Failed getting a result from calling /controller_manager/list_controllers in 10.0.
+(Attempt 1 of 3.)
+```
+
+The service is discovered and the model spawns; only the reply fails to arrive. Under
+FastRTPS everything works — both controllers activate, odometry runs at ~100 Hz, and
+`slam_toolbox` maps the world.
+
+**Workaround:** `source ros2_ws/setup_env.sh` in every terminal. It must be consistent across
+the whole session — setting the RMW only for the launch would leave your `ros2 topic list` on
+CycloneDDS and unable to see any of the sim's topics, which looks like a dead simulator.
+
+**Unresolved, and worth someone's time:** `ip link show lo` reports `LOOPBACK` **without**
+`MULTICAST`, and CycloneDDS discovers via multicast by default. A unicast/loopback
+`CYCLONEDDS_URI` config is the obvious next thing to try; it was drafted but not conclusively
+tested before this was parked. Enabling multicast on `lo` is the other candidate. Until then
+FastRTPS is the supported configuration for the twin, and that should be stated in the build
+docs rather than left for the next person to rediscover.
+
 ### 6.3 Version pinning
 
 Pin and record: the `micro_ros_arduino` release, the PlatformIO Teensy platform version,
