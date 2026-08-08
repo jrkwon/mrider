@@ -15,9 +15,9 @@ hide:
 
 
 <p align="center">
-  <img src="images/mrider.png" alt="MRider" height="44">
+  <img src="images/mrider-small.png" alt="MRider">
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="images/mitt.png" alt="MITT" height="44">
+  <img src="images/mitt-small.png" alt="MITT">
 </p>
 
 **MRider** converts a kids ride-on, remote-controllable electric vehicle into a

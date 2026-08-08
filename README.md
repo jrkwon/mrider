@@ -1,9 +1,9 @@
 # MRider — Michigan Rider
 
 <p align="center">
-  <img src="docs/images/mrider.png" alt="MRider" height="40">
+  <img src="docs/images/mrider-small.png" alt="MRider">
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/images/mitt.png" alt="MITT" height="40">
+  <img src="docs/images/mitt-small.png" alt="MITT">
 </p>
 
 <p align="center">
