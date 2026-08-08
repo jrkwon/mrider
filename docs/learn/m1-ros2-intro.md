@@ -82,11 +82,12 @@ laptop:  Nav2 / policy / teleop
    → mitt_hardware  →  /mitt/dbw/command   (DbwCommand: steering_angle rad, speed m/s)
    → micro-ROS over USB
    → Teensy 4.1: closes the position loop at >= 200 Hz against the measured angle
-   → Sabertooth (packetized serial) → M1 → steering gearmotor
+   → servo PWM → RC signal MUX → Sabertooth (R/C mode) → M1 → steering gearmotor
 ```
 
-Throttle rides the **same** message and the **same** serial link: `DbwCommand.speed` → Teensy
-shaping (ramp, cap, direction interlock) → Sabertooth M2 → the paralleled rear drive motors.
+Throttle rides the **same** message: `DbwCommand.speed` → Teensy shaping (ramp, cap, direction
+interlock) → a second servo-PWM line → the same MUX → Sabertooth M2 → the paralleled rear drive
+motors.
 
 **The payoff of a single pinned path** is not architectural tidiness — it is that every
 consumer uses it. Teleop, Nav2, and the learned policy all drive the same
@@ -139,7 +140,7 @@ just comes out subtly wrong.
 |---|---|---|
 | Command stream (laptop → Teensy) | ≥ 50 Hz | Staleness > 500 ms → `ESTOP`: throttle 0, steering centered |
 | Steering position loop (Teensy) | ≥ 200 Hz | Sluggish, hunting steering |
-| Actuation frame (Teensy → Sabertooth) | ≥ 200 Hz | **Caps closed-loop performance regardless of loop rate** — see below |
+| Actuation frame (Teensy → Sabertooth) | **measure & pin** | **Caps closed-loop performance regardless of loop rate** — see below |
 | Status feedback (Teensy → laptop) | ≥ 50 Hz | `/mitt/dbw/status` stale; EKF coasts on IMU; Nav2 halts |
 | IMU | ≥ 100 Hz | EKF degrades; Nav2 slows or stops |
 
@@ -152,8 +153,12 @@ These come from the [timing contract](../design/architecture.md#6-timing-heartbe
     actually reached the driver at ~50 Hz — so *actuation bandwidth*, not loop rate, set the
     real performance ceiling. The loop was running twice as fast as anything could act on.
 
-    A rate you never measured is a rate you do not have. This is why the contract now pins the
-    output frame rate explicitly.
+    **MRider has not escaped this** — the override hardware forces servo-PWM output, so the same
+    ceiling applies. What changed is honesty: the contract now says *measure it at bring-up and
+    pin the number*, instead of asserting a rate nobody checked.
+
+    A rate you never measured is a rate you do not have.
+
 Note that a missed rate rarely fails loudly — it degrades, and surfaces later as bad odometry
 or a spurious failsafe. Learning to *check* rates is a real skill this course is teaching.
 

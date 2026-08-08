@@ -285,11 +285,27 @@ This is the strongest argument for D3, and it is larger than it first appears. M
 | PX4 version pinning, QGC parameter archaeology, the custom-PX4-fork decision ([§9](dbw.md#9-teensy-41-firmware-platform-and-version-pinning)) | No PX4 |
 | Findings **F5** (XRCE-vs-MAVLink) and **F7** (52 vs 16 PPR) | Transport ambiguity and inherited constants both vanish |
 
-**A rejected option also becomes available again.** [dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-packetized-serial-single-master)
+**A rejected option appears to become available again — but does not.** [dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)
 rejected the Sabertooth's packetized serial mode *solely* because two independent masters (Nano
-for steering, PX4 for throttle) cannot share one bus. **With a single controller there is one
-master**, so packetized serial becomes usable — which would give exact, high-rate actuation on
-both channels and close §5 cleanly.
+for steering, PX4 for throttle) cannot share one bus. With a single controller there is one
+master, so the rejection's premise is gone and packetized serial would give exact, high-rate
+actuation on both channels, closing §5 cleanly.
+
+!!! failure "Retracted 2026-08-08 — this claimed benefit does not survive the override design"
+
+    Packetized serial was adopted on this reasoning and then **reverted**. Every available RC
+    signal multiplexer — [Pololu 2806](https://www.pololu.com/product/2806), Acroname RxMux,
+    ServoCity — switches **servo pulses**, and none can select between a serial packet stream
+    and RC PWM. The Sabertooth's input mode is fixed by DIP switches, so it is in one mode or
+    the other.
+
+    **Packetized serial and the §4.5 hardware RC MUX are mutually exclusive**, and the MUX is
+    the condition on which D3 was adopted. R/C PWM mode stands, and **§5 therefore remains
+    open** rather than being closed by D3.
+
+    This is a caution about the review's own method: §4.3 counts what a topology change
+    *deletes*, but a deletion is only real once the replacement hardware is specified. Two of
+    the eight rows in that table were contingent on parts nobody had chosen yet.
 
 ### 4.4 What it costs
 
@@ -385,11 +401,24 @@ both is the one to build.
 
 **Still to verify before firmware work** (carried from §4.2's warning):
 
-- [ ] A `micro_ros_arduino` release exists for **Humble** specifically, with Teensy 4.1 support.
-- [ ] USB-serial is accepted as the transport (native Ethernet is not offered out of the box).
-      Note this link now carries the steering setpoint, which it does not today — re-analyse
-      against [failsafe matrix row 2](safety.md#2-failsafe-matrix).
-- [ ] The hardware RC MUX part and wiring are specified before the safety chain is built.
+- [x] **Closed 2026-08-08.** `micro_ros_arduino` **v2.0.8-humble** (published 2025-09-30) is the
+      current Humble release, and **Teensy 4.1 is listed as Supported** (min version v1.8.5) in
+      the upstream support table. Pin that tag.
+- [x] **Closed 2026-08-08.** Upstream README states *"Only USB serial transports are provided"*,
+      with Known Issues noting transports still need refactoring for pluggability. An Ethernet
+      *example* sketch exists but is not an official transport. **USB serial accepted.** This
+      link now carries the steering setpoint, which it did not before — re-analysed at
+      [failsafe matrix row 2](safety.md#2-failsafe-matrix) and gated on a measured 30-minute
+      stability run at bring-up Stage 0.
+- [x] **Closed 2026-08-08.** RC MUX part specified: **Pololu 4-Channel RC Servo Multiplexer
+      #2806**, ~$18, 4 channels, `SEL` pulse-width select, `FAILMODE` jumper
+      ([dbw.md §11.2](dbw.md#112-hardware-rc-signal-mux-the-d3-condition)).
+
+      **Specifying it forced the reversal of the Sabertooth mode decision** — see the retraction
+      in §4.3. The part that satisfies D3's safety condition turned out to constrain a decision
+      made above it.
+- [ ] `FAILMODE` jumper direction decided and recorded in the as-built record (recommendation
+      and rationale in [dbw.md §11.2](dbw.md#112-hardware-rc-signal-mux-the-d3-condition)).
 
 ---
 
@@ -412,13 +441,24 @@ one of:**
    accepted range on hardware), or
 2. drive the Sabertooth channel by analog or serial instead of R/C PWM for the steering channel
    — noting that this reopens the single-master reasoning in
-   [dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-packetized-serial-single-master),
+   [dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters),
    or
 3. accept ~50 Hz actuation and **restate the ≥100 Hz figure as a sampling/estimation rate
    rather than an actuation rate.**
 
 Whichever is chosen, add the output frame rate to the numeric interface contract, and measure
 it at [bring-up Stage 1](safety.md#6-bring-up-protocol-staged-wheels-off-first).
+
+!!! warning "Status 2026-08-08 — still open, and option 2 is now unavailable"
+
+    D3 briefly appeared to close this: single-master packetized serial (option 2) removes the
+    R/C frame-rate ceiling outright. That was adopted and then **retracted** (§4.3) — packetized
+    serial cannot coexist with the hardware RC signal MUX that D3's adoption is conditional on.
+
+    **Options 1 and 3 remain.** [dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)
+    now carries the decision, and [§12](dbw.md#12-numeric-interface-contract) records the rate as
+    *measure and pin at Stage 1* rather than asserting a number — which is the honest state, and
+    the one thing this section insisted on from the start.
 
 ---
 
@@ -435,7 +475,7 @@ hardware.
 | F3 | `carlikebot_system.cpp` is the upstream demo stub — `read()` echoes commands, `write()` only logs | `carlikebot_system.cpp:27,280,304` | `discrepancy` — amends ADR E option E2 and the [software.md §2](software.md#2-ros-2-stack-reused-adapted-new) REUSE row |
 | F4 | Steering auto-ranging expands `min`/`max` **at runtime** and rescales all past values; defaults are asymmetric (`-600`, `180`), so boot centre is arbitrary | `mavlink_bridge.py:47-50`, `:243-250` | `confirmed` — strengthens [ADR B](dbw.md#5-adr-b-steering-angle-encoding) beyond what it claims |
 | F5 | The command path is **MAVLink emitted by a laptop-side node**, not XRCE-to-PX4: the bridge subscribes `/fmu/in/manual_control_setpoint` and calls `mav.manual_control_send()` | `mavlink_bridge.py:79-82`, `:105-126` | `verify` — see §7.1 |
-| F6 | **M1/M2 are inverted relative to B-MROVER.** mrover: M1 = throttle, M2 = steering. MRider: M1 = steering, M2 = throttle | `vehicle_setup.md:51-52` vs [dbw.md §2.1](dbw.md#21-actuator), [§4](dbw.md#4-adr-sabertooth-control-mode-packetized-serial-single-master), [§11.3](dbw.md#115-3-tap-connector-spec-minimally-invasive) | `verify` — see §7.2 |
+| F6 | **M1/M2 are inverted relative to B-MROVER.** mrover: M1 = throttle, M2 = steering. MRider: M1 = steering, M2 = throttle | `vehicle_setup.md:51-52` vs [dbw.md §2.1](dbw.md#21-actuator), [§4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters), [§11.3](dbw.md#115-3-tap-connector-spec-minimally-invasive) | `verify` — see §7.2 |
 | F7 | PPR conflict **inside the source project**: firmware pins 52 PPR, the B-MROVER BOM lists a 16 PPR encoder motor | `code/code.ino:27` vs `Note/overview.md` BOM row 2 | `verify` — see §7.3 |
 | F8 | B-MROVER Nano emits human-readable prints, not a protocol; it is a passive reader | `code/code.ino:82-89` | `confirmed` — the `F,...` frame is new work |
 | F9 | No closed-loop motion-controller hardware was ever considered | `dbw.md` ADR E lists only E1/E2/E3 | `discrepancy` — resolved by §3.5 |
@@ -511,7 +551,7 @@ it at bring-up Stage 1.
 | **Topology (D1)** | **Superseded by D3.** Confirmed on its own terms at the time — PX4 supplies RC override and failsafes that options B/C would make into new safety-critical code — but that one surviving leg is answered in wiring under D3 (§4.5), and the topology was the principal source of the integration complexity the lab diagnosed as a root cause. §2 is retained as history. |
 | **Steering loop (D2)** | **Superseded by D3.** The reasoning was sound given a Nano on the vehicle — nothing was saved by moving the loop off it. D3 removes the Nano, which removes the premise. The loop now closes on the Teensy, with E2's rejection (F3) still standing for the laptop-side alternative. |
 | **New alternatives** | **E4** (closed-loop motion-controller hardware) remains pre-registered as a fallback, trigger unchanged at bring-up Stage 1. |
-| **Newly exposed risk** | The ≥100 Hz loop bounded by an unpinned output frame rate (§5) — **moot under D3**; single-master packetized serial to the Sabertooth resolves it (§4.3). |
+| **Newly exposed risk** | The ≥100 Hz loop bounded by an unpinned output frame rate (§5) — **still open.** Packetized serial would have closed it, but was retracted (§4.3) because it cannot coexist with the RC signal MUX. Measure and pin the rate at Stage 1. |
 | **To verify on hardware** | M1/M2 assignment (F6) still applies. F5 (command transport) and F7 (encoder PPR) are **moot under D3**. New: `micro_ros_arduino` Humble availability and the RC MUX specification (§4.6 checklist). |
 
 Two rationales changed, two alternatives were added, four factual items moved from "assumed" to

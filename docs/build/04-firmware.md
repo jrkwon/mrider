@@ -3,7 +3,7 @@
 **Goal:** flash and validate the single controller that closes every DBW loop, in stages, with
 the motor disconnected until the software is trustworthy.
 
-- **Prerequisites:** Section 3 complete; Sabertooth DIP switches set for packetized serial;
+- **Prerequisites:** Section 3 complete; Sabertooth DIP switches set for independent R/C (PWM) mode;
   isolated logic rail built and verified.
 - **Specification:** [design/dbw.md](../design/dbw.md) · [design/safety.md](../design/safety.md)
 - **Expected outcome:** the Teensy holds a commanded steering angle against a hand
@@ -39,7 +39,7 @@ laptop  /mitt/dbw/command  (DbwCommand: steering_angle rad, speed m/s)
               │  ── throttle ramp / cap / direction interlock
               │  ── SBUS decode, safety supervisor, watchdog
               ▼
-      Sabertooth 2x32  ── packetized serial, single master
+      Teensy PWM ──▶ RC signal MUX ──▶ Sabertooth 2x32 (R/C mode)
               ├── M1 → steering gearmotor
               └── M2 → paralleled rear traction motors
 
@@ -163,12 +163,12 @@ Corresponds to [safety.md Stage 1](../design/safety.md#6-bring-up-protocol-stage
 **Use a bench supply with an adjustable current limit.** This is what turns a runaway position
 loop into a harmless buzz. Set it low — just enough to move the motor unloaded.
 
-Wire the Sabertooth: packetized serial from the Teensy, M1 → steering motor.
+Wire the Sabertooth: Teensy PWM → RC signal MUX → S1, and M1 → steering motor.
 
-### Verify the Sabertooth serial timeout
+### Measure the actuation frame rate, and verify the signal-loss timeout
 
 This is a required check, not an assumption. In the previous R/C-PWM design the Sabertooth's
-signal-loss timeout came for free; in packetized serial it must be **configured**.
+signal-loss timeout is **inherent in R/C mode** — but the frame rate you actually achieve is not.
 
 ```bash
 # With the motor commanded to a steady effort, halt the Teensy (unplug USB / press reset)
@@ -178,7 +178,7 @@ signal-loss timeout came for free; in packetized serial it must be **configured*
 !!! danger "If the timeout cannot be established, stop"
 
     Revert to independent R/C (PWM) mode and accept the ~50 Hz actuation ceiling
-    ([dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-packetized-serial-single-master)).
+    ([dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)).
     [Failsafe row 6](../design/safety.md#2-failsafe-matrix) and FMEA row 9 both depend on this
     behavior — it is one of the layers that makes a single-MCU architecture defensible.
 

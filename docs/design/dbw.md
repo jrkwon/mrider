@@ -20,7 +20,7 @@ Read for two audiences: exact numbers and file citations for researchers; short 
 | Command transport | laptop → Micro-XRCE-DDS → PX4; MAVLink `MANUAL_CONTROL` emitted laptop-side (`mavlink_bridge.py:79-82`, `:105-126`) | laptop → **micro-ROS over USB serial** → Teensy | **REPLACED** (D3) |
 | Steering channel | `MANUAL_CONTROL.roll` → PX4 servo out (`mavlink_bridge.py:123`) | `DbwCommand.steering_angle`, **radians**, read directly by the loop | **REPLACED** |
 | Throttle channel | `MANUAL_CONTROL.throttle` (`mavlink_bridge.py:124`) | `DbwCommand.speed` | **REPLACED** |
-| Sabertooth drive | 2x32, S1←PX4 PWM pin2, S2←PX4 PWM pin7 (`vehicle_setup.md:54-55`) | 2x32, **packetized serial, single master** | **ADAPTED** (§4) |
+| Sabertooth drive | 2x32, S1←PX4 PWM pin2, S2←PX4 PWM pin7 (`vehicle_setup.md:54-55`) | 2x32, **independent R/C (PWM)**, both lines from the Teensy via the RC signal MUX | **ADAPTED** (§4) |
 | Steering angle sensing | incremental quadrature encoder (`code.ino:36-39`) + relative auto-ranging (`mavlink_bridge.py:243-252`) | **absolute sensor, load-side** + motor incremental encoder | **REPLACED** (ADR B) |
 | Steering position loop | **none — open-loop effort, human closes the loop by eye** (verified: `joystick_control.py:70,75,100-109`; no PID in repo) | **Teensy-local closed loop ≥ 200 Hz** | **NEW** (ADR E) |
 | Drive distance | encoder on drive shaft (`code.ino:27`), shaft-adapter method (`vehicle_setup.md:70-72`) | same method, wheel-diameter cal | **REUSED** (ADR C) |
@@ -82,7 +82,7 @@ laptop  /mitt/dbw/command  (DbwCommand, steering_angle in rad)
               │  ── closes position loop ≥200 Hz vs. absolute angle sensor
               │  ── outputs signed effort
               ▼
-      Sabertooth 2x32  ── packetized serial, M1 → steering gearmotor
+      Sabertooth 2x32  ── independent R/C (PWM) via the signal MUX, M1 → steering gearmotor
 ```
 
 **What this deletes.** The previous design carried the setpoint through PX4 as a servo-PWM pulse that a second MCU had to capture and decode. That entire round trip — `roll` → servo PWM → PWM input capture → degrees — existed *only* because the setpoint had to cross from PX4 to another board. With one controller the setpoint is a message the loop reads. The PWM input-capture firmware block, the ASCII framing, and the I²C register map all disappear with it.
@@ -105,33 +105,48 @@ laptop  /mitt/dbw/command  (DbwCommand, steering_angle in rad)
 
 ---
 
-## 4. ADR (Sabertooth control mode) — packetized serial, single master
+## 4. ADR (Sabertooth control mode) — independent R/C (PWM), Teensy as both masters
 
-**Decision.** Configure the Sabertooth 2x32 in **packetized serial mode**, with the **Teensy as the single bus master** addressing both channels over one wire.
+**Decision.** Configure the Sabertooth 2x32 in **independent R/C (PWM) mode**. The Teensy emits servo-style pulses on two lines; both pass through the [hardware RC signal MUX](#112-hardware-rc-signal-mux--the-d3-condition) before reaching the Sabertooth.
 
-| Sabertooth | Driven by | Motor output | Function |
-|---|---|---|---|
-| Channel 1 | Teensy, packetized serial | M1 | steering gearmotor |
-| Channel 2 | Teensy, packetized serial | M2 | drive motors (paralleled) |
+| Sabertooth input | Normal source | Override source | Motor output | Function |
+|---|---|---|---|---|
+| S1 | Teensy PWM (via MUX) | RC receiver (via MUX) | M1 | steering gearmotor |
+| S2 | Teensy PWM (via MUX) | RC receiver (via MUX) | M2 | drive motors (paralleled) |
 
-**Why this is now available.** The superseded design rejected packetized serial *solely* because two independent masters (Nano for steering, PX4 for throttle) cannot share one bus without an arbiter. **D3 leaves one master**, so the rejection's premise is gone.
+!!! danger "This ADR was briefly decided the other way. The reversal is the instructive part."
 
-**What it fixes.** It closes an open problem the previous design carried: in R/C (PWM) mode the actuation command reaches the driver at the servo frame rate — roughly **50 Hz** with the standard Arduino `Servo` library — so *actuation bandwidth*, not loop rate, set the closed-loop performance ceiling, regardless of a ≥100 Hz control loop. Packetized serial removes that ceiling and gives exact, high-rate commands on both channels.
+    D3 removes the two-master constraint that originally ruled out **packetized serial** (Nano owned steering, PX4 owned throttle, and two masters cannot share an addressed bus). With one controller that objection dissolves, so packetized serial was adopted — it gives exact, high-rate commands and closes the actuation-rate problem in §12.
+
+    **It was reverted when the override hardware was specified.** Every available RC signal multiplexer — [Pololu 2806](https://www.pololu.com/product/2806), Acroname RxMux, ServoCity — multiplexes **servo pulses**. None can select between a *serial packet stream* and RC PWM, and the Sabertooth's input mode is fixed by DIP switches, so it is in one mode or the other.
+
+    **Packetized serial and the hardware RC MUX are mutually exclusive.** The MUX is the condition on which D3 was adopted ([§11.2](#112-hardware-rc-signal-mux--the-d3-condition)); packetized serial is an optimisation. The safety layer wins.
+
+    The general lesson: **a decision that is correct in isolation can be invalidated by a downstream part choice.** Specify the safety-critical hardware early enough that it can constrain the decisions above it.
 
 **Alternatives considered.**
 
-- **Independent R/C (PWM) mode**, one signal line per channel. Still viable and is the fallback if packetized serial proves troublesome at bring-up. Its advantage is the Sabertooth's built-in R/C signal-loss timeout (motors stop when pulses stop) — a free failsafe layer. See the consequence below for how that layer is preserved.
-- **Analog mode** (0–5 V). Rejected: coarser, noise-prone, and no timeout behavior.
+- **Packetized serial, single master.** Rejected — incompatible with the RC signal MUX, as above. Would be the right answer if override were achieved some other way.
+- **Keep packetized serial, move override to the relay MUX** (a separate RC ESC path selected by the existing contactor). Rejected: adds a second power stage, and the override would then drive the motors through *different hardware* than normal operation — a larger behavioural difference than effort-vs-angle, and one that is harder to test.
+- **Analog mode** (0–5 V). Rejected: coarser, noise-prone, no timeout behaviour.
 
 **Consequences.**
 
-- One Teensy hardware serial port is consumed; signal grounds between Teensy, Sabertooth, and the logic rail must be tied ([architecture.md](architecture.md) power tree).
-- **The signal-loss failsafe must be re-established explicitly.** R/C mode gave it for free. In packetized serial the Sabertooth's **serial timeout** must be configured and its behavior verified on hardware — this is a required bring-up check, not an assumption, and it backs [failsafe matrix row 6](safety.md#2-failsafe-matrix).
-- Actuation frame rate becomes a pinned number in §12 rather than an unstated consequence of the output library.
+- **The Sabertooth's R/C signal-loss timeout comes back for free** — motors stop when pulses stop, with no configuration. This backs [failsafe matrix row 6](safety.md#2-failsafe-matrix) and is one of the layers independent of Teensy firmware. Under packetized serial it would have been a configured behaviour requiring verification; here it is inherent.
+- Two Teensy PWM outputs are consumed instead of one serial port. The Teensy has 35 PWM-capable pins, so this is free.
+- Signal grounds between Teensy, RC receiver, signal MUX, and Sabertooth must be star-tied at the Sabertooth ([architecture.md](architecture.md) power tree).
+- **The actuation frame-rate ceiling returns as an open question** — see §12 and the warning below. This is the real cost of the reversal, and it is *not* resolved by assertion.
 
-!!! warning "Verify at bring-up"
+!!! warning "Open: pin the actuation frame rate at bring-up"
 
-    Confirm on hardware: (a) packetized serial mode is correctly configured via the Sabertooth DIP switches for the chosen baud and address; (b) the serial timeout stops both motors when the Teensy stops transmitting; (c) measured actuation frame rate matches §12. If (b) cannot be established, revert this ADR to independent R/C mode and accept the ~50 Hz ceiling.
+    A standard servo frame is ~20 ms (**~50 Hz**), and with the stock Arduino `Servo` library that is what the Sabertooth would receive — so *actuation bandwidth*, not loop rate, would set the closed-loop ceiling. The Sabertooth 2x32 datasheet does **not** state a maximum accepted R/C input rate.
+
+    **Measure it at [Stage 1](safety.md#6-bring-up-protocol-staged-wheels-off-first)** and pin one of:
+
+    1. Emit pulses faster than 50 Hz and verify the Sabertooth tracks them — best outcome; record the highest rate that works.
+    2. Accept ~50 Hz actuation and **restate the ≥200 Hz figure in §12 as a sampling/estimation rate, not an actuation rate.** Honest, and probably adequate at ≤ walking speed against a ≤1° / 400 ms target.
+
+    Do not leave it unstated — that omission is exactly what capped the superseded design's performance invisibly.
 
 ---
 
@@ -172,7 +187,7 @@ laptop  /mitt/dbw/command  (DbwCommand, steering_angle in rad)
 
 ## 7. Throttle path
 
-The stock vehicle has **two rear drive motors**, electrically **paralleled onto Sabertooth channel 2 (M2 output)**. Throttle command originates as `DbwCommand.speed` and is issued by the Teensy over the same packetized serial link as steering.
+The stock vehicle has **two rear drive motors**, electrically **paralleled onto Sabertooth channel 2 (M2 output)**. Throttle command originates as `DbwCommand.speed` and is emitted by the Teensy as a servo pulse on S2, through the same signal MUX as steering.
 
 The Teensy applies **ramp limiting, a speed cap, and a direction interlock** (no reversal above a threshold speed) before commanding the driver. These were previously PX4's responsibility and are now explicit project firmware — see [safety.md](safety.md).
 
@@ -200,15 +215,15 @@ Paralleling is acceptable because the two motors are mechanically coupled throug
 
 ## 9. Teensy 4.1 firmware platform and version pinning
 
-- **Controller:** Teensy 4.1 (600 MHz Cortex-M7, FPU, 1024 K RAM). Peripheral budget against MRider's needs: **4 hardware quadrature decoders** (2 used: steering motor, drive shaft), **8 hardware serial ports** (used: Sabertooth packetized serial, SBUS in, debug), **18 analog inputs** (pot fallback), I²C for the AS5600. Everything fits with spare capacity.
+- **Controller:** Teensy 4.1 (600 MHz Cortex-M7, FPU, 1024 K RAM). Peripheral budget against MRider's needs: **4 hardware quadrature decoders** (2 used: steering motor, drive shaft), **8 hardware serial ports** (used: SBUS in, debug), **35 PWM-capable pins** (2 used for the Sabertooth), **18 analog inputs** (pot fallback), I²C for the AS5600. Everything fits with spare capacity.
 - **Toolchain:** PlatformIO with the Teensy platform. Firmware lives in `firmware/mitt_dbw/`.
 - **ROS 2 transport:** `micro_ros_arduino`, USB serial, with `micro_ros_agent` on the laptop.
 
 !!! warning "Verify before firmware work"
 
-    - [ ] A `micro_ros_arduino` release exists for **Humble** specifically, with Teensy 4.1 support (the vendor lists Teensy 4.1 as supported under Teensyduino 1.58.x; confirm the Humble pairing).
-    - [ ] `micro_ros_arduino` officially provides **USB serial transports only** — native Ethernet is not offered out of the box. Accept USB serial, or scope a custom transport deliberately.
-    - [ ] **This link now carries the steering setpoint**, which the superseded design's USB link did not. Re-analyse it against [failsafe matrix row 2](safety.md#2-failsafe-matrix).
+    - [x] **Verified 2026-08-08.** `micro_ros_arduino` **v2.0.8-humble** (published 2025-09-30) is the current Humble release, and **Teensy 4.1 is listed as Supported** (min version v1.8.5) in the upstream support table. Pin this tag.
+    - [x] **Verified 2026-08-08.** The upstream README states *"Only USB serial transports are provided"*, and Known Issues notes transports still need refactoring for pluggability. An Ethernet *example* sketch exists but is not an official transport. **USB serial is accepted.**
+    - [ ] **This link now carries the steering setpoint**, which the superseded design's USB link did not. Re-analyse it against [failsafe matrix row 2](safety.md#2-failsafe-matrix), and measure session stability at Stage 0.
 
     **If no Humble release exists**, the fallback is a framed **binary** protocol with CRC and sequence numbers over the same USB serial link — never unframed ASCII. This keeps every architectural gain of D3 except typed-message convenience.
 
@@ -249,7 +264,7 @@ Diagnostic/config traffic (PID gains, zeroing) uses ROS 2 **parameters and servi
 1. **micro-ROS node**: publisher, subscriber, session time synchronisation. Session sync replaces the MAVLink `TIMESYNC` offset estimation the superseded design needed — see [calibration.md](calibration.md) §6.
 2. **Absolute-sensor read**: AS5600 over I²C (or ADC + median/low-pass for the pot fallback), counts→radians per [calibration.md](calibration.md).
 3. **Position PID** at ≥ 200 Hz: error = setpoint − measured, output = signed effort.
-4. **Motor output**: packetized serial to the Sabertooth, both channels, at the §12 frame rate.
+4. **Motor output**: servo-style PWM on two lines into the RC signal MUX, then to Sabertooth S1/S2, at the §12 frame rate.
 5. **Throttle shaping**: ramp limit, speed cap, direction interlock.
 6. **RC decode**: SBUS on a hardware serial port — mode switch and closed-loop manual override.
 7. **Safety supervisor**: setpoint-staleness watchdog, mechanical-limit clamp (effort toward center only), stall detection, hardware watchdog timer resetting outputs to neutral.
@@ -297,7 +312,32 @@ The stock parent-remote receiver and the Sabertooth **cannot both drive the moto
 
 **Layer 1 (normal): SBUS into the Teensy.** RC override in `MANUAL_RC` mode commands an *angle*, with the position loop still closed behind it. This is the everyday manual mode and it is better than raw effort.
 
-**Layer 2 (independent): a hardware RC signal MUX.** A dedicated RC channel drives a **signal multiplexer** that selects either Teensy output *or* direct RC input into the Sabertooth. This makes override a **wiring property, not a firmware property** — a stronger guarantee than the software override the superseded PX4 design relied on.
+**Layer 2 (independent): a hardware RC signal MUX.** A dedicated RC channel drives a **signal multiplexer** that selects either Teensy PWM *or* direct RC PWM into the Sabertooth. This makes override a **wiring property, not a firmware property** — a stronger guarantee than the software override the superseded PX4 design relied on.
+
+**Pinned part: [Pololu 4-Channel RC Servo Multiplexer #2806](https://www.pololu.com/product/2806)** (~$18). Selected 2026-08-08.
+
+| Property | Value | Why it matters here |
+|---|---|---|
+| Channels | 4 (2 used: steering, throttle) | Spare capacity |
+| Select | Measures pulse width on a `SEL` channel against a configurable threshold | A spare RC channel on the existing transmitter drives it — no extra link |
+| Logic supply | 2.5–16 V from the master device | Sits on the isolated logic rail ([safety.md §5](safety.md#5-power-rail-isolation-and-brownout-protection)) |
+| Signal type | **RC servo pulses only** | This is what forced §4 back to R/C PWM mode |
+| `FAILMODE` jumper | Disconnected → master stays in control on `SEL` loss. Connected → outputs go low and stay low | Directly implements "choose the failsafe direction deliberately" |
+
+!!! danger "FAILMODE — decide this deliberately, and record it"
+
+    **Recommended: jumper disconnected (master retains control).** Rationale: losing the `SEL`
+    signal means the RC link is gone, and the Teensy already has its own RC-loss failsafe —
+    [row 3](safety.md#2-failsafe-matrix) drops it to `ESTOP`. Leaving the Teensy in control lets
+    that defined behaviour run.
+
+    The alternative (outputs low) also stops the vehicle, via the Sabertooth's signal-loss
+    timeout, but it does so by removing *all* control rather than by executing a designed
+    response — and it makes an RC dropout indistinguishable from a controller failure.
+
+    **Verify both behaviours at Stage 2** before choosing, and write the chosen jumper state
+    into the as-built record. A jumper is a one-bit safety decision that is invisible six months
+    later.
 
 **The trade, stated plainly.** Through Layer 2 the override commands raw **effort**, open-loop — not an angle. That is a behavioral change from Layer 1 and from the superseded design, and it must be re-analysed rather than assumed. It is nonetheless exactly what mrover does in normal operation (finding F2), and it is acceptable for an emergency mode.
 
@@ -324,11 +364,11 @@ flowchart LR
     subgraph DBW["DBW path (relay energized)"]
       SB[Sabertooth 2x32 M1/M2]
     end
-    TEENSY[Teensy 4.1] -->|packetized serial| SB
-    RC[RC receiver] -->|SBUS| TEENSY
-    RC -->|MUX select ch| SMUX{{Hardware RC signal MUX}}
-    TEENSY -.->|normal| SMUX
-    SMUX --> SB
+    TEENSY[Teensy 4.1] -->|servo PWM x2 - master| SMUX{{Hardware RC signal MUX}}
+    RC[RC receiver] -->|SBUS - Layer A| TEENSY
+    RC -->|servo PWM x2 - slave| SMUX
+    RC -->|SEL channel| SMUX
+    SMUX -->|selected pair| SB
     PR -->|NC contacts| RLY{{DPDT relay MUX}}
     SB -->|NO contacts| RLY
     EN[Mode-enable coil<br/>energize = DBW] -.drives.-> RLY
@@ -364,7 +404,7 @@ The pinned, testable contract for the DBW interface.
 | Steering command | `DbwCommand.steering_angle`, **radians**, clamped to range | §10.1 |
 | Throttle command | `DbwCommand.speed`, **m/s**, signed | §10.1 |
 | Steering position loop rate | **≥ 200 Hz** on the Teensy | ADR E |
-| **Actuation frame rate (Teensy→Sabertooth)** | **≥ 200 Hz**, packetized serial | §4 — pinned explicitly; this was the previously unpinned ceiling |
+| **Actuation frame rate (Teensy→Sabertooth)** | **measure at Stage 1**, then pin — see the §4 warning | The datasheet states no maximum R/C input rate. Unpinning this is what silently capped the superseded design |
 | Command stream rate (laptop→Teensy) | **≥ 50 Hz** | §10.1 |
 | Command-staleness failsafe | **> 500 ms** → `ESTOP`, throttle zeroed, steering centered | §10.3 |
 | Feedback rate (Teensy→laptop) | **≥ 50 Hz** | odometry/telemetry needs |
@@ -372,7 +412,7 @@ The pinned, testable contract for the DBW interface.
 | E-stop traction cut | **≤ 200 ms**, works with laptop powered off | [safety.md](safety.md) |
 | Absolute sensor resolution | **12-bit** over one turn (AS5600 class) | §6 |
 | Drive encoder resolution | **verify on the encoder fitted** — do not inherit 52 | §8, finding F7 |
-| Sabertooth mode | **packetized serial**, single master (Teensy) | §4 |
+| Sabertooth mode | **independent R/C (PWM)**; both lines Teensy → signal MUX → S1/S2 | §4 |
 | Steering steady-state accuracy | **≤ 1.0°** error, RMS **≤ 1.5°** over ±20° sweep | acceptance gate; E4 trigger if unmet |
 | Steering step response | 10° step to 90% in **≤ 400 ms**, overshoot **≤ 15%** | acceptance gate |
 | Odometry drift | **≤ 2%** of distance over 20 m straight | acceptance gate |
@@ -384,9 +424,10 @@ The pinned, testable contract for the DBW interface.
 - **Bench gate:** measured lock-to-lock travel of each candidate sensor shaft → confirms magnetic vs. pot (§6). **Before ordering.**
 - Torque measurement on the actual chassis → gearmotor spec and wiper-motor fallback decision (§2.2).
 - Paralleled drive-motor stall current vs. Sabertooth 32 A/channel → [vehicle.md](vehicle.md).
-- **Sabertooth serial timeout behavior** verified on hardware → backs [failsafe row 6](safety.md#2-failsafe-matrix); revert §4 to R/C mode if unverifiable.
-- `micro_ros_arduino` Humble availability and USB-serial transport acceptance → §9.
-- Hardware RC signal MUX part selection and wiring → §11.2. **Blocks the safety chain build.**
+- **Actuation frame rate** measured and pinned at Stage 1 → the §4 warning. The Sabertooth's R/C signal-loss timeout is inherent in this mode, but confirm it stops the motors ([failsafe row 6](safety.md#2-failsafe-matrix)).
+- **FAILMODE jumper direction** on the RC signal MUX decided and recorded → §11.2.
+- ~~`micro_ros_arduino` Humble availability and USB-serial transport acceptance~~ → **closed 2026-08-08**, see §9.
+- ~~Hardware RC signal MUX part selection~~ → **closed 2026-08-08**: Pololu 4-Channel RC Servo Multiplexer #2806 ([bom.md](bom.md)). Wiring and FAILMODE jumper direction still to be set → §11.2.
 - Drive encoder PPR on the part actually fitted → §8 (finding F7).
 - Steering-motor power-rail assignment (freewheel vs. hold on E-stop) → [safety.md](safety.md).
 

@@ -115,9 +115,10 @@ angle. The loop does not wait for a new setpoint.
     `Servo` library, effort commands arrived at the driver at ~50 Hz. The loop ran twice as fast
     as anything could act on.
 
-    Packetized serial removes that ceiling, and the interface contract now pins the actuation
-    frame rate explicitly at ≥ 200 Hz. **Ask of any control loop: how fast does the output
-    actually leave?**
+    MRider has *not* fully escaped this — the override hardware forces R/C PWM output, so the
+    ceiling is real and the interface contract now says **measure it at Stage 1 and pin it**
+    rather than asserting a number. **Ask of any control loop: how fast does the output actually
+    leave?**
 
 ### Absolute vs. incremental — ADR B
 
@@ -325,7 +326,7 @@ Sabertooth.** Scope the serial line. A fast loop feeding a slow output is a slow
 | Rate | Target | Measured |
 |---|---|---|
 | Control loop | ≥ 200 Hz | *(measure)* |
-| **Actuation frame to the driver** | ≥ 200 Hz | *(measure)* |
+| **Actuation frame to the driver** | *measure, then pin* | *(measure)* |
 
 ### Part 5 — Break it on purpose
 

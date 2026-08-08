@@ -68,8 +68,8 @@ All B-MROVER claims below were verified against the local checkout at
 | # | Component | Role in MRider | B-MROVER lineage |
 |---|-----------|----------------|------------------|
 | 1 | **Autonomy laptop** | On-board computer. Runs ROS 2 Humble: perception, SLAM, Nav2, EKF, the `micro_ros_agent`, and `ros2_control`. Powered by its own internal battery (no traction→19 V rail in v1). | Same on-board-laptop topology. |
-| 2 | **Teensy 4.1 (DBW controller)** | Single MCU owning all actuation and vehicle sensing. Subscribes `DbwCommand`, publishes `DbwStatus` over micro-ROS. Closes the steering **position loop at ≥ 200 Hz**, shapes throttle, reads the absolute angle sensor and both encoders, decodes SBUS, and runs the safety supervisor. Commands the Sabertooth over **packetized serial**. | Replaces both the Pixhawk 6C and the Nano (D3). Encoder-read *logic* traces to `code/code.ino`. |
-| 3 | **Sabertooth 2x32** | Dual-channel motor driver. **M1** steering gearmotor, **M2** paralleled rear traction motors. Configured in **packetized serial mode** with the Teensy as single bus master. | B-MROVER uses the Sabertooth 2x32 for steering + throttle. Mode changed — single master makes packetized serial available. |
+| 2 | **Teensy 4.1 (DBW controller)** | Single MCU owning all actuation and vehicle sensing. Subscribes `DbwCommand`, publishes `DbwStatus` over micro-ROS. Closes the steering **position loop at ≥ 200 Hz**, shapes throttle, reads the absolute angle sensor and both encoders, decodes SBUS, and runs the safety supervisor. Commands the Sabertooth over **servo PWM through the RC signal MUX**. | Replaces both the Pixhawk 6C and the Nano (D3). Encoder-read *logic* traces to `code/code.ino`. |
+| 3 | **Sabertooth 2x32** | Dual-channel motor driver. **M1** steering gearmotor, **M2** paralleled rear traction motors. Configured in **independent R/C (PWM) mode**; both signal lines come from the Teensy via the hardware RC signal MUX. | Same as B-MROVER's mode. Packetized serial was briefly adopted and reverted — it cannot coexist with an RC signal MUX ([dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)). |
 | 4 | **Relay/contactor MUX** | Authority arbitration. A DPDT relay per motor circuit selects **STOCK** vs **DBW** source. Default (de-energized) = STOCK, so power loss reverts to the parent remote. | New. See [`safety.md`](safety.md). |
 | 5 | **Hardware RC signal MUX** | **The condition of D3's adoption.** An RC channel drives a signal multiplexer selecting Teensy output *or* direct RC input into the Sabertooth — making override a *wiring* property, independent of Teensy firmware. | New. Replaces PX4's software RC override with a stronger guarantee ([dbw.md §11.2](dbw.md#112-hardware-rc-signal-mux-the-d3-condition)). |
 | 6 | **RC transmitter + receiver** | Two roles: SBUS into the Teensy for normal closed-loop manual override, and a dedicated channel driving the hardware MUX (#5) as the independent fallback. | B-MROVER binds RC to the Pixhawk; here the RX serves both layers directly. |
@@ -111,7 +111,8 @@ flowchart LR
 
     AGENT -- "micro-ROS / USB serial" --> TEENSY["Teensy 4.1<br/>position loop >=200 Hz<br/>throttle shaping, safety supervisor"]
 
-    TEENSY -- "packetized serial<br/>(single master, both channels)" --> SABER["Sabertooth 2x32"]
+    TEENSY -- "servo PWM x2" --> SMUX
+    SMUX -- "selected source" --> SABER["Sabertooth 2x32 (R/C mode)"]
     SABER --> STEERM["M1 - Steering gearmotor"]
     SABER --> DRIVEM["M2 - Rear traction motors (paralleled)"]
 
@@ -127,11 +128,12 @@ flowchart LR
 
 - Command stream ≥ 50 Hz; staleness > 500 ms drops the vehicle to `ESTOP`.
 - The steering loop runs at ≥ 200 Hz on the Teensy, decoupled from the command rate.
-- **Actuation frame rate is pinned at ≥ 200 Hz.** The superseded design left this unpinned,
-  which silently capped closed-loop performance at the ~50 Hz servo frame rate regardless of
-  loop rate. Packetized serial removes that ceiling.
-- Sabertooth serial timeout stops both motors if the Teensy stops transmitting — **verify on
-  hardware** ([`dbw.md §4`](dbw.md#4-adr-sabertooth-control-mode-packetized-serial-single-master)).
+- **The actuation frame rate is an open item, and deliberately visible.** A standard servo
+  frame is ~50 Hz, which would cap closed-loop performance regardless of loop rate — the defect
+  the superseded design carried unstated. **Measure it at Stage 1 and pin it**
+  ([`dbw.md §4`](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)).
+- The Sabertooth's **R/C signal-loss timeout is inherent in this mode** — motors stop when
+  pulses stop, with no configuration. One more layer independent of Teensy firmware.
 
 ---
 
@@ -240,7 +242,7 @@ interface contract is pinned in [`dbw.md §12`](dbw.md#12-numeric-interface-cont
 |-------------|-----------|--------------|--------------------|-------|
 | Command stream (`DbwCommand`) | laptop → Teensy | **≥ 50 Hz** | staleness > 500 ms → `ESTOP` | Teensy supervisor |
 | Steering position loop | Teensy-local | **≥ 200 Hz** | at limit → clamp effort toward center only | Teensy |
-| **Actuation frame (→ Sabertooth)** | Teensy → driver | **≥ 200 Hz** | Sabertooth serial timeout → motors stop | Sabertooth |
+| **Actuation frame (→ Sabertooth)** | Teensy → MUX → driver | **measure & pin at Stage 1** | R/C signal-loss timeout → motors stop | Sabertooth |
 | Status feedback (`DbwStatus`) | Teensy → laptop | **≥ 50 Hz** | driver flags stale; EKF coasts on IMU | ROS 2 driver |
 | IMU | IMU → laptop | **≥ 100 Hz** (EKF input) | EKF degrades; Nav2 slows/stops | robot_localization |
 | RC override (SBUS) | RX → Teensy | ~50 Hz | RC-loss → `ESTOP` | Teensy supervisor |
@@ -280,7 +282,7 @@ The full failsafe matrix and FMEA are in [`safety.md`](safety.md).
 
 - **Decision.** Single **Teensy 4.1 + micro-ROS** DBW controller owning actuation and vehicle
   sensing; steering position loop on the Teensy at ≥ 200 Hz against a **load-side absolute
-  angle sensor**; Sabertooth in **packetized serial**, single master; **layered authority** —
+  angle sensor**; Sabertooth in **independent R/C (PWM)** behind the signal MUX; **layered authority** —
   hardware E-stop, relay MUX to STOCK, hardware RC signal MUX, SBUS closed-loop override;
   typed `DbwCommand`/`DbwStatus` on one transport with one clock.
 - **Alternatives.** Pixhawk + PX4 with a Nano smart-servo (the superseded design — full trade
