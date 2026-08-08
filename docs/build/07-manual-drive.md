@@ -1,18 +1,9 @@
 # 7. Manual Drive (RC + Joystick)
 
-!!! warning "Partially superseded (2026-08-07)"
-
-    Some references on this page still assume the **Pixhawk + Arduino Nano** topology, replaced
-    by a **single Teensy 4.1 running micro-ROS**
-    ([decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)).
-    The substance of this page is unaffected; treat the [design set](../design/overview.md) as
-    authoritative where they disagree.
-
-
 **Goal:** drive the vehicle under human control through the DBW path.
 
-First drive with the RC transmitter bound to the Pixhawk (the live override authority),
-then via a joystick publishing to `/mrider/cmd`. Confirm authority arbitration and E-stop
+First drive with the RC transmitter (the live override authority), then via a joystick
+through `ros2_control`. Confirm authority arbitration and E-stop
 behave as specified while the vehicle is moving at walking speed.
 
 - **Prerequisites:** Section 6 complete; open, flat test area.
@@ -92,14 +83,14 @@ missed something. Find out which one before the vehicle moves again.
 
 ## 7.4 Phase 1 — RC only, no laptop autonomy
 
-Start with the simplest authority chain: transmitter → PX4 → vehicle. The laptop is not
+Start with the simplest authority chain: transmitter → Teensy → vehicle. The laptop is not
 commanding anything yet.
 
 1. Vehicle on the ground, MUX in **STOCK**. Confirm the parent remote still drives it
    normally. This proves the taps and the mechanical build survived assembly.
 2. Energize the MUX coil to enter **DBW**. Confirm on telemetry.
 3. **Stationary steering.** With no throttle, sweep the RC steering stick lock to lock. Watch
-   `steer_deg` track `setpoint_deg`. Look for hunting, dead-band, or asymmetry between left
+   `steering_angle` track `steering_setpoint`. Look for hunting, dead-band, or asymmetry between left
    and right.
 4. **Creep forward.** Smallest throttle that produces motion. Walk alongside. Stop with
    throttle only.
@@ -152,13 +143,13 @@ clear space step 8 needs.
     (wiper-motor build), record that and confirm the held angle is not a turn that would carry
     the coasting vehicle somewhere unintended.
 
-## 7.6 Phase 3 — joystick via `/mrider/cmd`
+## 7.6 Phase 3 — joystick via `/mitt/dbw/command`
 
 Now the laptop commands, and the RC transmitter becomes the override rather than the primary.
 
 ```bash
 ros2 run joy joy_node
-ros2 run mrider teleop_joy    # publishes /mrider/cmd -> command shim -> ManualControlSetpoint
+ros2 run mitt_control teleop_joy   # -> ros2_control -> mitt_hardware -> /mitt/dbw/command
 ```
 
 **Joystick mapping** — record what you actually bind:
@@ -195,8 +186,9 @@ The point of this whole architecture, verified with the vehicle moving. Priority
 Also verify under motion:
 
 - [ ] **Command loss:** kill the shim while moving → throttle → 0, steering holds
-- [ ] **RC loss:** power off the transmitter while moving → PX4 RC-loss failsafe fires
-- [ ] **USB loss:** unplug the Nano while moving → odometry goes stale, **steering keeps
+- [ ] **RC loss:** power off the transmitter while moving → Teensy enters `ESTOP`
+- [ ] **USB loss:** unplug the Teensy while moving → **the vehicle stops** (`ESTOP`: throttle
+      zeroed, steering centered). Note this is the *opposite* of the older design, where steering kept
       tracking**, autonomy safe-stops
 
 !!! danger "Verify RC-loss deliberately, with space"

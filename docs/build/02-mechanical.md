@@ -1,14 +1,5 @@
 # 2. Vehicle Prep & Mechanical
 
-!!! warning "Partially superseded (2026-08-07)"
-
-    Some references on this page still assume the **Pixhawk + Arduino Nano** topology, replaced
-    by a **single Teensy 4.1 running micro-ROS**
-    ([decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)).
-    The substance of this page is unaffected; treat the [design set](../design/overview.md) as
-    authoritative where they disagree.
-
-
 **Goal:** prepare the chassis and mount the steering actuator and encoders mechanically.
 
 Disassemble the necessary trim, identify the steering column and drive-motor shaft,
@@ -114,7 +105,7 @@ You ordered a sensor in step 1 based on an estimate. Confirm it now, before moun
 ## 2.4 Mount the steering gearmotor
 
 The gearmotor drives the column through the existing steering linkage and is driven by
-**Sabertooth channel 1 (M1)**. The Nano commands it as a *signed effort* — the output of the
+**Sabertooth channel 1 (M1)**. The Teensy commands it as a *signed effort* — the output of the
 position loop — never as an angle
 ([dbw.md §2.3](../design/dbw.md#23-why-the-sabertooth-receives-an-effort-command)).
 
@@ -124,7 +115,7 @@ position loop — never as an angle
    backlash-free** path to the road wheels or the position loop will hunt.
 2. **Fabricate or print the motor bracket.** It must resist the *stall* torque of the motor,
    not its rated torque — a position loop against a limit will apply full effort until the
-   Nano's stall detector clamps it. Reuse the mrover 3D-print approach
+   Teensy's stall detector clamps it. Reuse the mrover 3D-print approach
    (`config/3D_design/v3/`) as a starting point for enclosures.
 3. **Fit the coupler** with set screws onto a flat or D-profile if one exists. If the column
    is perfectly round, use a clamping-style coupler — set screws on a round shaft will slip,
@@ -163,7 +154,7 @@ quality.
 3. **Mount the body rigidly.** A sensor body that can rotate under vibration produces a slow,
    invisible calibration drift — the exact failure mode the absolute sensor was chosen to
    avoid.
-4. **Strain-relieve the wiring.** For a pot, feed it from the Nano's *regulated* rail so the
+4. **Strain-relieve the wiring.** For the pot fallback, feed it from the Teensy's *regulated* rail so the
    reading is ratiometric and supply drift cancels
    ([dbw.md §6 consequences](../design/dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer)).
 

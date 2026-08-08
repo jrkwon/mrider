@@ -1,14 +1,5 @@
 # 8. Autonomous Bring-up (SLAM → Nav2 → Behavior Cloning)
 
-!!! warning "Partially superseded (2026-08-07)"
-
-    Some references on this page still assume the **Pixhawk + Arduino Nano** topology, replaced
-    by a **single Teensy 4.1 running micro-ROS**
-    ([decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)).
-    The substance of this page is unaffected; treat the [design set](../design/overview.md) as
-    authoritative where they disagree.
-
-
 **Goal:** progress from mapping to autonomous driving.
 
 Build a map with slam_toolbox, navigate with Nav2, then collect driving data and run the
@@ -29,8 +20,8 @@ end-to-end behavior-cloning pipeline (mrover `neural_net/` lineage) for an auton
 
     Every rule from [step 7](07-manual-drive.md) still applies: operator on the RC
     transmitter, spotter on the E-stop, ≤ walking speed, clear area sized by the measured
-    coast-down distance. The RC transmitter preempts autonomy through PX4 — that is the
-    entire reason the datapath was pinned through PX4 in the first place. **Autonomy is the
+    coast-down distance. The RC transmitter preempts autonomy through both override layers —
+    including the hardware signal MUX, which works even if the controller is hung. **Autonomy is the
     lowest authority in the stack** ([safety.md §1.3](../design/safety.md#13-authority-priority-highest-wins)).
 
 ---
@@ -164,11 +155,11 @@ topic (the steering/throttle **label**), an odometry topic, and the camera image
 synchronized samples to `e2e_data`.
 
 **The one required change:** `vehicle_control_topic` moves from `/rover` to
-**`/mrider/feedback`** — the new steering-angle-labeled source — and `base_pose_topic` points
+**`/mitt/dbw/status`** — the absolute steering-angle-labeled source — and `base_pose_topic` points
 at the EKF odometry output.
 
 ```yaml title="config/data_collection/mrider.yaml"
-vehicle_control_topic: /mrider/feedback      # was /rover
+vehicle_control_topic: /mitt/dbw/status      # was /rover
 base_pose_topic:       /odometry/filtered
 camera_image_topic:    /camera/color/image_raw
 steering_angle_max:    22.5
@@ -240,9 +231,8 @@ python neural_net/train.py --data e2e_data/<date>_<course> \
 | Final validation loss | *(record)* |
 | Weights artifact | *(record path)* |
 
-**Deploy for inference.** The policy publishes to `/mrider/cmd` → command shim →
-`ManualControlSetpoint` — **the exact same datapath as Nav2 and teleop**. The learned policy
-gets no special privileges and no shortcut to the motors.
+**Deploy for inference.** The policy drives `ros2_control` — **the exact same datapath as Nav2
+and teleop**. The learned policy gets no special privileges and no shortcut to the motors.
 
 ```bash
 ros2 run run_neural run_neural --ros-args -p weights:=<path>
@@ -279,7 +269,7 @@ consecutive attempts. One lucky lap is not a working policy.
 | Symptom | Likely cause | Where to look |
 |---|---|---|
 | Policy drives straight through corners | Label distribution dominated by straights | [Phase D](#85-phase-d-data-collection) balance |
-| Policy oscillates left/right on straights | Overfit, or noisy steering labels | Check `steer_deg` noise from [step 6](06-bench-test.md); more data |
+| Policy oscillates left/right on straights | Overfit, or noisy steering labels | Check `steering_angle` noise from [step 6](06-bench-test.md); more data |
 | Policy works one direction only | Trained on one course direction | Record the other direction |
 | Nav2 paths the vehicle cannot follow | DWB vs. Ackermann | Swap to RPP — [ADR-SW2](../design/software.md#adr-sw2-nav2-local-controller-for-ackermann) |
 | Map doubles walls | Odometry drift or bad extrinsics | [Odometry](06-bench-test.md#66-drive-distance-ticksmeters) and [extrinsics](06-bench-test.md#68-extrinsics-sensors-base_link) |

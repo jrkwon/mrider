@@ -1,14 +1,5 @@
 # M6 — Navigation (Nav2)
 
-!!! warning "Partially superseded (2026-08-07)"
-
-    Some references on this page still assume the **Pixhawk + Arduino Nano** topology, replaced
-    by a **single Teensy 4.1 running micro-ROS**
-    ([decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)).
-    The substance of this page is unaffected; treat the [design set](../design/overview.md) as
-    authoritative where they disagree.
-
-
 **Learning objectives:**
 
 - Understand the Nav2 stack: costmaps, planners, and controllers.
@@ -124,7 +115,8 @@ RC transmitter, spotter on the E-stop, walking pace, clear area.
 
 !!! danger "Autonomy is the lowest authority in the ladder"
 
-    Nav2 driving does not change the M3 rules. The RC transmitter preempts it through PX4.
+    Nav2 driving does not change the M3 rules. The RC transmitter preempts it through both
+    override layers — including the hardware MUX, which does not depend on firmware.
     Nobody stands in the planned path to "see what it does."
 
 ### Part 1 — Compute your constraints before you configure
@@ -176,8 +168,8 @@ MRider is *commanded* to do versus what it *can* do.
 
 ```bash
 ros2 topic echo /local_plan
-ros2 topic echo /mrider/cmd          # what is actually being commanded?
-ros2 topic echo /mrider/feedback     # what is actually being achieved?
+ros2 topic echo /mitt/dbw/command          # what is actually being commanded?
+ros2 topic echo /mitt/dbw/status     # what is actually being achieved?
 ```
 
 | Metric | Value |
