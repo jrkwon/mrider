@@ -116,6 +116,18 @@ def generate_launch_description():
         }],
     )
 
+    # -- Command arbitration -------------------------------------------------
+    # Part of bringup, not teleop: twist_mux owns the remap onto the controller's
+    # reference topic, so without it NOTHING reaches the vehicle - including
+    # Nav2. See mitt_control/launch/twist_mux.launch.py.
+    twist_mux = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([
+                FindPackageShare("mitt_control"), "launch", "twist_mux.launch.py",
+            ])
+        ]),
+    )
+
     # -- Controllers ---------------------------------------------------------
     # controller_manager lives inside Gazebo (gz_ros2_control plugin), so these
     # are spawners against it. Chained on spawn completion because the manager
@@ -151,6 +163,7 @@ def generate_launch_description():
         robot_state_publisher,
         gz_sim,
         bridge,
+        twist_mux,
         spawn,
         # The delay is load-bearing, not defensive padding.
         #

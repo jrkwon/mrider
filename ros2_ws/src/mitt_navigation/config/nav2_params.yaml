@@ -48,6 +48,25 @@ bt_navigator:
     bt_loop_duration: 10
     default_server_timeout: 20
 
+    # MITT-specific behavior trees. These are NOT optional.
+    #
+    # The stock Nav2 trees call Spin and BackUp in their recovery RoundRobin.
+    # behavior_server below loads only the "wait" plugin, because a +/- 22.5 deg
+    # Ackermann car cannot spin in place and does not reverse. Loading the stock
+    # trees against that plugin list fails at BT parse time -
+    #
+    #     Exception when loading BT: Action server spin not available
+    #
+    # - which leaves bt_navigator unconfigured and makes lifecycle_manager abort
+    # bringup of the ENTIRE navigation stack. The symptom is misleading: planner,
+    # controller and both costmaps report active while navigation is simply
+    # absent, with no goal ever accepted.
+    #
+    # Both paths must be overridden. bt_navigator loads both at configure time,
+    # so overriding only navigate_to_pose still fails on the through-poses tree.
+    default_nav_to_pose_bt_xml: $(find-pkg-share mitt_navigation)/behavior_trees/navigate_to_pose_w_replanning_and_recovery.xml
+    default_nav_through_poses_bt_xml: $(find-pkg-share mitt_navigation)/behavior_trees/navigate_through_poses_w_replanning_and_recovery.xml
+
 controller_server:
   ros__parameters:
     use_sim_time: true
@@ -64,10 +83,32 @@ controller_server:
       required_movement_radius: 0.5
       movement_time_allowance: 20.0
 
+    # Tolerances widened from 0.25 m / 0.35 rad after the first Nav2 goal test
+    # in the depot world (2026-08-08). MEASURED, not guessed:
+    #
+    # The vehicle drove ~10 m to a goal and arrived 0.75 m away, then began
+    # ORBITING it - (-4.19,-1.46), (-5.41,0.43), (-2.28,0.81), (-4.51,-1.35),
+    # repeating indefinitely. It never converged and never failed; it simply
+    # circled.
+    #
+    # The cause is geometric, not a tuning accident. Minimum turning radius is
+    # 1.52 m, in-place rotation is impossible, and allow_reversing is false. A
+    # vehicle with those three properties cannot reduce a 0.75 m pose error: it
+    # can only loop past the goal at >= 1.52 m radius and try again. Asking for
+    # 0.25 m is asking it to parallel-park without reverse.
+    #
+    # 0.6 m is roughly 40% of the turning radius and is achievable in one pass.
+    # yaw 0.6 rad (~34 deg) likewise: heading at arrival is whatever the final
+    # arc produced, and the car cannot trim it in place.
+    #
+    # This is a workaround, not the fix. Precise pose arrival needs a
+    # kinematically-aware planner - SmacPlannerHybrid, already pre-registered
+    # as the next step in the ADR-SW2 note at the top of this file - and
+    # probably reverse, which is a hardware safety question (no rear sensing).
     goal_checker:
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.25
-      yaw_goal_tolerance: 0.35      # loose: a car cannot spin to fix heading
+      xy_goal_tolerance: 0.6
+      yaw_goal_tolerance: 0.6
       stateful: true
 
     FollowPath:
@@ -184,10 +225,16 @@ behavior_server:
     local_frame: odom
     global_frame: map
     robot_base_frame: base_link
-    # Spin and BackUp are retained ONLY because the BT references them.
-    # A non-holonomic car with no reverse gear cannot meaningfully execute
-    # either; recovery on this platform is an operator taking the RC sticks
-    # (docs/design/safety.md 1.2), not an autonomous manoeuvre.
+    # "wait" is the ONLY recovery behavior. Spin and BackUp are deliberately
+    # absent: a non-holonomic car with a 1.52 m turning radius cannot spin in
+    # place, and it does not reverse (allow_reversing: false, plus there is no
+    # rear sensing). Recovery beyond clear-costmaps-and-wait is an operator
+    # taking the RC sticks (docs/design/safety.md 1.2), not an autonomous
+    # manoeuvre.
+    #
+    # This list is what forces the custom behavior trees configured under
+    # bt_navigator above - the stock trees call Spin and BackUp and will not
+    # load against it.
     behavior_plugins: ["wait"]
     wait:
       plugin: "nav2_behaviors/Wait"

@@ -1,0 +1,50 @@
+<!--
+  MITT navigate-to-pose tree. Adapted from the nav2_bt_navigator stock tree of
+  the same name (Humble), with ONE change: the recovery RoundRobin no longer
+  contains Spin or BackUp.
+
+  WHY. MITT is an Ackermann vehicle with a +/- 22.5 deg steering limit and a
+  1.52 m minimum turning radius (ADR-SW2). It physically cannot spin in place,
+  which is also why nav2_params.yaml sets use_rotate_to_heading: false. Reverse
+  is excluded separately: allow_reversing is false, and on the real vehicle
+  backing up blind is a safety question, not a recovery tactic - the LiDAR only
+  sees forward and there is no rear sensing (docs/design/sensors.md).
+
+  The stock tree references both behaviors, so loading it against our
+  behavior_server - which only loads the "wait" plugin - fails at BT parse time
+  with "Action server spin not available", leaving bt_navigator stuck in
+  unconfigured and aborting the whole Nav2 lifecycle bringup. That is what this
+  file fixes.
+
+  Recovery on this platform is therefore: clear the costmaps, then wait. If that
+  does not free the vehicle, recovery escalates to a human taking the RC sticks
+  (docs/design/safety.md 1.2), which is the documented intent anyway.
+-->
+<root main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+    <RecoveryNode number_of_retries="6" name="NavigateRecovery">
+      <PipelineSequence name="NavigateWithReplanning">
+        <RateController hz="1.0">
+          <RecoveryNode number_of_retries="1" name="ComputePathToPose">
+            <ComputePathToPose goal="{goal}" path="{path}" planner_id="GridBased"/>
+            <ClearEntireCostmap name="ClearGlobalCostmap-Context" service_name="global_costmap/clear_entirely_global_costmap"/>
+          </RecoveryNode>
+        </RateController>
+        <RecoveryNode number_of_retries="1" name="FollowPath">
+          <FollowPath path="{path}" controller_id="FollowPath"/>
+          <ClearEntireCostmap name="ClearLocalCostmap-Context" service_name="local_costmap/clear_entirely_local_costmap"/>
+        </RecoveryNode>
+      </PipelineSequence>
+      <ReactiveFallback name="RecoveryFallback">
+        <GoalUpdated/>
+        <RoundRobin name="RecoveryActions">
+          <Sequence name="ClearingActions">
+            <ClearEntireCostmap name="ClearLocalCostmap-Subtree" service_name="local_costmap/clear_entirely_local_costmap"/>
+            <ClearEntireCostmap name="ClearGlobalCostmap-Subtree" service_name="global_costmap/clear_entirely_global_costmap"/>
+          </Sequence>
+          <Wait wait_duration="5"/>
+        </RoundRobin>
+      </ReactiveFallback>
+    </RecoveryNode>
+  </BehaviorTree>
+</root>

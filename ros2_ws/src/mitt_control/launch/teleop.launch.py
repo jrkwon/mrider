@@ -20,6 +20,10 @@ Joystick teleop for the MITT twin.
 Publishes Twist on cmd_vel_joy, which twist_mux forwards to the
 ackermann_steering_controller reference topic.
 
+twist_mux itself is NOT launched here - it is part of bringup
+(mitt_control/launch/twist_mux.launch.py, included by sim.launch.py), because
+autonomy needs it whether or not a joystick is connected. See that file.
+
 The deadman button is deliberate and matches the real vehicle's philosophy:
 nothing moves unless a human is actively holding it. On hardware the
 equivalent guarantee is electrical, not software (docs/design/safety.md 1.2).
@@ -27,14 +31,11 @@ equivalent guarantee is electrical, not software (docs/design/safety.md 1.2).
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    ctrl_pkg = FindPackageShare("mitt_control")
-
     return LaunchDescription([
         DeclareLaunchArgument("joy_dev", default_value="0"),
 
@@ -69,20 +70,6 @@ def generate_launch_description():
                 "scale_angular.yaw": 0.8,
             }],
             remappings=[("/cmd_vel", "/cmd_vel_joy")],
-            output="screen",
-        ),
-
-        Node(
-            package="twist_mux",
-            executable="twist_mux",
-            name="twist_mux",
-            parameters=[
-                PathJoinSubstitution([ctrl_pkg, "config", "twist_mux.yaml"]),
-            ],
-            remappings=[
-                ("/cmd_vel_out",
-                 "/ackermann_steering_controller/reference_unstamped"),
-            ],
             output="screen",
         ),
     ])

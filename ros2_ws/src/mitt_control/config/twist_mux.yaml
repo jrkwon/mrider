@@ -19,7 +19,16 @@ twist_mux:
         topic: cmd_vel_joy
         timeout: 0.5
         priority: 100      # highest: a human at the sticks wins
+      # Nav2's FINAL output, which on Humble is plain /cmd_vel.
+      #
+      # Not cmd_vel_nav. That name is misleading: in nav2_bringup's
+      # navigation_launch.py, controller_server's output is remapped TO
+      # cmd_vel_nav, which is then the INPUT to velocity_smoother, whose
+      # output is /cmd_vel. Subscribing to cmd_vel_nav here would work, but
+      # would silently bypass velocity_smoother - taking raw controller
+      # output and discarding the acceleration limiting that matters more on
+      # a steered vehicle than a differential one.
       navigation:
-        topic: cmd_vel_nav
+        topic: cmd_vel
         timeout: 0.5
         priority: 10

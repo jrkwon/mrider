@@ -241,6 +241,75 @@ alternative.
 - **Rationale.** Reuse-first for bring-up velocity; the ±22.5° minimum-turn-radius constraint
   is real and may make DWB paths infeasible, so RPP is pre-registered as the fallback with a
   concrete trigger (path-tracking error or infeasible commands during turning tests).
+- **RESOLVED 2026-08-08 — RPP adopted, DWB never run.** The pre-registered trigger is met
+  *analytically*, before any test: `R_min = 0.63 / tan(22.5°) = 1.52 m`. DWB samples angular
+  velocities assuming the base can rotate about its own centre, which this vehicle cannot, so
+  most of its velocity space is physically unreachable. Running it first to watch it fail
+  would have spent a week confirming trigonometry. The reuse-first instinct was right in
+  general; it loses to a number here. Planner remains NavFn — but see §4.4 F-N3: NavFn
+  ignores kinematics, and `SmacPlannerHybrid` is the next step if precise pose arrival is
+  needed.
+
+---
+
+### 4.4 Nav2 bring-up in the twin — RESULT 2026-08-08
+
+First end-to-end Nav2 run in the depot world. **Navigation works**, with one config change
+and two structural fixes. All four findings below were failures in the *stack wiring or the
+vehicle's kinematics*, not in Nav2.
+
+**Verified result.** From a 90%-explored SLAM map (525×302 @ 5 cm, 3989 wall cells, saved to
+`mitt_navigation/maps/depot.{pgm,yaml}`), the vehicle accepted a goal 12.95 m away, planned,
+drove across the map, and stopped 0.43 m from it — `bt_navigator: Goal succeeded`.
+
+**F-N1 — Nav2's output reached nothing.** `twist_mux` owns the remap onto
+`ackermann_steering_controller/reference_unstamped`, and it was launched from
+`teleop.launch.py`. An autonomy-only session (sim + slam + nav2, no joystick) therefore had
+no mux: `/cmd_vel` had one publisher and **zero subscribers**. Nav2 accepted goals, planned,
+and commanded into the void while the vehicle sat still — with no error anywhere. Moved to
+`mitt_control/launch/twist_mux.launch.py`, included by `sim.launch.py`. Its `navigation`
+input was also corrected from `cmd_vel_nav` to `cmd_vel`: on Humble the former is the
+*input* to `velocity_smoother`, so subscribing there silently bypassed acceleration limiting.
+
+**F-N2 — the stock behavior trees will not load.** They call `Spin` and `BackUp`;
+`behavior_server` loads only `wait`, because this vehicle can do neither. Result:
+`Exception when loading BT: Action server spin not available`, `bt_navigator` stuck
+unconfigured, and `lifecycle_manager` aborting bringup of the **whole** stack. The symptom
+misleads badly — planner, controller and both costmaps report `active` while navigation is
+simply absent and no goal is ever accepted. Fixed with MITT trees in
+`mitt_navigation/behavior_trees/`; both `navigate_to_pose` and `navigate_through_poses` must
+be overridden, since `bt_navigator` loads both at configure time.
+
+**F-N3 — the goal checker was asking for a parallel park.** At 0.25 m / 0.35 rad the vehicle
+arrived within 0.75 m and then **orbited the goal indefinitely** — (-4.19,-1.46),
+(-5.41,0.43), (-2.28,0.81), (-4.51,-1.35), repeating. It never converged and never failed.
+With a 1.52 m turning radius, no in-place rotation, and `allow_reversing: false`, a 0.75 m
+pose error is not reducible: the car can only loop past and retry. Widened to 0.6 m / 0.6 rad
+(~40% of the turning radius, achievable in one pass). **This is a workaround.** Precise pose
+arrival needs the kinematically-aware planner ADR-SW2 already pre-registered —
+`SmacPlannerHybrid`, which takes `minimum_turning_radius` directly.
+
+**F-N4 — the vehicle can trap itself, and no software recovery exists.** Given a goal 0.05 m
+from a wall, RPP correctly drove to it and refused the last metre (`detected collision
+ahead!`). But that left the car nosed up to the obstacle, where **every subsequent plan
+starts in collision**: it cannot spin, cannot reverse, and clear-costmap-then-wait changes
+nothing. A U-turn goal from that pose failed identically. Recovery required reversing under
+manual command.
+
+This is the safety model working as designed rather than a defect — `safety.md §1.2` already
+states recovery is an operator taking the RC sticks — but it is now *demonstrated*, and it
+sets a real operational constraint: **an autonomous run that noses into an obstacle is over
+until a human intervenes.** Whether to enable reverse is a hardware question, not a tuning
+one: there is no rear sensing (`sensors.md`), so reversing is currently blind.
+
+**Method note.** Two goals were rejected before a valid test was possible — one 0.05 m from
+a wall, one in free space not *connected* to the robot. Goals for this vehicle must be
+checked for footprint-scale clearance (≥ ~1 m, since the footprint reaches 0.81 m ahead of
+`base_link`) **and** for connectivity, not merely for being unoccupied.
+
+**Still open.** `ros2 action send_goal /navigate_to_pose` hangs without the server ever
+logging receipt; publishing to `/goal_pose` works and is what the runs above used. Not yet
+diagnosed — it may share a root cause with the RMW issue in §6.2.1.
 
 ---
 
