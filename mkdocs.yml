@@ -9,8 +9,8 @@ edit_uri: edit/main/docs/
 
 theme:
   name: material
-  logo: images/mrider.png
-  favicon: images/mrider.png
+  logo: images/mrider-small.png
+  favicon: images/mrider-small.png
   icon:
     repo: fontawesome/brands/github
   features:
