@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 790" width="980" height="790"
+     font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+  <title>MITT rear drive sensing — single incremental encoder on one motor shaft (ADR C)</title>
+
+  <defs>
+    <marker id="a2" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#334155"/>
+    </marker>
+    <marker id="a2r" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="980" height="790" fill="#ffffff"/>
+
+  <text x="24" y="34" font-size="19" font-weight="bold" fill="#0f172a">Rear drive sensing — one incremental encoder, on one motor shaft</text>
+  <text x="24" y="55" font-size="13" fill="#475569">ADR C (dbw.md §8). Both rear motors are paralleled onto a single driver channel, and only one of them is instrumented.</text>
+
+  <!-- ======================= TOP VIEW ======================= -->
+  <text x="24" y="92" font-size="14" font-weight="bold" fill="#0f172a">1 — Rear drivetrain, top view</text>
+  <text x="300" y="92" font-size="12" fill="#64748b">vehicle forward = up</text>
+
+  <rect x="120" y="106" width="740" height="252" rx="10" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.4"/>
+
+  <!-- axle line -->
+  <line x1="196" y1="196" x2="784" y2="196" stroke="#94a3b8" stroke-width="3" stroke-dasharray="7 5"/>
+
+  <!-- LEFT wheel + drivetrain (INSTRUMENTED) -->
+  <rect x="168" y="158" width="28" height="78" rx="5" fill="#1e293b"/>
+  <text x="132" y="252" font-size="11" fill="#334155">rear-left</text>
+  <rect x="228" y="176" width="56" height="40" rx="4" fill="#64748b"/>
+  <text x="256" y="200" font-size="10" fill="#ffffff" text-anchor="middle">gearbox</text>
+  <rect x="300" y="172" width="86" height="48" rx="5" fill="#0f172a"/>
+  <text x="343" y="194" font-size="11" fill="#ffffff" text-anchor="middle">motor L</text>
+  <text x="343" y="209" font-size="9.5" fill="#94a3b8" text-anchor="middle">RS-390 class</text>
+  <!-- encoder on left motor -->
+  <rect x="392" y="176" width="44" height="40" rx="4" fill="#fffbeb" stroke="#f59e0b" stroke-width="2.4"/>
+  <text x="414" y="200" font-size="10" font-weight="bold" fill="#92400e" text-anchor="middle">ENC</text>
+  <line x1="196" y1="196" x2="228" y2="196" stroke="#475569" stroke-width="5"/>
+  <line x1="284" y1="196" x2="300" y2="196" stroke="#475569" stroke-width="5"/>
+  <line x1="386" y1="196" x2="392" y2="196" stroke="#475569" stroke-width="5"/>
+
+  <rect x="300" y="252" width="200" height="46" rx="7" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  <text x="400" y="271" font-size="11.5" font-weight="bold" fill="#92400e" text-anchor="middle">the ONLY odometry source</text>
+  <text x="400" y="288" font-size="10.5" fill="#b45309" text-anchor="middle">quadrature → Teensy decoder</text>
+  <line x1="414" y1="252" x2="414" y2="220" stroke="#f59e0b" stroke-width="2" marker-end="url(#a2)"/>
+
+  <!-- RIGHT wheel + drivetrain (NOT instrumented) -->
+  <rect x="756" y="158" width="28" height="78" rx="5" fill="#1e293b"/>
+  <text x="792" y="252" font-size="11" fill="#334155">rear-right</text>
+  <rect x="668" y="176" width="56" height="40" rx="4" fill="#64748b"/>
+  <text x="696" y="200" font-size="10" fill="#ffffff" text-anchor="middle">gearbox</text>
+  <rect x="566" y="172" width="86" height="48" rx="5" fill="#0f172a"/>
+  <text x="609" y="194" font-size="11" fill="#ffffff" text-anchor="middle">motor R</text>
+  <text x="609" y="209" font-size="9.5" fill="#94a3b8" text-anchor="middle">RS-390 class</text>
+  <line x1="756" y1="196" x2="724" y2="196" stroke="#475569" stroke-width="5"/>
+  <line x1="668" y1="196" x2="652" y2="196" stroke="#475569" stroke-width="5"/>
+  <rect x="500" y="176" width="52" height="40" rx="4" fill="#ffffff" stroke="#cbd5e1"
+        stroke-width="2" stroke-dasharray="5 4"/>
+  <text x="526" y="194" font-size="9" fill="#94a3b8" text-anchor="middle">no</text>
+  <text x="526" y="207" font-size="9" fill="#94a3b8" text-anchor="middle">encoder</text>
+
+  <rect x="556" y="252" width="220" height="46" rx="7" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>
+  <text x="666" y="271" font-size="11.5" font-weight="bold" fill="#991b1b" text-anchor="middle">this side is never observed</text>
+  <text x="666" y="288" font-size="10.5" fill="#7f1d1d" text-anchor="middle">its speed is inferred, not measured</text>
+  <line x1="609" y1="252" x2="609" y2="222" stroke="#dc2626" stroke-width="2" marker-end="url(#a2r)"/>
+
+  <!-- single driver channel -->
+  <rect x="376" y="316" width="216" height="34" rx="5" fill="#0f172a"/>
+  <text x="484" y="338" font-size="11.5" fill="#ffffff" text-anchor="middle">Sabertooth M2 — ONE channel</text>
+  <path d="M343,220 L343,332 L376,332" fill="none" stroke="#0f172a" stroke-width="2.4"/>
+  <path d="M609,220 L609,332 L592,332" fill="none" stroke="#0f172a" stroke-width="2.4"/>
+  <text x="476" y="366" font-size="10.5" fill="#64748b" text-anchor="middle">both motors in parallel — no differential, no independent control</text>
+
+  <!-- ======================= DETAIL ======================= -->
+  <text x="24" y="410" font-size="14" font-weight="bold" fill="#0f172a">2 — Attaching the encoder to the motor shaft</text>
+
+  <rect x="120" y="426" width="400" height="180" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.4"/>
+
+  <rect x="142" y="496" width="74" height="42" rx="5" fill="#0f172a"/>
+  <text x="179" y="522" font-size="10.5" fill="#ffffff" text-anchor="middle">motor</text>
+
+  <rect x="216" y="510" width="66" height="14" fill="#94a3b8" stroke="#64748b" stroke-width="1.2"/>
+  <text x="249" y="482" font-size="10.5" fill="#334155" text-anchor="middle">3.15 mm shaft</text>
+  <line x1="249" y1="488" x2="249" y2="506" stroke="#334155" stroke-width="1.2" marker-end="url(#a2)"/>
+
+  <rect x="282" y="503" width="58" height="28" rx="3" fill="#f59e0b" opacity="0.35" stroke="#b45309" stroke-width="1.8"/>
+  <text x="311" y="555" font-size="10.5" fill="#b45309" text-anchor="middle">adapter sleeve</text>
+  <text x="311" y="568" font-size="10.5" fill="#b45309" text-anchor="middle">3.15 → 5 mm</text>
+  <line x1="311" y1="536" x2="311" y2="546" stroke="#b45309" stroke-width="1.2"/>
+
+  <rect x="340" y="505" width="52" height="24" fill="#94a3b8" stroke="#64748b" stroke-width="1.2"/>
+  <rect x="392" y="486" width="66" height="62" rx="5" fill="#fffbeb" stroke="#f59e0b" stroke-width="2.4"/>
+  <text x="425" y="512" font-size="10" font-weight="bold" fill="#92400e" text-anchor="middle">quad</text>
+  <text x="425" y="526" font-size="10" font-weight="bold" fill="#92400e" text-anchor="middle">encoder</text>
+  <text x="425" y="470" font-size="10.5" fill="#334155" text-anchor="middle">5 mm bore</text>
+  <line x1="425" y1="476" x2="425" y2="486" stroke="#334155" stroke-width="1.2" marker-end="url(#a2)"/>
+
+  <path d="M458,517 L500,517" fill="none" stroke="#166534" stroke-width="2" marker-end="url(#a2)"/>
+  <text x="462" y="509" font-size="10" fill="#166534">A/B</text>
+
+  <text x="142" y="580" font-size="10.5" fill="#64748b">Reuses the shaft-adapter method proven on</text>
+  <text x="142" y="594" font-size="10.5" fill="#64748b">B-MROVER — minimally invasive, no hub machining.</text>
+
+  <!-- ======================= ERROR STACK ======================= -->
+  <text x="556" y="410" font-size="14" font-weight="bold" fill="#0f172a">3 — What this measurement cannot see</text>
+
+  <rect x="556" y="426" width="400" height="292" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.4"/>
+
+  <rect x="666" y="444" width="150" height="30" rx="5" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  <text x="741" y="464" font-size="11" font-weight="bold" fill="#92400e" text-anchor="middle">measured HERE</text>
+  <text x="826" y="464" font-size="10.5" fill="#64748b" text-anchor="start">motor shaft</text>
+
+  <line x1="741" y1="474" x2="741" y2="498" stroke="#334155" stroke-width="2" marker-end="url(#a2)"/>
+  <rect x="576" y="498" width="330" height="28" rx="5" fill="#fee2e2" stroke="#fca5a5" stroke-width="1.6"/>
+  <text x="590" y="517" font-size="11" fill="#7f1d1d">gearbox backlash — between encoder and wheel</text>
+
+  <line x1="741" y1="526" x2="741" y2="546" stroke="#334155" stroke-width="2" marker-end="url(#a2)"/>
+  <rect x="576" y="546" width="330" height="28" rx="5" fill="#fee2e2" stroke="#fca5a5" stroke-width="1.6"/>
+  <text x="590" y="565" font-size="11" fill="#7f1d1d">wheel slip and tyre deformation</text>
+
+  <line x1="741" y1="574" x2="741" y2="594" stroke="#334155" stroke-width="2" marker-end="url(#a2)"/>
+  <rect x="576" y="594" width="330" height="28" rx="5" fill="#fee2e2" stroke="#fca5a5" stroke-width="1.6"/>
+  <text x="590" y="613" font-size="11" fill="#7f1d1d">differential wheel speed in turns — only one side seen</text>
+
+  <line x1="741" y1="622" x2="741" y2="642" stroke="#334155" stroke-width="2" marker-end="url(#a2)"/>
+  <rect x="576" y="642" width="330" height="30" rx="5" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.6"/>
+  <text x="741" y="662" font-size="11" fill="#334155" text-anchor="middle">actual distance travelled over ground</text>
+
+  <rect x="576" y="682" width="330" height="26" rx="5" fill="#f0fdf4" stroke="#86efac" stroke-width="1.8"/>
+  <text x="741" y="700" font-size="11" font-weight="bold" fill="#166534" text-anchor="middle">⇒ fused with the IMU in the EKF to bound drift</text>
+
+  <text x="24" y="748" font-size="11" fill="#64748b">PPR IS UNVERIFIED (finding F7): the source project's firmware pins 52 PPR while its own BOM lists a 16 PPR motor. Do not inherit either number —</text>
+  <text x="24" y="764" font-size="11" fill="#64748b">measure PPR on the encoder actually fitted. The roll-out calibration in calibration.md §2 is authoritative and bypasses PPR entirely, so the</text>
+  <text x="24" y="780" font-size="11" fill="#64748b">resulting distance is safe either way. This is also why odometry is fused rather than trusted raw.</text>
+</svg>

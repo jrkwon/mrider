@@ -156,6 +156,10 @@ laptop  /mitt/dbw/command  (DbwCommand, steering_angle in rad)
 
 **Mount it load-side.** Where the sensor mounts matters as much as which sensor it is. Mount it **downstream of the steering gearbox** — on the kingpin/road-wheel axis, or on the linkage — not on the motor shaft. Load-side mounting measures what the road wheels actually do, so **gearbox backlash and coupling slip appear as measured error rather than as invisible bias**. Motor-side mounting hides exactly the errors the sensor exists to catch.
 
+![Steering angle sensing: an AS5600 absolute magnetic encoder on the kingpin axis, reading a diametrically-magnetised magnet across a controlled air gap, with the motor-side incremental encoder demoted to velocity and stall duty](../images/steering-sensing.svg)
+
+Panel 2 is the part that is easy to get wrong in the shop. The magnet is **bonded to the rotating kingpin**; the sensor IC is on a small PCB held by a bracket **fixed to the chassis**, facing the magnet across an air gap the datasheet constrains. Nothing touches — this is why there is no wiper to wear at the small, high-duty-cycle oscillations a steering loop makes. The mechanical precision that mounting demands is the *only* reason the potentiometer fallback is retained rather than deleted.
+
 **Alternatives considered.**
 
 - **B2 — incremental encoder on the steering motor only** (the mrover recipe). Rejected. It **requires homing on every boot** and loses its absolute reference on any linkage slip or power glitch. mrover's own implementation shows the failure mode concretely: `mavlink_bridge.py:47-50` initializes asymmetric defaults (`min_value=-600`, `max_value=180`), and `:243-250` **expands those bounds at runtime and rescales all past values** — so the reported "center" depends on the range observed so far, and boot centre is arbitrary. This is worse than drift: the mapping changes retroactively.
@@ -198,6 +202,10 @@ Paralleling is acceptable because the two motors are mechanically coupled throug
 ## 8. ADR C — Drive distance encoding
 
 **Decision.** A **quadrature/Hall incremental encoder on the drive-motor shaft** (the mrover **3.15 mm → 5 mm shaft-adapter** method, `vehicle_setup.md:70-72`), read by a Teensy **hardware quadrature decoder**, converted to distance with a wheel-diameter calibration ([calibration.md](calibration.md)). Odometry is **fused with the IMU in the EKF** to bound error.
+
+![Rear drive sensing: both rear motors paralleled onto one Sabertooth channel with a single quadrature encoder on one motor shaft, and the chain of mechanical error sources that sit between that measurement and actual ground distance](../images/drive-sensing.svg)
+
+Panel 1 is the asymmetry worth staring at: **one motor is instrumented and the other is not**, and because both are paralleled onto a single channel there is no differential and no independent control. Panel 3 is the honest consequence — the measurement is taken *upstream* of backlash, slip and the speed difference between inner and outer wheels in a turn. Each of those biases raw odometry, which is precisely why it is fused rather than trusted.
 
 !!! note "PPR is unverified — resolves finding F7"
 

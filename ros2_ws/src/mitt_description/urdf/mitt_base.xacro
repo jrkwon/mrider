@@ -48,11 +48,35 @@
   <link name="base_link"/>
 
   <link name="chassis_link">
+    <!-- Body shell mesh. See meshes/README.md for provenance (Fuel "SUV" by
+         Open Robotics, CC0) and for how it was prepared.
+
+         NO GEOMETRIC LITERALS HERE EITHER. The mesh is normalised to a unit
+         bounding box - span 1.0 per axis, centred on X/Y, resting on Z=0 - so
+         <scale> below IS the vehicle's size in metres, taken from the same
+         yaml as everything else. The z offset of -body_h/2 lifts the unit box
+         onto the link origin, which is why the mesh occupies EXACTLY the same
+         envelope as the collision box beneath it. Measure the real vehicle,
+         update the yaml, and the shell follows.
+
+         The mesh is a visual proxy for a Defender-style ride-on, NOT a scan of
+         the donor vehicle. Nothing is dimensioned from it. -->
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry><box size="${body_l} ${body_w} ${body_h}"/></geometry>
+      <origin xyz="0 0 ${-body_h/2}" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mitt_description/meshes/mitt_body.obj"
+              scale="${body_l} ${body_w} ${body_h}"/>
+      </geometry>
+      <!-- Stated explicitly so the colour is deterministic rather than
+           whatever each renderer falls back to. The upstream texture is not
+           used - see meshes/mitt_body.mtl for why. -->
       <material name="mitt_white"/>
     </visual>
+    <!-- Collision stays a PRIMITIVE BOX, deliberately. Mesh collision would
+         cost physics time for no benefit here, and would couple the collision
+         envelope to whatever mesh happens to be installed - so swapping the
+         shell would silently change the vehicle's physics. Keeping the box
+         means the documented dimensions remain the single source of truth. -->
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry><box size="${body_l} ${body_w} ${body_h}"/></geometry>

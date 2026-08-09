@@ -1,0 +1,25 @@
+# Material for mitt_body.obj.
+#
+# Flat colour, NO texture map - deliberately. See meshes/README.md.
+#
+# The upstream Fuel model ships a 753 kB photographic body texture. It was
+# tried in two locations (beside the mesh, and in materials/textures/ per the
+# gz convention) and did not render under gz-sim in either: the mesh loads with
+# no warning of any kind and simply appears untextured. Rather than keep a
+# three-quarter-megabyte asset in the repo that does not draw, the body is a
+# flat colour that renders identically in Gazebo and RViz.
+#
+# It is also the more honest picture. The texture is a photographic Hummer
+# skin, and this mesh is standing in for a Land Rover Defender-style ride-on -
+# so the badging and grille detail would have been actively misleading on a
+# vehicle that is not that.
+
+newmtl mitt_body
+	Ns 12.0000
+	Ni 1.5000
+	d 1.0000
+	illum 2
+	Ka 0.82 0.83 0.85
+	Kd 0.88 0.89 0.91
+	Ks 0.06 0.06 0.06
+	Ke 0.0000 0.0000 0.0000

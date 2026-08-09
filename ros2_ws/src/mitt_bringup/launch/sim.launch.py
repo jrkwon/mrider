@@ -25,11 +25,15 @@ The controller stack launched here is the SAME one that will drive the real
 vehicle. Only the ros2_control hardware plugin differs (ADR-SW4).
 """
 
+import os
+
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
     IncludeLaunchDescription,
     RegisterEventHandler,
+    SetEnvironmentVariable,
     TimerAction,
 )
 from launch.event_handlers import OnProcessExit
@@ -43,6 +47,28 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     desc_pkg = FindPackageShare("mitt_description")
     sim_pkg = FindPackageShare("mitt_sim")
+
+    # Let Gazebo resolve the body mesh.
+    #
+    # The URDF refers to it as package://mitt_description/meshes/mitt_body.obj.
+    # RViz understands that; Gazebo does not - the URDF->SDF conversion rewrites
+    # it to model://mitt_description/... and gz then searches only its own
+    # resource path, failing with
+    #
+    #     Unable to find file with URI [model://mitt_description/meshes/...]
+    #     Failed to load geometry for visual: ...chassis_link_visual
+    #
+    # and rendering the vehicle invisible while everything else works normally.
+    # Pointing GZ_SIM_RESOURCE_PATH at the directory CONTAINING the package
+    # share dir makes model://<pkg>/... resolve. Set here rather than in
+    # setup_env.sh so it cannot be forgotten.
+    _share_root = os.path.dirname(get_package_share_directory("mitt_description"))
+    gz_resource_path = SetEnvironmentVariable(
+        "GZ_SIM_RESOURCE_PATH",
+        os.pathsep.join(
+            p for p in (os.environ.get("GZ_SIM_RESOURCE_PATH", ""), _share_root) if p
+        ),
+    )
 
     world = LaunchConfiguration("world")
     x = LaunchConfiguration("x")
@@ -160,6 +186,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription(args + [
+        gz_resource_path,
         robot_state_publisher,
         gz_sim,
         bridge,
