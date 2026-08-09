@@ -329,6 +329,47 @@ checked for footprint-scale clearance (≥ ~1 m, since the footprint reaches 0.8
 logging receipt; publishing to `/goal_pose` works and is what the runs above used. Not yet
 diagnosed — it may share a root cause with the RMW issue in §6.2.1.
 
+Note also that `ros2 topic pub --once /goal_pose` is unreliable: the publisher exits before
+DDS discovery completes and the goal is silently dropped, with no error and no log line.
+Use `ros2 topic pub -r 2` under a `timeout`, or RViz's **2D Goal Pose** button.
+
+### 4.5 Planner swap to SmacPlannerHybrid — RESOLVED 2026-08-09
+
+§4.4 F-N4 recorded that a vehicle which noses into an obstacle is stuck until a human
+reverses it. Testing made the deeper problem clear: it was not only the trap case. **NavFn
+plans as though the robot were a free-turning point**, so it routinely returned paths this
+car cannot drive, and RPP rejected them mid-follow with `detected collision ahead!` on
+geometry that was never feasible. Tuning the controller could not fix a path that is
+undrivable by construction.
+
+**Planner is now `nav2_smac_planner/SmacPlannerHybrid`,** searching (x, y, heading) with
+Reeds-Shepp curves bounded by `minimum_turning_radius: 1.6`. This closes the second half of
+ADR-SW2, which pre-registered exactly this step. `allow_reversing` is now `true` on RPP —
+note it was *inert* before this change, because RPP only reverses where the path reverses
+and NavFn never produced such a path. The two changes only work together.
+
+**Verified.** From a 58.9%-explored map: a 8.98 m traverse succeeded (stopped 0.44 m from
+goal). Then the decisive test — a goal **2.5 m directly behind** the vehicle, geometrically
+impossible forward-only at a 1.6 m turning radius. The vehicle reversed 2.1 m in a straight
+line, heading unchanged at ~3°, and arrived 0.40 m from the goal. Before this change that
+manoeuvre had no solution at all.
+
+**Reverse is deliberately expensive, not merely permitted** (`reverse_penalty: 2.5`), and
+this is the constraint to carry into Track B: **the vehicle has no rear sensing.** The LiDAR
+faces forward; there is no rear camera or bumper. Autonomous reverse is therefore *blind*,
+relying on costmap memory of what was seen driving in. In simulation that is free; on the
+real vehicle it is not.
+
+This is the twin doing its job — it has surfaced a hardware requirement before the vehicle
+exists. Track B must choose one of: add rear sensing, hard-cap reverse distance and speed in
+firmware, or forbid autonomous reverse on hardware and accept the manual-recovery model of
+F-N4. **Until that is decided, autonomous reverse on the real car is unproven** and must not
+be enabled by inheriting this config unchanged.
+
+Both parameters (`minimum_turning_radius` here, `min_turning_radius` on `FollowPath`) derive
+from `0.63 / tan(22.5°) = 1.52 m` and must be re-derived together once the wheelbase and
+steering limit are actually **measured** — neither is today.
+
 ---
 
 ## 5. Data collection + end-to-end NN pipeline
@@ -499,7 +540,7 @@ own pinned toolchain and its measured bring-up numbers (§8).
 | ID | Decision | Rationale |
 |----|----------|-----------|
 | ADR-SW1 | One transport, one clock: typed `DbwCommand`/`DbwStatus` over micro-ROS; retire MAVLink, ASCII framing, and the I²C register map | The split command/feedback arrangement shared neither clock nor transport, which is what made faults unlocalizable. |
-| ADR-SW2 | Nav2: DWB first (reuse), RPP as pre-registered Ackermann swap | Reuse-first bring-up; ±22.5° turn constraint may need a curvature-aware controller. |
+| ADR-SW2 | **CLOSED 2026-08-09.** Nav2: Regulated Pure Pursuit + SmacPlannerHybrid (Reeds-Shepp, reverse enabled). DWB and NavFn both dropped without a trial run. | The ±22.5° limit gives R_min = 1.52 m. DWB's velocity space is mostly unreachable at that radius, and NavFn returns paths the car cannot drive. Both were rejected on geometry, not on measurement. See §4.4–4.5. |
 | ADR-SW3 | `mitt_hardware` is **NEW**, not reused | B-MROVER's `carlikebot_system.cpp` is an unmodified demo stub with no hardware I/O (F3). Only the interface *shape* was reusable. |
 | ADR-SW4 | Same `ros2_control` stack in sim and on hardware; only the plugin swaps (`gz_ros2_control` ↔ `mitt_hardware`) | Makes the twin a real development vehicle and gives sim-to-real parity by construction rather than by discipline. |
 | — | Reuse EKF/SLAM/Nav2/NN configs, re-parameterize for real chassis | These carry most of MRider's autonomy and are transport-agnostic, so D3 does not touch them. |
