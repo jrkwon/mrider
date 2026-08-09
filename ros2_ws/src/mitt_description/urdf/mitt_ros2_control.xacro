@@ -57,6 +57,36 @@
         <state_interface name="velocity"/>
         <state_interface name="position"/>
       </joint>
+
+      <!-- Front road wheels: STATE ONLY, no command interface. These are
+           passive - they free-wheel, nothing drives them.
+           They are listed here purely so joint_state_broadcaster publishes
+           them. Without that, robot_state_publisher cannot compute
+           front_{left,right}_wheel_link, those two frames are ABSENT from TF
+           entirely, and RViz's RobotModel display errors on them.
+
+           Making them <fixed> would also silence RViz and is the wrong fix:
+           Gazebo would then drag the front wheels instead of rolling them,
+           quietly corrupting the steering and friction behaviour the twin
+           exists to reproduce.
+
+           HONESTY NOTE, and it matters for Track B. The real vehicle has NO
+           front-wheel encoders. In sim these values are ground truth; on
+           hardware mitt_hardware/MittSystem must still export the interfaces
+           (ros2_control validates the URDF against the plugin and refuses to
+           start on a mismatch), but what it reports will be a KINEMATIC
+           ESTIMATE from vehicle speed, omega = v / wheel_radius, not a
+           measurement. Nothing may consume these as feedback - they exist for
+           visualisation and TF completeness only. Same rule as the shared
+           rear encoder noted above. -->
+      <joint name="front_left_wheel_joint">
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="front_right_wheel_joint">
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
     </ros2_control>
 
     <xacro:if value="${sim}">

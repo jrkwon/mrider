@@ -179,6 +179,24 @@ flowchart TD
 Extrinsics (camera/LiDAR → `base_link`), IMU alignment, and steering zero are established in
 [`calibration.md`](calibration.md).
 
+**Passive front wheels must still be declared to `ros2_control` — fixed 2026-08-09.** The
+front road wheels free-wheel: nothing drives them, so they were initially left out of the
+`<ros2_control>` block. The consequence was not cosmetic. `joint_state_broadcaster` only
+publishes joints it knows about, so `robot_state_publisher` could not compute
+`front_{left,right}_wheel_link`, and **those two frames were absent from TF altogether** —
+surfacing as errors on the RobotModel display in RViz. They are now listed with
+`state_interface` only and no `command_interface`.
+
+Declaring them `fixed` would also have silenced RViz and would have been the wrong fix:
+Gazebo would then *drag* the front wheels rather than roll them, quietly corrupting the
+steering and friction behaviour the twin exists to reproduce.
+
+**This creates a Track B obligation.** `ros2_control` validates the URDF against the hardware
+plugin and refuses to start on a mismatch, so `mitt_hardware/MittSystem` must export these
+two interfaces. The real vehicle has **no front-wheel encoders**, so what it reports will be
+a kinematic estimate, `ω = v / wheel_radius`, not a measurement. Nothing in the stack may
+consume them as feedback — same rule as the shared rear encoder (ADR C).
+
 ---
 
 ## 4. SLAM / Nav2 / EKF configuration plan
