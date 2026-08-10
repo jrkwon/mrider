@@ -26,11 +26,11 @@ you have not yet bought Tier 2.
 
 | Tier | What it covers | When to order | Line items | With ~10% contingency |
 |---|---|---|---:|---:|
-| **Tier 1** | Vehicle + DBW core | Week 1 | $773 | ~$850 |
+| **Tier 1** | Vehicle + DBW core + gamepad | Week 1 | $678 | ~$745 |
 | **Tier 2** | LiDAR, camera, IMU | By week 10 | $168 | ~$185 |
-| **Both** | | | **$941** | **~$1,035** |
+| **Both** | | | **$846** | **~$930** |
 
-This is down from ~$1,570 in the previous revision. See
+This is down from ~$1,570 in the previous revision. The Tier 1 figure was also **corrected on 2026-08-10** — it had been published as $773 while its line items summed to $638, the vehicle price drop never having been re-added. See
 [bom.md § Change record](../design/bom.md#change-record-why-the-total-fell-from-1570-to-1035)
 for where the money went and what was deferred rather than deleted.
 
@@ -57,7 +57,7 @@ at the hardware store the week you need it.
 
     | Item | BOM # | Why it gates the build |
     |---|---|---|
-    | Vehicle (24 V 2-seater ride-on) | 1 | Nothing can be measured until it arrives; seasonal stock |
+    | Vehicle (12 V single-seat ride-on) | 1 | Nothing can be measured until it arrives; seasonal stock |
     | Teensy 4.1 | 2 | Needed from step 4; cheap enough to buy a spare |
     | RC transmitter + receiver (SBUS) | 10 | Needed for step 4 override verification |
     | Hardware RC signal MUX | 9 | Safety-critical and easy to forget — see the warning below |
@@ -81,14 +81,15 @@ at the hardware store the week you need it.
     | Isolated logic rail (12 V SLA + charger + 2× DC-DC) | 11 |
     | Wiring / connectors / fuses | 12 |
     | Mounts / 3D prints | 14 |
+    | USB gamepad (Xbox-layout, teleop) | 15 |
 
 === "By week 10 (Tier 2)"
 
     | Item | BOM # |
     |---|---|
-    | 2D LiDAR (RPLIDAR A1M8) | 15 |
-    | Front camera (USB 1080p) | 16 |
-    | IMU (BNO085 class) | 17 |
+    | 2D LiDAR (RPLIDAR A1M8) | 16 |
+    | Front camera (USB 1080p) | 17 |
+    | IMU (BNO085 class) | 18 |
 
 !!! danger "The hardware RC signal MUX is not optional"
 
@@ -157,7 +158,7 @@ rather than invisible bias
 
 | Item | Safe to substitute? | Constraint |
 |---|---|---|
-| Vehicle | Yes, within class | Must be **24 V, two-seater, dual rear motors, parent-remote class**, with an accessible steering column. Run the [vehicle.md §3 verification checklist](../design/vehicle.md) on whatever you buy. |
+| Vehicle | Yes, within class | Must be **12 V, single-seat, dual rear motors, parent-remote class** ([ADR D-R](../design/vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08) reversed the original 24 V two-seater call), with an accessible steering column. Run the [vehicle.md §3 verification checklist](../design/vehicle.md) on whatever you buy. |
 | Teensy 4.1 | Not recommended | A Teensy 4.0 fits the peripheral budget, but 4.1 is $8 more for headroom. **Do not drop to an ESG32/AVR-class part** — the 600 MHz Cortex-M7's timing determinism and 4 hardware quadrature decoders are load-bearing ([dbw.md §9](../design/dbw.md#9-teensy-41-firmware-platform-and-version-pinning)). |
 | Sabertooth 2x32 | Only for higher current | **Do not substitute a bare H-bridge to save money.** RS-550-class drive motors stall at 30–60 A each and the pair is paralleled onto one channel; the Sabertooth provides current limiting, thermal protection, and the **serial timeout** backing [failsafe row 6](../design/safety.md#2-failsafe-matrix). Verify paralleled stall current against 32 A/channel ([dbw.md §7](../design/dbw.md#7-throttle-path)). |
 | Drive encoder | Yes | Any quadrature/Hall encoder. **Record the actual PPR — do not assume 52.** The source project conflicts with itself (52 PPR in `code.ino:27` vs 16 PPR in its own BOM, finding F7). The roll-out calibration in step 6 bypasses PPR anyway. |
@@ -170,10 +171,10 @@ rather than invisible bias
 
 ## 1.5 Connector and consumable list
 
-Not individually itemized in the BOM (they fall under line 15, wiring/connectors/fuses), but
+Not individually itemized in the BOM (they fall under line 12, wiring/connectors/fuses), but
 you need all of them before step 3:
 
-**Traction side (24 V, high current)**
+**Traction side (12 V, high current)**
 
 - XT60 or equivalent for the battery power tap — sized for peak drive current
 - Ring/spade terminals for Sabertooth B+/B− and M1/M2 terminals
@@ -214,7 +215,7 @@ estimates, and the next person to build one needs your real numbers.
 
 | # | Item | Ordered | Received | Actual $ | Notes / substitution |
 |---|---|---|---|---|---|
-| 1 | Vehicle (24 V 2-seater) | ☐ | ☐ | | *(record model + serial)* |
+| 1 | Vehicle (12 V single-seat) | ☐ | ☐ | | *(record model + serial)* |
 | 2 | Teensy 4.1 | ☐ | ☐ | | *(buy a spare — it is $32)* |
 | 3 | Sabertooth 2x32 | ☐ | ☐ | | |
 | 4 | Steering gearmotor + encoder | ☐ | ☐ | | *(record rated torque + gear ratio)* |
@@ -228,6 +229,7 @@ estimates, and the next person to build one needs your real numbers.
 | 12 | Wiring / connectors / fuses | ☐ | ☐ | | |
 | 13 | Steering coupler / adapter + magnet mount | ☐ | ☐ | | *(record column diameter)* |
 | 14 | Mounts / 3D prints | ☐ | ☐ | | |
+| 15 | USB gamepad (teleop) | ☐ | ☐ | | *(record button/axis map if not Xbox layout)* |
 | 15 | 2D LiDAR *(Tier 2)* | ☐ | ☐ | | |
 | 16 | Front camera *(Tier 2)* | ☐ | ☐ | | *(rolling shutter OK for semester 1)* |
 | 17 | IMU *(Tier 2)* | ☐ | ☐ | | |

@@ -10,7 +10,8 @@ and stock. They are for budgeting, not quotes. Verify at purchase.
 
 **Revised 2026-08-07** following [D3](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)
 (single Teensy replaces Pixhawk + Nano) and a re-scoping of the sensor package to
-semester-1 needs. **Estimated total fell from ~$1,570 to ~$1,035** — see §Change record.
+semester-1 needs. **Estimated total fell from ~$1,570 to ~$930** — see §Change record.
+Totals were re-added and corrected on **2026-08-10**, and a USB gamepad (#15) added.
 
 The **laptop is not a purchased line item** — it is lab-supplied/reused
 ([sensors.md §6](sensors.md)), and runs on its own battery in v1.
@@ -47,7 +48,30 @@ Tier 2 has not been bought yet.
 | 12 | **Wiring / connectors / fuses** | Silicone wire, spade/XT60, inline fuses, terminals, heatshrink | [safety.md](safety.md) | Partial | 40 | |
 | 13 | **Steering shaft coupler / adapter** | Column coupler, set screws, bracket, magnet mount | [dbw.md](dbw.md) · [calibration.md](calibration.md) | New | 15 | Couples gearmotor + angle sensor. Magnet mount needs concentricity — see [dbw.md §6](dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer) |
 | 14 | **Mounts / 3D prints** | Sensor mast + camera/LiDAR mounts + enclosures | [sensors.md §5](sensors.md) | Partial | 30 | Print filament/hardware; mrover STLs need reworking for the new controller |
-| | | | | **Tier 1** | **$773** | |
+| 15 | **USB gamepad (teleop)** | Xbox-layout USB/2.4 GHz pad — Logitech F710 class | [build/07](../build/07-manual-drive.md) · `mitt_control/launch/teleop.launch.py` | New | 40 | **Not the same thing as the RC set (#10)** — see the note below |
+| | | | | **Tier 1** | **$678** | |
+
+!!! warning "The gamepad (#15) and the RC transmitter (#10) are different parts, doing different jobs"
+
+    Easy to conflate when ordering, and expensive to get wrong.
+
+    **#15, the USB gamepad**, is a *software* input. It plugs into the laptop, `joy_node`
+    reads it, and its Twist goes through `twist_mux` like any other software command source.
+    It is how a person drives the twin and drives the vehicle under `ros2` — and it is
+    **inside** the software path, so a firmware or laptop hang takes it with them.
+
+    **#10, the RC transmitter**, is the *hardware* override. Its receiver feeds the
+    [hardware RC signal MUX (#9)](safety.md#12-live-override-inside-dbw-mode-two-layers),
+    which switches servo pulses to the motor driver **with no software in the path at all**.
+    That is the whole point: it still works when the Teensy is hung.
+
+    Buying only the gamepad leaves the vehicle with no firmware-independent override, which
+    is the condition D3 was adopted under. Buy both.
+
+    **Get an Xbox-layout pad.** `teleop.launch.py` pins deadman = button 4 (LB),
+    turbo = button 5 (RB), throttle = axis 1, steering = axis 3. A different layout is not a
+    blocker — the numbers are launch arguments — but you will spend an evening with
+    `ros2 topic echo /joy` working out which is which.
 
 !!! info "Vehicle class changed — ADR D reversed 2026-08-08"
 
@@ -76,9 +100,9 @@ Tier 2 has not been bought yet.
 
 | # | Item | Spec / Model | Design ref | Reuse? | Est. ($) | Source / note |
 |---|------|--------------|-----------|--------|---------:|---------------|
-| 15 | **2D LiDAR** | RPLIDAR A1M8 (360°, 12 m) | [sensors.md §2](sensors.md) | No | 110 | Sufficient for indoor hallway SLAM. `ros-humble-rplidar-ros` is in apt. Upgrade path: RPLidar S3 / YDLidar G4 |
-| 16 | **Front camera** | USB 1080p wide-FOV | [sensors.md §1](sensors.md) | No | 30 | **See the behavior-cloning note below** |
-| 17 | **IMU** | BNO085-class 9-DoF with onboard fusion | [sensors.md §3](sensors.md) | New | 28 | Replaces the Pixhawk's internal IMU. Estimator is unchanged — it was always `robot_localization` (F11) |
+| 16 | **2D LiDAR** | RPLIDAR A1M8 (360°, 12 m) | [sensors.md §2](sensors.md) | No | 110 | Sufficient for indoor hallway SLAM. `ros-humble-rplidar-ros` is in apt. Upgrade path: RPLidar S3 / YDLidar G4 |
+| 17 | **Front camera** | USB 1080p wide-FOV | [sensors.md §1](sensors.md) | No | 30 | **See the behavior-cloning note below** |
+| 18 | **IMU** | BNO085-class 9-DoF with onboard fusion | [sensors.md §3](sensors.md) | New | 28 | Replaces the Pixhawk's internal IMU. Estimator is unchanged — it was always `robot_localization` (F11) |
 | | | | | **Tier 2** | **$168** | |
 
 !!! note "The global-shutter camera is deferred, not deleted"
@@ -97,8 +121,19 @@ Tier 2 has not been bought yet.
 
 | | Sum of line items | Contingency (~10%) | **Estimated total** |
 |------|------------------:|-------------------:|--------------------:|
-| **Tier 1 + Tier 2** | **$941** | ~$94 | **~$1,035** |
-| *Tier 1 alone (weeks 1–9)* | *$773* | *~$77* | *~$850* |
+| **Tier 1 + Tier 2** | **$846** | ~$85 | **~$930** |
+| *Tier 1 alone (weeks 1–9)* | *$678* | *~$68* | *~$745* |
+
+!!! bug "Totals corrected 2026-08-10 — the previous figures were arithmetically stale"
+
+    Tier 1 was published as **$773** while its line items summed to **$638**. The gap was
+    exactly **$135**: the vehicle line had been updated from $300 to $165 when
+    [ADR D was reversed](vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08),
+    and the total was never re-added. Adding the gamepad (#15, $40) brings Tier 1 to **$678**.
+
+    Worth stating plainly because this document is used to place orders: the old totals
+    over-budgeted by ~$95, which is a harmless direction to be wrong in, but it means any
+    quote reconciled against the old number will not balance.
 
 Contingency covers shipping, taxes, connector/fastener miscellany, a blown H-bridge or
 stripped steering gear, and the verification-driven risk that the **drive-motor stall
@@ -124,17 +159,32 @@ current** ([vehicle.md §3.1](vehicle.md)) forces a current-limit accessory.
 | **Sensor re-scoping subtotal** | **−$365** | |
 | **Total** | **−$488** | $1,429 → $941 before contingency |
 
+!!! note "These figures are the 2026-08-07 revision, not the current total"
+
+    The $941 below is Tier 1 + Tier 2 *as published on 2026-08-07*. Two things happened after:
+    the vehicle line fell $300 → $165 with the
+    [ADR D reversal](vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08), and a
+    USB gamepad (#15, $40) was added. Current line-item total is **$846**; see §Totals. The
+    heading and figures here are left intact so the D3 accounting still reads as a single
+    coherent comparison.
+
 **Honest attribution:** D3 itself accounts for **−$123**, not the bulk of the saving. Most of
 the reduction comes from scoping the sensor package to what semester 1 actually needs. Both
 are real, but they are different kinds of decision — one is architectural and permanent, the
 other is a deferral with a known phase-2 cost (+$150 camera, +$200–350 GNSS/RTK,
 +$150–200 LiDAR upgrade).
 
-**Vehicle voltage was reconsidered and kept at 24 V.** A 12 V single-seater saves ~$100–150,
-but [ADR D](vehicle.md#adr-d-24-v-two-seater-vs-12-v-single-seater) rejects it on payload and
-torque margin — and it is the chassis class B-MROVER is validated on (finding F1). With D3
-removing the validated-autopilot claim, the validated-*chassis* claim carries more weight than
-before, not less. Not worth $100.
+**Vehicle voltage — SUPERSEDED, and left here rather than deleted.** This revision argued the
+vehicle should stay **24 V**: a 12 V single-seater saved ~$100–150 but was rejected on payload
+and torque margin, and 24 V was the chassis class B-MROVER is validated on (finding F1).
+
+**The next day that decision was reversed.** The project is now a **12 V single-seater** at
+~$165 ([ADR D-R](vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08)), and the
+Tier 1 table reflects that. The reversal is a genuine trade, not a free win — it costs the
+mast height, the flat deck, and finding F1 — but it was taken deliberately.
+
+The paragraph above is preserved because the reasoning that lost is worth reading next to the
+decision that replaced it. **Do not order a 24 V two-seater from it.**
 
 ---
 
@@ -146,7 +196,6 @@ before, not less. Not worth $100.
 | Lab already has an mrover rig — reuse Sabertooth (#3), drive encoder (#6), 3D prints (#14) | −$173 | None, if the parts exist |
 | 3D-print couplers and mounts instead of buying | −$30 | Print time |
 | Defer Tier 2 entirely to next semester | −$168 | **Loses the SLAM map deliverable** — the semester's visible outcome |
-| 12 V single-seater | −$100 to −$150 | Contradicts ADR D; gives up the validated chassis class. **Not recommended** |
 
 **Realistic floor** with a used vehicle, lab-reused Sabertooth and encoder, and printed
 mounts: **~$620 all-in.**
@@ -182,7 +231,7 @@ Not in the totals; documented future upgrades.
 | RTK GNSS rover | u-blox ZED-F9P class | 220–300 | Outdoor waypoint following |
 | RTK corrections | NTRIP subscription or local base | varies | — |
 | LiDAR upgrade | RPLidar S3 (ToF, IP65) or YDLidar G4 | 150–200 | Outdoor / longer range |
-| 24 V drivetrain tuning, spare gearbox | — | 50 | Bring-up damage margin |
+| Drivetrain tuning, spare gearbox | — | 50 | Bring-up damage margin |
 
 Without PX4, RTK integrates as an F9P + laptop NTRIP client feeding `navsat_transform`
 directly — arguably simpler than MAVLink RTK injection.

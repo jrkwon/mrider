@@ -246,4 +246,12 @@ ros2 launch mitt_bringup sim.launch.py
 
 ---
 
+!!! tip "You can run the whole autonomy stack right now, with no hardware"
+
+    Once the workspace builds, the simulated vehicle will map an indoor world and navigate it
+    on this laptop alone — that is Track A, and it does not wait on the vehicle arriving. See
+    **[Running the Digital Twin](../run-the-twin.md)** for the tested step-by-step.
+
+---
+
 **Previous:** [4. Firmware bring-up](04-firmware.md) · **Next:** [6. Bench test](06-bench-test.md)
