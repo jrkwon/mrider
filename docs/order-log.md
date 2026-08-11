@@ -45,7 +45,7 @@ Batch B cannot be specified until it arrives, so it is the long pole.
 |---|------|------:|--------|---------|-------:|----------|-------|
 | 1 | Vehicle — 12 V single-seat ride-on | 165 | | | | | *record model + serial* |
 | 2 | Teensy 4.1 | 32 | | | | | *buy a spare* |
-| 3 | Sabertooth 2x32 | 125 | | | | | |
+| 3 | Sabertooth 2x32 | 125 | | | | | *see stall-current note below* |
 | 6 | Drive encoder + 3.15→5 mm adapter | 18 | | | | | *record measured PPR* |
 | 7 | Relay MUX hardware | 25 | | | | | *record contact rating* |
 | 8 | E-stop, latching mushroom | 15 | | | | | *record current rating* |
@@ -56,6 +56,37 @@ Batch B cannot be specified until it arrives, so it is the long pole.
 | 14 | Mounts / 3D prints | 30 | | | | | |
 | 15 | USB gamepad, Xbox layout | 40 | | | | | *record button/axis map if not Xbox* |
 | | **Batch A** | **608** | | | | | |
+
+!!! question "Why the Sabertooth costs $125, and why it is still bought before measuring"
+
+    The price does not buy amps, it buys three properties, in descending order of how binding
+    they are:
+
+    1. **It accepts R/C servo pulses.** The [Pololu #2806 MUX](design/dbw.md#112-hardware-rc-signal-mux-the-d3-condition)
+       multiplexes *servo pulses only* — which is why
+       [ADR §4](design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)
+       was reverted from packetized serial to R/C PWM. Any driver sitting downstream of that
+       MUX must take pulses directly. This is architecture, not budget.
+    2. **It stops the motors when the pulses stop.** [Failsafe rows 6 and 8](design/safety.md#2-failsafe-matrix)
+       and [FMEA row 9](design/safety.md#7-fmea-lightweight) — D3's principal risk, severity 5 —
+       all lean on this. When the Teensy hangs, traction must die with **no software
+       involved**. That is a property of the driver.
+    3. **It survives and limits stall current**, with thermal protection.
+
+    **Property 3 is the one that is genuinely unsettled**, and the honest position is that
+    nobody knows yet: `vehicle.md` asserts the motor class twice, differently
+    ([see the warning there](design/vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08)),
+    and it has never been measured.
+
+    Buy it anyway, now, for a scheduling reason rather than an electrical one: the sizing
+    question concerns **M2 (drive)**, which cannot be measured until the vehicle is in hand,
+    while [bench Stage 1](design/safety.md#6-bring-up-protocol-staged-wheels-off-first) needs
+    **M1 (steering)** working before that. You need *a* driver to make progress either way, and
+    the ~$30 saved by dropping to a 2x25 is not worth a second order cycle — still less the
+    risk that §3.1's own mitigation (one motor per channel) forces a **second driver**.
+
+    Record the measured paralleled stall current in §Measurements. If it comes in low, that is
+    evidence for the *next* build, not a reason to re-buy this one.
 
 !!! danger "Do not let #9 slip to a later order"
 

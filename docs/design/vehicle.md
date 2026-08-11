@@ -217,7 +217,28 @@ against the build.
 | Steering torque **falls** — less tyre scrub on a lighter, narrower car. Gearmotor sizing gets easier, and the [§2.2 torque procedure](dbw.md#22-torque-measurement-procedure-before-sizing-the-gearmotor) should come in well under the 24 V case. | ✓ |
 | Wheelbase ~63 cm gives **R_min ≈ 1.52 m** instead of ~1.7 m — a tighter turning circle, which is better in indoor corridors within the same ±22.5° limit. | ✓ |
 | 12 V at ≤ walking speed is **inherently less dangerous** than 24 V for a student-operated platform. | ✓ |
-| Sabertooth 2x32 is now **heavily oversized** for RS-390-class motors. Retained regardless: its current limiting and R/C signal-loss timeout are load-bearing in the [failsafe matrix](safety.md#2-failsafe-matrix). Headroom is not a defect. | – |
+| Sabertooth 2x32 is **possibly** oversized now — but see the warning below, because this document currently contradicts itself and the number is unmeasured. Retained regardless: its current limiting and R/C signal-loss timeout are load-bearing in the [failsafe matrix](safety.md#2-failsafe-matrix). Headroom is not a defect. | – |
+
+!!! danger "Unresolved: drive-motor class is asserted twice, differently, and measured never"
+
+    This matters because it decides whether the Sabertooth 2x32 has comfortable headroom or
+    none at all.
+
+    - **§3.1 above** says *"RS-550-class 12 V motors ... typically **30–60 A each**"*. Two
+      paralleled onto one channel is **60–120 A** — at or beyond the 2x32's ~64 A peak. On
+      that reading the driver is marginal, and [FMEA row 7](safety.md#7-fmea-lightweight) is live.
+    - **The row above** says *RS-390-class*, whose stall is far lower. On that reading the
+      driver is comfortably oversized.
+
+    §3.1 was written for the 24 V two-seater and was not re-scoped when
+    [ADR D was reversed](#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08); the RS-390
+    claim was asserted without a source. **Neither has been measured, and the vehicle has not
+    been bought.**
+
+    Treat both as unverified. The §3.1 procedure is the tiebreaker, and its result also
+    decides whether the documented mitigation — *one motor per Sabertooth channel, sacrificing
+    the steering channel split* — is needed, which would force a **second driver**. Record the
+    measured value in the [Order Log](../order-log.md).
 
 **Payload is not the problem it first appears.** These cars are rated for a child (~25–30 kg);
 ~6 kg of kit is well inside that. The real risks are **centre of mass** and **mounting

@@ -32,7 +32,7 @@
   <text x="256" y="200" font-size="10" fill="#ffffff" text-anchor="middle">gearbox</text>
   <rect x="300" y="172" width="86" height="48" rx="5" fill="#0f172a"/>
   <text x="343" y="194" font-size="11" fill="#ffffff" text-anchor="middle">motor L</text>
-  <text x="343" y="209" font-size="9.5" fill="#94a3b8" text-anchor="middle">RS-390 class</text>
+  <text x="343" y="209" font-size="9.5" fill="#94a3b8" text-anchor="middle">class unverified</text>
   <!-- encoder on left motor -->
   <rect x="392" y="176" width="44" height="40" rx="4" fill="#fffbeb" stroke="#f59e0b" stroke-width="2.4"/>
   <text x="414" y="200" font-size="10" font-weight="bold" fill="#92400e" text-anchor="middle">ENC</text>
@@ -52,7 +52,7 @@
   <text x="696" y="200" font-size="10" fill="#ffffff" text-anchor="middle">gearbox</text>
   <rect x="566" y="172" width="86" height="48" rx="5" fill="#0f172a"/>
   <text x="609" y="194" font-size="11" fill="#ffffff" text-anchor="middle">motor R</text>
-  <text x="609" y="209" font-size="9.5" fill="#94a3b8" text-anchor="middle">RS-390 class</text>
+  <text x="609" y="209" font-size="9.5" fill="#94a3b8" text-anchor="middle">class unverified</text>
   <line x1="756" y1="196" x2="724" y2="196" stroke="#475569" stroke-width="5"/>
   <line x1="668" y1="196" x2="652" y2="196" stroke="#475569" stroke-width="5"/>
   <rect x="500" y="176" width="52" height="40" rx="4" fill="#ffffff" stroke="#cbd5e1"
