@@ -89,12 +89,23 @@ Tier 2 has not been bought yet.
 
 !!! warning "Do not substitute a cheap H-bridge for the Sabertooth"
 
-    A BTS7960-class module is ~$14 and looks like a $110 saving. It is the wrong part here:
-    [vehicle.md §3.1](vehicle.md) notes RS-550-class drive motors stall at **30–60 A each**,
-    and the two rear motors are paralleled onto one channel. The Sabertooth 2x32 provides
-    32 A/channel with current limiting, thermal protection, and a configurable **serial
-    timeout** that backs [failsafe row 6](safety.md#2-failsafe-matrix). A bare H-bridge
-    provides none of those. Keep it.
+    A BTS7960-class module is ~$14 and looks like a $110 saving. It is the wrong part, and
+    notably **not primarily because of current rating** — the drive-motor stall current is
+    still [unmeasured](vehicle.md#31-drive-motor-stall-current-vs-sabertooth-rating-critical).
+    Three reasons that hold regardless of how that measurement lands:
+
+    1. **Wrong input type, which is disqualifying on its own.** It takes PWM + DIR logic. The
+       [hardware RC signal MUX](dbw.md#112-hardware-rc-signal-mux-the-d3-condition)
+       multiplexes *servo pulses*, so a driver that cannot accept pulses cannot sit downstream
+       of it — and that MUX is the condition D3 was adopted under.
+    2. **No signal-loss timeout.** [Failsafe rows 6 and 8](safety.md#2-failsafe-matrix) and
+       [FMEA row 9](safety.md#7-fmea-lightweight) require traction to stop when the Teensy
+       stops emitting, with no software involved. The Sabertooth does this; a bare bridge
+       does not.
+    3. **No meaningful current limiting or thermal protection**, and its characteristic
+       failure is a shorted MOSFET — which on a vehicle means **uncontrolled full throttle**.
+
+    Keep the Sabertooth.
 
 ## Tier 2 — Perception
 

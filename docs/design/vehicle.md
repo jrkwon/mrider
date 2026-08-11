@@ -92,19 +92,42 @@ The two rear motors are wired **in parallel onto one Sabertooth 2x32 channel**
 per channel (~64 A peak per channel for a few seconds)**. The paralleled pair
 must stay within that.
 
+**The motor class on the delivered vehicle is not known, and this document
+deliberately no longer guesses it.** Ride-on drive motors in this size range run
+from RS-380/390 up to RS-550/775. Their stall currents differ by close to an
+order of magnitude, and — this is the point — **that range straddles the
+Sabertooth ceiling**. A small-motor car is comfortably inside it; a large-motor
+car is not. No lookup resolves that. Measure it.
+
 - **Procedure:** with wheels off the ground, measure per-motor no-load current
   (clamp meter on one motor lead) at each OEM speed. Then measure locked-rotor
   (stall) current by briefly (<1 s) holding a wheel and reading peak, one motor
-  at a time. Stall for RS-550-class 12 V motors is typically **30–60 A each**.
+  at a time.
+- **Sanity check before you trust the reading:** for a brushed DC motor,
+  `I_stall ≈ V_supply / R_armature`. Measure `R_armature` across the motor
+  terminals with the rotor locked, averaging over several rotor positions
+  (brush position changes it). A 12 V motor measuring ~0.5 Ω implies roughly
+  24 A stall; ~1.5 Ω implies roughly 8 A. If the clamp-meter peak and this
+  estimate disagree by more than about 2×, distrust both and repeat — a
+  clamp meter can easily miss a <1 s peak.
 - **Acceptance:** paralleled continuous draw under load ≤ 32 A; transient/stall
   of the pair should not sit above ~64 A. If the pair can stall near/over 64 A,
   mitigations (per-motor current limit in Sabertooth config, gentler
   accel/torque limits, or driving **one** motor per Sabertooth channel and
   sacrificing the steering channel split) must be chosen **before** wiring — see
   [dbw.md](dbw.md) throttle path and [safety.md](safety.md) power budget.
-- **Consequence if it fails:** a 24 V two-seater whose paralleled stall exceeds
-  the Sabertooth ceiling forces either current-limited (weaker) traction or a
-  second motor driver — flag to [bom.md](bom.md).
+- **Consequence if it fails:** paralleled stall above the Sabertooth ceiling
+  forces either current-limited (weaker) traction or a **second motor driver** —
+  the latter because the documented mitigation consumes the steering channel.
+  Flag to [bom.md](bom.md) and record in the [Order Log](../order-log.md).
+
+!!! warning "Do not take the motor-class figure from a vendor listing"
+
+    Retail listings for RS-series ride-on motors routinely publish a "stall" or
+    "max" current that is really the rated-load or peak-efficiency figure, off by
+    several times. They are also frequently copy-pasted between unrelated
+    windings. **The measurement above is the only authority in this project**, and
+    its result belongs in the Order Log.
 
 ### 3.2 OEM motor voltage configuration (critical)
 
@@ -217,28 +240,23 @@ against the build.
 | Steering torque **falls** — less tyre scrub on a lighter, narrower car. Gearmotor sizing gets easier, and the [§2.2 torque procedure](dbw.md#22-torque-measurement-procedure-before-sizing-the-gearmotor) should come in well under the 24 V case. | ✓ |
 | Wheelbase ~63 cm gives **R_min ≈ 1.52 m** instead of ~1.7 m — a tighter turning circle, which is better in indoor corridors within the same ±22.5° limit. | ✓ |
 | 12 V at ≤ walking speed is **inherently less dangerous** than 24 V for a student-operated platform. | ✓ |
-| Sabertooth 2x32 is **possibly** oversized now — but see the warning below, because this document currently contradicts itself and the number is unmeasured. Retained regardless: its current limiting and R/C signal-loss timeout are load-bearing in the [failsafe matrix](safety.md#2-failsafe-matrix). Headroom is not a defect. | – |
+| Sabertooth 2x32 headroom is **unknown until the drive motors are measured** ([§3.1](#31-drive-motor-stall-current-vs-sabertooth-rating-critical)) — a 12 V car is *likely* to draw less than the 24 V case, but "likely" is not a number and the plausible range straddles the 32 A/channel limit. Retained regardless of how it lands: its current limiting and R/C signal-loss timeout are load-bearing in the [failsafe matrix](safety.md#2-failsafe-matrix). | – |
 
-!!! danger "Unresolved: drive-motor class is asserted twice, differently, and measured never"
+!!! note "Corrected 2026-08-11 — this document used to assert the motor class twice, differently"
 
-    This matters because it decides whether the Sabertooth 2x32 has comfortable headroom or
-    none at all.
+    Recorded because the disagreement was invisible until someone tried to justify the
+    Sabertooth line item, and because the resolution is a general rule for this project.
 
-    - **§3.1 above** says *"RS-550-class 12 V motors ... typically **30–60 A each**"*. Two
-      paralleled onto one channel is **60–120 A** — at or beyond the 2x32's ~64 A peak. On
-      that reading the driver is marginal, and [FMEA row 7](safety.md#7-fmea-lightweight) is live.
-    - **The row above** says *RS-390-class*, whose stall is far lower. On that reading the
-      driver is comfortably oversized.
+    §3.1 read *"Stall for RS-550-class 12 V motors is typically 30–60 A each"* — paralleled,
+    60–120 A, at or beyond the 2x32's ~64 A peak. The consequences row above read *"heavily
+    oversized for RS-390-class motors"* — roughly a quarter of that. §3.1's figure was written
+    for the 24 V two-seater and never re-scoped when ADR D was reversed; the RS-390 claim had
+    no source at all.
 
-    §3.1 was written for the 24 V two-seater and was not re-scoped when
-    [ADR D was reversed](#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08); the RS-390
-    claim was asserted without a source. **Neither has been measured, and the vehicle has not
-    been bought.**
-
-    Treat both as unverified. The §3.1 procedure is the tiebreaker, and its result also
-    decides whether the documented mitigation — *one motor per Sabertooth channel, sacrificing
-    the steering channel split* — is needed, which would force a **second driver**. Record the
-    measured value in the [Order Log](../order-log.md).
+    **Neither is now asserted.** The motor class on the delivered vehicle is unknown, the
+    plausible range straddles the Sabertooth's limit, and §3.1 makes the measurement the
+    authority rather than any catalogue figure. That is the correct posture for a number that
+    decides whether a $125 part is adequate.
 
 **Payload is not the problem it first appears.** These cars are rated for a child (~25–30 kg);
 ~6 kg of kit is well inside that. The real risks are **centre of mass** and **mounting
