@@ -107,7 +107,7 @@ laptop  /mitt/dbw/command  (DbwCommand, steering_angle in rad)
 
 ## 4. ADR (Sabertooth control mode) — independent R/C (PWM), Teensy as both masters
 
-**Decision.** Configure the Sabertooth 2x32 in **independent R/C (PWM) mode**. The Teensy emits servo-style pulses on two lines; both pass through the [hardware RC signal MUX](#112-hardware-rc-signal-mux--the-d3-condition) before reaching the Sabertooth.
+**Decision.** Configure the Sabertooth 2x32 in **independent R/C (PWM) mode**. The Teensy emits servo-style pulses on two lines; both pass through the [hardware RC signal MUX](#112-hardware-rc-signal-mux-the-d3-condition) before reaching the Sabertooth.
 
 | Sabertooth input | Normal source | Override source | Motor output | Function |
 |---|---|---|---|---|
@@ -120,7 +120,7 @@ laptop  /mitt/dbw/command  (DbwCommand, steering_angle in rad)
 
     **It was reverted when the override hardware was specified.** Every available RC signal multiplexer — [Pololu 2806](https://www.pololu.com/product/2806), Acroname RxMux, ServoCity — multiplexes **servo pulses**. None can select between a *serial packet stream* and RC PWM, and the Sabertooth's input mode is fixed by DIP switches, so it is in one mode or the other.
 
-    **Packetized serial and the hardware RC MUX are mutually exclusive.** The MUX is the condition on which D3 was adopted ([§11.2](#112-hardware-rc-signal-mux--the-d3-condition)); packetized serial is an optimisation. The safety layer wins.
+    **Packetized serial and the hardware RC MUX are mutually exclusive.** The MUX is the condition on which D3 was adopted ([§11.2](#112-hardware-rc-signal-mux-the-d3-condition)); packetized serial is an optimisation. The safety layer wins.
 
     The general lesson: **a decision that is correct in isolation can be invalidated by a downstream part choice.** Specify the safety-critical hardware early enough that it can constrain the decisions above it.
 

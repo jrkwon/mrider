@@ -210,35 +210,20 @@ you need all of them before step 3:
 
 ## 1.6 Receiving checklist
 
-As parts arrive, reconcile against the BOM. Record actuals — your totals will not match the
-estimates, and the next person to build one needs your real numbers.
+**Moved.** The fill-in record now lives in one place — **[Order Log](../order-log.md)** — so
+there is a single source of truth for what was actually bought.
 
-| # | Item | Ordered | Received | Actual $ | Notes / substitution |
-|---|---|---|---|---|---|
-| 1 | Vehicle (12 V single-seat) | ☐ | ☐ | | *(record model + serial)* |
-| 2 | Teensy 4.1 | ☐ | ☐ | | *(buy a spare — it is $32)* |
-| 3 | Sabertooth 2x32 | ☐ | ☐ | | |
-| 4 | Steering gearmotor + encoder | ☐ | ☐ | | *(record rated torque + gear ratio)* |
-| 5 | Absolute angle sensor | ☐ | ☐ | | *(**record measured shaft travel** + which tech and why)* |
-| 6 | Drive encoder + shaft adapter | ☐ | ☐ | | *(record **measured** PPR — do not assume 52)* |
-| 7 | Relay MUX hardware | ☐ | ☐ | | *(record relay contact rating)* |
-| 8 | E-stop switch | ☐ | ☐ | | *(record current rating)* |
-| 9 | Hardware RC signal MUX | ☐ | ☐ | | *(**safety-critical** — record part + channel count)* |
-| 10 | RC transmitter + receiver | ☐ | ☐ | | *(confirm SBUS out + a spare channel for the MUX)* |
-| 11 | Isolated logic rail (SLA + charger + DC-DC) | ☐ | ☐ | | *(record capacity + rail voltages)* |
-| 12 | Wiring / connectors / fuses | ☐ | ☐ | | |
-| 13 | Steering coupler / adapter + magnet mount | ☐ | ☐ | | *(record column diameter)* |
-| 14 | Mounts / 3D prints | ☐ | ☐ | | |
-| 15 | USB gamepad (teleop) | ☐ | ☐ | | *(record button/axis map if not Xbox layout)* |
-| 15 | 2D LiDAR *(Tier 2)* | ☐ | ☐ | | |
-| 16 | Front camera *(Tier 2)* | ☐ | ☐ | | *(rolling shutter OK for semester 1)* |
-| 17 | IMU *(Tier 2)* | ☐ | ☐ | | |
-| — | Laptop | reuse | ☐ | — | *(record GPU, RAM, USB3 ports, battery hours)* |
+It carries the per-batch order tables, the measurement fields that gate the three
+measure-first parts (#4 gearmotor, #5 angle sensor, #13 coupler), a substitution log, and the
+final reconciliation. A second copy of the same table here would only drift out of step with
+it.
 
-**Totals:** estimated $ ______ · actual $ ______ · delta ______
+Record actuals as parts arrive: your totals will not match the estimates, and the next person
+to build one needs your real numbers, not these.
 
-Store the completed table as `config/calibration/bom_asbuilt.md`, stamped with date and
-operator per [calibration.md §7](../design/calibration.md#7-calibration-artifact-index).
+When ordering is complete, store the filled log as `config/calibration/bom_asbuilt.md`,
+stamped with date and operator per
+[calibration.md §7](../design/calibration.md#7-calibration-artifact-index).
 
 ## 1.7 Gate to step 2
 

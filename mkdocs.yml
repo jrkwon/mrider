@@ -77,6 +77,7 @@ nav:
   - Home: index.md
   - Getting Started: getting-started.md
   - Running the Digital Twin: run-the-twin.md
+  - Order Log: order-log.md
   - Design:
       - Overview: design/overview.md
       - DBW Architecture Review (2026-08): design/adr-dbw-architecture-review.md
