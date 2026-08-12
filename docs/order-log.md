@@ -57,6 +57,54 @@ Batch B cannot be specified until it arrives, so it is the long pole.
 | 15 | USB gamepad, Xbox layout | 40 | | | | | *record button/axis map if not Xbox* |
 | | **Batch A** | **608** | | | | | |
 
+### Sourcing — Korea (checked 2026-08-12)
+
+Prices at Korean distributors are quoted **부가세 별도 (ex-VAT)** — add 10%. Lead times are the
+vendor's own estimate, not a promise.
+
+| # | Item | Source | Price seen | Verified? |
+|---|------|--------|-----------|-----------|
+| 1 | Vehicle | daehotoys | ₩229,000 | you found it |
+| 2 | Teensy 4.1 | **Eleparts** — SparkFun `20359` "TEENSY 4.1 WITHOUT ETHERNET" | ₩52,182 ex-VAT (~₩57,400) | ✅ listed, ~6 d |
+| 3 | Sabertooth 2x32 | **Import** — [Dimension Engineering](https://www.dimensionengineering.com/products/sabertooth2x32) direct | $124.99 | ✅ not stocked at Eleparts |
+| 6 | Drive encoder (5 mm bore) | Devicemart / Eleparts / AliExpress | ~₩20–40k | ⚠️ adapter is gated — see below |
+| 7 | Relay MUX (DPDT + sockets + diodes + drivers) | Devicemart / Eleparts (Omron, Autonics) | commodity | category only |
+| 8 | E-stop, traction-rated | **Autonics** (Korean maker) via Devicemart or an industrial supplier | commodity | category only |
+| 9 | Pololu #2806 RC servo MUX | **Eleparts** (marked 해외구매, ~6.5 d) — or [Pololu](https://www.pololu.com/product/2806) direct at $17.95 | ₩38,545 ex-VAT (~₩42,400); ₩34,091 at 3+ | ✅ listed |
+| 10 | RC TX/RX with SBUS | Coupang / RC hobby shops (FlySky FS-i6 + FS-iA6B class) | commodity | category only |
+| 11 | 12 V 7 Ah SLA + charger + 2× DC-DC | Coupang (battery/charger) + Devicemart (DC-DC) | commodity | category only |
+| 12 | Wiring / connectors / fuses | Devicemart / Coupang | commodity | category only |
+| 14 | Mounts / 3D prints | lab printer, or a local print service | — | — |
+| 15 | USB gamepad | Coupang (Logitech F710 class) | commodity | category only |
+
+**"Category only" means I did not verify a specific SKU or price.** Those items are genuine
+commodities in Korea and specifying a part number here would be inventing precision. Search
+the named vendor and record what you actually buy.
+
+!!! warning "#3 Sabertooth is the only true import, and it is worth checking the local markup"
+
+    Not stocked at Eleparts. Dimension Engineering sells direct at **$124.99** and ships
+    internationally. Before importing, note what the Pololu MUX shows: Eleparts lists it at
+    ~₩42,400 inc-VAT against **$17.95** direct — roughly a 70% markup, which is still often
+    worth paying to avoid customs handling on a small order.
+
+    For the Sabertooth, check RobotShop / Generation Robots / DFRobot as alternates, and
+    compare landed cost including **customs and 부가세 on import** before assuming direct is
+    cheaper.
+
+!!! danger "#6 is only half orderable — the shaft adapter is gated, and the BOM hides this"
+
+    The encoder itself (**5 mm bore**) can be bought now. The **3.15 → 5 mm adapter cannot**:
+    that 3.15 mm is *B-MROVER's* motor shaft, inherited along with the method
+    ([dbw.md §8](design/dbw.md#8-adr-c-drive-distance-encoding)), and the Defender's drive-motor
+    shaft has never been measured.
+
+    Order the encoder with Batch A, and treat the adapter as a **Batch B** item alongside the
+    other measure-first parts — or buy an assortment of adapter sleeves, which is a few
+    thousand won and removes the dependency entirely.
+
+    Add the motor-shaft diameter to the M3 measurement form when you tear the vehicle down.
+
 !!! question "Why the Sabertooth costs $125, and why it is still bought before measuring"
 
     The price does not buy amps, it buys three properties, in descending order of how binding
@@ -178,6 +226,7 @@ Measure **every** candidate mounting shaft, not just the intended one.
 |---|---|
 | Column diameter (mm) | |
 | Kingpin / sensed shaft diameter (mm) | |
+| **Drive-motor shaft diameter (mm)** | | 
 | Coupler type selected | |
 | Magnet mount approach (concentricity + air gap) | |
 | Date / by | |
