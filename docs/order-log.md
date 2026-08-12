@@ -66,11 +66,11 @@ vendor's own estimate, not a promise.
 |---|------|--------|-----------|-----------|
 | 1 | Vehicle | daehotoys | ₩229,000 | you found it |
 | 2 | Teensy 4.1 | **Eleparts** — SparkFun `20359` "TEENSY 4.1 WITHOUT ETHERNET" | ₩52,182 ex-VAT (~₩57,400) | ✅ listed, ~6 d |
-| 3 | Sabertooth 2x32 | **Import** — [Dimension Engineering](https://www.dimensionengineering.com/products/sabertooth2x32) direct | $124.99 | ✅ not stocked at Eleparts |
+| 3 | Sabertooth 2x32 | **Import** — [Dimension Engineering](https://www.dimensionengineering.com/products/sabertooth2x32) direct | $124.99 | ✅ no Korean source; see table below |
 | 6 | Drive encoder (5 mm bore) | Devicemart / Eleparts / AliExpress | ~₩20–40k | ⚠️ adapter is gated — see below |
 | 7 | Relay MUX (DPDT + sockets + diodes + drivers) | Devicemart / Eleparts (Omron, Autonics) | commodity | category only |
 | 8 | E-stop, traction-rated | **Autonics** (Korean maker) via Devicemart or an industrial supplier | commodity | category only |
-| 9 | Pololu #2806 RC servo MUX | **Eleparts** (marked 해외구매, ~6.5 d) — or [Pololu](https://www.pololu.com/product/2806) direct at $17.95 | ₩38,545 ex-VAT (~₩42,400); ₩34,091 at 3+ | ✅ listed |
+| 9 | Pololu #2806 RC servo MUX | **Devicemart [1179242](https://www.devicemart.co.kr/goods/view?no=1179242)** — titled *"Pololu 4-Channel RC Servo Multiplexer (Assembled) #2806"*, the correct part. Also Eleparts (해외구매, ~6.5 d), or [Pololu](https://www.pololu.com/product/2806) direct $17.95 | Eleparts ₩38,545 ex-VAT | ✅ #2806 confirmed |
 | 10 | RC TX/RX with SBUS | Coupang / RC hobby shops (FlySky FS-i6 + FS-iA6B class) | commodity | category only |
 | 11 | 12 V 7 Ah SLA + charger + 2× DC-DC | Coupang (battery/charger) + Devicemart (DC-DC) | commodity | category only |
 | 12 | Wiring / connectors / fuses | Devicemart / Coupang | commodity | category only |
@@ -80,6 +80,33 @@ vendor's own estimate, not a promise.
 **"Category only" means I did not verify a specific SKU or price.** Those items are genuine
 commodities in Korea and specifying a part number here would be inventing precision. Search
 the named vendor and record what you actually buy.
+
+!!! info "#3 Sabertooth — Korean options priced 2026-08-12, and why the 2x12 is not the saving it looks like"
+
+    | Option | Cont / peak per channel | Price seen | Source |
+    |---|---|---|---|
+    | **2x12** (DFRobot `DRI0003`) | 12 A / 25 A | **₩154,900 ex-VAT → ₩170,390 inc-VAT** | Devicemart [1065967](https://www.devicemart.co.kr/goods/view?no=1065967), own stock |
+    | 2x5 (`DRI0012`) | 5 A / 10 A | ₩114,370 | Devicemart via Digi-Key — **품절** |
+    | 2x12 (`DRI0003`) | 12 A / 25 A | ₩181,550 | Devicemart via Digi-Key — **품절** |
+    | 2x25 (`DRI0004`) | 25 A / 50 A | ₩284,520 | Devicemart via Digi-Key — **품절** |
+    | **2x32** | 32 A / 64 A | **$124.99** + intl shipping | [Dimension Engineering](https://www.dimensionengineering.com/products/sabertooth2x32) — **no Korean source found** |
+
+    **There is no 2x32 in the Korean channel.** Devicemart lists 2x5 / 2x12 / 2x25 through the
+    Digi-Key feed and all three read 품절; only its own 2x12 is stocked.
+
+    **The 2x12 is roughly the same money as importing a 2x32.** ₩170,390 is about $120 at
+    ₩1,400/USD; the 2x32 lands near $150–165 with international shipping. Paying ~$30–45 more
+    buys **2.7× the continuous rating** — on the one parameter this project has explicitly
+    failed to measure. The 2x25 via Digi-Key is out of stock *and* ₩284,520 (~$205), i.e. more
+    than the bigger part.
+
+    Check the **de minimis** before assuming customs cost: Korea clears US-origin goods under
+    목록통관 at a higher threshold than general imports, and Dimension Engineering ships from
+    Ohio, so a single $125 board plausibly arrives with no duty or import VAT. Verify current
+    thresholds at order time and record what you actually paid.
+
+    All Sabertooth variants support **R/C input** — the 2x12 is not disqualified on
+    architecture, only on headroom.
 
 !!! warning "#3 Sabertooth is the only true import, and it is worth checking the local markup"
 
@@ -130,8 +157,12 @@ the named vendor and record what you actually buy.
     question concerns **M2 (drive)**, which cannot be measured until the vehicle is in hand,
     while [bench Stage 1](design/safety.md#6-bring-up-protocol-staged-wheels-off-first) needs
     **M1 (steering)** working before that. You need *a* driver to make progress either way, and
-    the ~$30 saved by dropping to a 2x25 is not worth a second order cycle — still less the
-    risk that §3.1's own mitigation (one motor per channel) forces a **second driver**.
+    a second order cycle costs more than the part.
+
+    **Correction, 2026-08-12.** An earlier version of this note said ~$30 could be saved by
+    dropping to a 2x25. That is wrong: Dimension Engineering prices the **2x25 V2 and the 2x32
+    identically at $124.99**. There is no cheaper mid-range Sabertooth. The only real
+    step down is the 2x12 at $79.99 — see the sourcing comparison below.
 
     Record the measured paralleled stall current in §Measurements. If it comes in low, that is
     evidence for the *next* build, not a reason to re-buy this one.
