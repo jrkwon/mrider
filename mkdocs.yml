@@ -43,6 +43,8 @@ theme:
 
 markdown_extensions:
   - admonition
+  - pymdownx.arithmatex:
+      generic: true
   - attr_list
   - md_in_html
   - footnotes
@@ -66,6 +68,10 @@ plugins:
   - git-revision-date-localized:
       enable_creation_date: true
       fallback_to_build_date: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
 extra:
   social:
@@ -99,6 +105,22 @@ nav:
       - 6. Bench Test & Calibration: build/06-bench-test.md
       - 7. Manual Drive: build/07-manual-drive.md
       - 8. Autonomous Bring-up: build/08-autonomous.md
+  - Course (Fall 2026):
+      - Overview: course/index.md
+      - Syllabus: course/syllabus.md
+      - Environment Setup: course/environment.md
+      - Teams & Tracks: course/teams.md
+      - Grading & Rubrics: course/grading.md
+      - Labs:
+          - 1 — Bring Up the Twin: course/labs/lab1.md
+          - 2 — Drive a Square: course/labs/lab2.md
+          - 3 — A Speed Governor: course/labs/lab3.md
+          - 4 — Describe the Robot: course/labs/lab4.md
+          - 5 — How Tightly Can It Turn?: course/labs/lab5.md
+      - Weekly Notes:
+          - Week 1 — Middleware & the ROS 2 Graph: course/weeks/w01.md
+          - Week 2 — Nodes, Topics, Packages: course/weeks/w02.md
+          - Week 3 — Services, Parameters, QoS: course/weeks/w03.md
   - Learn:
       - Overview: learn/index.md
       - M1 — Intro to MRider & ROS 2: learn/m1-ros2-intro.md

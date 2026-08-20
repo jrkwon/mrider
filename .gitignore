@@ -26,3 +26,9 @@ ros2_ws/install/
 ros2_ws/log/
 # Upstream source cloned for the Harmonic build, not vendored
 ros2_ws/src/gz_ros2_control/
+
+# Student bundle export (scripts/export_student_bundle.sh)
+/dist/
+
+# Marp PPTX output; the PDFs under docs/ are committed, these are not
+/course/dist/
