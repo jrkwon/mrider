@@ -558,9 +558,22 @@ own pinned toolchain and its measured bring-up numbers (§8).
 
 ## 8. Semester-1 scope and software acceptance gates
 
-Semester 1 (~14 weeks, 1–3 students) commits to a **trustworthy DBW, a working twin, and an
-indoor SLAM map**. Nav2 autonomous goal-seeking is the stretch. **Deferred to phase 2:**
-outdoor GNSS waypoint following, the `docs/learn/` course kit, and behavior cloning.
+Semester 1 (~14 weeks) commits to a **trustworthy DBW, a working twin, and an indoor SLAM
+map**. Nav2 autonomous goal-seeking is the stretch. **Deferred to phase 2:** outdoor GNSS
+waypoint following and behavior cloning.
+
+!!! info "Scope amended 2026-08-20 — the team is 24, not 1–3, and the course kit is not deferred"
+
+    This section was written for 1–3 students. Semester 1 is now **Fall 2026's
+    [자율주행미들웨어응용](../course/index.md)**: 24 graduate students in four tracks —
+    Electrical, Chassis, Simulation, Software — merging into one vehicle by Week 14.
+
+    Two consequences for what is written below:
+
+    - **The `docs/learn/` course kit is no longer phase 2.** It is assigned reading, week by week.
+    - **The Track A/B split still holds, but is now staffed in parallel rather than sequenced.**
+      Track A work is owned by the Simulation and Software teams, Track B by Electrical and
+      Chassis. The acceptance gates below are unchanged and are what the teams are graded against.
 
 The scoping rationale is that the previous generations did not fall short on planning or
 perception — so the semester's prize is a vehicle whose feedback can be *believed*, evidenced

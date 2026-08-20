@@ -20,7 +20,7 @@ Nav2 turns "go to that pose" into a stream of velocity commands. Four pieces:
 |---|---|---|
 | **Costmaps** | Represent where it is safe to be — static map, live obstacles, inflation | Reused from B-MROVER, `robot_radius` re-parameterized |
 | **Global planner** | Find a route from here to the goal across the whole map | `NavfnPlanner` — reused |
-| **Local controller** | Follow that route, avoiding what appears in real time | `DWBLocalPlanner` — reused for bring-up, **flagged for replacement** |
+| **Local controller** | Follow that route, avoiding what appears in real time | `RegulatedPurePursuitController`, `allow_reversing: true` |
 | **Recoveries** | What to do when stuck | `spin` / `back_up` / `wait` — reused, and problematic here |
 
 The **inflation layer** is worth dwelling on: obstacles are grown by roughly the robot radius
@@ -78,26 +78,71 @@ Three consequences students meet immediately:
 3. **Reversing matters.** Multi-point turns are how a car gets out of tight spots. A planner
    that never reverses will declare failure where a human driver would simply back up.
 
-### ADR-SW2 — DWB now, RPP pre-registered
+### ADR-SW2 — CLOSED 2026-08-09: RPP + SmacPlannerHybrid
 
-DWB (Dynamic Window Approach) is a diff-drive/omni-oriented local planner. It samples velocity
-commands including ones MRider structurally cannot execute.
+!!! success "This decision is settled. Here is how it was reached."
 
-MRider keeps it anyway for first bring-up — and this is a deliberate, documented decision
-([ADR-SW2](../design/software.md#adr-sw2-nav2-local-controller-for-ackermann)):
+    ADR-SW2 originally read *"DWB now, RPP pre-registered with a trigger."* It closed on
+    **2026-08-09**, and the outcome is more interesting than the original plan:
+    **DWB and NavFn were both dropped without a trial run**, rejected on geometry rather than
+    on measurement.
 
-- **Decision.** Start with B-MROVER's DWB (maximum reuse), evaluate **Regulated Pure Pursuit**
-  as a swap once basic navigation works.
-- **Rationale.** Reuse-first for bring-up velocity. But the ±22.5° constraint is real and may
-  make DWB paths infeasible — so RPP is pre-registered as the fallback **with a concrete
-  trigger**: path-tracking error or infeasible commands during turning tests.
+**The reasoning.** DWB (Dynamic Window Approach) is a diff-drive/omni-oriented local planner. It
+samples a velocity space that, at R_min = 1.52 m, is *mostly unreachable* for this vehicle — most
+of what it evaluates, the car cannot execute. NavFn is worse in a subtler way: it plans **as though
+the robot were a free-turning point**, so it routinely returns paths that are undrivable by
+construction. In testing, the controller rejected them mid-follow with `detected collision ahead!`
+on geometry that was never feasible in the first place.
 
-!!! info "This is what a good engineering decision looks like"
+No amount of controller tuning fixes a path the vehicle cannot drive.
 
-    Not "use the right tool" and not "use what we have," but: *use what we have, having already
-    decided what evidence would change our minds, and having named the replacement.* When you
-    hit the trigger in the lab, swapping to RPP is the **planned action**, not a workaround or
-    an admission of failure.
+**What runs now:**
+
+| Role | Plugin | Key parameter |
+|---|---|---|
+| Global planner | `nav2_smac_planner/SmacPlannerHybrid` | `motion_model_for_search: REEDS_SHEPP`, `minimum_turning_radius: 1.6` |
+| Local controller | `RegulatedPurePursuitController` | `min_turning_radius: 1.6`, `allow_reversing: true` |
+
+SmacPlannerHybrid searches in **(x, y, heading)** rather than (x, y), with Reeds-Shepp curves
+bounded by the turning radius. It cannot produce a path the car cannot drive, because
+undrivable paths are not in its search space.
+
+!!! info "The two changes only work together"
+
+    `allow_reversing: true` was **inert** before the planner swap. RPP only reverses where the
+    *path* reverses, and NavFn never produced such a path. Enabling reversing on the controller
+    while keeping a planner that cannot express a reversing manoeuvre changes nothing at all.
+
+    This is worth internalising: a parameter that is switched on but has no effect looks exactly
+    like a parameter that is working.
+
+**Verified.** An 8.98 m traverse succeeded, stopping 0.44 m from the goal. Then the decisive test:
+a goal **2.5 m directly behind** the vehicle — geometrically impossible forward-only at a 1.6 m
+turning radius. The vehicle reversed 2.1 m in a straight line, heading unchanged at ~3°, and
+arrived 0.40 m from the goal. **Before the swap, that manoeuvre had no solution at all.**
+
+### Reverse is expensive, not free
+
+`reverse_penalty: 2.5` makes reversing a last resort rather than a normal option. There is a
+hardware reason, and it is the best example in this course of the simulator earning its keep:
+
+!!! danger "The vehicle has no rear sensing"
+
+    The LiDAR faces forward. There is no rear camera and no rear bumper. Autonomous reverse is
+    therefore **blind**, relying entirely on costmap memory of what was seen while driving in.
+
+    In simulation that is free. On the real vehicle it is not.
+
+    **The twin surfaced a hardware requirement before the vehicle existed.** Track B must choose
+    one of: add rear sensing, hard-cap reverse distance and speed in firmware, or forbid
+    autonomous reverse on hardware. Until that is decided, autonomous reverse on the real car is
+    **unproven and must not be enabled by inheriting this configuration unchanged.**
+
+!!! warning "Both radius parameters are derived from unmeasured numbers"
+
+    `minimum_turning_radius` (planner) and `min_turning_radius` (controller) both come from
+    `0.63 / tan(22.5°) = 1.52 m`. **Neither the wheelbase nor the steering limit has been
+    measured.** When they are, both parameters must be re-derived together.
 
 Regulated Pure Pursuit is curvature-aware: it picks a lookahead point on the path and computes
 the steering that arcs toward it, regulating speed by curvature. That maps naturally onto a
@@ -164,7 +209,7 @@ Send goals from RViz's **2D Goal Pose**, in this order. Do not skip ahead.
 Goal 2 is the instructive one. A diff-drive robot spins in place and is done. Watch what
 MRider is *commanded* to do versus what it *can* do.
 
-### Part 4 — Measure, then decide about RPP
+### Part 4 — Measure what the closed decision bought
 
 ```bash
 ros2 topic echo /local_plan
@@ -179,7 +224,7 @@ ros2 topic echo /mitt/dbw/status     # what is actually being achieved?
 | Recovery behaviors triggered | *(count)* |
 | `spin` recoveries that accomplished nothing | *(count)* |
 
-**Apply ADR-SW2's trigger.** If cross-track error is persistent or infeasible commands appear
+**ADR-SW2 is closed, so this is verification rather than a decision.** If cross-track error is persistent or infeasible commands appear
 during turning tests, swap the controller to Regulated Pure Pursuit and re-run goals 1–5.
 
 | Metric | DWB | RPP |
@@ -214,8 +259,8 @@ Overshoot on a car-like vehicle usually is not a gain problem. Work through thes
 
 - [ ] Compute `R_min` for a 1.0 m wheelbase at ±22.5°. Does it fit in your lab?
 - [ ] Why can Nav2's `spin` recovery never work on MRider?
-- [ ] Why was DWB kept for bring-up despite being a poor kinematic fit?
-- [ ] What specific evidence triggers the swap to RPP? Did you see it?
+- [ ] Why were DWB and NavFn rejected on geometry rather than after a trial run?
+- [ ] Why was `allow_reversing: true` inert until the planner was swapped?
 - [ ] `robot_radius` is left at 0.1397 on a two-seater ride-on. Describe the first crash.
 
 ---
@@ -229,7 +274,7 @@ Overshoot on a car-like vehicle usually is not a gain problem. Work through thes
 5. **Non-holonomic** — move along heading, turn only while moving
 6. **`R_min = wheelbase / tan(22.5°)`** — do the arithmetic on screen
 7. **Three consequences** — infeasible paths, no in-place spin, reversing matters
-8. **ADR-SW2** — DWB now, RPP pre-registered with a trigger
+8. **ADR-SW2 (closed)** — RPP + SmacPlannerHybrid; why DWB and NavFn were rejected on geometry
 9. **What a good decision looks like** — naming the evidence that would change your mind
 10. **Regulated Pure Pursuit** — lookahead, curvature, speed regulation
 11. **Lab brief** — compute constraints first, then five goals

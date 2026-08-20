@@ -84,8 +84,11 @@ ADR in the linked document below.
   RC signal MUX is the **condition** on which the single-MCU architecture was adopted.
   → [safety.md](safety.md)
 - **Scope — semester 1 delivers a trustworthy DBW, a working twin, and an indoor SLAM map**,
-  evidenced by quantified accuracy numbers. Outdoor GNSS waypoints, the Learn course kit, and
-  behavior cloning are phase 2. → [software.md §8](software.md#8-semester-1-scope-and-software-acceptance-gates)
+  evidenced by quantified accuracy numbers. Outdoor GNSS waypoints and behavior cloning are
+  phase 2. **The Learn course kit is no longer deferred** — it is the reading spine of
+  [자율주행미들웨어응용](../course/index.md), taught Fall 2026, whose four student tracks build
+  the subsystems this scope leaves open.
+  → [software.md §8](software.md#8-semester-1-scope-and-software-acceptance-gates)
 
 ## Documents
 

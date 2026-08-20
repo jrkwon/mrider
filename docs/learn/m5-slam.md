@@ -14,9 +14,22 @@
 
 ### Odometry: counting your way to a position
 
-The drive encoder reports **52 pulses per revolution** of the motor shaft. Combined with the
-steering angle from M2's absolute sensor, a bicycle model integrates a trajectory: how far
-forward, at what heading rate, therefore where.
+The drive encoder reports some number of **pulses per revolution (PPR)** of the motor shaft.
+Combined with the steering angle from M2's absolute sensor, a bicycle model integrates a
+trajectory: how far forward, at what heading rate, therefore where.
+
+!!! danger "Do not inherit a PPR figure - measure it (finding F7)"
+
+    It is tempting to quote a number here. Resist it. The source project's firmware pins **52
+    PPR** while its own bill of materials lists a **16 PPR** motor - a factor-of-three
+    disagreement that nobody caught, because in simulation nothing complains.
+
+    [Finding F7](../design/adr-dbw-architecture-review.md) explicitly forbids inheriting either
+    value. **Measure PPR on the encoder actually fitted to your vehicle.**
+
+    This matters less than it looks, and that is the interesting part: the roll-out calibration
+    below is authoritative and bypasses PPR entirely. Which is precisely why it is done that
+    way.
 
 The conversion needs one constant, `meters_per_tick`, and MRider's calibration deliberately
 avoids deriving it from gear ratios
@@ -232,7 +245,7 @@ a broken map, name the subsystem.
 ## Slide outline
 
 1. **Hook** — show a good map and a doubled-wall map. Same room, same vehicle.
-2. **Odometry from 52 PPR** — ticks to meters
+2. **Odometry from measured PPR** — ticks to meters, and why the figure must not be inherited (F7)
 3. **Roll-out calibration** — measure the thing you want, not its ingredients
 4. **Three structural error sources** — backlash, slip, and the paralleled-motor problem
 5. **"Calibration bounds scale, the EKF bounds drift"**
