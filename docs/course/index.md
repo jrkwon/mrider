@@ -75,11 +75,14 @@ Individual labs run Weeks 1–5; team tracks run Weeks 6–16.
 | [1](weeks/w01.md) | 9/07 | Middleware, drive-by-wire, and the ROS 2 graph | [Lab 1](labs/lab1.md) |
 | [2](weeks/w02.md) | 9/14 | Nodes, topics, packages, launch | [Lab 2](labs/lab2.md) |
 | [3](weeks/w03.md) | 9/21 | Services, actions, parameters, QoS | [Lab 3](labs/lab3.md) |
-| 4 | 9/28 | Description to motion: URDF, TF2, Gazebo, `ros2_control` | [Lab 4](labs/lab4.md) |
-| 5 | 10/05 | ○ No meeting — Ackermann kinematics, self-study | [Lab 5](labs/lab5.md) |
-| 6–16 | 10/12 – 12/21 | Team tracks and the merge ladder | see [Teams](teams.md) |
+| [4](weeks/w04.md) | 9/28 | Description to motion: URDF, TF2, Gazebo, `ros2_control` | [Lab 4](labs/lab4.md) |
+| [5](weeks/w05.md) | 10/05 | ○ No meeting — Ackermann kinematics, self-study | [Lab 5](labs/lab5.md) |
+| [6](weeks/w06.md) | 10/12 | Odometry, sensor fusion, and **teams announced** | — |
+| [7](weeks/w07.md) | 10/19 | Embedded ROS 2: micro-ROS, Teensy, `hardware_interface` | — |
+| [8](weeks/w08.md) | 10/26 | Safety, authority, failsafe — **★ mid-semester presentation** | — |
+| 9–16 | 11/02 – 12/21 | Control, perception, SLAM, Nav2, then the merge ladder | see [Teams](teams.md) |
 
-Weekly notes for W4 onward are published as the semester progresses.
+Weekly notes for W9 onward are published as the semester progresses.
 
 ---
 

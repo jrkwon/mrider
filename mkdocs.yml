@@ -121,6 +121,11 @@ nav:
           - Week 1 — Middleware & the ROS 2 Graph: course/weeks/w01.md
           - Week 2 — Nodes, Topics, Packages: course/weeks/w02.md
           - Week 3 — Services, Parameters, QoS: course/weeks/w03.md
+          - Week 4 — Description to Motion: course/weeks/w04.md
+          - Week 5 — Self-Study Packet: course/weeks/w05.md
+          - Week 6 — Odometry, Fusion, and Teams: course/weeks/w06.md
+          - Week 7 — Embedded ROS 2: course/weeks/w07.md
+          - Week 8 — Safety & Mid-Semester Presentation: course/weeks/w08.md
   - Learn:
       - Overview: learn/index.md
       - M1 — Intro to MRider & ROS 2: learn/m1-ros2-intro.md

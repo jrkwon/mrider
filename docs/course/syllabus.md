@@ -120,14 +120,14 @@ Reading keys: **B** = *ROS 2: Zero to Robot* · **M** = [MRider learn module](..
 
 | W | Date | Lecture | Lab / team block | Due |
 |---|---|---|---|---|
-| 1 | **9/07** | Course intro. What middleware *is*. Drive-by-wire. The ROS 2 computation graph | [Lab 1](labs/lab1.md) — Environment; run the twin end to end | — |
-| 2 | **9/14** | Nodes, topics, messages. Packages, `colcon`, launch files | [Lab 2](labs/lab2.md) — Publisher/subscriber; drive the twin in a square | Lab 1 |
-| 3 | **9/21** | Services, actions, parameters. QoS. Command arbitration with `twist_mux` | [Lab 3](labs/lab3.md) — Parameterized speed governor; induce a QoS mismatch | Lab 2 |
-| 4 | **9/28** | Description to motion: URDF/Xacro, TF2, RViz, Gazebo, `ros2_control` | [Lab 4](labs/lab4.md) — Add a sensor link; break an extrinsic and diagnose it | Lab 3 |
-| **5** | **10/05** | ○ **NO MEETING** (개천절 대체공휴일) | **Self-study:** Ackermann kinematics. [Lab 5](labs/lab5.md) — measure turning radius against theory | Track preference form (10/9) |
-| 6 | **10/12** | Odometry and sensor fusion. The EKF | **Teams announced.** Kickoff and charter workshop | Lab 5 |
-| 7 | **10/19** | Embedded ROS 2: micro-ROS, the Teensy, `hardware_interface` | Track work | Team charters |
-| 8 | **10/26** | Safety: authority arbitration, failsafe matrices, FSMs | **★ MID-SEMESTER PRESENTATION** | Mid deliverable · peer eval |
+| [1](weeks/w01.md) | **9/07** | Course intro. What middleware *is*. Drive-by-wire. The ROS 2 computation graph | [Lab 1](labs/lab1.md) — Environment; run the twin end to end | — |
+| [2](weeks/w02.md) | **9/14** | Nodes, topics, messages. Packages, `colcon`, launch files | [Lab 2](labs/lab2.md) — Publisher/subscriber; drive the twin in a square | Lab 1 |
+| [3](weeks/w03.md) | **9/21** | Services, actions, parameters. QoS. Command arbitration with `twist_mux` | [Lab 3](labs/lab3.md) — Parameterized speed governor; induce a QoS mismatch | Lab 2 |
+| [4](weeks/w04.md) | **9/28** | Description to motion: URDF/Xacro, TF2, RViz, Gazebo, `ros2_control` | [Lab 4](labs/lab4.md) — Add a sensor link; break an extrinsic and diagnose it | Lab 3 |
+| [**5**](weeks/w05.md) | **10/05** | ○ **NO MEETING** (개천절 대체공휴일) | **Self-study:** Ackermann kinematics. [Lab 5](labs/lab5.md) — measure turning radius against theory | Track preference form (10/9) |
+| [6](weeks/w06.md) | **10/12** | Odometry and sensor fusion. The EKF | **Teams announced.** Kickoff and charter workshop | Lab 5 |
+| [7](weeks/w07.md) | **10/19** | Embedded ROS 2: micro-ROS, the Teensy, `hardware_interface` | Track work | Team charters |
+| [8](weeks/w08.md) | **10/26** | Safety: authority arbitration, failsafe matrices, FSMs | **★ MID-SEMESTER PRESENTATION** | Mid deliverable · peer eval |
 | 9 | **11/02** | Control: PID, pure pursuit, RPP, and the ±22.5° constraint | Track work | — |
 | 10 | **11/09** | Perception: camera and 2D LiDAR, intrinsics and extrinsics | Track work | Track milestone |
 | 11 | **11/16** | SLAM: `slam_toolbox`, loop closure, and how to read a bad map | **Merge 1 — Electrical + Chassis** | — |
