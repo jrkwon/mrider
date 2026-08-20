@@ -1,0 +1,354 @@
+/* @theme mrider */
+/*
+ * Marp theme for 자율주행미들웨어응용, Fall 2026.
+ *
+ * Structural port of the instructor's ECE-5831 deck: a title slide carrying the
+ * UM-Dearborn presenter block, bare-heading section dividers, `#` heading over
+ * bullet body for content, and an assignment slide ending in a Deliverables
+ * list.
+ *
+ * NOTE ON FIDELITY: the source deck was read through the Drive text export,
+ * which carries no fonts, colours, or master layouts. Type scale and spacing
+ * here are reconstructed; the palette is the official University of Michigan
+ * Blue/Maize, which is a defensible default rather than a match. To make this
+ * exact, drop the original deck at course/reference/template.pptx and its
+ * ppt/theme/theme1.xml gives the real typeface and colour values.
+ *
+ * Classes:
+ *   <!-- _class: title   -->  course title + presenter block
+ *   <!-- _class: section -->  section divider, heading only
+ *   <!-- _class: quote   -->  a single pulled-out statement
+ *   (no class)               standard content slide
+ */
+
+@import 'default';
+
+:root {
+  --um-blue: #00274c;
+  --um-maize: #ffcb05;
+  --ink: #16222e;
+  --muted: #5b6b7a;
+  --rule: #d7dee5;
+  --bg: #ffffff;
+  --code-bg: #f2f5f8;
+  --warn: #9a3412;
+}
+
+section {
+  width: 1280px;
+  height: 720px;
+  padding: 56px 72px 64px;
+  /* Marp's default theme centres content vertically, which on a heading-plus-
+     body slide leaves a large gap above the title and strands the content in
+     the middle. Anchor to the top so headings sit consistently across slides;
+     the .title/.section/.quote classes re-centre themselves explicitly. */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Helvetica Neue", Helvetica, Arial,
+               "Noto Sans KR", "Malgun Gothic", sans-serif;
+  font-size: 25px;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+}
+
+/* ---------- headings ---------------------------------------------------- */
+
+section h1 {
+  color: var(--um-blue);
+  font-size: 46px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+}
+
+/* The maize rule under the title is the one piece of visual identity that
+   carries across every slide, so it is on h1 rather than a separate element. */
+section h1::after {
+  content: "";
+  display: block;
+  width: 76px;
+  height: 5px;
+  margin-top: 18px;
+  background: var(--um-maize);
+  border-radius: 3px;
+}
+
+section h2 {
+  color: var(--um-blue);
+  font-size: 31px;
+  font-weight: 600;
+  margin: 26px 0 8px;
+}
+
+section h3 {
+  color: var(--muted);
+  font-size: 24px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin: 20px 0 6px;
+}
+
+/* ---------- body -------------------------------------------------------- */
+
+section ul,
+section ol {
+  margin: 18px 0 0;
+  padding-left: 1.15em;
+}
+
+section li {
+  margin-bottom: 0.5em;
+}
+
+section li::marker {
+  color: var(--um-maize);
+}
+
+section ul ul {
+  margin-top: 0.4em;
+}
+
+section ul ul > li {
+  color: var(--muted);
+  font-size: 0.88em;
+  margin-bottom: 0.3em;
+}
+
+section strong {
+  color: var(--um-blue);
+  font-weight: 700;
+}
+
+section em {
+  color: var(--warn);
+  font-style: normal;
+  font-weight: 600;
+}
+
+section a {
+  color: var(--um-blue);
+  text-decoration: underline;
+  text-decoration-color: var(--um-maize);
+  text-underline-offset: 3px;
+}
+
+/* ---------- code -------------------------------------------------------- */
+
+section code {
+  background: var(--code-bg);
+  color: var(--um-blue);
+  font-family: "SF Mono", "DejaVu Sans Mono", Menlo, Consolas, monospace;
+  font-size: 0.84em;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+section pre {
+  align-self: stretch;
+  background: var(--code-bg);
+  border-left: 4px solid var(--um-maize);
+  border-radius: 4px;
+  padding: 16px 20px;
+  margin: 18px 0 0;
+  font-size: 21px;
+  line-height: 1.45;
+  overflow-x: auto;
+}
+
+section pre code {
+  background: none;
+  padding: 0;
+  font-size: 1em;
+}
+
+/* ---------- tables ------------------------------------------------------ */
+
+section table {
+  /* As a flex item, `width: 100%` alone did not fill the text column - the
+     imported default theme blockifies tables. `display: table` + align-self
+     restores normal table sizing against the section's content box. */
+  display: table;
+  align-self: stretch;
+  border-collapse: collapse;
+  width: 100%;
+  margin: 20px 0 0;
+  font-size: 22px;
+}
+
+section th {
+  background: var(--um-blue);
+  color: #fff;
+  font-weight: 600;
+  text-align: left;
+  padding: 9px 14px;
+}
+
+section td {
+  border-bottom: 1px solid var(--rule);
+  padding: 9px 14px;
+  vertical-align: top;
+}
+
+section tbody tr:nth-child(even) td {
+  background: #f7f9fb;
+}
+
+/* ---------- blockquote -------------------------------------------------- */
+
+section blockquote {
+  border-left: 5px solid var(--um-maize);
+  margin: 22px 0 0;
+  padding: 4px 0 4px 22px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ---------- title slide ------------------------------------------------- */
+
+section.title {
+  background: var(--um-blue);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 72px 88px;
+}
+
+section.title h1 {
+  color: #fff;
+  font-size: 62px;
+  line-height: 1.1;
+  margin-bottom: 0;
+}
+
+section.title h1::after {
+  width: 108px;
+  height: 6px;
+  margin-top: 30px;
+}
+
+section.title h2 {
+  color: var(--um-maize);
+  font-size: 30px;
+  font-weight: 500;
+  margin: 26px 0 0;
+}
+
+/* The presenter block: name, title, department, institution - one per line,
+   matching the source deck's title slide. */
+section.title p {
+  color: #c9d6e2;
+  font-size: 22px;
+  line-height: 1.55;
+  margin: 46px 0 0;
+}
+
+section.title strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+section.title::after {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* ---------- section divider --------------------------------------------- */
+
+section.section {
+  background: var(--um-blue);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 88px;
+}
+
+section.section h1 {
+  color: #fff;
+  font-size: 54px;
+}
+
+section.section h1::after {
+  background: var(--um-maize);
+  width: 92px;
+}
+
+section.section p {
+  color: #c9d6e2;
+  font-size: 25px;
+  margin-top: 20px;
+  max-width: 24em;
+}
+
+section.section::after {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* ---------- pulled quote ------------------------------------------------ */
+
+section.quote {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  padding: 72px 132px;
+}
+
+section.quote blockquote {
+  border: none;
+  padding: 0;
+  color: var(--um-blue);
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+section.quote blockquote::before {
+  content: "";
+  display: block;
+  width: 76px;
+  height: 5px;
+  margin: 0 auto 34px;
+  background: var(--um-maize);
+  border-radius: 3px;
+}
+
+section.quote p {
+  color: var(--muted);
+  font-size: 22px;
+  margin-top: 30px;
+}
+
+/* ---------- page numbers ------------------------------------------------ */
+
+section::after {
+  color: var(--muted);
+  font-size: 17px;
+  right: 40px;
+  bottom: 26px;
+}
+
+/* Dense slides: opt in with <!-- _class: dense --> rather than letting content
+   silently overflow the 720px box. */
+section.dense {
+  font-size: 21px;
+}
+
+section.dense h1 {
+  font-size: 38px;
+}
+
+section.dense table {
+  font-size: 19px;
+}
+
+section.dense pre {
+  font-size: 18px;
+}
