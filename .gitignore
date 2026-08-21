@@ -32,3 +32,8 @@ ros2_ws/src/gz_ros2_control/
 
 # Marp PPTX output; the PDFs under docs/ are committed, these are not
 /course/dist/
+
+# Reference decks used only to inspect an existing theme.
+# This repo is public and deploys to GitHub Pages - committing a
+# lecture deck from another course would publish it.
+/course/reference/

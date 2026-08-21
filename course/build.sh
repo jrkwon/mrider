@@ -58,7 +58,17 @@ if [ "$(id -u)" = "0" ]; then
     export PUPPETEER_ARGS='["--no-sandbox","--disable-setuid-sandbox"]'
 fi
 
-marp_run() { npx --yes @marp-team/marp-cli@4 "$@"; }
+# Marp drives a headless Chromium via puppeteer, and it sometimes hangs at 0%
+# CPU without ever launching a browser - observed twice, both times while a
+# normal Chrome session was running. A hang is indistinguishable from a slow
+# render until you go looking, so cap it: 180 s is ~4x the slowest good run.
+# Override with MARP_TIMEOUT=<seconds> if a deck genuinely needs longer.
+MARP_TIMEOUT="${MARP_TIMEOUT:-180}"
+
+marp_run() {
+    timeout --kill-after=10s "$MARP_TIMEOUT" \
+        npx --yes @marp-team/marp-cli@4 "$@"
+}
 
 FAILED=()
 for deck in "${DECKS[@]}"; do
@@ -73,13 +83,19 @@ for deck in "${DECKS[@]}"; do
 
     if ! marp_run --theme "$THEME" --allow-local-files \
                   --pdf --output "${PDF_OUT}/${deck}.pdf" "$src" >/dev/null 2>&1; then
-        echo "FAILED (pdf)"; FAILED+=("$deck"); continue
+        rc=$?
+        [ "$rc" -ge 124 ] && echo "TIMED OUT after ${MARP_TIMEOUT}s (pdf)" \
+                          || echo "FAILED (pdf)"
+        FAILED+=("$deck"); continue
     fi
     printf 'pdf '
 
     if ! marp_run --theme "$THEME" --allow-local-files \
                   --pptx --output "${PPTX_OUT}/${deck}.pptx" "$src" >/dev/null 2>&1; then
-        echo "FAILED (pptx)"; FAILED+=("$deck"); continue
+        rc=$?
+        [ "$rc" -ge 124 ] && echo "TIMED OUT after ${MARP_TIMEOUT}s (pptx)" \
+                          || echo "FAILED (pptx)"
+        FAILED+=("$deck"); continue
     fi
     printf 'pptx '
 
@@ -99,6 +115,7 @@ echo "  PPTX -> ${PPTX_OUT}"
 if [ ${#FAILED[@]} -gt 0 ]; then
     echo
     echo "  ${#FAILED[@]} deck(s) failed: ${FAILED[*]}" >&2
+    echo "  A timeout usually means marp could not start headless Chromium." >&2
     echo "  Re-run one without output suppression to see why:" >&2
     echo "    npx @marp-team/marp-cli@4 --theme ${THEME} --pdf ${SRC}/${FAILED[0]}.md" >&2
     exit 1
