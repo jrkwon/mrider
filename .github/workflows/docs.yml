@@ -36,6 +36,11 @@ jobs:
       # --strict fails the build on broken internal links.
       - run: mkdocs build --strict
 
+      # ...but a link to a missing *heading* is only logged at INFO, and the
+      # build still exits 0. This repository has shipped three dead anchors that
+      # way. Deploy has `needs: build`, so failing here stops the publish.
+      - run: python3 scripts/check_anchors.py site
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
