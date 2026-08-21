@@ -55,8 +55,13 @@ bt_navigator:
     #
     # The stock Nav2 trees call Spin and BackUp in their recovery RoundRobin.
     # behavior_server below loads only the "wait" plugin, because a +/- 22.5 deg
-    # Ackermann car cannot spin in place and does not reverse. Loading the stock
-    # trees against that plugin list fails at BT parse time -
+    # Ackermann car cannot spin in place, and because a BLIND reverse is not an
+    # acceptable recovery reflex on a vehicle with no rear sensing. Note this is
+    # NOT the same as "does not reverse": since the 2026-08-09 planner swap the
+    # vehicle reverses freely along a PLANNED Reeds-Shepp path (allow_reversing
+    # is true below). Planned-against-a-costmap and blind-reflex are different
+    # things, and only the first is defensible here. Loading the stock trees
+    # against that plugin list fails at BT parse time -
     #
     #     Exception when loading BT: Action server spin not available
     #
@@ -95,19 +100,22 @@ controller_server:
     # circled.
     #
     # The cause is geometric, not a tuning accident. Minimum turning radius is
-    # 1.52 m, in-place rotation is impossible, and allow_reversing is false. A
-    # vehicle with those three properties cannot reduce a 0.75 m pose error: it
-    # can only loop past the goal at >= 1.52 m radius and try again. Asking for
-    # 0.25 m is asking it to parallel-park without reverse.
+    # 1.52 m, in-place rotation is impossible, and - AT THE TIME THIS WAS
+    # OBSERVED - allow_reversing was false. A vehicle with those three
+    # properties cannot reduce a 0.75 m pose error: it can only loop past the
+    # goal at >= 1.52 m radius and try again. Asking for 0.25 m is asking it to
+    # parallel-park without reverse.
     #
     # 0.6 m is roughly 40% of the turning radius and is achievable in one pass.
     # yaw 0.6 rad (~34 deg) likewise: heading at arrival is whatever the final
     # arc produced, and the car cannot trim it in place.
     #
-    # This is a workaround, not the fix. Precise pose arrival needs a
-    # kinematically-aware planner - SmacPlannerHybrid, already pre-registered
-    # as the next step in the ADR-SW2 note at the top of this file - and
-    # probably reverse, which is a hardware safety question (no rear sensing).
+    # This was written as a workaround, not the fix. Both halves of the fix
+    # have since landed (2026-08-09): SmacPlannerHybrid is now the planner, and
+    # allow_reversing is true. The tolerance has NOT been retightened, because
+    # nobody has re-measured how close the vehicle can now actually park. That
+    # is a real open item - if you tighten it, tighten it against a measurement,
+    # and remember reverse is still blind (no rear sensing).
     goal_checker:
       plugin: "nav2_controller::SimpleGoalChecker"
       xy_goal_tolerance: 0.6
@@ -299,9 +307,17 @@ behavior_server:
     global_frame: map
     robot_base_frame: base_link
     # "wait" is the ONLY recovery behavior. Spin and BackUp are deliberately
-    # absent: a non-holonomic car with a 1.52 m turning radius cannot spin in
-    # place, and it does not reverse (allow_reversing: false, plus there is no
-    # rear sensing). Recovery beyond clear-costmaps-and-wait is an operator
+    # absent, for two DIFFERENT reasons:
+    #
+    #   Spin   - a non-holonomic car with a 1.52 m turning radius has no
+    #            mechanism for rotating in place. It simply cannot.
+    #   BackUp - a blind reverse reflex, on a vehicle whose LiDAR faces forward
+    #            and which has no rear sensing at all.
+    #
+    # BackUp's exclusion is NOT because the vehicle cannot reverse. It can, and
+    # does: allow_reversing is true and the planner emits Reeds-Shepp paths with
+    # reversing segments. The distinction is planned-against-a-costmap versus
+    # blind-reflex. Recovery beyond clear-costmaps-and-wait is an operator
     # taking the RC sticks (docs/design/safety.md 1.2), not an autonomous
     # manoeuvre.
     #

@@ -128,10 +128,10 @@ Reading keys: **B** = *ROS 2: Zero to Robot* · **M** = [MRider learn module](..
 | [6](weeks/w06.md) | **10/12** | Odometry and sensor fusion. The EKF | **Teams announced.** Kickoff and charter workshop | Lab 5 |
 | [7](weeks/w07.md) | **10/19** | Embedded ROS 2: micro-ROS, the Teensy, `hardware_interface` | Track work | Team charters |
 | [8](weeks/w08.md) | **10/26** | Safety: authority arbitration, failsafe matrices, FSMs | **★ MID-SEMESTER PRESENTATION** | Mid deliverable · peer eval |
-| 9 | **11/02** | Control: PID, pure pursuit, RPP, and the ±22.5° constraint | Track work | — |
-| 10 | **11/09** | Perception: camera and 2D LiDAR, intrinsics and extrinsics | Track work | Track milestone |
-| 11 | **11/16** | SLAM: `slam_toolbox`, loop closure, and how to read a bad map | **Merge 1 — Electrical + Chassis** | — |
-| 12 | **11/23** | Nav2: costmaps, planners, behavior trees, lifecycle nodes | **Merge 2 — Simulation + Software** | — |
+| [9](weeks/w09.md) | **11/02** | Control: PID, pure pursuit, RPP, and the ±22.5° constraint | Track work | — |
+| [10](weeks/w10.md) | **11/09** | Perception: camera and 2D LiDAR, intrinsics and extrinsics | Track work | Track milestone |
+| [11](weeks/w11.md) | **11/16** | SLAM: `slam_toolbox`, loop closure, and how to read a bad map | **Merge 1 — Electrical + Chassis** | — |
+| [12](weeks/w12.md) | **11/23** | Nav2: costmaps, planners, behavior trees, lifecycle nodes | **Merge 2 — Simulation + Software** | — |
 | 13 | **11/30** | Simulation to reality: calibration, QoS/DDS, diagnostics, logging | **Merge 3 — (E+C) + Software** | — |
 | 14 | **12/07** | System architecture. Docker and CI. Reproducibility | **Merge 4 — full integration** | — |
 | 15 | **12/14** | Validation and failure analysis. Behavior cloning, previewed | Measure against the acceptance gates; dress rehearsal | Peer eval 2 |

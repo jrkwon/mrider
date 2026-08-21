@@ -126,6 +126,10 @@ nav:
           - Week 6 — Odometry, Fusion, and Teams: course/weeks/w06.md
           - Week 7 — Embedded ROS 2: course/weeks/w07.md
           - Week 8 — Safety & Mid-Semester Presentation: course/weeks/w08.md
+          - Week 9 — Control: course/weeks/w09.md
+          - Week 10 — Perception: course/weeks/w10.md
+          - Week 11 — SLAM & Merge 1: course/weeks/w11.md
+          - Week 12 — Nav2 & Merge 2: course/weeks/w12.md
   - Learn:
       - Overview: learn/index.md
       - M1 — Intro to MRider & ROS 2: learn/m1-ros2-intro.md

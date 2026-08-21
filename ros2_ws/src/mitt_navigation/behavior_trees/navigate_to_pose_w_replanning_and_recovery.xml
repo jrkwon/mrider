@@ -5,10 +5,16 @@
 
   WHY. MITT is an Ackermann vehicle with a +/- 22.5 deg steering limit and a
   1.52 m minimum turning radius (ADR-SW2). It physically cannot spin in place,
-  which is also why nav2_params.yaml sets use_rotate_to_heading: false. Reverse
-  is excluded separately: allow_reversing is false, and on the real vehicle
-  backing up blind is a safety question, not a recovery tactic - the LiDAR only
-  sees forward and there is no rear sensing (docs/design/sensors.md).
+  which is also why nav2_params.yaml sets use_rotate_to_heading: false.
+
+  BackUp is excluded for a DIFFERENT reason, and it is worth being precise: the
+  vehicle CAN reverse. Since the 2026-08-09 planner swap, allow_reversing is
+  true and SmacPlannerHybrid emits Reeds-Shepp paths containing reversing
+  segments - a goal 2.5 m directly behind was reached that way. What is excluded
+  is backing up BLIND as a recovery reflex: the LiDAR only sees forward and
+  there is no rear sensing (docs/design/sensors.md). Reversing along a path
+  planned against a costmap is not the same act as reversing because you are
+  stuck.
 
   The stock tree references both behaviors, so loading it against our
   behavior_server - which only loads the "wait" plugin - fails at BT parse time
