@@ -3,11 +3,12 @@
 From Week 6, the class splits into **four teams of six**, each owning one subsystem of MRider. Over
 Weeks 11–14 those subsystems merge, one pair at a time, into a working vehicle.
 
-!!! success "Every track's deliverable is something that does not exist yet"
-
-    These are not exercises. Each track owns a genuine hole in the repository — named in the design
-    documents, blocking a named acceptance gate. When the semester ends, MRider is further along
-    because of what you built, and the git history says who built it.
+> [!TIP]
+> **Every track's deliverable is something that does not exist yet**
+>
+> These are not exercises. Each track owns a genuine hole in the repository — named in the design
+> documents, blocking a named acceptance gate. When the semester ends, MRider is further along
+> because of what you built, and the git history says who built it.
 
 ---
 
@@ -83,12 +84,13 @@ And — this is the part that matters most — **the numbers.**
 | [Build step 2](../build/02-mechanical.md) validated | Draft, never run |
 | Calibration constants recorded | [calibration.md](../design/calibration.md) specifies the procedure |
 
-!!! warning "This track's output is everyone else's input"
-
-    The simulator currently runs on estimates derived from a vendor's marketing dimensions. Until
-    Chassis measures the real car, **the twin is fiction that happens to be plausible.** Software
-    cannot tune Nav2 for real geometry and Simulation cannot claim sim-to-real agreement until these
-    numbers land.
+> [!WARNING]
+> **This track's output is everyone else's input**
+>
+> The simulator currently runs on estimates derived from a vendor's marketing dimensions. Until
+> Chassis measures the real car, **the twin is fiction that happens to be plausible.** Software
+> cannot tune Nav2 for real geometry and Simulation cannot claim sim-to-real agreement until these
+> numbers land.
 
 **Good fit if** you like working with your hands, or want a track where careful, honest measurement —
 not code volume — is the skill being graded.
@@ -112,10 +114,10 @@ You are the track that decides whether anyone else's claim is true.
 | ROS build and test in CI | CI currently builds **documentation only** |
 | Sim/real agreement within 10% | An acceptance gate with no measurement behind it yet |
 
-!!! quote "The gap this track exists to close"
-
-    `mitt_controllers.yaml` carries the comment *"mitt_bringup checks the two agree at launch."*
-    **No such check exists.** Finding and closing gaps like that one is this track's actual job.
+> **The gap this track exists to close**
+>
+> `mitt_controllers.yaml` carries the comment *"mitt_bringup checks the two agree at launch."*
+> **No such check exists.** Finding and closing gaps like that one is this track's actual job.
 
 **Good fit if** you like testing, tooling, automation, or being the person who finds the thing
 everyone else assumed was fine. Highest leverage track in the course, and the least glamorous.
@@ -137,11 +139,12 @@ everyone else assumed was fine. Highest leverage track in the course, and the le
 | An RViz configuration | None ships; the runbook borrows Nav2's |
 | Nav2 retuned for measured geometry | Currently tuned for estimated geometry |
 
-!!! info "Why `mitt_hardware` is the keystone"
-
-    [ADR-SW4](../design/software.md) commits to one property: *the identical control stack runs in
-    simulation and on hardware, differing only in one plugin.* That plugin is `mitt_hardware`.
-    Without it, the twin is a demo. With it, the twin is a test rig. Merge 3 exists to prove it.
+> [!NOTE]
+> **Why `mitt_hardware` is the keystone**
+>
+> [ADR-SW4](../design/software.md) commits to one property: *the identical control stack runs in
+> simulation and on hardware, differing only in one plugin.* That plugin is `mitt_hardware`.
+> Without it, the twin is a demo. With it, the twin is a test rig. Merge 3 exists to prove it.
 
 **Good fit if** you want the deepest ROS 2 work. Most code, most C++, and the track most dependent on
 other teams delivering on time.
@@ -165,14 +168,15 @@ demonstration of a specific claim** — not a meeting, not a status update.
 | **14** | 12/07 | **all four** | Full stack on the vehicle — teleop, then a hallway map, then a Nav2 goal |
 | **15** | 12/14 | — | Measured against the acceptance gates in [software.md §8](../design/software.md) |
 
-!!! danger "A merge date cannot slip"
-
-    A merge that does not happen on its date blocks three other teams. This is why the schedule
-    front-loads: Merge 1 is in Week 11 and full integration is Week 14, leaving Week 15 entirely for
-    the things that go wrong. They will.
-
-    If your track is going to miss a merge, say so **at the Week 10 standup**, not on the day.
-    Announcing a slip early is professional. Discovering it at the merge is not.
+> [!CAUTION]
+> **A merge date cannot slip**
+>
+> A merge that does not happen on its date blocks three other teams. This is why the schedule
+> front-loads: Merge 1 is in Week 11 and full integration is Week 14, leaving Week 15 entirely for
+> the things that go wrong. They will.
+>
+> If your track is going to miss a merge, say so **at the Week 10 standup**, not on the day.
+> Announcing a slip early is professional. Discovering it at the merge is not.
 
 ---
 
@@ -212,10 +216,11 @@ leaves no commit.
 **Effect on grade:** peer evaluation can adjust your personal team-component grade by up to **±15%**.
 Consistent, evidenced under-contribution can reduce it further.
 
-!!! note "If your team has a problem"
-
-    Tell me at Week 8, not Week 15. At Week 8 there are seven weeks left and it is fixable. At Week
-    15 there is nothing I can do but adjust grades, which helps nobody build anything.
+> [!NOTE]
+> **If your team has a problem**
+>
+> Tell me at Week 8, not Week 15. At Week 8 there are seven weeks left and it is fixable. At Week
+> 15 there is nothing I can do but adjust grades, which helps nobody build anything.
 
 ---
 

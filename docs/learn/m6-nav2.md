@@ -45,13 +45,14 @@ Also required from M5's measurements: `wheelbase`, track, and wheel radius, whic
 bicycle-steering controller
 ([software.md §3.2](../design/software.md#32-ackermann-kinematic-parameters)).
 
-!!! danger "Every dimension you inherited is a placeholder"
-
-    B-MROVER's URDF mixes a simulation chassis (`chassis_length = 1.3 m`) with a controller
-    `wheelbase = 0.325 m`. Those are simulation artifacts, not measurements of anything. The
-    design doc says it plainly: treat **all** dimensions as placeholders until measured. The
-    one value consistent across three independent files — the **±22.5° steering range** — is
-    the only inherited number adopted as a design target.
+> [!CAUTION]
+> **Every dimension you inherited is a placeholder**
+>
+> B-MROVER's URDF mixes a simulation chassis (`chassis_length = 1.3 m`) with a controller
+> `wheelbase = 0.325 m`. Those are simulation artifacts, not measurements of anything. The
+> design doc says it plainly: treat **all** dimensions as placeholders until measured. The
+> one value consistent across three independent files — the **±22.5° steering range** — is
+> the only inherited number adopted as a design target.
 
 ### Non-holonomic is the whole lesson
 
@@ -80,12 +81,13 @@ Three consequences students meet immediately:
 
 ### ADR-SW2 — CLOSED 2026-08-09: RPP + SmacPlannerHybrid
 
-!!! success "This decision is settled. Here is how it was reached."
-
-    ADR-SW2 originally read *"DWB now, RPP pre-registered with a trigger."* It closed on
-    **2026-08-09**, and the outcome is more interesting than the original plan:
-    **DWB and NavFn were both dropped without a trial run**, rejected on geometry rather than
-    on measurement.
+> [!TIP]
+> **This decision is settled. Here is how it was reached.**
+>
+> ADR-SW2 originally read *"DWB now, RPP pre-registered with a trigger."* It closed on
+> **2026-08-09**, and the outcome is more interesting than the original plan:
+> **DWB and NavFn were both dropped without a trial run**, rejected on geometry rather than
+> on measurement.
 
 **The reasoning.** DWB (Dynamic Window Approach) is a diff-drive/omni-oriented local planner. It
 samples a velocity space that, at R_min = 1.52 m, is *mostly unreachable* for this vehicle — most
@@ -107,14 +109,15 @@ SmacPlannerHybrid searches in **(x, y, heading)** rather than (x, y), with Reeds
 bounded by the turning radius. It cannot produce a path the car cannot drive, because
 undrivable paths are not in its search space.
 
-!!! info "The two changes only work together"
-
-    `allow_reversing: true` was **inert** before the planner swap. RPP only reverses where the
-    *path* reverses, and NavFn never produced such a path. Enabling reversing on the controller
-    while keeping a planner that cannot express a reversing manoeuvre changes nothing at all.
-
-    This is worth internalising: a parameter that is switched on but has no effect looks exactly
-    like a parameter that is working.
+> [!NOTE]
+> **The two changes only work together**
+>
+> `allow_reversing: true` was **inert** before the planner swap. RPP only reverses where the
+> *path* reverses, and NavFn never produced such a path. Enabling reversing on the controller
+> while keeping a planner that cannot express a reversing manoeuvre changes nothing at all.
+>
+> This is worth internalising: a parameter that is switched on but has no effect looks exactly
+> like a parameter that is working.
 
 **Verified.** An 8.98 m traverse succeeded, stopping 0.44 m from the goal. Then the decisive test:
 a goal **2.5 m directly behind** the vehicle — geometrically impossible forward-only at a 1.6 m
@@ -126,23 +129,25 @@ arrived 0.40 m from the goal. **Before the swap, that manoeuvre had no solution 
 `reverse_penalty: 2.5` makes reversing a last resort rather than a normal option. There is a
 hardware reason, and it is the best example in this course of the simulator earning its keep:
 
-!!! danger "The vehicle has no rear sensing"
+> [!CAUTION]
+> **The vehicle has no rear sensing**
+>
+> The LiDAR faces forward. There is no rear camera and no rear bumper. Autonomous reverse is
+> therefore **blind**, relying entirely on costmap memory of what was seen while driving in.
+>
+> In simulation that is free. On the real vehicle it is not.
+>
+> **The twin surfaced a hardware requirement before the vehicle existed.** Track B must choose
+> one of: add rear sensing, hard-cap reverse distance and speed in firmware, or forbid
+> autonomous reverse on hardware. Until that is decided, autonomous reverse on the real car is
+> **unproven and must not be enabled by inheriting this configuration unchanged.**
 
-    The LiDAR faces forward. There is no rear camera and no rear bumper. Autonomous reverse is
-    therefore **blind**, relying entirely on costmap memory of what was seen while driving in.
-
-    In simulation that is free. On the real vehicle it is not.
-
-    **The twin surfaced a hardware requirement before the vehicle existed.** Track B must choose
-    one of: add rear sensing, hard-cap reverse distance and speed in firmware, or forbid
-    autonomous reverse on hardware. Until that is decided, autonomous reverse on the real car is
-    **unproven and must not be enabled by inheriting this configuration unchanged.**
-
-!!! warning "Both radius parameters are derived from unmeasured numbers"
-
-    `minimum_turning_radius` (planner) and `min_turning_radius` (controller) both come from
-    `0.63 / tan(22.5°) = 1.52 m`. **Neither the wheelbase nor the steering limit has been
-    measured.** When they are, both parameters must be re-derived together.
+> [!WARNING]
+> **Both radius parameters are derived from unmeasured numbers**
+>
+> `minimum_turning_radius` (planner) and `min_turning_radius` (controller) both come from
+> `0.63 / tan(22.5°) = 1.52 m`. **Neither the wheelbase nor the steering limit has been
+> measured.** When they are, both parameters must be re-derived together.
 
 Regulated Pure Pursuit is curvature-aware: it picks a lookahead point on the path and computes
 the steering that arcs toward it, regulating speed by curvature. That maps naturally onto a
@@ -158,11 +163,12 @@ controller to reduce overshoot on turns.
 **Prerequisites:** a saved map from M5, and the M3 safety protocol in force — operator on the
 RC transmitter, spotter on the E-stop, walking pace, clear area.
 
-!!! danger "Autonomy is the lowest authority in the ladder"
-
-    Nav2 driving does not change the M3 rules. The RC transmitter preempts it through both
-    override layers — including the hardware MUX, which does not depend on firmware.
-    Nobody stands in the planned path to "see what it does."
+> [!CAUTION]
+> **Autonomy is the lowest authority in the ladder**
+>
+> Nav2 driving does not change the M3 rules. The RC transmitter preempts it through both
+> override layers — including the hardware MUX, which does not depend on firmware.
+> Nobody stands in the planned path to "see what it does."
 
 ### Part 1 — Compute your constraints before you configure
 

@@ -200,11 +200,12 @@ untouched — the absolute column sensor remains the authority.
 [ADR-SW2](software.md#adr-sw2-nav2-local-controller-for-ackermann) pre-registers Regulated Pure
 Pursuit:
 
-!!! info "E4 trigger (pre-registered)"
-
-    **If, at the end of [bring-up Stage 1](safety.md#6-bring-up-protocol-staged-wheels-off-first),
-    the Nano loop cannot hold ≤ 1° steady-state error with no sustained oscillation, adopt E4
-    rather than continuing to tune.** Firmware tuning is unbounded work; this bounds it.
+> [!NOTE]
+> **E4 trigger (pre-registered)**
+>
+> **If, at the end of [bring-up Stage 1](safety.md#6-bring-up-protocol-staged-wheels-off-first),
+> the Nano loop cannot hold ≤ 1° steady-state error with no sustained oscillation, adopt E4
+> rather than continuing to tune.** Firmware tuning is unbounded work; this bounds it.
 
 **Verify before adoption** (none of this could be checked from the repository):
 
@@ -260,14 +261,15 @@ Laptop (ROS 2 Humble) ──USB serial──▶ micro-ROS agent
 
 The peripheral question is settled: **everything fits with spare capacity.**
 
-!!! warning "Transport constraint — verify before committing"
-
-    The official `micro_ros_arduino` package provides **USB serial transports only**; native
-    Ethernet is not offered out of the box and would require a custom transport implementation.
-    So the laptop↔Teensy link is a USB serial link — the same fragility class as the Nano link
-    already covered by [failsafe matrix row 2](safety.md#2-failsafe-matrix), except that under
-    D3 **that link now also carries the steering setpoint**, which it does not today. Also
-    confirm a `micro_ros_arduino` release exists for **Humble** specifically.
+> [!WARNING]
+> **Transport constraint — verify before committing**
+>
+> The official `micro_ros_arduino` package provides **USB serial transports only**; native
+> Ethernet is not offered out of the box and would require a custom transport implementation.
+> So the laptop↔Teensy link is a USB serial link — the same fragility class as the Nano link
+> already covered by [failsafe matrix row 2](safety.md#2-failsafe-matrix), except that under
+> D3 **that link now also carries the steering setpoint**, which it does not today. Also
+> confirm a `micro_ros_arduino` release exists for **Humble** specifically.
 
 ### 4.3 What it deletes
 
@@ -291,21 +293,22 @@ for steering, PX4 for throttle) cannot share one bus. With a single controller t
 master, so the rejection's premise is gone and packetized serial would give exact, high-rate
 actuation on both channels, closing §5 cleanly.
 
-!!! failure "Retracted 2026-08-08 — this claimed benefit does not survive the override design"
-
-    Packetized serial was adopted on this reasoning and then **reverted**. Every available RC
-    signal multiplexer — [Pololu 2806](https://www.pololu.com/product/2806), Acroname RxMux,
-    ServoCity — switches **servo pulses**, and none can select between a serial packet stream
-    and RC PWM. The Sabertooth's input mode is fixed by DIP switches, so it is in one mode or
-    the other.
-
-    **Packetized serial and the §4.5 hardware RC MUX are mutually exclusive**, and the MUX is
-    the condition on which D3 was adopted. R/C PWM mode stands, and **§5 therefore remains
-    open** rather than being closed by D3.
-
-    This is a caution about the review's own method: §4.3 counts what a topology change
-    *deletes*, but a deletion is only real once the replacement hardware is specified. Two of
-    the eight rows in that table were contingent on parts nobody had chosen yet.
+> [!CAUTION]
+> **Retracted 2026-08-08 — this claimed benefit does not survive the override design**
+>
+> Packetized serial was adopted on this reasoning and then **reverted**. Every available RC
+> signal multiplexer — [Pololu 2806](https://www.pololu.com/product/2806), Acroname RxMux,
+> ServoCity — switches **servo pulses**, and none can select between a serial packet stream
+> and RC PWM. The Sabertooth's input mode is fixed by DIP switches, so it is in one mode or
+> the other.
+>
+> **Packetized serial and the §4.5 hardware RC MUX are mutually exclusive**, and the MUX is
+> the condition on which D3 was adopted. R/C PWM mode stands, and **§5 therefore remains
+> open** rather than being closed by D3.
+>
+> This is a caution about the review's own method: §4.3 counts what a topology change
+> *deletes*, but a deletion is only real once the replacement hardware is specified. Two of
+> the eight rows in that table were contingent on parts nobody had chosen yet.
 
 ### 4.4 What it costs
 
@@ -449,16 +452,17 @@ one of:**
 Whichever is chosen, add the output frame rate to the numeric interface contract, and measure
 it at [bring-up Stage 1](safety.md#6-bring-up-protocol-staged-wheels-off-first).
 
-!!! warning "Status 2026-08-08 — still open, and option 2 is now unavailable"
-
-    D3 briefly appeared to close this: single-master packetized serial (option 2) removes the
-    R/C frame-rate ceiling outright. That was adopted and then **retracted** (§4.3) — packetized
-    serial cannot coexist with the hardware RC signal MUX that D3's adoption is conditional on.
-
-    **Options 1 and 3 remain.** [dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)
-    now carries the decision, and [§12](dbw.md#12-numeric-interface-contract) records the rate as
-    *measure and pin at Stage 1* rather than asserting a number — which is the honest state, and
-    the one thing this section insisted on from the start.
+> [!WARNING]
+> **Status 2026-08-08 — still open, and option 2 is now unavailable**
+>
+> D3 briefly appeared to close this: single-master packetized serial (option 2) removes the
+> R/C frame-rate ceiling outright. That was adopted and then **retracted** (§4.3) — packetized
+> serial cannot coexist with the hardware RC signal MUX that D3's adoption is conditional on.
+>
+> **Options 1 and 3 remain.** [dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)
+> now carries the decision, and [§12](dbw.md#12-numeric-interface-contract) records the rate as
+> *measure and pin at Stage 1* rather than asserting a number — which is the honest state, and
+> the one thing this section insisted on from the start.
 
 ---
 

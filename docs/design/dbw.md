@@ -38,9 +38,10 @@ The **NEW** row is the one genuinely new control problem. mrover has no steering
 
 The stock steering column is mechanically linked to the front wheels but has **no servo** — it is turned by hand (or, on RC models, by a stock DC gearmotor driven by the parent remote). MRider drives the column with a **DC gearmotor equipped with an incremental encoder**, coupled to the existing steering linkage, and driven by **Sabertooth 2x32 channel 1 (M1 output)**.
 
-!!! note "M1/M2 assignment — intentional departure (resolves finding F6)"
-
-    mrover assigns **M1 = throttle, M2 = steering** (`vehicle_setup.md:51-52`). MRider inverts this: **M1 = steering, M2 = throttle**, consistently across this document, [architecture.md](architecture.md), and §11.3. The swap is deliberate — steering is the channel with the tighter loop and it is kept on channel 1 throughout the documentation set for teachability — and it is recorded here so that anyone reusing an mrover harness or 3D-printed enclosure routing knows the wiring differs.
+> [!NOTE]
+> **M1/M2 assignment — intentional departure (resolves finding F6)**
+>
+> mrover assigns **M1 = throttle, M2 = steering** (`vehicle_setup.md:51-52`). MRider inverts this: **M1 = steering, M2 = throttle**, consistently across this document, [architecture.md](architecture.md), and §11.3. The swap is deliberate — steering is the channel with the tighter loop and it is kept on channel 1 throughout the documentation set for teachability — and it is recorded here so that anyone reusing an mrover harness or 3D-printed enclosure routing knows the wiring differs.
 
 The gearmotor is sized from a measured column torque (§2.2) with a **≥2× margin**. If a suitable geared DC motor with the required torque and a shaft encoder cannot be sourced, the fallback is a **12 V automotive wiper motor** (high stall torque, built-in worm gearing that resists back-driving) with an external encoder or an absolute sensor on the column — see §2.4.
 
@@ -95,9 +96,10 @@ laptop  /mitt/dbw/command  (DbwCommand, steering_angle in rad)
 - **E3 — close the loop inside PX4** (custom PX4 module). Moot under D3; retained in the record as rejected — PX4 C++ module work, hardest to teach, couples the controller to PX4 release churn.
 - **E4 — dedicated closed-loop motion-controller hardware** (Kangaroo x2 class). **Pre-registered fallback**, not primary: it adds a part and replaces the project's best teaching artifact with a self-tuning black box. See [adr §3.5](adr-dbw-architecture-review.md#35-new-option-e4-dedicated-closed-loop-motion-controller) for the full trade and the verification checklist.
 
-!!! info "E4 trigger (pre-registered)"
-
-    **If, at the end of [bring-up Stage 1](safety.md#6-bring-up-protocol-staged-wheels-off-first), the Teensy loop cannot hold ≤ 1° steady-state error with no sustained oscillation, adopt E4 rather than continuing to tune.** Firmware tuning is unbounded work; this bounds it.
+> [!NOTE]
+> **E4 trigger (pre-registered)**
+>
+> **If, at the end of [bring-up Stage 1](safety.md#6-bring-up-protocol-staged-wheels-off-first), the Teensy loop cannot hold ≤ 1° steady-state error with no sustained oscillation, adopt E4 rather than continuing to tune.** Firmware tuning is unbounded work; this bounds it.
 
 **Rationale.** The one genuinely new control problem is placed in the layer that solves it best: a dedicated MCU with direct, deterministic access to the sensor and the motor driver. It also doubles as the honest core of the education tier ("here is a position controller you can read in 100 lines of C") — and since mrover has no position loop at all (finding F2), there is no prior implementation for students to read instead.
 
@@ -114,15 +116,16 @@ laptop  /mitt/dbw/command  (DbwCommand, steering_angle in rad)
 | S1 | Teensy PWM (via MUX) | RC receiver (via MUX) | M1 | steering gearmotor |
 | S2 | Teensy PWM (via MUX) | RC receiver (via MUX) | M2 | drive motors (paralleled) |
 
-!!! danger "This ADR was briefly decided the other way. The reversal is the instructive part."
-
-    D3 removes the two-master constraint that originally ruled out **packetized serial** (Nano owned steering, PX4 owned throttle, and two masters cannot share an addressed bus). With one controller that objection dissolves, so packetized serial was adopted — it gives exact, high-rate commands and closes the actuation-rate problem in §12.
-
-    **It was reverted when the override hardware was specified.** Every available RC signal multiplexer — [Pololu 2806](https://www.pololu.com/product/2806), Acroname RxMux, ServoCity — multiplexes **servo pulses**. None can select between a *serial packet stream* and RC PWM, and the Sabertooth's input mode is fixed by DIP switches, so it is in one mode or the other.
-
-    **Packetized serial and the hardware RC MUX are mutually exclusive.** The MUX is the condition on which D3 was adopted ([§11.2](#112-hardware-rc-signal-mux-the-d3-condition)); packetized serial is an optimisation. The safety layer wins.
-
-    The general lesson: **a decision that is correct in isolation can be invalidated by a downstream part choice.** Specify the safety-critical hardware early enough that it can constrain the decisions above it.
+> [!CAUTION]
+> **This ADR was briefly decided the other way. The reversal is the instructive part.**
+>
+> D3 removes the two-master constraint that originally ruled out **packetized serial** (Nano owned steering, PX4 owned throttle, and two masters cannot share an addressed bus). With one controller that objection dissolves, so packetized serial was adopted — it gives exact, high-rate commands and closes the actuation-rate problem in §12.
+>
+> **It was reverted when the override hardware was specified.** Every available RC signal multiplexer — [Pololu 2806](https://www.pololu.com/product/2806), Acroname RxMux, ServoCity — multiplexes **servo pulses**. None can select between a *serial packet stream* and RC PWM, and the Sabertooth's input mode is fixed by DIP switches, so it is in one mode or the other.
+>
+> **Packetized serial and the hardware RC MUX are mutually exclusive.** The MUX is the condition on which D3 was adopted ([§11.2](#112-hardware-rc-signal-mux-the-d3-condition)); packetized serial is an optimisation. The safety layer wins.
+>
+> The general lesson: **a decision that is correct in isolation can be invalidated by a downstream part choice.** Specify the safety-critical hardware early enough that it can constrain the decisions above it.
 
 **Alternatives considered.**
 
@@ -137,16 +140,17 @@ laptop  /mitt/dbw/command  (DbwCommand, steering_angle in rad)
 - Signal grounds between Teensy, RC receiver, signal MUX, and Sabertooth must be star-tied at the Sabertooth ([architecture.md](architecture.md) power tree).
 - **The actuation frame-rate ceiling returns as an open question** — see §12 and the warning below. This is the real cost of the reversal, and it is *not* resolved by assertion.
 
-!!! warning "Open: pin the actuation frame rate at bring-up"
-
-    A standard servo frame is ~20 ms (**~50 Hz**), and with the stock Arduino `Servo` library that is what the Sabertooth would receive — so *actuation bandwidth*, not loop rate, would set the closed-loop ceiling. The Sabertooth 2x32 datasheet does **not** state a maximum accepted R/C input rate.
-
-    **Measure it at [Stage 1](safety.md#6-bring-up-protocol-staged-wheels-off-first)** and pin one of:
-
-    1. Emit pulses faster than 50 Hz and verify the Sabertooth tracks them — best outcome; record the highest rate that works.
-    2. Accept ~50 Hz actuation and **restate the ≥200 Hz figure in §12 as a sampling/estimation rate, not an actuation rate.** Honest, and probably adequate at ≤ walking speed against a ≤1° / 400 ms target.
-
-    Do not leave it unstated — that omission is exactly what capped the superseded design's performance invisibly.
+> [!WARNING]
+> **Open: pin the actuation frame rate at bring-up**
+>
+> A standard servo frame is ~20 ms (**~50 Hz**), and with the stock Arduino `Servo` library that is what the Sabertooth would receive — so *actuation bandwidth*, not loop rate, would set the closed-loop ceiling. The Sabertooth 2x32 datasheet does **not** state a maximum accepted R/C input rate.
+>
+> **Measure it at [Stage 1](safety.md#6-bring-up-protocol-staged-wheels-off-first)** and pin one of:
+>
+> 1. Emit pulses faster than 50 Hz and verify the Sabertooth tracks them — best outcome; record the highest rate that works.
+> 2. Accept ~50 Hz actuation and **restate the ≥200 Hz figure in §12 as a sampling/estimation rate, not an actuation rate.** Honest, and probably adequate at ≤ walking speed against a ≤1° / 400 ms target.
+>
+> Do not leave it unstated — that omission is exactly what capped the superseded design's performance invisibly.
 
 ---
 
@@ -174,9 +178,10 @@ Panel 2 is the part that is easy to get wrong in the shop. The magnet is **bonde
 
 **Decision.** Use an **AS5600-class absolute magnetic rotary encoder** (I²C, 12-bit, contactless), mounted on a shaft whose **total travel stays within one turn** — which, given the load-side mounting of ADR B, is the road-wheel/kingpin axis at **±22.5°**. **Fall back to a single-turn conductive-plastic potentiometer** if no shaft with ≤ 340° of travel is mechanically accessible for a magnet mount.
 
-!!! danger "Bench gate — measure before ordering"
-
-    **Measure the actual lock-to-lock travel of every candidate mounting shaft on the delivered vehicle before committing.** The magnetic encoder is single-turn (0–360° absolute): if the shaft it is on rotates past one turn, it wraps and silently loses absolute meaning — the exact failure class ADR B exists to eliminate. Record the measured travel in [calibration.md](calibration.md). Budget for either part; they are within a few dollars of each other.
+> [!CAUTION]
+> **Bench gate — measure before ordering**
+>
+> **Measure the actual lock-to-lock travel of every candidate mounting shaft on the delivered vehicle before committing.** The magnetic encoder is single-turn (0–360° absolute): if the shaft it is on rotates past one turn, it wraps and silently loses absolute meaning — the exact failure class ADR B exists to eliminate. Record the measured travel in [calibration.md](calibration.md). Budget for either part; they are within a few dollars of each other.
 
 **Alternatives considered.**
 
@@ -207,9 +212,10 @@ Paralleling is acceptable because the two motors are mechanically coupled throug
 
 Panel 1 is the asymmetry worth staring at: **one motor is instrumented and the other is not**, and because both are paralleled onto a single channel there is no differential and no independent control. Panel 3 is the honest consequence — the measurement is taken *upstream* of backlash, slip and the speed difference between inner and outer wheels in a turn. Each of those biases raw odometry, which is precisely why it is fused rather than trusted.
 
-!!! note "PPR is unverified — resolves finding F7"
-
-    mrover's firmware pins **52 PPR** (`code.ino:27`) while its own BOM lists a **16 PPR** encoder motor (`Note/overview.md` BOM row 2). The conflict is inside the source project, so the number cannot be inherited safely. **Verify PPR on the encoder actually fitted** and record it in [calibration.md](calibration.md). The [roll-out calibration](calibration.md#2-drive-distance-encoder-ticksmeters) is authoritative and bypasses PPR entirely, so the *result* is safe either way — but do not treat 52 as a fact.
+> [!NOTE]
+> **PPR is unverified — resolves finding F7**
+>
+> mrover's firmware pins **52 PPR** (`code.ino:27`) while its own BOM lists a **16 PPR** encoder motor (`Note/overview.md` BOM row 2). The conflict is inside the source project, so the number cannot be inherited safely. **Verify PPR on the encoder actually fitted** and record it in [calibration.md](calibration.md). The [roll-out calibration](calibration.md#2-drive-distance-encoder-ticksmeters) is authoritative and bypasses PPR entirely, so the *result* is safe either way — but do not treat 52 as a fact.
 
 **Alternatives considered.**
 
@@ -227,13 +233,14 @@ Panel 1 is the asymmetry worth staring at: **one motor is instrumented and the o
 - **Toolchain:** PlatformIO with the Teensy platform. Firmware lives in `firmware/mitt_dbw/`.
 - **ROS 2 transport:** `micro_ros_arduino`, USB serial, with `micro_ros_agent` on the laptop.
 
-!!! warning "Verify before firmware work"
-
-    - [x] **Verified 2026-08-08.** `micro_ros_arduino` **v2.0.8-humble** (published 2025-09-30) is the current Humble release, and **Teensy 4.1 is listed as Supported** (min version v1.8.5) in the upstream support table. Pin this tag.
-    - [x] **Verified 2026-08-08.** The upstream README states *"Only USB serial transports are provided"*, and Known Issues notes transports still need refactoring for pluggability. An Ethernet *example* sketch exists but is not an official transport. **USB serial is accepted.**
-    - [ ] **This link now carries the steering setpoint**, which the superseded design's USB link did not. Re-analyse it against [failsafe matrix row 2](safety.md#2-failsafe-matrix), and measure session stability at Stage 0.
-
-    **If no Humble release exists**, the fallback is a framed **binary** protocol with CRC and sequence numbers over the same USB serial link — never unframed ASCII. This keeps every architectural gain of D3 except typed-message convenience.
+> [!WARNING]
+> **Verify before firmware work**
+>
+> - [x] **Verified 2026-08-08.** `micro_ros_arduino` **v2.0.8-humble** (published 2025-09-30) is the current Humble release, and **Teensy 4.1 is listed as Supported** (min version v1.8.5) in the upstream support table. Pin this tag.
+> - [x] **Verified 2026-08-08.** The upstream README states *"Only USB serial transports are provided"*, and Known Issues notes transports still need refactoring for pluggability. An Ethernet *example* sketch exists but is not an official transport. **USB serial is accepted.**
+> - [ ] **This link now carries the steering setpoint**, which the superseded design's USB link did not. Re-analyse it against [failsafe matrix row 2](safety.md#2-failsafe-matrix), and measure session stability at Stage 0.
+>
+> **If no Humble release exists**, the fallback is a framed **binary** protocol with CRC and sequence numbers over the same USB serial link — never unframed ASCII. This keeps every architectural gain of D3 except typed-message convenience.
 
 - **Version pinning:** pin the exact `micro_ros_arduino` release, PlatformIO platform version, and Teensyduino version in [software.md](software.md) so results reproduce. Do not float on `main`. This obligation is heavier than it was under PX4 — see the consequence recorded in [adr §4.6](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07): the platform's replication claim now rests on MRider's own measured bring-up numbers rather than on an upstream autopilot's provenance.
 
@@ -314,9 +321,10 @@ The stock parent-remote receiver and the Sabertooth **cannot both drive the moto
 
 ### 11.2 Hardware RC signal MUX — the D3 condition
 
-!!! danger "Not optional"
-
-    D3's adoption is **conditional** on this. Under a single controller, one MCU otherwise holds the steering loop, the throttle output, RC override, and arming — a firmware hang loses all four at once. The layered override is what makes that objection answerable, and it must be built.
+> [!CAUTION]
+> **Not optional**
+>
+> D3's adoption is **conditional** on this. Under a single controller, one MCU otherwise holds the steering loop, the throttle output, RC override, and arming — a firmware hang loses all four at once. The layered override is what makes that objection answerable, and it must be built.
 
 **Layer 1 (normal): SBUS into the Teensy.** RC override in `MANUAL_RC` mode commands an *angle*, with the position loop still closed behind it. This is the everyday manual mode and it is better than raw effort.
 
@@ -332,20 +340,21 @@ The stock parent-remote receiver and the Sabertooth **cannot both drive the moto
 | Signal type | **RC servo pulses only** | This is what forced §4 back to R/C PWM mode |
 | `FAILMODE` jumper | Disconnected → master stays in control on `SEL` loss. Connected → outputs go low and stay low | Directly implements "choose the failsafe direction deliberately" |
 
-!!! danger "FAILMODE — decide this deliberately, and record it"
-
-    **Recommended: jumper disconnected (master retains control).** Rationale: losing the `SEL`
-    signal means the RC link is gone, and the Teensy already has its own RC-loss failsafe —
-    [row 3](safety.md#2-failsafe-matrix) drops it to `ESTOP`. Leaving the Teensy in control lets
-    that defined behaviour run.
-
-    The alternative (outputs low) also stops the vehicle, via the Sabertooth's signal-loss
-    timeout, but it does so by removing *all* control rather than by executing a designed
-    response — and it makes an RC dropout indistinguishable from a controller failure.
-
-    **Verify both behaviours at Stage 2** before choosing, and write the chosen jumper state
-    into the as-built record. A jumper is a one-bit safety decision that is invisible six months
-    later.
+> [!CAUTION]
+> **FAILMODE — decide this deliberately, and record it**
+>
+> **Recommended: jumper disconnected (master retains control).** Rationale: losing the `SEL`
+> signal means the RC link is gone, and the Teensy already has its own RC-loss failsafe —
+> [row 3](safety.md#2-failsafe-matrix) drops it to `ESTOP`. Leaving the Teensy in control lets
+> that defined behaviour run.
+>
+> The alternative (outputs low) also stops the vehicle, via the Sabertooth's signal-loss
+> timeout, but it does so by removing *all* control rather than by executing a designed
+> response — and it makes an RC dropout indistinguishable from a controller failure.
+>
+> **Verify both behaviours at Stage 2** before choosing, and write the chosen jumper state
+> into the as-built record. A jumper is a one-bit safety decision that is invisible six months
+> later.
 
 **The trade, stated plainly.** Through Layer 2 the override commands raw **effort**, open-loop — not an angle. That is a behavioral change from Layer 1 and from the superseded design, and it must be re-analysed rather than assumed. It is nonetheless exactly what mrover does in normal operation (finding F2), and it is acceptable for an emergency mode.
 

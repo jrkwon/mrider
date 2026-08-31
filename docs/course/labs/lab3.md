@@ -144,18 +144,19 @@ Answer in your submission:
    authentication. Name two reasons this pattern is unacceptable as a real safety mechanism on a
    vehicle.
 
-!!! danger "Why question 2 matters more than the code"
-
-    This node looks like a safety system. It is not one, for the same reason `twist_mux` is not one —
-    and the MRider design documents are careful to say so out loud.
-
-    Read the comment at the top of `mitt_control/config/twist_mux.yaml`: real authority on this
-    vehicle is **electrical and layered** — a hardware E-stop, a relay MUX that defaults to stock
-    steering, a hardware RC signal MUX, and SBUS override. **Three of those four work with the
-    software completely dead.**
-
-    Software that presents itself as a safety system, and then fails silently when its process dies,
-    is worse than no software at all — because people trust it.
+> [!CAUTION]
+> **Why question 2 matters more than the code**
+>
+> This node looks like a safety system. It is not one, for the same reason `twist_mux` is not one —
+> and the MRider design documents are careful to say so out loud.
+>
+> Read the comment at the top of `mitt_control/config/twist_mux.yaml`: real authority on this
+> vehicle is **electrical and layered** — a hardware E-stop, a relay MUX that defaults to stock
+> steering, a hardware RC signal MUX, and SBUS override. **Three of those four work with the
+> software completely dead.**
+>
+> Software that presents itself as a safety system, and then fails silently when its process dies,
+> is worse than no software at all — because people trust it.
 
 ---
 
@@ -193,14 +194,15 @@ data: hello
 
 Both nodes were running the whole time, on the correct topic, with the correct message type.
 
-!!! danger "The rule, and why it is not symmetric"
-
-    A **RELIABLE** publisher can satisfy a **BEST_EFFORT** subscriber — reliable delivery is a
-    stronger promise than best-effort requires. The reverse is not true: a best-effort publisher
-    cannot satisfy a subscriber that demands reliability, so they never connect.
-
-    Sensor streams are typically best-effort: a dropped LiDAR scan is less harmful than a delayed
-    one. Commands and state are typically reliable.
+> [!CAUTION]
+> **The rule, and why it is not symmetric**
+>
+> A **RELIABLE** publisher can satisfy a **BEST_EFFORT** subscriber — reliable delivery is a
+> stronger promise than best-effort requires. The reverse is not true: a best-effort publisher
+> cannot satisfy a subscriber that demands reliability, so they never connect.
+>
+> Sensor streams are typically best-effort: a dropped LiDAR scan is less harmful than a delayed
+> one. Commands and state are typically reliable.
 
 Check what the real system uses:
 

@@ -11,19 +11,21 @@ rail isolation and default-to-stock behavior before energizing anything downstre
 - **Expected outcome:** harness continuity-checked; relay defaults to STOCK; E-stop cuts
   traction power only.
 
-!!! warning "Draft — not yet validated on hardware"
+> [!WARNING]
+> **Draft — not yet validated on hardware**
+>
+> This wiring plan is derived from the
+> [architecture.md power tree](../design/architecture.md#5-power-tree-and-safetyauthority-chain)
+> and [safety.md](../design/safety.md). It has **not** been built. Fuse values, wire gauges,
+> and relay contact ratings depend on the stall currents you measured in step 2 and are
+> marked *(measure during bring-up)*.
 
-    This wiring plan is derived from the
-    [architecture.md power tree](../design/architecture.md#5-power-tree-and-safetyauthority-chain)
-    and [safety.md](../design/safety.md). It has **not** been built. Fuse values, wire gauges,
-    and relay contact ratings depend on the stall currents you measured in step 2 and are
-    marked *(measure during bring-up)*.
-
-!!! danger "This is the step where mistakes become dangerous"
-
-    Everything before this was mechanical. From here the vehicle can move under power. Wire
-    the E-stop and the MUX **first**, verify default-to-STOCK **before** energizing the
-    Sabertooth, and keep the vehicle wheels-off until step 7.
+> [!CAUTION]
+> **This is the step where mistakes become dangerous**
+>
+> Everything before this was mechanical. From here the vehicle can move under power. Wire
+> the E-stop and the MUX **first**, verify default-to-STOCK **before** energizing the
+> Sabertooth, and keep the vehicle wheels-off until step 7.
 
 ---
 
@@ -55,26 +57,28 @@ Laptop ──▶ its own internal battery (NOT wired to traction in v1)
 | **Traction / motor** | Sabertooth B+, M1 (steering gearmotor), M2 (drive motors) | E-stop pressed, MUX drops, pack disconnected |
 | **Isolated logic** | Teensy, angle sensor, RC receiver, signal MUX, Sabertooth signal logic, MUX coil driver | Logic battery disconnected only |
 
-!!! danger "The logic rail is now a separate battery, not a tap off the pack"
+> [!CAUTION]
+> **The logic rail is now a separate battery, not a tap off the pack**
+>
+> The superseded design got logic isolation from the Pixhawk's PM02 power module. **That
+> part is deleted**, so the isolation must be built explicitly — a dedicated 12 V battery and
+> DC-DC, from day one, not as a retrofit
+> ([safety.md §5](../design/safety.md#5-power-rail-isolation-and-brownout-protection)).
+>
+> This matters more than it did before. The Teensy holds the **entire** safety supervisor —
+> the position loop, throttle shaping, the staleness watchdog, SBUS decode, arming. A reset
+> mid-drive loses every firmware-layer protection at once (FMEA row 4, severity 5). There is
+> no second controller to survive it.
 
-    The superseded design got logic isolation from the Pixhawk's PM02 power module. **That
-    part is deleted**, so the isolation must be built explicitly — a dedicated 12 V battery and
-    DC-DC, from day one, not as a retrofit
-    ([safety.md §5](../design/safety.md#5-power-rail-isolation-and-brownout-protection)).
-
-    This matters more than it did before. The Teensy holds the **entire** safety supervisor —
-    the position loop, throttle shaping, the staleness watchdog, SBUS decode, arming. A reset
-    mid-drive loses every firmware-layer protection at once (FMEA row 4, severity 5). There is
-    no second controller to survive it.
-
-!!! info "The steering gearmotor is on the traction rail — deliberately"
-
-    [safety.md §4.1](../design/safety.md#4-steering-motor-power-rail-assignment-and-power-loss-behavior-pinned)
-    pins this. The consequence is that **E-stop de-energizes the steering motor and the
-    column freewheels**. That is the intended, analyzed behavior — acceptable at ≤ walking
-    speed with an operator alongside. Putting the steering motor on the logic rail would risk
-    browning out the Teensy on a steering stall, and would leave a live actuator after an
-    emergency stop. Do not "improve" this.
+> [!NOTE]
+> **The steering gearmotor is on the traction rail — deliberately**
+>
+> [safety.md §4.1](../design/safety.md#4-steering-motor-power-rail-assignment-and-power-loss-behavior-pinned)
+> pins this. The consequence is that **E-stop de-energizes the steering motor and the
+> column freewheels**. That is the intended, analyzed behavior — acceptable at ≤ walking
+> speed with an operator alongside. Putting the steering motor on the logic rail would risk
+> browning out the Teensy on a steering stall, and would leave a live actuator after an
+> emergency stop. Do not "improve" this.
 
 **Brownout isolation is the point of the split.** Motor stalls sag the traction rail. The
 logic rail must not follow. Use adequate hold-up capacitance and put the undervoltage monitor
@@ -94,13 +98,14 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 | Logic rail → Teensy / sensor / RC RX / signal MUX | < 1 A typical | — | 1–2 A | 22–24 AWG |
 | MUX coil circuit | per relay coil spec | — | *(size to coil)* | 22 AWG |
 
-!!! danger "Verify paralleled drive-motor stall current against 32 A/channel"
-
-    This is [FMEA row 7](../design/safety.md#7-fmea-lightweight) and an explicit cross-check
-    in [dbw.md §13](../design/dbw.md#13-cross-checks-and-open-follow-ups). If the two
-    paralleled rear motors can exceed 32 A stalled, you must either current-limit in the
-    Sabertooth configuration or select lower-draw motors. Measure it — a locked-rotor test
-    with a clamp meter and a current-limited supply — do not assume.
+> [!CAUTION]
+> **Verify paralleled drive-motor stall current against 32 A/channel**
+>
+> This is [FMEA row 7](../design/safety.md#7-fmea-lightweight) and an explicit cross-check
+> in [dbw.md §13](../design/dbw.md#13-cross-checks-and-open-follow-ups). If the two
+> paralleled rear motors can exceed 32 A stalled, you must either current-limit in the
+> Sabertooth configuration or select lower-draw motors. Measure it — a locked-rotor test
+> with a clamp meter and a current-limited supply — do not assume.
 
 ## 3.3 The three taps
 
@@ -139,12 +144,13 @@ two things at once:
 - Drive the coils from the **logic** rail through a logic-level MOSFET/transistor, so any
   logic-rail collapse drops the coil.
 
-!!! note "Default de-energized = STOCK is the whole safety story"
-
-    Every failure direction leads back to the factory-controlled vehicle: E-stop, logic
-    brownout, a pulled connector, a dead Teensy. If you wire the relays inverted — energize for
-    STOCK — you invert the entire failsafe analysis in
-    [safety.md](../design/safety.md). Check this twice.
+> [!NOTE]
+> **Default de-energized = STOCK is the whole safety story**
+>
+> Every failure direction leads back to the factory-controlled vehicle: E-stop, logic
+> brownout, a pulled connector, a dead Teensy. If you wire the relays inverted — energize for
+> STOCK — you invert the entire failsafe analysis in
+> [safety.md](../design/safety.md). Check this twice.
 
 ## 3.5 Signal wiring
 
@@ -158,17 +164,18 @@ Set the DIP switches for R/C mode before wiring — consult the Sabertooth manua
 | S1 | Teensy PWM (via MUX) | RC receiver (via MUX) | M1 — steering gearmotor |
 | S2 | Teensy PWM (via MUX) | RC receiver (via MUX) | M2 — drive motors, paralleled |
 
-!!! info "Why not packetized serial?"
-
-    Single-master packetized serial was briefly adopted — it gives exact, high-rate commands
-    and would close the actuation-rate question outright. It was **reverted** because every
-    available RC signal multiplexer switches *servo pulses*, and none can select between a
-    serial stream and RC PWM. Packetized serial and the RC signal MUX are mutually exclusive,
-    and the MUX is the condition D3 was adopted on. See
-    [dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters).
-
-    The consolation: in R/C mode the Sabertooth's **signal-loss timeout is inherent** — motors
-    stop when pulses stop, with nothing to configure.
+> [!NOTE]
+> **Why not packetized serial?**
+>
+> Single-master packetized serial was briefly adopted — it gives exact, high-rate commands
+> and would close the actuation-rate question outright. It was **reverted** because every
+> available RC signal multiplexer switches *servo pulses*, and none can select between a
+> serial stream and RC PWM. Packetized serial and the RC signal MUX are mutually exclusive,
+> and the MUX is the condition D3 was adopted on. See
+> [dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters).
+>
+> The consolation: in R/C mode the Sabertooth's **signal-loss timeout is inherent** — motors
+> stop when pulses stop, with nothing to configure.
 
 **Signal connections to make:**
 
@@ -184,24 +191,26 @@ Set the DIP switches for R/C mode before wiring — consult the Sabertooth manua
 | Signal MUX outputs ×2 | Sabertooth **S1** and **S2** | Whichever source the MUX selects |
 | Teensy **USB** | Laptop | micro-ROS — carries **command *and* feedback** |
 
-!!! danger "Give the Teensy USB a direct laptop port, not a hub"
-
-    This single link carries the steering setpoint as well as the feedback. A dropout removes
-    the setpoint and drops the vehicle to `ESTOP`
-    ([failsafe row 2](../design/safety.md#2-failsafe-matrix)). That is the safe behavior, but a
-    flaky cable or a marginal hub becomes a vehicle that stops repeatedly. Use a good cable and
-    a direct port, and log 30 minutes of session stability at
-    [bring-up Stage 0](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first).
+> [!CAUTION]
+> **Give the Teensy USB a direct laptop port, not a hub**
+>
+> This single link carries the steering setpoint as well as the feedback. A dropout removes
+> the setpoint and drops the vehicle to `ESTOP`
+> ([failsafe row 2](../design/safety.md#2-failsafe-matrix)). That is the safe behavior, but a
+> flaky cable or a marginal hub becomes a vehicle that stops repeatedly. Use a good cable and
+> a direct port, and log 30 minutes of session stability at
+> [bring-up Stage 0](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first).
 
 ### 3.5.1 Hardware RC signal MUX — wire this, it is not optional
 
-!!! danger "This is the condition on which the architecture was adopted"
-
-    D3 concentrates the steering loop, throttle, override, and arming on one MCU. The
-    justification for accepting that is that override is a **wiring property**, not a firmware
-    property ([safety.md §1.2](../design/safety.md#12-live-override-inside-dbw-mode-two-layers)).
-    A build without this MUX has no independent override and does not match the safety analysis
-    the design was approved against.
+> [!CAUTION]
+> **This is the condition on which the architecture was adopted**
+>
+> D3 concentrates the steering loop, throttle, override, and arming on one MCU. The
+> justification for accepting that is that override is a **wiring property**, not a firmware
+> property ([safety.md §1.2](../design/safety.md#12-live-override-inside-dbw-mode-two-layers)).
+> A build without this MUX has no independent override and does not match the safety analysis
+> the design was approved against.
 
 The MUX sits **between the Teensy and the Sabertooth**, selecting which source reaches the
 motor driver:
@@ -221,13 +230,14 @@ RC channel ──────────┘  (select: A = normal, B = emergency
   the Teensy deliberately halted** — held in reset or unplugged. A safety claim you have not
   tested with the component dead is not a safety claim.
 
-!!! danger "Star-ground at the Sabertooth"
-
-    Tie the signal grounds of the Teensy, the RC receiver, the signal MUX, and the Sabertooth to
-    a **single** point at the Sabertooth. This is
-    [FMEA row 5](../design/safety.md#7-fmea-lightweight) — a ground loop between logic and a
-    24 V power stage produces erratic motor commands that are extremely hard to diagnose later,
-    because they look like a firmware bug.
+> [!CAUTION]
+> **Star-ground at the Sabertooth**
+>
+> Tie the signal grounds of the Teensy, the RC receiver, the signal MUX, and the Sabertooth to
+> a **single** point at the Sabertooth. This is
+> [FMEA row 5](../design/safety.md#7-fmea-lightweight) — a ground loop between logic and a
+> 24 V power stage produces erratic motor commands that are extremely hard to diagnose later,
+> because they look like a firmware bug.
 
 ## 3.6 Continuity and isolation checks — before any power
 
@@ -275,13 +285,14 @@ wheels off the ground regardless.
 | E-stop latches until manual reset | latched | *(record)* | ☐ |
 | 10× repeat, no chatter | consistent | *(record)* | ☐ |
 
-!!! note "Relay welding is the one failure the MUX cannot self-protect against"
-
-    [FMEA row 8](../design/safety.md#7-fmea-lightweight) rates a welded-closed MUX relay as
-    severity 5 — you cannot revert to STOCK, and DBW is stuck live. The mitigation is that
-    the **E-stop cuts traction power independently of the MUX**, so it remains authoritative
-    even then. This is why the E-stop must be in the power path and not merely commanding the
-    coil. Use an adequately rated contactor and check the contacts during every bring-up.
+> [!NOTE]
+> **Relay welding is the one failure the MUX cannot self-protect against**
+>
+> [FMEA row 8](../design/safety.md#7-fmea-lightweight) rates a welded-closed MUX relay as
+> severity 5 — you cannot revert to STOCK, and DBW is stuck live. The mitigation is that
+> the **E-stop cuts traction power independently of the MUX**, so it remains authoritative
+> even then. This is why the E-stop must be in the power path and not merely commanding the
+> coil. Use an adequately rated contactor and check the contacts during every bring-up.
 
 ## 3.8 First power-on of the traction rail
 

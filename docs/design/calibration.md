@@ -12,13 +12,14 @@ Store all calibration artifacts under `config/calibration/` in the repo, one fil
 
 The absolute angle sensor (AS5600-class magnetic, mounted **load-side**; potentiometer as the fallback — [dbw.md §6](dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer)) reports raw counts; the Teensy and ROS 2 need **radians**, with `0` = wheels straight. Working range is **±22.5°** (±0.3927 rad) at the road wheels ([dbw.md §12](dbw.md#12-numeric-interface-contract)).
 
-!!! danger "Do this before anything else: the wrap check"
-
-    Rotate the sensed shaft through its **full mechanical travel** and confirm the raw reading
-    is **monotonic with no discontinuity**. The AS5600 is single-turn absolute — a wrap means
-    a garbage angle feeding a position loop that drives a motor (FMEA row 2, severity 5). If
-    it wraps, the sensor is on the wrong shaft: move it load-side or switch to the pot
-    fallback. **Record the measured travel here.**
+> [!CAUTION]
+> **Do this before anything else: the wrap check**
+>
+> Rotate the sensed shaft through its **full mechanical travel** and confirm the raw reading
+> is **monotonic with no discontinuity**. The AS5600 is single-turn absolute — a wrap means
+> a garbage angle feeding a position loop that drives a motor (FMEA row 2, severity 5). If
+> it wraps, the sensor is on the wrong shaft: move it load-side or switch to the pot
+> fallback. **Record the measured travel here.**
 
 ### 1.1 Find mechanical center (zero)
 
@@ -114,13 +115,14 @@ The IMU is a **standalone BNO085-class module connected directly to the laptop**
 ([sensors.md §3](sensors.md#3-imu)), publishing `sensor_msgs/Imu` on `/imu/data` into
 `robot_localization`.
 
-!!! info "Revised 2026-08-07"
-
-    This procedure was previously QGroundControl-based, because the IMU lived inside the
-    Pixhawk. [D3](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07) removed the
-    Pixhawk, so calibration is now an in-repo procedure with no external ground-station tool.
-    The **estimator is unchanged** — it was always `robot_localization`, with PX4 supplying
-    raw IMU only (finding F11).
+> [!NOTE]
+> **Revised 2026-08-07**
+>
+> This procedure was previously QGroundControl-based, because the IMU lived inside the
+> Pixhawk. [D3](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07) removed the
+> Pixhawk, so calibration is now an in-repo procedure with no external ground-station tool.
+> The **estimator is unchanged** — it was always `robot_localization`, with PX4 supplying
+> raw IMU only (finding F11).
 
 1. **Onboard fusion calibration:** a BNO085-class part self-calibrates its accel/gyro/mag in
    the background and reports a **calibration-status byte per sensor**. Drive the sequence the
@@ -150,14 +152,15 @@ closed 20 m figure-8 and confirm heading error ≤ 5° (this is also an
 Odometry, LiDAR, camera, and IMU must share a common time base or the EKF/SLAM fuses stale
 data.
 
-!!! success "This got simpler under D3"
-
-    The superseded design had **two clocks** — the laptop and PX4 boot-time microseconds — and
-    required estimating a constant offset plus drift between them via MAVLink
-    `TIMESYNC`/`SYSTEM_TIME` round-trips. That machinery is gone. **micro-ROS provides session
-    time synchronisation**, so the Teensy stamps in a clock already related to the laptop's,
-    and every other sensor is physically connected to the laptop. One clock domain, no offset
-    estimation.
+> [!TIP]
+> **This got simpler under D3**
+>
+> The superseded design had **two clocks** — the laptop and PX4 boot-time microseconds — and
+> required estimating a constant offset plus drift between them via MAVLink
+> `TIMESYNC`/`SYSTEM_TIME` round-trips. That machinery is gone. **micro-ROS provides session
+> time synchronisation**, so the Teensy stamps in a clock already related to the laptop's,
+> and every other sensor is physically connected to the laptop. One clock domain, no offset
+> estimation.
 
 **Approach (pinned):**
 

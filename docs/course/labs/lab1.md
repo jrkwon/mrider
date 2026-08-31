@@ -13,15 +13,16 @@ that will otherwise waste an evening of your time later in the semester.
 | **Reading** | [M1 — Intro to MRider & ROS 2](../../learn/m1-ros2-intro.md) |
 | **Reference** | [Running the Digital Twin](../../run-the-twin.md) |
 
-!!! tip "Open four terminals now"
-
-    You will need them. In **every single one**, before anything else:
-
-    ```bash
-    cd ~/mrider/ros2_ws && source setup_env.sh
-    ```
-
-    Every terminal. Every time. Part 5 shows you what happens when you forget.
+> [!TIP]
+> **Open four terminals now**
+>
+> You will need them. In **every single one**, before anything else:
+>
+> ```bash
+> cd ~/mrider/ros2_ws && source setup_env.sh
+> ```
+>
+> Every terminal. Every time. Part 5 shows you what happens when you forget.
 
 ---
 
@@ -88,11 +89,12 @@ name='ackermann_steering_controller', state='active'
 Both must say `active`. If they do not, see [§10 of the setup guide](../environment.md#10-troubleshooting)
 — the two usual causes are CycloneDDS and the Fortress/Harmonic package mix-up.
 
-!!! warning "One simulator at a time"
-
-    If you launch a second `sim.launch.py` without stopping the first, both publish `/clock` and
-    `/scan`, and the two interleave. The result looks like a physics bug and is not one. Always
-    `Ctrl-C` Terminal 1 before relaunching, and check with `pgrep -a "gz sim"`.
+> [!WARNING]
+> **One simulator at a time**
+>
+> If you launch a second `sim.launch.py` without stopping the first, both publish `/clock` and
+> `/scan`, and the two interleave. The result looks like a physics bug and is not one. Always
+> `Ctrl-C` Terminal 1 before relaunching, and check with `pgrep -a "gz sim"`.
 
 ---
 
@@ -133,16 +135,17 @@ Answer these in your submission, from what you observed — not from guessing:
    publish?
 3. What is the message *type* on `/ackermann_steering_controller/reference_unstamped`?
 
-!!! info "The answer to question 2 is the interesting one"
-
-    That node is `twist_mux`, and it arbitrates. `/cmd_vel_joy` has priority **100**; `/cmd_vel`,
-    which is where the navigation stack's output arrives, has priority **10**. A human at the sticks
-    outranks the autonomy.
-
-    Read the comment at the top of `ros2_ws/src/mitt_control/config/twist_mux.yaml`. It is careful to
-    say that this is **not** the safety authority on the real vehicle — that authority is electrical
-    and layered, and three of its four layers work with the software completely dead. Software that
-    presents itself as a safety system when it is not is worse than no software.
+> [!NOTE]
+> **The answer to question 2 is the interesting one**
+>
+> That node is `twist_mux`, and it arbitrates. `/cmd_vel_joy` has priority **100**; `/cmd_vel`,
+> which is where the navigation stack's output arrives, has priority **10**. A human at the sticks
+> outranks the autonomy.
+>
+> Read the comment at the top of `ros2_ws/src/mitt_control/config/twist_mux.yaml`. It is careful to
+> say that this is **not** the safety authority on the real vehicle — that authority is electrical
+> and layered, and three of its four layers work with the software completely dead. Software that
+> presents itself as a safety system when it is not is worse than no software.
 
 ---
 
@@ -224,34 +227,37 @@ Write down, in your own words:
 - Why it happened.
 - Why this failure mode is **more dangerous** than a crash.
 
-!!! danger "Why this specific break, in week one"
+> [!CAUTION]
+> **Why this specific break, in week one**
+>
+> ROS 2 nodes find each other automatically, and `ROS_DOMAIN_ID` partitions who can see whom. Set
+> it differently in two terminals and they are on separate networks as far as ROS is concerned.
+>
+> There is **no error**. Exit code zero. Nothing on stderr. Nothing in any log. Your system looks
+> dead while running perfectly, and every instinct you have — restart it, rebuild it, check the
+> code — is aimed at the wrong place.
+>
+> A crash hands you a stack trace and a line number. This hands you nothing, and that is precisely
+> what makes it expensive. Learn to recognise the shape of it now: **when something is invisible
+> rather than broken, suspect the environment before you suspect the code.**
 
-    ROS 2 nodes find each other automatically, and `ROS_DOMAIN_ID` partitions who can see whom. Set
-    it differently in two terminals and they are on separate networks as far as ROS is concerned.
+> [!WARNING]
+> **This one is not hypothetical for this class**
+>
+> Twenty-four students on one classroom network, all at the default domain, is twenty-four robots
+> in one namespace. Your `/cmd_vel_joy` reaches everyone's vehicle. Set your assigned
+> `ROS_DOMAIN_ID` in `~/.bashrc` and confirm it with `echo $ROS_DOMAIN_ID` — this is the mechanism
+> that keeps your work yours.
 
-    There is **no error**. Exit code zero. Nothing on stderr. Nothing in any log. Your system looks
-    dead while running perfectly, and every instinct you have — restart it, rebuild it, check the
-    code — is aimed at the wrong place.
-
-    A crash hands you a stack trace and a line number. This hands you nothing, and that is precisely
-    what makes it expensive. Learn to recognise the shape of it now: **when something is invisible
-    rather than broken, suspect the environment before you suspect the code.**
-
-!!! warning "This one is not hypothetical for this class"
-
-    Twenty-four students on one classroom network, all at the default domain, is twenty-four robots
-    in one namespace. Your `/cmd_vel_joy` reaches everyone's vehicle. Set your assigned
-    `ROS_DOMAIN_ID` in `~/.bashrc` and confirm it with `echo $ROS_DOMAIN_ID` — this is the mechanism
-    that keeps your work yours.
-
-!!! note "Why `--no-daemon` matters here"
-
-    Without it, the `ros2` CLI asks a long-running background daemon that was started under your
-    *original* environment, so it happily answers from a cached graph and the break appears not to
-    happen. `--no-daemon` forces a fresh discovery in the current environment.
-
-    Worth remembering as a debugging habit in its own right: if `ros2 topic list` disagrees with what
-    you believe is running, add `--no-daemon` before you believe either of them.
+> [!NOTE]
+> **Why `--no-daemon` matters here**
+>
+> Without it, the `ros2` CLI asks a long-running background daemon that was started under your
+> *original* environment, so it happily answers from a cached graph and the break appears not to
+> happen. `--no-daemon` forces a fresh discovery in the current environment.
+>
+> Worth remembering as a debugging habit in its own right: if `ros2 topic list` disagrees with what
+> you believe is running, add `--no-daemon` before you believe either of them.
 
 ---
 

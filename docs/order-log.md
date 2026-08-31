@@ -11,11 +11,12 @@ caused a rebuild is exactly the entry the next person needs.
 - **How to buy it, substitution rules, connector lists:** [build/01](build/01-bom-sourcing.md)
 - **This page:** what you actually ordered
 
-!!! note "Currency"
-
-    BOM estimates are **USD, August 2026**. Record the **amount you actually paid in the
-    currency you paid it in**, and put the USD equivalent in brackets so the totals still
-    reconcile — e.g. `₩229,000 ($165)`.
+> [!NOTE]
+> **Currency**
+>
+> BOM estimates are **USD, August 2026**. Record the **amount you actually paid in the
+> currency you paid it in**, and put the USD equivalent in brackets so the totals still
+> reconcile — e.g. `₩229,000 ($165)`.
 
 ---
 
@@ -81,109 +82,115 @@ vendor's own estimate, not a promise.
 commodities in Korea and specifying a part number here would be inventing precision. Search
 the named vendor and record what you actually buy.
 
-!!! info "#3 Sabertooth — Korean options priced 2026-08-12, and why the 2x12 is not the saving it looks like"
+> [!NOTE]
+> **#3 Sabertooth — Korean options priced 2026-08-12, and why the 2x12 is not the saving it looks like**
+>
+> | Option | Cont / peak per channel | Price seen | Source |
+> |---|---|---|---|
+> | **2x12** (DFRobot `DRI0003`) | 12 A / 25 A | **₩154,900 ex-VAT → ₩170,390 inc-VAT** | Devicemart [1065967](https://www.devicemart.co.kr/goods/view?no=1065967), own stock |
+> | 2x5 (`DRI0012`) | 5 A / 10 A | ₩114,370 | Devicemart via Digi-Key — **품절** |
+> | 2x12 (`DRI0003`) | 12 A / 25 A | ₩181,550 | Devicemart via Digi-Key — **품절** |
+> | 2x25 (`DRI0004`) | 25 A / 50 A | ₩284,520 | Devicemart via Digi-Key — **품절** |
+> | **2x32** | 32 A / 64 A | **$124.99** + intl shipping | [Dimension Engineering](https://www.dimensionengineering.com/products/sabertooth2x32) — **no Korean source found** |
+>
+> **There is no 2x32 in the Korean channel.** Devicemart lists 2x5 / 2x12 / 2x25 through the
+> Digi-Key feed and all three read 품절; only its own 2x12 is stocked.
+>
+> **The 2x12 is roughly the same money as importing a 2x32.** ₩170,390 is about $120 at
+> ₩1,400/USD; the 2x32 lands near $150–165 with international shipping. Paying ~$30–45 more
+> buys **2.7× the continuous rating** — on the one parameter this project has explicitly
+> failed to measure. The 2x25 via Digi-Key is out of stock *and* ₩284,520 (~$205), i.e. more
+> than the bigger part.
+>
+> Check the **de minimis** before assuming customs cost: Korea clears US-origin goods under
+> 목록통관 at a higher threshold than general imports, and Dimension Engineering ships from
+> Ohio, so a single $125 board plausibly arrives with no duty or import VAT. Verify current
+> thresholds at order time and record what you actually paid.
+>
+> All Sabertooth variants support **R/C input** — the 2x12 is not disqualified on
+> architecture, only on headroom.
 
-    | Option | Cont / peak per channel | Price seen | Source |
-    |---|---|---|---|
-    | **2x12** (DFRobot `DRI0003`) | 12 A / 25 A | **₩154,900 ex-VAT → ₩170,390 inc-VAT** | Devicemart [1065967](https://www.devicemart.co.kr/goods/view?no=1065967), own stock |
-    | 2x5 (`DRI0012`) | 5 A / 10 A | ₩114,370 | Devicemart via Digi-Key — **품절** |
-    | 2x12 (`DRI0003`) | 12 A / 25 A | ₩181,550 | Devicemart via Digi-Key — **품절** |
-    | 2x25 (`DRI0004`) | 25 A / 50 A | ₩284,520 | Devicemart via Digi-Key — **품절** |
-    | **2x32** | 32 A / 64 A | **$124.99** + intl shipping | [Dimension Engineering](https://www.dimensionengineering.com/products/sabertooth2x32) — **no Korean source found** |
+> [!WARNING]
+> **#3 Sabertooth is the only true import, and it is worth checking the local markup**
+>
+> Not stocked at Eleparts. Dimension Engineering sells direct at **$124.99** and ships
+> internationally. Before importing, note what the Pololu MUX shows: Eleparts lists it at
+> ~₩42,400 inc-VAT against **$17.95** direct — roughly a 70% markup, which is still often
+> worth paying to avoid customs handling on a small order.
+>
+> For the Sabertooth, check RobotShop / Generation Robots / DFRobot as alternates, and
+> compare landed cost including **customs and 부가세 on import** before assuming direct is
+> cheaper.
 
-    **There is no 2x32 in the Korean channel.** Devicemart lists 2x5 / 2x12 / 2x25 through the
-    Digi-Key feed and all three read 품절; only its own 2x12 is stocked.
+> [!CAUTION]
+> **#6 is only half orderable — the shaft adapter is gated, and the BOM hides this**
+>
+> The encoder itself (**5 mm bore**) can be bought now. The **3.15 → 5 mm adapter cannot**:
+> that 3.15 mm is *B-MROVER's* motor shaft, inherited along with the method
+> ([dbw.md §8](design/dbw.md#8-adr-c-drive-distance-encoding)), and the Defender's drive-motor
+> shaft has never been measured.
+>
+> Order the encoder with Batch A, and treat the adapter as a **Batch B** item alongside the
+> other measure-first parts — or buy an assortment of adapter sleeves, which is a few
+> thousand won and removes the dependency entirely.
+>
+> Add the motor-shaft diameter to the M3 measurement form when you tear the vehicle down.
 
-    **The 2x12 is roughly the same money as importing a 2x32.** ₩170,390 is about $120 at
-    ₩1,400/USD; the 2x32 lands near $150–165 with international shipping. Paying ~$30–45 more
-    buys **2.7× the continuous rating** — on the one parameter this project has explicitly
-    failed to measure. The 2x25 via Digi-Key is out of stock *and* ₩284,520 (~$205), i.e. more
-    than the bigger part.
+> [!NOTE]
+> **Why the Sabertooth costs $125, and why it is still bought before measuring**
+>
+> The price does not buy amps, it buys three properties, in descending order of how binding
+> they are:
+>
+> 1. **It accepts R/C servo pulses.** The [Pololu #2806 MUX](design/dbw.md#112-hardware-rc-signal-mux-the-d3-condition)
+>    multiplexes *servo pulses only* — which is why
+>    [ADR §4](design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)
+>    was reverted from packetized serial to R/C PWM. Any driver sitting downstream of that
+>    MUX must take pulses directly. This is architecture, not budget.
+> 2. **It stops the motors when the pulses stop.** [Failsafe rows 6 and 8](design/safety.md#2-failsafe-matrix)
+>    and [FMEA row 9](design/safety.md#7-fmea-lightweight) — D3's principal risk, severity 5 —
+>    all lean on this. When the Teensy hangs, traction must die with **no software
+>    involved**. That is a property of the driver.
+> 3. **It survives and limits stall current**, with thermal protection.
+>
+> **Property 3 is the one that is genuinely unsettled**, and the honest position is that
+> nobody knows yet: `vehicle.md` asserts the motor class twice, differently
+> ([see the warning there](design/vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08)),
+> and it has never been measured.
+>
+> Buy it anyway, now, for a scheduling reason rather than an electrical one: the sizing
+> question concerns **M2 (drive)**, which cannot be measured until the vehicle is in hand,
+> while [bench Stage 1](design/safety.md#6-bring-up-protocol-staged-wheels-off-first) needs
+> **M1 (steering)** working before that. You need *a* driver to make progress either way, and
+> a second order cycle costs more than the part.
+>
+> **Correction, 2026-08-12.** An earlier version of this note said ~$30 could be saved by
+> dropping to a 2x25. That is wrong: Dimension Engineering prices the **2x25 V2 and the 2x32
+> identically at $124.99**. There is no cheaper mid-range Sabertooth. The only real
+> step down is the 2x12 at $79.99 — see the sourcing comparison below.
+>
+> Record the measured paralleled stall current in §Measurements. If it comes in low, that is
+> evidence for the *next* build, not a reason to re-buy this one.
 
-    Check the **de minimis** before assuming customs cost: Korea clears US-origin goods under
-    목록통관 at a higher threshold than general imports, and Dimension Engineering ships from
-    Ohio, so a single $125 board plausibly arrives with no duty or import VAT. Verify current
-    thresholds at order time and record what you actually paid.
+> [!CAUTION]
+> **Do not let #9 slip to a later order**
+>
+> The Pololu RC signal MUX is **$18 and it is the condition the single-Teensy architecture
+> was adopted under** ([safety.md §1.2](design/safety.md#12-live-override-inside-dbw-mode-two-layers)).
+> With one MCU holding steering, throttle, override and arming, a firmware hang loses all
+> four — unless override is a *wiring* property. Order it with the RC set, in this batch.
 
-    All Sabertooth variants support **R/C input** — the 2x12 is not disqualified on
-    architecture, only on headroom.
-
-!!! warning "#3 Sabertooth is the only true import, and it is worth checking the local markup"
-
-    Not stocked at Eleparts. Dimension Engineering sells direct at **$124.99** and ships
-    internationally. Before importing, note what the Pololu MUX shows: Eleparts lists it at
-    ~₩42,400 inc-VAT against **$17.95** direct — roughly a 70% markup, which is still often
-    worth paying to avoid customs handling on a small order.
-
-    For the Sabertooth, check RobotShop / Generation Robots / DFRobot as alternates, and
-    compare landed cost including **customs and 부가세 on import** before assuming direct is
-    cheaper.
-
-!!! danger "#6 is only half orderable — the shaft adapter is gated, and the BOM hides this"
-
-    The encoder itself (**5 mm bore**) can be bought now. The **3.15 → 5 mm adapter cannot**:
-    that 3.15 mm is *B-MROVER's* motor shaft, inherited along with the method
-    ([dbw.md §8](design/dbw.md#8-adr-c-drive-distance-encoding)), and the Defender's drive-motor
-    shaft has never been measured.
-
-    Order the encoder with Batch A, and treat the adapter as a **Batch B** item alongside the
-    other measure-first parts — or buy an assortment of adapter sleeves, which is a few
-    thousand won and removes the dependency entirely.
-
-    Add the motor-shaft diameter to the M3 measurement form when you tear the vehicle down.
-
-!!! question "Why the Sabertooth costs $125, and why it is still bought before measuring"
-
-    The price does not buy amps, it buys three properties, in descending order of how binding
-    they are:
-
-    1. **It accepts R/C servo pulses.** The [Pololu #2806 MUX](design/dbw.md#112-hardware-rc-signal-mux-the-d3-condition)
-       multiplexes *servo pulses only* — which is why
-       [ADR §4](design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)
-       was reverted from packetized serial to R/C PWM. Any driver sitting downstream of that
-       MUX must take pulses directly. This is architecture, not budget.
-    2. **It stops the motors when the pulses stop.** [Failsafe rows 6 and 8](design/safety.md#2-failsafe-matrix)
-       and [FMEA row 9](design/safety.md#7-fmea-lightweight) — D3's principal risk, severity 5 —
-       all lean on this. When the Teensy hangs, traction must die with **no software
-       involved**. That is a property of the driver.
-    3. **It survives and limits stall current**, with thermal protection.
-
-    **Property 3 is the one that is genuinely unsettled**, and the honest position is that
-    nobody knows yet: `vehicle.md` asserts the motor class twice, differently
-    ([see the warning there](design/vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08)),
-    and it has never been measured.
-
-    Buy it anyway, now, for a scheduling reason rather than an electrical one: the sizing
-    question concerns **M2 (drive)**, which cannot be measured until the vehicle is in hand,
-    while [bench Stage 1](design/safety.md#6-bring-up-protocol-staged-wheels-off-first) needs
-    **M1 (steering)** working before that. You need *a* driver to make progress either way, and
-    a second order cycle costs more than the part.
-
-    **Correction, 2026-08-12.** An earlier version of this note said ~$30 could be saved by
-    dropping to a 2x25. That is wrong: Dimension Engineering prices the **2x25 V2 and the 2x32
-    identically at $124.99**. There is no cheaper mid-range Sabertooth. The only real
-    step down is the 2x12 at $79.99 — see the sourcing comparison below.
-
-    Record the measured paralleled stall current in §Measurements. If it comes in low, that is
-    evidence for the *next* build, not a reason to re-buy this one.
-
-!!! danger "Do not let #9 slip to a later order"
-
-    The Pololu RC signal MUX is **$18 and it is the condition the single-Teensy architecture
-    was adopted under** ([safety.md §1.2](design/safety.md#12-live-override-inside-dbw-mode-two-layers)).
-    With one MCU holding steering, throttle, override and arming, a firmware hang loses all
-    four — unless override is a *wiring* property. Order it with the RC set, in this batch.
-
-!!! warning "#15 and #10 are not the same thing"
-
-    The **gamepad (#15)** is a software input: `joy_node` reads it and its Twist goes through
-    `twist_mux`, so a firmware or laptop hang takes it down too.
-
-    The **RC transmitter (#10)** is the hardware override, switching servo pulses through the
-    MUX with no software in the path at all.
-
-    Both are needed. Buying only one leaves either no convenient teleop, or no
-    firmware-independent override.
+> [!WARNING]
+> **#15 and #10 are not the same thing**
+>
+> The **gamepad (#15)** is a software input: `joy_node` reads it and its Twist goes through
+> `twist_mux`, so a firmware or laptop hang takes it down too.
+>
+> The **RC transmitter (#10)** is the hardware override, switching servo pulses through the
+> MUX with no software in the path at all.
+>
+> Both are needed. Buying only one leaves either no convenient teleop, or no
+> firmware-independent override.
 
 ---
 
@@ -222,14 +229,15 @@ the rim, peak force turning lock-to-lock **while stationary** — that is the wo
 | Motor selected (model, rated torque, ratio) | |
 | Date / by | |
 
-!!! note "If no suitable encoder-gearmotor can be sourced"
-
-    The documented fallback is a **12 V automotive wiper motor**. Two consequences you must
-    accept and re-check against [safety.md](design/safety.md) before the vehicle touches the
-    ground: its worm gear is largely **non-back-drivable**, so on power loss the steering
-    **holds** rather than freewheels — which invalidates the freewheel analysis — and it
-    rarely has a usable shaft encoder, making the absolute sensor the sole angle source.
-    Record the choice here if you take it.
+> [!NOTE]
+> **If no suitable encoder-gearmotor can be sourced**
+>
+> The documented fallback is a **12 V automotive wiper motor**. Two consequences you must
+> accept and re-check against [safety.md](design/safety.md) before the vehicle touches the
+> ground: its worm gear is largely **non-back-drivable**, so on power loss the steering
+> **holds** rather than freewheels — which invalidates the freewheel analysis — and it
+> rarely has a usable shaft encoder, making the absolute sensor the sole angle source.
+> Record the choice here if you take it.
 
 ### M2 — Sensor shaft travel → decides #5
 
@@ -277,12 +285,13 @@ not been spent yet — that sequencing is the entire point of the two-tier split
 | 18 | IMU — BNO085 class | 28 | | | | | |
 | | **Batch C** | **168** | | | | | |
 
-!!! note "The camera is a knowing compromise"
-
-    Rolling shutter is fine for SLAM and teleop. **Behavior cloning (phase 2) needs a global
-    shutter** — rolling shutter smears during turns and corrupts the steering labels. Budget
-    **+$150** then. Do not train a policy on rolling-shutter data and attribute the result to
-    the platform.
+> [!NOTE]
+> **The camera is a knowing compromise**
+>
+> Rolling shutter is fine for SLAM and teleop. **Behavior cloning (phase 2) needs a global
+> shutter** — rolling shutter smears during turns and corrupts the steering labels. Budget
+> **+$150** then. Do not train a policy on rolling-shutter data and attribute the result to
+> the platform.
 
 ---
 
@@ -299,18 +308,19 @@ Values that must come from the part in your hand, not the datasheet or the sourc
 | Vehicle mass, bare (kg) | | Replaces the estimated 8.0 |
 | Steering limit, mechanical (°) | | Replaces the assumed ±22.5 — **and changes the Nav2 turning radius** |
 
-!!! danger "Every dimension in the twin is currently an estimate"
-
-    `mitt_description/config/mitt_dimensions.yaml` is populated with values derived from the
-    vendor's 98×56×47 cm listing, each marked `TODO measure`. The URDF has no geometric
-    literals, so updating that file updates the model, the controller config, and the body
-    mesh scale together.
-
-    Two of these propagate further than they look. Wheelbase and steer limit set
-    `R_min = wheelbase / tan(steer_limit)` — currently **1.52 m** — which is used in
-    `nav2_params.yaml` **twice** (`minimum_turning_radius` on the planner and
-    `min_turning_radius` on the controller). Re-derive both when you measure, or Nav2 will be
-    planning for a vehicle you do not have.
+> [!CAUTION]
+> **Every dimension in the twin is currently an estimate**
+>
+> `mitt_description/config/mitt_dimensions.yaml` is populated with values derived from the
+> vendor's 98×56×47 cm listing, each marked `TODO measure`. The URDF has no geometric
+> literals, so updating that file updates the model, the controller config, and the body
+> mesh scale together.
+>
+> Two of these propagate further than they look. Wheelbase and steer limit set
+> `R_min = wheelbase / tan(steer_limit)` — currently **1.52 m** — which is used in
+> `nav2_params.yaml` **twice** (`minimum_turning_radius` on the planner and
+> `min_turning_radius` on the controller). Re-derive both when you measure, or Nav2 will be
+> planning for a vehicle you do not have.
 
 ---
 
@@ -324,18 +334,19 @@ reproducible rather than folklore.
 | | | | | |
 | | | | | |
 
-!!! warning "Substitutions with teeth"
-
-    Three where "close enough" is not:
-
-    - **#3 Sabertooth → bare H-bridge.** Looks like a $110 saving. The Sabertooth's current
-      limiting, thermal protection and R/C signal-loss timeout are load-bearing in
-      [failsafe row 6](design/safety.md#2-failsafe-matrix). A BTS7960 provides none of them.
-    - **#8 E-stop → signal-rated button.** It must switch actual traction current or a
-      contactor coil. A signal-rated mushroom **will weld shut**, which fails exactly when
-      you need it.
-    - **#2 Teensy → ESP32/AVR.** The 600 MHz M7's timing determinism and **four hardware
-      quadrature decoders** are why the whole DBW loop fits on one MCU.
+> [!WARNING]
+> **Substitutions with teeth**
+>
+> Three where "close enough" is not:
+>
+> - **#3 Sabertooth → bare H-bridge.** Looks like a $110 saving. The Sabertooth's current
+>   limiting, thermal protection and R/C signal-loss timeout are load-bearing in
+>   [failsafe row 6](design/safety.md#2-failsafe-matrix). A BTS7960 provides none of them.
+> - **#8 E-stop → signal-rated button.** It must switch actual traction current or a
+>   contactor coil. A signal-rated mushroom **will weld shut**, which fails exactly when
+>   you need it.
+> - **#2 Teensy → ESP32/AVR.** The 600 MHz M7's timing determinism and **four hardware
+>   quadrature decoders** are why the whole DBW loop fits on one MCU.
 
 ---
 
@@ -356,8 +367,9 @@ or a spec change:
 
 > _(write here)_
 
-!!! tip "Your real numbers are more useful than these estimates"
-
-    The BOM figures are budgeting estimates from a single retailer survey. Once this table is
-    filled in, the actuals are worth folding back into
-    [design/bom.md](design/bom.md) so the next build starts from evidence.
+> [!TIP]
+> **Your real numbers are more useful than these estimates**
+>
+> The BOM figures are budgeting estimates from a single retailer survey. Once this table is
+> filled in, the actuals are worth folding back into
+> [design/bom.md](design/bom.md) so the next build starts from evidence.

@@ -47,11 +47,12 @@ the image is smeared by an amount **correlated with the very quantity you are tr
 predict**. The network can learn to read the smear instead of the road. That is a subtle,
 hard-to-debug form of label leakage, and it is why the BOM refuses a cheap webcam.
 
-!!! note "Choosing a sensor by what it does to your labels"
-
-    Resolution and frame rate are the specs people compare. The property that actually decided
-    this component was how its artifact interacts with the downstream learning task. Keep
-    that habit.
+> [!NOTE]
+> **Choosing a sensor by what it does to your labels**
+>
+> Resolution and frame rate are the specs people compare. The property that actually decided
+> this component was how its artifact interacts with the downstream learning task. Keep
+> that habit.
 
 ### Rates, and what depends on them
 
@@ -84,13 +85,14 @@ map → odom → base_link → { camera_link, laser/lidar_link, imu_link, gnss_l
 **`base_link` is pinned** at the center of the rear axle, on the ground plane, X forward, Z
 up, Y left ([calibration.md §4.1](../design/calibration.md#41-base_link-definition)).
 
-!!! info "Why `odom` exists at all"
-
-    A common question: if SLAM knows where we are, why keep a drifting `odom` frame? Because
-    `odom → base_link` is **continuous** — it never jumps — which is what a local controller
-    needs to avoid commanding a step change. `map → odom` absorbs the discontinuities when
-    SLAM corrects. The two-level structure separates "smooth but drifting" from "accurate but
-    jumpy."
+> [!NOTE]
+> **Why `odom` exists at all**
+>
+> A common question: if SLAM knows where we are, why keep a drifting `odom` frame? Because
+> `odom → base_link` is **continuous** — it never jumps — which is what a local controller
+> needs to avoid commanding a step change. `map → odom` absorbs the discontinuities when
+> SLAM corrects. The two-level structure separates "smooth but drifting" from "accurate but
+> jumpy."
 
 ### Extrinsics — two kinds of wrong
 
@@ -193,11 +195,12 @@ ros2 bag play m4_run --loop
 ros2 bag info m4_run
 ```
 
-!!! tip "Always record `/tf` and `/tf_static`"
-
-    A bag without transforms is nearly useless — you have sensor data with no way to relate it
-    to the vehicle. This is the most common rosbag mistake, and you only discover it after the
-    vehicle has been put away.
+> [!TIP]
+> **Always record `/tf` and `/tf_static`**
+>
+> A bag without transforms is nearly useless — you have sensor data with no way to relate it
+> to the vehicle. This is the most common rosbag mistake, and you only discover it after the
+> vehicle has been put away.
 
 ### Part 4 — Overlay LiDAR on the camera image
 

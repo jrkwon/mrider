@@ -63,6 +63,9 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
 
+hooks:
+  - hooks/github_alerts.py
+
 plugins:
   - search
   - git-revision-date-localized:

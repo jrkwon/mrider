@@ -51,61 +51,64 @@ Tier 2 has not been bought yet.
 | 15 | **USB gamepad (teleop)** | Xbox-layout USB/2.4 GHz pad — Logitech F710 class | [build/07](../build/07-manual-drive.md) · `mitt_control/launch/teleop.launch.py` | New | 40 | **Not the same thing as the RC set (#10)** — see the note below |
 | | | | | **Tier 1** | **$678** | |
 
-!!! warning "The gamepad (#15) and the RC transmitter (#10) are different parts, doing different jobs"
+> [!WARNING]
+> **The gamepad (#15) and the RC transmitter (#10) are different parts, doing different jobs**
+>
+> Easy to conflate when ordering, and expensive to get wrong.
+>
+> **#15, the USB gamepad**, is a *software* input. It plugs into the laptop, `joy_node`
+> reads it, and its Twist goes through `twist_mux` like any other software command source.
+> It is how a person drives the twin and drives the vehicle under `ros2` — and it is
+> **inside** the software path, so a firmware or laptop hang takes it with them.
+>
+> **#10, the RC transmitter**, is the *hardware* override. Its receiver feeds the
+> [hardware RC signal MUX (#9)](safety.md#12-live-override-inside-dbw-mode-two-layers),
+> which switches servo pulses to the motor driver **with no software in the path at all**.
+> That is the whole point: it still works when the Teensy is hung.
+>
+> Buying only the gamepad leaves the vehicle with no firmware-independent override, which
+> is the condition D3 was adopted under. Buy both.
+>
+> **Get an Xbox-layout pad.** `teleop.launch.py` pins deadman = button 4 (LB),
+> turbo = button 5 (RB), throttle = axis 1, steering = axis 3. A different layout is not a
+> blocker — the numbers are launch arguments — but you will spend an evening with
+> `ros2 topic echo /joy` working out which is which.
 
-    Easy to conflate when ordering, and expensive to get wrong.
+> [!NOTE]
+> **Vehicle class changed — ADR D reversed 2026-08-08**
+>
+> This line was a **24 V two-seater at $300**. The project moved to a **12 V single-seater
+> at ~$165** ([ADR D-R](vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08)),
+> saving ~$135 and giving a smaller, easier-to-store vehicle.
+>
+> What it costs is **not** in this table, which is the point of flagging it here: the mast
+> comes down to ~0.65 m, the seat must be replaced with an equipment plate, and finding F1
+> (B-MROVER validated on the 24 V two-seater class) no longer transfers.
+>
+> The Sabertooth below is now oversized for this drivetrain. **Keep it anyway** — its
+> current limiting and R/C signal-loss timeout are load-bearing in the failsafe matrix, and
+> headroom is not a defect.
 
-    **#15, the USB gamepad**, is a *software* input. It plugs into the laptop, `joy_node`
-    reads it, and its Twist goes through `twist_mux` like any other software command source.
-    It is how a person drives the twin and drives the vehicle under `ros2` — and it is
-    **inside** the software path, so a firmware or laptop hang takes it with them.
-
-    **#10, the RC transmitter**, is the *hardware* override. Its receiver feeds the
-    [hardware RC signal MUX (#9)](safety.md#12-live-override-inside-dbw-mode-two-layers),
-    which switches servo pulses to the motor driver **with no software in the path at all**.
-    That is the whole point: it still works when the Teensy is hung.
-
-    Buying only the gamepad leaves the vehicle with no firmware-independent override, which
-    is the condition D3 was adopted under. Buy both.
-
-    **Get an Xbox-layout pad.** `teleop.launch.py` pins deadman = button 4 (LB),
-    turbo = button 5 (RB), throttle = axis 1, steering = axis 3. A different layout is not a
-    blocker — the numbers are launch arguments — but you will spend an evening with
-    `ros2 topic echo /joy` working out which is which.
-
-!!! info "Vehicle class changed — ADR D reversed 2026-08-08"
-
-    This line was a **24 V two-seater at $300**. The project moved to a **12 V single-seater
-    at ~$165** ([ADR D-R](vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08)),
-    saving ~$135 and giving a smaller, easier-to-store vehicle.
-
-    What it costs is **not** in this table, which is the point of flagging it here: the mast
-    comes down to ~0.65 m, the seat must be replaced with an equipment plate, and finding F1
-    (B-MROVER validated on the 24 V two-seater class) no longer transfers.
-
-    The Sabertooth below is now oversized for this drivetrain. **Keep it anyway** — its
-    current limiting and R/C signal-loss timeout are load-bearing in the failsafe matrix, and
-    headroom is not a defect.
-
-!!! warning "Do not substitute a cheap H-bridge for the Sabertooth"
-
-    A BTS7960-class module is ~$14 and looks like a $110 saving. It is the wrong part, and
-    notably **not primarily because of current rating** — the drive-motor stall current is
-    still [unmeasured](vehicle.md#31-drive-motor-stall-current-vs-sabertooth-rating-critical).
-    Three reasons that hold regardless of how that measurement lands:
-
-    1. **Wrong input type, which is disqualifying on its own.** It takes PWM + DIR logic. The
-       [hardware RC signal MUX](dbw.md#112-hardware-rc-signal-mux-the-d3-condition)
-       multiplexes *servo pulses*, so a driver that cannot accept pulses cannot sit downstream
-       of it — and that MUX is the condition D3 was adopted under.
-    2. **No signal-loss timeout.** [Failsafe rows 6 and 8](safety.md#2-failsafe-matrix) and
-       [FMEA row 9](safety.md#7-fmea-lightweight) require traction to stop when the Teensy
-       stops emitting, with no software involved. The Sabertooth does this; a bare bridge
-       does not.
-    3. **No meaningful current limiting or thermal protection**, and its characteristic
-       failure is a shorted MOSFET — which on a vehicle means **uncontrolled full throttle**.
-
-    Keep the Sabertooth.
+> [!WARNING]
+> **Do not substitute a cheap H-bridge for the Sabertooth**
+>
+> A BTS7960-class module is ~$14 and looks like a $110 saving. It is the wrong part, and
+> notably **not primarily because of current rating** — the drive-motor stall current is
+> still [unmeasured](vehicle.md#31-drive-motor-stall-current-vs-sabertooth-rating-critical).
+> Three reasons that hold regardless of how that measurement lands:
+>
+> 1. **Wrong input type, which is disqualifying on its own.** It takes PWM + DIR logic. The
+>    [hardware RC signal MUX](dbw.md#112-hardware-rc-signal-mux-the-d3-condition)
+>    multiplexes *servo pulses*, so a driver that cannot accept pulses cannot sit downstream
+>    of it — and that MUX is the condition D3 was adopted under.
+> 2. **No signal-loss timeout.** [Failsafe rows 6 and 8](safety.md#2-failsafe-matrix) and
+>    [FMEA row 9](safety.md#7-fmea-lightweight) require traction to stop when the Teensy
+>    stops emitting, with no software involved. The Sabertooth does this; a bare bridge
+>    does not.
+> 3. **No meaningful current limiting or thermal protection**, and its characteristic
+>    failure is a shorted MOSFET — which on a vehicle means **uncontrolled full throttle**.
+>
+> Keep the Sabertooth.
 
 ## Tier 2 — Perception
 
@@ -116,15 +119,16 @@ Tier 2 has not been bought yet.
 | 18 | **IMU** | BNO085-class 9-DoF with onboard fusion | [sensors.md §3](sensors.md) | New | 28 | Replaces the Pixhawk's internal IMU. Estimator is unchanged — it was always `robot_localization` (F11) |
 | | | | | **Tier 2** | **$168** | |
 
-!!! note "The global-shutter camera is deferred, not deleted"
-
-    The previous BOM specified an **Arducam AR0234 global-shutter USB3 camera ($180)**,
-    chosen deliberately because rolling-shutter distortion during motion degrades
-    behavior-cloning training data. Behavior cloning is **phase 2**
-    ([software.md §8](software.md#8-semester-1-scope-and-software-acceptance-gates)), so
-    semester 1 uses a $30 rolling-shutter camera and the global-shutter part is a **phase-2
-    repurchase, budgeted at +$150.** Do not train a behavior-cloning policy on rolling-shutter
-    data and attribute the result to the platform.
+> [!NOTE]
+> **The global-shutter camera is deferred, not deleted**
+>
+> The previous BOM specified an **Arducam AR0234 global-shutter USB3 camera ($180)**,
+> chosen deliberately because rolling-shutter distortion during motion degrades
+> behavior-cloning training data. Behavior cloning is **phase 2**
+> ([software.md §8](software.md#8-semester-1-scope-and-software-acceptance-gates)), so
+> semester 1 uses a $30 rolling-shutter camera and the global-shutter part is a **phase-2
+> repurchase, budgeted at +$150.** Do not train a behavior-cloning policy on rolling-shutter
+> data and attribute the result to the platform.
 
 ---
 
@@ -135,16 +139,17 @@ Tier 2 has not been bought yet.
 | **Tier 1 + Tier 2** | **$846** | ~$85 | **~$930** |
 | *Tier 1 alone (weeks 1–9)* | *$678* | *~$68* | *~$745* |
 
-!!! bug "Totals corrected 2026-08-10 — the previous figures were arithmetically stale"
-
-    Tier 1 was published as **$773** while its line items summed to **$638**. The gap was
-    exactly **$135**: the vehicle line had been updated from $300 to $165 when
-    [ADR D was reversed](vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08),
-    and the total was never re-added. Adding the gamepad (#15, $40) brings Tier 1 to **$678**.
-
-    Worth stating plainly because this document is used to place orders: the old totals
-    over-budgeted by ~$95, which is a harmless direction to be wrong in, but it means any
-    quote reconciled against the old number will not balance.
+> [!CAUTION]
+> **Totals corrected 2026-08-10 — the previous figures were arithmetically stale**
+>
+> Tier 1 was published as **$773** while its line items summed to **$638**. The gap was
+> exactly **$135**: the vehicle line had been updated from $300 to $165 when
+> [ADR D was reversed](vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08),
+> and the total was never re-added. Adding the gamepad (#15, $40) brings Tier 1 to **$678**.
+>
+> Worth stating plainly because this document is used to place orders: the old totals
+> over-budgeted by ~$95, which is a harmless direction to be wrong in, but it means any
+> quote reconciled against the old number will not balance.
 
 Contingency covers shipping, taxes, connector/fastener miscellany, a blown H-bridge or
 stripped steering gear, and the verification-driven risk that the **drive-motor stall
@@ -170,14 +175,15 @@ current** ([vehicle.md §3.1](vehicle.md)) forces a current-limit accessory.
 | **Sensor re-scoping subtotal** | **−$365** | |
 | **Total** | **−$488** | $1,429 → $941 before contingency |
 
-!!! note "These figures are the 2026-08-07 revision, not the current total"
-
-    The $941 below is Tier 1 + Tier 2 *as published on 2026-08-07*. Two things happened after:
-    the vehicle line fell $300 → $165 with the
-    [ADR D reversal](vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08), and a
-    USB gamepad (#15, $40) was added. Current line-item total is **$846**; see §Totals. The
-    heading and figures here are left intact so the D3 accounting still reads as a single
-    coherent comparison.
+> [!NOTE]
+> **These figures are the 2026-08-07 revision, not the current total**
+>
+> The $941 below is Tier 1 + Tier 2 *as published on 2026-08-07*. Two things happened after:
+> the vehicle line fell $300 → $165 with the
+> [ADR D reversal](vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08), and a
+> USB gamepad (#15, $40) was added. Current line-item total is **$846**; see §Totals. The
+> heading and figures here are left intact so the D3 accounting still reads as a single
+> coherent comparison.
 
 **Honest attribution:** D3 itself accounts for **−$123**, not the bulk of the saving. Most of
 the reduction comes from scoping the sensor package to what semester 1 actually needs. Both

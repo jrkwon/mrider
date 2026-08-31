@@ -10,19 +10,21 @@ the motor disconnected until the software is trustworthy.
   disturbance, publishes `DbwStatus` at ≥ 50 Hz with zero USB dropouts over 30 minutes, and
   both override layers are demonstrated.
 
-!!! warning "Draft — not yet validated on hardware"
+> [!WARNING]
+> **Draft — not yet validated on hardware**
+>
+> This procedure is derived from the design documents. No MRider build has been brought up
+> yet, so timings, pin assignments, and library behavior are **unconfirmed**. Treat every
+> number as a target to verify, not a measurement.
 
-    This procedure is derived from the design documents. No MRider build has been brought up
-    yet, so timings, pin assignments, and library behavior are **unconfirmed**. Treat every
-    number as a target to verify, not a measurement.
-
-!!! info "Architecture change"
-
-    This step previously covered two controllers — an Arduino Nano smart-servo *and* a Pixhawk
-    running PX4. [Decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)
-    replaced both with a single Teensy 4.1 running micro-ROS. If you are following an older
-    printout, discard it: there is no PX4, no MAVLink, no servo-PWM capture, and no I²C
-    register map in this build.
+> [!NOTE]
+> **Architecture change**
+>
+> This step previously covered two controllers — an Arduino Nano smart-servo *and* a Pixhawk
+> running PX4. [Decision D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)
+> replaced both with a single Teensy 4.1 running micro-ROS. If you are following an older
+> printout, discard it: there is no PX4, no MAVLink, no servo-PWM capture, and no I²C
+> register map in this build.
 
 ---
 
@@ -69,16 +71,17 @@ ros2 run micro_ros_setup create_agent_ws.sh
 ros2 run micro_ros_setup build_agent.sh && source install/local_setup.bash
 ```
 
-!!! danger "Verify this before writing any firmware"
-
-    - [ ] A **`micro_ros_arduino` release exists for Humble** with Teensy 4.1 support.
-    - [ ] The transport is **USB serial** — the official package does not ship native
-          Ethernet. Accept that, or scope a custom transport deliberately.
-
-    **If no Humble release exists**, fall back to a framed **binary** protocol with CRC and
-    sequence numbers over the same USB link — never unframed ASCII
-    ([dbw.md §9](../design/dbw.md#9-teensy-41-firmware-platform-and-version-pinning)). The
-    architecture does not depend on micro-ROS; only the typed-message convenience does.
+> [!CAUTION]
+> **Verify this before writing any firmware**
+>
+> - [ ] A **`micro_ros_arduino` release exists for Humble** with Teensy 4.1 support.
+> - [ ] The transport is **USB serial** — the official package does not ship native
+>       Ethernet. Accept that, or scope a custom transport deliberately.
+>
+> **If no Humble release exists**, fall back to a framed **binary** protocol with CRC and
+> sequence numbers over the same USB link — never unframed ASCII
+> ([dbw.md §9](../design/dbw.md#9-teensy-41-firmware-platform-and-version-pinning)). The
+> architecture does not depend on micro-ROS; only the typed-message convenience does.
 
 Record every version you flashed — this is now the platform's reproducibility claim, since
 there is no upstream autopilot provenance to lean on
@@ -105,14 +108,15 @@ Wire only: absolute angle sensor (I²C), drive encoder, steering encoder, USB to
 # through its FULL mechanical travel and watch for a wrap.
 ```
 
-!!! danger "The wrap check is not optional"
-
-    The AS5600 is **single-turn absolute**. Rotate the sensed shaft lock-to-lock and confirm
-    the reading is **monotonic with no discontinuity**. A wrap here is FMEA row 2, severity 5:
-    a garbage angle feeding a position loop that drives a motor.
-
-    If it wraps, you mounted it on the wrong shaft. Move it load-side, or switch to the
-    potentiometer fallback. Do not proceed.
+> [!CAUTION]
+> **The wrap check is not optional**
+>
+> The AS5600 is **single-turn absolute**. Rotate the sensed shaft lock-to-lock and confirm
+> the reading is **monotonic with no discontinuity**. A wrap here is FMEA row 2, severity 5:
+> a garbage angle feeding a position loop that drives a motor.
+>
+> If it wraps, you mounted it on the wrong shaft. Move it load-side, or switch to the
+> potentiometer fallback. Do not proceed.
 
 Also check for magnetic interference: hold the steering motor near the sensor and confirm the
 reading does not shift.
@@ -136,15 +140,16 @@ ros2 topic hz /mitt/dbw/status > /tmp/dbw_hz.log 2>&1 &
 sleep 1800 && kill %1
 ```
 
-!!! warning "USB dropouts are a blocking defect, not a nuisance"
-
-    Under this architecture the USB link carries the **steering setpoint** as well as
-    feedback, so a dropout removes the setpoint and drops the vehicle to `ESTOP`
-    ([failsafe row 2](../design/safety.md#2-failsafe-matrix)). That is the safe behavior, but
-    a link that drops repeatedly is a vehicle that stops repeatedly.
-
-    **Target: zero dropped sessions over 30 minutes.** If you see any, fix the cable, the
-    port, or the transport before wiring a motor.
+> [!WARNING]
+> **USB dropouts are a blocking defect, not a nuisance**
+>
+> Under this architecture the USB link carries the **steering setpoint** as well as
+> feedback, so a dropout removes the setpoint and drops the vehicle to `ESTOP`
+> ([failsafe row 2](../design/safety.md#2-failsafe-matrix)). That is the safe behavior, but
+> a link that drops repeatedly is a vehicle that stops repeatedly.
+>
+> **Target: zero dropped sessions over 30 minutes.** If you see any, fix the cable, the
+> port, or the transport before wiring a motor.
 
 **Stage 0 gate**
 
@@ -175,12 +180,13 @@ signal-loss timeout is **inherent in R/C mode** — but the frame rate you actua
 # and confirm the motor STOPS rather than latching at its last command.
 ```
 
-!!! danger "If the timeout cannot be established, stop"
-
-    Revert to independent R/C (PWM) mode and accept the ~50 Hz actuation ceiling
-    ([dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)).
-    [Failsafe row 6](../design/safety.md#2-failsafe-matrix) and FMEA row 9 both depend on this
-    behavior — it is one of the layers that makes a single-MCU architecture defensible.
+> [!CAUTION]
+> **If the timeout cannot be established, stop**
+>
+> Revert to independent R/C (PWM) mode and accept the ~50 Hz actuation ceiling
+> ([dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)).
+> [Failsafe row 6](../design/safety.md#2-failsafe-matrix) and FMEA row 9 both depend on this
+> behavior — it is one of the layers that makes a single-MCU architecture defensible.
 
 ### Tune and measure the position loop
 
@@ -196,15 +202,16 @@ Start with P only, add D, add I last and sparingly. Measure against the
 | Drift over 30 min | ≤ **0.5°** | Hold one angle, log; should be ≈ 0 by construction |
 | Disturbance rejection | returns to setpoint | Push the output arm by hand, release |
 
-!!! info "Pre-registered E4 decision point — this is the deadline"
-
-    **If the loop cannot hold ≤ 1° steady-state with no sustained oscillation, adopt the E4
-    fallback** — a dedicated closed-loop motion controller (Kangaroo x2 class) — rather than
-    continuing to tune
-    ([dbw.md §3](../design/dbw.md#3-adr-e-steering-control-loop-location-the-key-dbw-decision)).
-
-    Firmware tuning is unbounded work. This bounds it. Take the decision on the numbers, not
-    on how close it feels.
+> [!NOTE]
+> **Pre-registered E4 decision point — this is the deadline**
+>
+> **If the loop cannot hold ≤ 1° steady-state with no sustained oscillation, adopt the E4
+> fallback** — a dedicated closed-loop motion controller (Kangaroo x2 class) — rather than
+> continuing to tune
+> ([dbw.md §3](../design/dbw.md#3-adr-e-steering-control-loop-location-the-key-dbw-decision)).
+>
+> Firmware tuning is unbounded work. This bounds it. Take the decision on the numbers, not
+> on how close it feels.
 
 Also verify the interlocks:
 
@@ -241,11 +248,12 @@ Bind the RC set, wire SBUS to a Teensy hardware serial port. Verify:
 
 ### Layer B — hardware RC signal MUX
 
-!!! danger "This is the condition on which the whole architecture was adopted"
-
-    D3 concentrates the steering loop, throttle, override, and arming on one MCU. The
-    justification for accepting that is that override is a **wiring property**, not a firmware
-    property. **That claim must be demonstrated here, not assumed.**
+> [!CAUTION]
+> **This is the condition on which the whole architecture was adopted**
+>
+> D3 concentrates the steering loop, throttle, override, and arming on one MCU. The
+> justification for accepting that is that override is a **wiring property**, not a firmware
+> property. **That claim must be demonstrated here, not assumed.**
 
 **Test it with the Teensy deliberately halted.** Hold the Teensy in reset (or unplug it
 entirely), then:

@@ -11,18 +11,20 @@ behave as specified while the vehicle is moving at walking speed.
 - **Expected outcome:** smooth manual steering/throttle; RC override and E-stop confirmed
   under motion.
 
-!!! warning "Draft — not yet validated on hardware"
+> [!WARNING]
+> **Draft — not yet validated on hardware**
+>
+> This is the first-drive protocol derived from
+> [safety.md §6 Stage 5](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first).
+> **No MRider has been driven.** Coast-down distances, joystick scaling, and the abort
+> criteria thresholds are marked *(measure during bring-up)*.
 
-    This is the first-drive protocol derived from
-    [safety.md §6 Stage 5](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first).
-    **No MRider has been driven.** Coast-down distances, joystick scaling, and the abort
-    criteria thresholds are marked *(measure during bring-up)*.
-
-!!! danger "The vehicle is on the ground and moving from this point"
-
-    Everything the bench could tell you, it already told you. What remains is what only the
-    ground can teach — and it teaches at 24 V with real momentum. **≤ walking speed, operator
-    alongside, spotter on the E-stop, every time.**
+> [!CAUTION]
+> **The vehicle is on the ground and moving from this point**
+>
+> Everything the bench could tell you, it already told you. What remains is what only the
+> ground can teach — and it teaches at 24 V with real momentum. **≤ walking speed, operator
+> alongside, spotter on the E-stop, every time.**
 
 This step is **Stage 5** of the bring-up protocol. Autonomy (step 8) does not begin until it
 passes.
@@ -135,13 +137,14 @@ Log these in the bring-up records per
 coast-down distance is a **safety parameter for every later test** — it defines how much
 clear space step 8 needs.
 
-!!! note "Expected: freewheel, and that is fine"
-
-    With traction already cut, a freewheeling front axle tracks straight or is trivially
-    hand-corrected by the walking operator. There is no power to steer the car into anything,
-    and the failure state matches the STOCK-revert direction. If instead your column **holds**
-    (wiper-motor build), record that and confirm the held angle is not a turn that would carry
-    the coasting vehicle somewhere unintended.
+> [!NOTE]
+> **Expected: freewheel, and that is fine**
+>
+> With traction already cut, a freewheeling front axle tracks straight or is trivially
+> hand-corrected by the walking operator. There is no power to steer the car into anything,
+> and the failure state matches the STOCK-revert direction. If instead your column **holds**
+> (wiper-motor build), record that and confirm the held angle is not a turn that would carry
+> the coasting vehicle somewhere unintended.
 
 ## 7.6 Phase 3 — joystick via `/mitt/dbw/command`
 
@@ -161,13 +164,14 @@ ros2 run mitt_control teleop_joy   # -> ros2_control -> mitt_hardware -> /mitt/d
 | **Dead-man** | *(record — required)* | gate: no output unless held | — |
 | Speed scale | *(record)* | caps output to walking speed | *(record)* |
 
-!!! danger "Require a dead-man control, and cap the speed in software"
-
-    A joystick that commands motion when nobody is holding it is a runaway waiting for a
-    dropped controller. Gate all output behind a held button. Separately, scale the maximum
-    throttle in software to walking speed — the [safety.md](../design/safety.md) analysis
-    (coast-down distance, freewheel acceptability, operator alongside) is **only valid at
-    ≤ walking speed**. Raising this cap invalidates the safety case.
+> [!CAUTION]
+> **Require a dead-man control, and cap the speed in software**
+>
+> A joystick that commands motion when nobody is holding it is a runaway waiting for a
+> dropped controller. Gate all output behind a held button. Separately, scale the maximum
+> throttle in software to walking speed — the [safety.md](../design/safety.md) analysis
+> (coast-down distance, freewheel acceptability, operator alongside) is **only valid at
+> ≤ walking speed**. Raising this cap invalidates the safety case.
 
 Repeat §7.4's sequence under joystick control: stationary sweep, creep, S-curves.
 
@@ -191,12 +195,13 @@ Also verify under motion:
       zeroed, steering centered). Note this is the *opposite* of the older design, where steering kept
       tracking**, autonomy safe-stops
 
-!!! danger "Verify RC-loss deliberately, with space"
-
-    Turning off the transmitter on a moving vehicle is exactly the scenario the failsafe
-    exists for, and exactly the moment you find out it was configured wrong. Do it in the
-    largest clear space you have, with the spotter's hand on the E-stop, at the lowest speed
-    that maintains motion.
+> [!CAUTION]
+> **Verify RC-loss deliberately, with space**
+>
+> Turning off the transmitter on a moving vehicle is exactly the scenario the failsafe
+> exists for, and exactly the moment you find out it was configured wrong. Do it in the
+> largest clear space you have, with the spotter's hand on the E-stop, at the lowest speed
+> that maintains motion.
 
 ## 7.8 Tuning notes
 

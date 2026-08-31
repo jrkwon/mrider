@@ -9,20 +9,22 @@ end-to-end behavior-cloning pipeline (mrover `neural_net/` lineage) for an auton
 - **Specification:** [design/software.md](../design/software.md), [design/sensors.md](../design/sensors.md)
 - **Expected outcome:** a saved map, successful Nav2 goals, and an autonomous lap.
 
-!!! warning "Draft — not yet validated on hardware"
+> [!WARNING]
+> **Draft — not yet validated on hardware**
+>
+> Derived from [software.md §4–§5](../design/software.md#4-slam-nav2-ekf-configuration-plan).
+> No map has been built, no Nav2 goal executed, and no policy trained on MRider. Nav2
+> parameter values, dataset sizes, and training hyperparameters are marked
+> *(measure during bring-up)* or *(record)*.
 
-    Derived from [software.md §4–§5](../design/software.md#4-slam-nav2-ekf-configuration-plan).
-    No map has been built, no Nav2 goal executed, and no policy trained on MRider. Nav2
-    parameter values, dataset sizes, and training hyperparameters are marked
-    *(measure during bring-up)* or *(record)*.
-
-!!! danger "Autonomy does not remove the operator"
-
-    Every rule from [step 7](07-manual-drive.md) still applies: operator on the RC
-    transmitter, spotter on the E-stop, ≤ walking speed, clear area sized by the measured
-    coast-down distance. The RC transmitter preempts autonomy through both override layers —
-    including the hardware signal MUX, which works even if the controller is hung. **Autonomy is the
-    lowest authority in the stack** ([safety.md §1.3](../design/safety.md#13-authority-priority-highest-wins)).
+> [!CAUTION]
+> **Autonomy does not remove the operator**
+>
+> Every rule from [step 7](07-manual-drive.md) still applies: operator on the RC
+> transmitter, spotter on the E-stop, ≤ walking speed, clear area sized by the measured
+> coast-down distance. The RC transmitter preempts autonomy through both override layers —
+> including the hardware signal MUX, which works even if the controller is hung. **Autonomy is the
+> lowest authority in the stack** ([safety.md §1.3](../design/safety.md#13-authority-priority-highest-wins)).
 
 ---
 
@@ -45,12 +47,13 @@ slam_toolbox is reused essentially as-is: `solver_plugin: CeresSolver`, `mode: m
 `max_laser_range: 10.0`, `transform_publish_period: 0.02`
 ([software.md §4.2](../design/software.md#42-slam_toolbox-configslammapper_params_online_asyncyaml)).
 
-!!! danger "Fix the frame mismatch before your first map"
-
-    B-MROVER's slam config uses `base_frame: base_footprint` while the EKF uses `base_link`.
-    If you skipped this correction in [step 5](05-software.md#58-re-parameterize-for-the-real-chassis),
-    TF will be inconsistent and your map will be subtly, confusingly wrong. Reconcile to one
-    convention — `base_link` throughout is recommended.
+> [!CAUTION]
+> **Fix the frame mismatch before your first map**
+>
+> B-MROVER's slam config uses `base_frame: base_footprint` while the EKF uses `base_link`.
+> If you skipped this correction in [step 5](05-software.md#58-re-parameterize-for-the-real-chassis),
+> TF will be inconsistent and your map will be subtly, confusingly wrong. Reconcile to one
+> convention — `base_link` throughout is recommended.
 
 **Drive the map manually.** Use joystick teleop from step 7 — you are not navigating yet.
 
@@ -123,15 +126,16 @@ ros2 launch nav2_bringup navigation_launch.py \
 Send a goal from RViz's **2D Goal Pose**, starting with a short straight-line goal and only
 then progressing to goals requiring turns.
 
-!!! note "Expect DWB to struggle, and know what to do about it"
-
-    DWB is a diff-drive/omni-oriented local planner. On a true Ackermann vehicle with a
-    ±22.5° steering limit, it can plan paths the vehicle physically cannot follow.
-    [ADR-SW2](../design/software.md#adr-sw2-nav2-local-controller-for-ackermann) keeps DWB as
-    the reused default for bring-up and **pre-registers Regulated Pure Pursuit as the swap**,
-    with a concrete trigger: persistent path-tracking error or infeasible commands during
-    turning tests. If you hit that trigger, swapping to RPP is the planned action, not a
-    workaround.
+> [!NOTE]
+> **Expect DWB to struggle, and know what to do about it**
+>
+> DWB is a diff-drive/omni-oriented local planner. On a true Ackermann vehicle with a
+> ±22.5° steering limit, it can plan paths the vehicle physically cannot follow.
+> [ADR-SW2](../design/software.md#adr-sw2-nav2-local-controller-for-ackermann) keeps DWB as
+> the reused default for bring-up and **pre-registers Regulated Pure Pursuit as the swap**,
+> with a concrete trigger: persistent path-tracking error or infeasible commands during
+> turning tests. If you hit that trigger, swapping to RPP is the planned action, not a
+> workaround.
 
 **Record sheet — Nav2**
 
@@ -171,11 +175,12 @@ ros2 run data_collection data_collection_main --ros-args --params-file config/da
 # then drive the course manually, well, repeatedly
 ```
 
-!!! danger "You are recording your own driving as ground truth"
-
-    Behavior cloning learns what you demonstrate, including your mistakes. Drive the racing
-    line you actually want the policy to take. Sloppy demonstrations produce a sloppy policy,
-    and no amount of training fixes a badly labeled dataset.
+> [!CAUTION]
+> **You are recording your own driving as ground truth**
+>
+> Behavior cloning learns what you demonstrate, including your mistakes. Drive the racing
+> line you actually want the policy to take. Sloppy demonstrations produce a sloppy policy,
+> and no amount of training fixes a badly labeled dataset.
 
 Collection guidance:
 
@@ -238,16 +243,17 @@ and teleop**. The learned policy gets no special privileges and no shortcut to t
 ros2 run run_neural run_neural --ros-args -p weights:=<path>
 ```
 
-!!! danger "First autonomous lap protocol"
-
-    Treat it exactly like the first manual drive:
-
-    1. Operator on the RC transmitter, **thumb on the sticks**, not in a pocket
-    2. Spotter's hand on the E-stop
-    3. Clear area sized by the coast-down distance measured in [step 7](07-manual-drive.md#75-phase-2-e-stop-under-motion)
-    4. Software speed cap still at walking pace
-    5. **Abort on the first surprise.** A policy that mis-steers once will mis-steer again,
-       and the second time it will be faster.
+> [!CAUTION]
+> **First autonomous lap protocol**
+>
+> Treat it exactly like the first manual drive:
+>
+> 1. Operator on the RC transmitter, **thumb on the sticks**, not in a pocket
+> 2. Spotter's hand on the E-stop
+> 3. Clear area sized by the coast-down distance measured in [step 7](07-manual-drive.md#75-phase-2-e-stop-under-motion)
+> 4. Software speed cap still at walking pace
+> 5. **Abort on the first surprise.** A policy that mis-steers once will mis-steer again,
+>    and the second time it will be faster.
 
 Progress in this order: **straight segment → single corner → half lap → full lap.** Do not
 jump to a full lap because the straight worked.

@@ -2,12 +2,13 @@
 
 **Week 5 · 10/05 · self-study · due before Week 6 (10/12)**
 
-!!! info "No class on 10/5 — 개천절 대체공휴일"
-
-    This lab is self-paced. Everything you need is on this page, including the theory. Work through
-    it alongside [Lab 4](lab4.md); both are due 10/12.
-
-    Stuck? Post in the course channel. Do not sit on a problem for a week.
+> [!NOTE]
+> **No class on 10/5 — 개천절 대체공휴일**
+>
+> This lab is self-paced. Everything you need is on this page, including the theory. Work through
+> it alongside [Lab 4](lab4.md); both are due 10/12.
+>
+> Stuck? Post in the course channel. Do not sit on a problem for a week.
 
 You will derive the minimum turning radius of a car-like robot, then measure it in simulation and
 find that theory and measurement **disagree by about 2%**. Explaining that gap is the lab.
@@ -64,15 +65,15 @@ $$ R_{min} = \frac{L}{\tan\delta_{max}} = \frac{0.63}{\tan 22.5°} = \frac{0.63}
 **The vehicle cannot turn inside a 1.52 m radius.** Not "prefers not to" — cannot. Its wheels do not
 point that far.
 
-!!! quote "Where this number actually shows up"
-
-    Open `ros2_ws/src/mitt_navigation/config/nav2_params.yaml` and search for `1.6`. You will find it
-    **twice** — as `minimum_turning_radius` on the planner and `min_turning_radius` on the controller.
-    Both are R_min with a small safety margin.
-
-    It is also why `xy_goal_tolerance` is 0.6 m rather than the more usual 0.25 m. A vehicle with a
-    1.52 m turning circle physically cannot make fine positional corrections near a goal; ask it to
-    and it orbits. That tolerance is geometry, not laziness.
+> **Where this number actually shows up**
+>
+> Open `ros2_ws/src/mitt_navigation/config/nav2_params.yaml` and search for `1.6`. You will find it
+> **twice** — as `minimum_turning_radius` on the planner and `min_turning_radius` on the controller.
+> Both are R_min with a small safety margin.
+>
+> It is also why `xy_goal_tolerance` is 0.6 m rather than the more usual 0.25 m. A vehicle with a
+> 1.52 m turning circle physically cannot make fine positional corrections near a goal; ask it to
+> and it orbits. That tolerance is geometry, not laziness.
 
 ---
 
@@ -168,13 +169,14 @@ explanations, and state how you would test each one. Some directions worth consi
   partly circular, and if so, what would break the circularity?
 - Circle-fit error, and sampling over less than a full revolution.
 
-!!! success "There is no single expected answer to question 9"
-
-    This is graded on the quality of the reasoning and whether your proposed tests would actually
-    distinguish between your hypotheses. A well-argued wrong answer scores above a right answer with
-    no argument behind it.
-
-    **"Honest failure outscores a lucky success"** applies to analysis, not just hardware.
+> [!TIP]
+> **There is no single expected answer to question 9**
+>
+> This is graded on the quality of the reasoning and whether your proposed tests would actually
+> distinguish between your hypotheses. A well-argued wrong answer scores above a right answer with
+> no argument behind it.
+>
+> **"Honest failure outscores a lucky success"** applies to analysis, not just hardware.
 
 ---
 
@@ -204,19 +206,20 @@ Answer:
 it believes is feasible. What happens when the real car tries to follow it — and at what point in the
 process does anyone find out?
 
-!!! danger "This is the exact failure the course is organised to prevent"
-
-    [software.md §8](../../design/software.md) requires that the twin's wheelbase, steering range,
-    rate limit, and command latency all match measured hardware **within 10%**. You just produced a
-    19% error and watched the consequences.
-
-    This is also why the Chassis track's very first deliverable is a **measured** `mitt_dimensions.yaml`
-    — and why Merge 2 in Week 12 exists to prove the twin runs on measured numbers rather than
-    plausible ones.
-
-    The project's own design notes are blunt about the precedent: a predecessor's URDF carried
-    `chassis_mass = 300 kg` for a ride-on car, and its controller config listed a wheelbase
-    contradicting its own URDF. Nobody noticed, because in simulation nothing complains.
+> [!CAUTION]
+> **This is the exact failure the course is organised to prevent**
+>
+> [software.md §8](../../design/software.md) requires that the twin's wheelbase, steering range,
+> rate limit, and command latency all match measured hardware **within 10%**. You just produced a
+> 19% error and watched the consequences.
+>
+> This is also why the Chassis track's very first deliverable is a **measured** `mitt_dimensions.yaml`
+> — and why Merge 2 in Week 12 exists to prove the twin runs on measured numbers rather than
+> plausible ones.
+>
+> The project's own design notes are blunt about the precedent: a predecessor's URDF carried
+> `chassis_mass = 300 kg` for a ride-on car, and its controller config listed a wheelbase
+> contradicting its own URDF. Nobody noticed, because in simulation nothing complains.
 
 Restore `0.63` before submitting.
 

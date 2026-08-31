@@ -121,13 +121,14 @@ car is not. No lookup resolves that. Measure it.
   the latter because the documented mitigation consumes the steering channel.
   Flag to [bom.md](bom.md) and record in the [Order Log](../order-log.md).
 
-!!! warning "Do not take the motor-class figure from a vendor listing"
-
-    Retail listings for RS-series ride-on motors routinely publish a "stall" or
-    "max" current that is really the rated-load or peak-efficiency figure, off by
-    several times. They are also frequently copy-pasted between unrelated
-    windings. **The measurement above is the only authority in this project**, and
-    its result belongs in the Order Log.
+> [!WARNING]
+> **Do not take the motor-class figure from a vendor listing**
+>
+> Retail listings for RS-series ride-on motors routinely publish a "stall" or
+> "max" current that is really the rated-load or peak-efficiency figure, off by
+> several times. They are also frequently copy-pasted between unrelated
+> windings. **The measurement above is the only authority in this project**, and
+> its result belongs in the Order Log.
 
 ### 3.2 OEM motor voltage configuration (critical)
 
@@ -202,7 +203,6 @@ Sabertooth-2x32 electrical recipe MRider reuses. The extra ~$100–200
 over a 12 V single-seater buys margin on every axis that is expensive to add
 later (payload, torque, deck area) and costs nothing MRider needs.
 
-
 ---
 
 ## ADR D-R — Reversal to the 12 V single-seater (2026-08-08)
@@ -242,21 +242,22 @@ against the build.
 | 12 V at ≤ walking speed is **inherently less dangerous** than 24 V for a student-operated platform. | ✓ |
 | Sabertooth 2x32 headroom is **unknown until the drive motors are measured** ([§3.1](#31-drive-motor-stall-current-vs-sabertooth-rating-critical)) — a 12 V car is *likely* to draw less than the 24 V case, but "likely" is not a number and the plausible range straddles the 32 A/channel limit. Retained regardless of how it lands: its current limiting and R/C signal-loss timeout are load-bearing in the [failsafe matrix](safety.md#2-failsafe-matrix). | – |
 
-!!! note "Corrected 2026-08-11 — this document used to assert the motor class twice, differently"
-
-    Recorded because the disagreement was invisible until someone tried to justify the
-    Sabertooth line item, and because the resolution is a general rule for this project.
-
-    §3.1 read *"Stall for RS-550-class 12 V motors is typically 30–60 A each"* — paralleled,
-    60–120 A, at or beyond the 2x32's ~64 A peak. The consequences row above read *"heavily
-    oversized for RS-390-class motors"* — roughly a quarter of that. §3.1's figure was written
-    for the 24 V two-seater and never re-scoped when ADR D was reversed; the RS-390 claim had
-    no source at all.
-
-    **Neither is now asserted.** The motor class on the delivered vehicle is unknown, the
-    plausible range straddles the Sabertooth's limit, and §3.1 makes the measurement the
-    authority rather than any catalogue figure. That is the correct posture for a number that
-    decides whether a $125 part is adequate.
+> [!NOTE]
+> **Corrected 2026-08-11 — this document used to assert the motor class twice, differently**
+>
+> Recorded because the disagreement was invisible until someone tried to justify the
+> Sabertooth line item, and because the resolution is a general rule for this project.
+>
+> §3.1 read *"Stall for RS-550-class 12 V motors is typically 30–60 A each"* — paralleled,
+> 60–120 A, at or beyond the 2x32's ~64 A peak. The consequences row above read *"heavily
+> oversized for RS-390-class motors"* — roughly a quarter of that. §3.1's figure was written
+> for the 24 V two-seater and never re-scoped when ADR D was reversed; the RS-390 claim had
+> no source at all.
+>
+> **Neither is now asserted.** The motor class on the delivered vehicle is unknown, the
+> plausible range straddles the Sabertooth's limit, and §3.1 makes the measurement the
+> authority rather than any catalogue figure. That is the correct posture for a number that
+> decides whether a $125 part is adequate.
 
 **Payload is not the problem it first appears.** These cars are rated for a child (~25–30 kg);
 ~6 kg of kit is well inside that. The real risks are **centre of mass** and **mounting

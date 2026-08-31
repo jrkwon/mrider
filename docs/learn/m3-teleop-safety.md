@@ -8,21 +8,23 @@
 
 **Reference:** [design/safety.md](../design/safety.md)
 
-!!! tip "What makes this module different from a checklist"
+> [!TIP]
+> **What makes this module different from a checklist**
+>
+> MRider concentrates the steering loop, throttle, override, and arming on a **single MCU**.
+> That is only defensible because three of the four authority layers are *independent of that
+> MCU's firmware* — and one of them exists purely to make it so.
+>
+> The lab therefore does something unusual: it asks you to **kill the controller on purpose**
+> and confirm you can still steer. A safety claim you have not tested with the component dead
+> is not a safety claim.
 
-    MRider concentrates the steering loop, throttle, override, and arming on a **single MCU**.
-    That is only defensible because three of the four authority layers are *independent of that
-    MCU's firmware* — and one of them exists purely to make it so.
-
-    The lab therefore does something unusual: it asks you to **kill the controller on purpose**
-    and confirm you can still steer. A safety claim you have not tested with the component dead
-    is not a safety claim.
-
-!!! warning "Draft — lab not yet run on hardware"
-
-    The lecture is grounded in [safety.md](../design/safety.md), which is authoritative and
-    complete. The **lab requires a vehicle with the relay MUX and E-stop installed**, which has
-    not been built. No failsafe has been physically exercised on an MRider.
+> [!WARNING]
+> **Draft — lab not yet run on hardware**
+>
+> The lecture is grounded in [safety.md](../design/safety.md), which is authoritative and
+> complete. The **lab requires a vehicle with the relay MUX and E-stop installed**, which has
+> not been built. No failsafe has been physically exercised on an MRider.
 
 ---
 
@@ -52,16 +54,17 @@ STOCK or DBW.
 **Default is de-energized.** Therefore *any* loss of logic power, *any* E-stop, and *any*
 deliberate abort drops the coil and reverts to the factory-safe vehicle.
 
-!!! info "The failure direction is always toward stock"
-
-    This is the single most important property in the whole safety design. Not "the software
-    detects a fault and switches to a safe mode" — software that must run correctly in order
-    to fail safely is not a safety mechanism. **Physics does it:** no current in the coil, no
-    DBW.
-
-    Note the precise meaning of "parent-remote fallback": it is **reversibility**, not live
-    dual authority. The parent remote and the Sabertooth are never simultaneously wired to the
-    motors.
+> [!NOTE]
+> **The failure direction is always toward stock**
+>
+> This is the single most important property in the whole safety design. Not "the software
+> detects a fault and switches to a safe mode" — software that must run correctly in order
+> to fail safely is not a safety mechanism. **Physics does it:** no current in the coil, no
+> DBW.
+>
+> Note the precise meaning of "parent-remote fallback": it is **reversibility**, not live
+> dual authority. The parent remote and the Sabertooth are never simultaneously wired to the
+> motors.
 
 ### The priority ladder
 
@@ -93,18 +96,20 @@ does not:
   selects Teensy output *or* the receiver's output into the Sabertooth. This is **wiring**. It
   works with the firmware hung, crashed, or never flashed.
 
-!!! success "The general move: convert a software guarantee into a physical one"
+> [!TIP]
+> **The general move: convert a software guarantee into a physical one**
+>
+> PX4's RC override was *software* — good software, but software. Layer B is a signal path.
+> Ask of any safety claim: **what has to be executing correctly for this to work?** If the
+> answer includes the thing that might fail, it is not a mitigation.
 
-    PX4's RC override was *software* — good software, but software. Layer B is a signal path.
-    Ask of any safety claim: **what has to be executing correctly for this to work?** If the
-    answer includes the thing that might fail, it is not a mitigation.
-
-!!! danger "And state the cost honestly"
-
-    Through Layer B the override commands raw **effort**, open-loop — not an angle. It feels
-    different, and an operator meeting that difference for the first time during an emergency
-    is a hazard you created. That is why the lab makes you feel it on the bench, deliberately,
-    with the Teensy halted.
+> [!CAUTION]
+> **And state the cost honestly**
+>
+> Through Layer B the override commands raw **effort**, open-loop — not an angle. It feels
+> different, and an operator meeting that difference for the first time during an emergency
+> is a hazard you created. That is why the lab makes you feel it on the bench, deliberately,
+> with the Teensy halted.
 
 ### Reading a failsafe matrix
 
@@ -119,19 +124,20 @@ then the motor de-energizes.
 removes the setpoint. The Teensy detects the dead session and enters `ESTOP` on its own; the
 laptop separately sees stale status and halts Nav2.
 
-!!! danger "Row 2 reversed direction, and that is worth dwelling on"
-
-    Under the earlier design, unplugging USB left **steering still tracking**, because the
-    setpoint arrived on a separate wire from PX4. Now it stops the vehicle.
-
-    Which is safer? The design argues the new behaviour is: a stale setpoint driving a live
-    actuator is worse than a stop, and now there is **one link with one timeout** instead of a
-    fault that manifests differently depending on which of two paths died.
-
-    But notice the real lesson: **the same physical action — pulling a cable — produced
-    opposite behaviours under two reasonable designs.** An operator who learned one and is
-    working with the other will do the wrong thing. This is why you exercise the matrix on a
-    bench rather than reading it, and why changing a failsafe means retraining the humans.
+> [!CAUTION]
+> **Row 2 reversed direction, and that is worth dwelling on**
+>
+> Under the earlier design, unplugging USB left **steering still tracking**, because the
+> setpoint arrived on a separate wire from PX4. Now it stops the vehicle.
+>
+> Which is safer? The design argues the new behaviour is: a stale setpoint driving a live
+> actuator is worse than a stop, and now there is **one link with one timeout** instead of a
+> fault that manifests differently depending on which of two paths died.
+>
+> But notice the real lesson: **the same physical action — pulling a cable — produced
+> opposite behaviours under two reasonable designs.** An operator who learned one and is
+> working with the other will do the wrong thing. This is why you exercise the matrix on a
+> bench rather than reading it, and why changing a failsafe means retraining the humans.
 
 **Row 5 — E-stop.** Traction power cut, MUX coil dropped, Sabertooth unpowered on the motor
 rail. The steering motor loses power and the **column freewheels**.
@@ -163,13 +169,14 @@ Why freewheeling is acceptable, in the design's own terms:
 The alternative, hold-last-angle through an E-stop, would require keeping the steering motor
 powered *after* an emergency stop. Rejected.
 
-!!! note "Notice the shape of that argument"
-
-    "Freewheel is safe" is not a universal claim. It is safe **given** ≤ walking speed, an
-    operator alongside, and a short coast-down. Change the speed cap and the argument no
-    longer holds. Safety claims are conditional, and a good safety document states the
-    conditions. This is why the software speed cap in the build guide is not a tuning
-    parameter.
+> [!NOTE]
+> **Notice the shape of that argument**
+>
+> "Freewheel is safe" is not a universal claim. It is safe **given** ≤ walking speed, an
+> operator alongside, and a short coast-down. Change the speed cap and the argument no
+> longer holds. Safety claims are conditional, and a good safety document states the
+> conditions. This is why the software speed cap in the build guide is not a tuning
+> parameter.
 
 ### FMEA — the failures nobody watches
 
@@ -216,10 +223,11 @@ No stage begins until the previous one passes. Autonomy engages only after Stage
 **Goal:** drive by joystick and RC, then deliberately trigger heartbeat-loss and RC-loss
 failsafes on the bench and confirm each specified behavior.
 
-!!! danger "Wheels off the ground for this entire lab"
-
-    Every test here is a Stage 3 test. The vehicle stays on stands. One student keeps a hand
-    on the E-stop for the whole session and does nothing else.
+> [!CAUTION]
+> **Wheels off the ground for this entire lab**
+>
+> Every test here is a Stage 3 test. The vehicle stays on stands. One student keeps a hand
+> on the E-stop for the whole session and does nothing else.
 
 ### Part 1 — Predict before you test
 
@@ -297,12 +305,13 @@ Verify the priority order holds, from the bottom up:
 | RC commands, then de-energize the MUX | Reverts to STOCK mid-command | *(record)* |
 | Anything commands, then E-stop | Traction cut + STOCK, **works with the laptop off** | *(record)* |
 
-!!! danger "Layer B is the row that matters"
-
-    Every other line in this table tests something that also existed under the previous
-    architecture. **Layer B is the one that makes a single-MCU design defensible at all**, and
-    it is the only one that must be tested with the controller deliberately dead. If you skip
-    one test in this module, do not let it be this one.
+> [!CAUTION]
+> **Layer B is the row that matters**
+>
+> Every other line in this table tests something that also existed under the previous
+> architecture. **Layer B is the one that makes a single-MCU design defensible at all**, and
+> it is the only one that must be tested with the controller deliberately dead. If you skip
+> one test in this module, do not let it be this one.
 
 ### Expected output
 

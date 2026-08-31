@@ -52,16 +52,17 @@ part of the lesson.
 
 ### Constraints
 
-!!! danger "Non-negotiable, all of them"
-
-    - **≤ walking speed.** The entire [safety analysis](../design/safety.md#43-why-traction-cut-freewheel-steering-is-acceptable)
-      is conditional on it. Raising the cap invalidates the safety case, and "we went faster"
-      is not a result.
-    - **Operator on the RC transmitter, thumbs on the sticks**, for every powered run.
-    - **Spotter on the E-stop**, doing nothing else.
-    - **Clear area** sized by the coast-down distance you measured in M3.
-    - **Abort on the first surprise.** An aborted run that you understood is worth more than a
-      completed run that confused you.
+> [!CAUTION]
+> **Non-negotiable, all of them**
+>
+> - **≤ walking speed.** The entire [safety analysis](../design/safety.md#43-why-traction-cut-freewheel-steering-is-acceptable)
+>   is conditional on it. Raising the cap invalidates the safety case, and "we went faster"
+>   is not a result.
+> - **Operator on the RC transmitter, thumbs on the sticks**, for every powered run.
+> - **Spotter on the E-stop**, doing nothing else.
+> - **Clear area** sized by the coast-down distance you measured in M3.
+> - **Abort on the first surprise.** An aborted run that you understood is worth more than a
+>   completed run that confused you.
 
 ---
 
@@ -78,11 +79,12 @@ Write a one-page proposal:
 - What you will measure, and how
 - Your top three predicted failure modes, and what you would do about each
 
-!!! note "The turning-radius check is not a formality"
-
-    `R_min ≈ 2.4 × wheelbase`. Teams routinely design a course their vehicle geometrically
-    cannot drive, then spend a week tuning a controller to solve a problem that is not a
-    controller problem. Do the arithmetic in the proposal.
+> [!NOTE]
+> **The turning-radius check is not a formality**
+>
+> `R_min ≈ 2.4 × wheelbase`. Teams routinely design a course their vehicle geometrically
+> cannot drive, then spend a week tuning a controller to solve a problem that is not a
+> controller problem. Do the arithmetic in the proposal.
 
 ### Phase 2 — Build and iterate
 
@@ -129,14 +131,15 @@ See the checklist below.
 | **Safety discipline** | 10% | Protocol followed unprompted; abort criteria exercised correctly | Protocol followed | Any protocol violation |
 | **Presentation** | 10% | Clear, honest about limitations, handles questions | Covers the work | Unclear or overclaims |
 
-!!! info "Honest failure outscores a lucky success"
-
-    A team that completes two of ten laps and can explain **precisely why the other eight
-    failed**, with evidence pointing at a subsystem, has demonstrated more engineering than a
-    team that completed ten and cannot say why. Report what happened.
-
-    Overclaiming is penalized in the presentation criterion. "Our policy generalizes" after
-    testing one course in one lighting condition is not a finding.
+> [!NOTE]
+> **Honest failure outscores a lucky success**
+>
+> A team that completes two of ten laps and can explain **precisely why the other eight
+> failed**, with evidence pointing at a subsystem, has demonstrated more engineering than a
+> team that completed ten and cannot say why. Report what happened.
+>
+> Overclaiming is penalized in the presentation criterion. "Our policy generalizes" after
+> testing one course in one lighting condition is not a finding.
 
 ---
 

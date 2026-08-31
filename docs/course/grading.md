@@ -14,9 +14,7 @@
 
 This project holds itself to one rule, and so does this course:
 
-!!! quote
-
-    **"Honest failure outscores a lucky success."** — [M8 capstone rubric](../learn/m8-capstone.md)
+> **"Honest failure outscores a lucky success."** — [M8 capstone rubric](../learn/m8-capstone.md)
 
 A subsystem that does not work, accompanied by a correct, evidenced diagnosis of why, scores **above**
 one that works for reasons you cannot explain.
@@ -54,11 +52,12 @@ Five labs, 6% each, Weeks 1–5. Graded individually — **your** work, **your**
 | **3–4** | Substantial attempt with a documented, correctly-diagnosed blocker |
 | **0–2** | Not attempted, or submitted without evidence of having run anything |
 
-!!! tip "The 'break it on purpose' step is not optional"
-
-    Every lab ends by deliberately breaking something and diagnosing the result. That step is worth
-    more of the grade than getting the happy path working, because the happy path is the part you can
-    copy from a classmate and the diagnosis is not.
+> [!TIP]
+> **The 'break it on purpose' step is not optional**
+>
+> Every lab ends by deliberately breaking something and diagnosing the result. That step is worth
+> more of the grade than getting the happy path working, because the happy path is the part you can
+> copy from a classmate and the diagnosis is not.
 
 ### Submission
 
@@ -90,13 +89,14 @@ that is its real purpose. Present to your classmates, not to me.
 | **Risk honesty** | 15 | What is going wrong, what you will do about it |
 | **Delivery** | 10 | Clear, on time, everyone speaks |
 
-!!! warning "The most common way to lose points here"
-
-    Presenting a plan instead of a result. At Week 8 you are five weeks into track work. "We
-    researched the options" is a Week 6 answer. Show what you built, even if it is small and broken.
-
-    The second most common: a team that has not talked to the track it depends on. Interface clarity
-    is 20 points precisely because it is the thing that fails silently until Week 13.
+> [!WARNING]
+> **The most common way to lose points here**
+>
+> Presenting a plan instead of a result. At Week 8 you are five weeks into track work. "We
+> researched the options" is a Week 6 answer. Show what you built, even if it is small and broken.
+>
+> The second most common: a team that has not talked to the track it depends on. Interface clarity
+> is 20 points precisely because it is the thing that fails silently until Week 13.
 
 ---
 
@@ -149,14 +149,15 @@ replication claim**.
 These weights are inherited deliberately from the
 [M8 capstone rubric](../learn/m8-capstone.md) — the same standard the project applies to itself.
 
-!!! danger "Safety discipline is a hard gate, not just 10 points"
-
-    The [staged bring-up protocol](../design/safety.md) is: **bench before vehicle; wheels-off before
-    wheels-on; walking pace before anything faster.** No stage begins until the previous one passes.
-
-    A team that skips a stage does not lose 10 points. It does not demo. This vehicle is heavy enough
-    to hurt someone, and the protocol exists so that a class can work on it safely without an
-    instructor watching every single action.
+> [!CAUTION]
+> **Safety discipline is a hard gate, not just 10 points**
+>
+> The [staged bring-up protocol](../design/safety.md) is: **bench before vehicle; wheels-off before
+> wheels-on; walking pace before anything faster.** No stage begins until the previous one passes.
+>
+> A team that skips a stage does not lose 10 points. It does not demo. This vehicle is heavy enough
+> to hurt someone, and the protocol exists so that a class can work on it safely without an
+> instructor watching every single action.
 
 ### Final report
 
@@ -181,12 +182,13 @@ Not attendance. Assessed from evidence:
 | **Documentation** | Design notes, measurements recorded, build pages updated |
 | **Helping** | Debugging someone else's problem, answering questions, reviewing a teammate's work |
 
-!!! note "Work with no commits still counts"
-
-    Measurement, debugging, documentation review, and asking the question that saved the team a week
-    are all real work that leaves little git trace. That is exactly what the free-text section of the
-    [peer evaluation](teams.md#peer-evaluation) is for — tell me what your teammates did that I
-    cannot see.
+> [!NOTE]
+> **Work with no commits still counts**
+>
+> Measurement, debugging, documentation review, and asking the question that saved the team a week
+> are all real work that leaves little git trace. That is exactly what the free-text section of the
+> [peer evaluation](teams.md#peer-evaluation) is for — tell me what your teammates did that I
+> cannot see.
 
 ---
 
@@ -200,14 +202,15 @@ Not attendance. Assessed from evidence:
 | **D** | Minimal contribution, or claims that the evidence does not support |
 | **F** | Did not participate, or submitted work that is not yours |
 
-!!! success "The vehicle does not have to fully work for the class to earn A grades"
-
-    Full autonomy on real hardware in one semester, with a car that has not been ordered yet, is
-    genuinely ambitious. It may not happen.
-
-    What is graded is **engineering**: measured, evidenced, honestly reported, and reproducible by
-    the next cohort. A track that documents exactly why the steering loop could not hold 1° — with
-    data — has done better work than one that got a lucky demo and cannot say why it worked.
+> [!TIP]
+> **The vehicle does not have to fully work for the class to earn A grades**
+>
+> Full autonomy on real hardware in one semester, with a car that has not been ordered yet, is
+> genuinely ambitious. It may not happen.
+>
+> What is graded is **engineering**: measured, evidenced, honestly reported, and reproducible by
+> the next cohort. A track that documents exactly why the steering loop could not hold 1° — with
+> data — has done better work than one that got a lucky demo and cannot say why it worked.
 
 ---
 

@@ -9,11 +9,12 @@ runs on a laptop while the vehicle is still being procured, and the controller s
 launches is the *same* one the real vehicle will use — only the `ros2_control` hardware
 plugin differs ([ADR-SW4](design/software.md#7-software-adr-summary)).
 
-!!! success "Verified working"
-
-    Every command here has been run end to end: both controllers activate, `slam_toolbox`
-    maps the depot world, and Nav2 drives a ~13 m goal to completion. Where something is
-    known to be broken it says so explicitly rather than being left out.
+> [!TIP]
+> **Verified working**
+>
+> Every command here has been run end to end: both controllers activate, `slam_toolbox`
+> maps the depot world, and Nav2 drives a ~13 m goal to completion. Where something is
+> known to be broken it says so explicitly rather than being left out.
 
 ---
 
@@ -42,18 +43,19 @@ You should see:
 MITT env: RMW=rmw_fastrtps_cpp, GZ_VERSION=harmonic, user-site disabled
 ```
 
-!!! danger "This is the step that costs people an afternoon"
-
-    `setup_env.sh` forces `RMW_IMPLEMENTATION=rmw_fastrtps_cpp`, overriding the CycloneDDS
-    default in `~/.bashrc`
-    ([why](design/software.md#621-rmw-use-fastrtps-not-cyclonedds-open-issue)).
-
-    The failure mode if you forget it in **one** terminal is nasty precisely because nothing
-    errors: two DDS implementations do not see each other, so `ros2 topic list` comes back
-    almost empty and the simulator looks **dead** while it is running perfectly. You will
-    debug the simulator instead of the shell.
-
-    Source it everywhere, every time.
+> [!CAUTION]
+> **This is the step that costs people an afternoon**
+>
+> `setup_env.sh` forces `RMW_IMPLEMENTATION=rmw_fastrtps_cpp`, overriding the CycloneDDS
+> default in `~/.bashrc`
+> ([why](design/software.md#621-rmw-use-fastrtps-not-cyclonedds-open-issue)).
+>
+> The failure mode if you forget it in **one** terminal is nasty precisely because nothing
+> errors: two DDS implementations do not see each other, so `ros2 topic list` comes back
+> almost empty and the simulator looks **dead** while it is running perfectly. You will
+> debug the simulator instead of the shell.
+>
+> Source it everywhere, every time.
 
 ---
 
@@ -104,13 +106,14 @@ SLAM's `map → odom`.
 
     The repo ships no RViz config of its own yet, so this borrows Nav2's stock view.
 
-!!! note "Two harmless things RViz will show you"
-
-    **`Localization: inactive`** in the Navigation 2 panel is correct. That panel watches
-    AMCL; we run `slam_toolbox` instead. `Navigation: active` is the one that matters.
-
-    **Three displays never populate** — Amcl Particle Swarm, RealsenseCamera, Bumper Hit.
-    They belong to Nav2's example robot, not this one.
+> [!NOTE]
+> **Two harmless things RViz will show you**
+>
+> **`Localization: inactive`** in the Navigation 2 panel is correct. That panel watches
+> AMCL; we run `slam_toolbox` instead. `Navigation: active` is the one that matters.
+>
+> **Three displays never populate** — Amcl Particle Swarm, RealsenseCamera, Bumper Hit.
+> They belong to Nav2's example robot, not this one.
 
 ---
 
@@ -180,23 +183,25 @@ Success looks like this in the Nav2 terminal:
 [bt_navigator]: Goal succeeded
 ```
 
-!!! warning "`--once` does not work here, and fails silently"
+> [!WARNING]
+> **`--once` does not work here, and fails silently**
+>
+> `ros2 topic pub --once /goal_pose ...` publishes and exits before DDS discovery
+> completes, so the goal is **dropped with no error, no warning, and no log line** — the
+> vehicle simply sits there. Use `-r 2` under a `timeout`, or the RViz button.
+>
+> Related: **`ros2 action send_goal /navigate_to_pose` hangs**, with the server never
+> logging receipt. Unresolved, possibly sharing a root cause with the RMW issue above.
+> `/goal_pose` is the supported path.
 
-    `ros2 topic pub --once /goal_pose ...` publishes and exits before DDS discovery
-    completes, so the goal is **dropped with no error, no warning, and no log line** — the
-    vehicle simply sits there. Use `-r 2` under a `timeout`, or the RViz button.
-
-    Related: **`ros2 action send_goal /navigate_to_pose` hangs**, with the server never
-    logging receipt. Unresolved, possibly sharing a root cause with the RMW issue above.
-    `/goal_pose` is the supported path.
-
-!!! note "It stops ~0.5 m short and calls that success"
-
-    `xy_goal_tolerance` is **0.6 m**, which looks sloppy and is not. At a 1.52 m minimum
-    turning radius, with no in-place rotation, a tighter tolerance is physically unreachable:
-    the vehicle can only loop past the goal and try again. Tightening it does not improve
-    accuracy, it produces an infinite orbit — which is exactly what the first test did
-    ([software.md §4.4](design/software.md#44-nav2-bring-up-in-the-twin-result-2026-08-08)).
+> [!NOTE]
+> **It stops ~0.5 m short and calls that success**
+>
+> `xy_goal_tolerance` is **0.6 m**, which looks sloppy and is not. At a 1.52 m minimum
+> turning radius, with no in-place rotation, a tighter tolerance is physically unreachable:
+> the vehicle can only loop past the goal and try again. Tightening it does not improve
+> accuracy, it produces an infinite orbit — which is exactly what the first test did
+> ([software.md §4.4](design/software.md#44-nav2-bring-up-in-the-twin-result-2026-08-08)).
 
 ---
 
@@ -221,21 +226,22 @@ well-explored map.
 pgrep -af "gz sim|ros2 launch"
 ```
 
-!!! danger "Never leave two simulators running"
-
-    Orphaned instances are the single most confusing failure in this stack. Each publishes
-    its own `/clock` and `/scan`, so subscribers receive **interleaved clocks from different
-    simulations**. The symptom is `Detected jump back in time`, frozen TF, and controllers
-    that will not activate — all of which look like bugs in the twin.
-
-    If anything behaves strangely, check this first:
-
-    ```bash
-    pgrep -af "gz sim" | wc -l     # must be 1 while running, 0 when stopped
-    ros2 topic info /clock         # Publisher count must be 1
-    ```
-
-    Clean up with `pkill -f "gz sim"` and start again.
+> [!CAUTION]
+> **Never leave two simulators running**
+>
+> Orphaned instances are the single most confusing failure in this stack. Each publishes
+> its own `/clock` and `/scan`, so subscribers receive **interleaved clocks from different
+> simulations**. The symptom is `Detected jump back in time`, frozen TF, and controllers
+> that will not activate — all of which look like bugs in the twin.
+>
+> If anything behaves strangely, check this first:
+>
+> ```bash
+> pgrep -af "gz sim" | wc -l     # must be 1 while running, 0 when stopped
+> ros2 topic info /clock         # Publisher count must be 1
+> ```
+>
+> Clean up with `pkill -f "gz sim"` and start again.
 
 ---
 

@@ -6,13 +6,14 @@ RoboRacer-style: work through the sections **in order**, from sourcing parts to 
 autonomous lap. Each section states its goal, prerequisites, and expected outcome,
 and links to the design document that specifies the details.
 
-!!! warning "Draft — not yet validated on hardware"
-
-    These procedures are derived from the design documents. They have **not** been performed
-    on a physical vehicle. Values marked *(measure during bring-up)* must be recorded and
-    these pages updated before they are used for teaching or external replication. The
-    design documents remain the authoritative specification; where a build step and a design
-    document disagree, the design document is correct.
+> [!WARNING]
+> **Draft — not yet validated on hardware**
+>
+> These procedures are derived from the design documents. They have **not** been performed
+> on a physical vehicle. Values marked *(measure during bring-up)* must be recorded and
+> these pages updated before they are used for teaching or external replication. The
+> design documents remain the authoritative specification; where a build step and a design
+> document disagree, the design document is correct.
 
 ## The eight steps
 
@@ -40,11 +41,12 @@ stage passes.**
 - **Safety:** every powered test before "Manual drive" is performed **wheels-off** on a
   stand. Read [safety.md](../design/safety.md) before applying power to the vehicle.
 
-!!! danger "Bench before vehicle; wheels-off before wheels-on; walking pace before anything faster."
-
-    This is a 24 V two-seater with enough torque to injure someone. The staged protocol is
-    not a suggestion — each stage exists because it catches a class of fault that is
-    dangerous to discover at the next stage.
+> [!CAUTION]
+> **Bench before vehicle; wheels-off before wheels-on; walking pace before anything faster.**
+>
+> This is a 24 V two-seater with enough torque to injure someone. The staged protocol is
+> not a suggestion — each stage exists because it catches a class of fault that is
+> dangerous to discover at the next stage.
 
 ## What you are actually building
 

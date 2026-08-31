@@ -57,12 +57,12 @@ And it is unfinished in specific, named ways. By December, these will exist beca
 | **Measured geometry** | Every dimension the simulator uses is currently an estimate. The file says so itself: *"NOTHING IN THIS FILE HAS BEEN MEASURED"* |
 | **A real test suite** | The repository has 29 tests. All 29 are linters |
 
-!!! quote "The standard"
-
-    "Honest failure outscores a lucky success."
-
-    A subsystem that does not work, with a correct and evidenced diagnosis of why, scores above one
-    that works for reasons you cannot explain. See [Grading](grading.md).
+> **The standard**
+>
+> "Honest failure outscores a lucky success."
+>
+> A subsystem that does not work, with a correct and evidenced diagnosis of why, scores above one
+> that works for reasons you cannot explain. See [Grading](grading.md).
 
 ---
 

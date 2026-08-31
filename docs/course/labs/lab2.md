@@ -32,11 +32,12 @@ ros2 pkg create --build-type ament_python --dependencies rclpy geometry_msgs nav
 **Expected output:** a new `lab2_square/` directory containing `package.xml`, `setup.py`, and a
 `lab2_square/` Python subdirectory.
 
-!!! info "Why `ament_python` here when every MITT package is `ament_cmake`"
-
-    The existing packages hold launch files, YAML, URDF, and message definitions — things CMake
-    installs. They contain no nodes at all. You are writing a Python node, so `ament_python` is the
-    lighter fit. Being able to say *why* you picked a build type is the point.
+> [!NOTE]
+> **Why `ament_python` here when every MITT package is `ament_cmake`**
+>
+> The existing packages hold launch files, YAML, URDF, and message definitions — things CMake
+> installs. They contain no nodes at all. You are writing a Python node, so `ament_python` is the
+> lighter fit. Being able to say *why* you picked a build type is the point.
 
 ---
 
@@ -126,12 +127,13 @@ ros2 run lab2_square square_driver
 **Expected output:** the vehicle drives a rounded square. It will not close perfectly. That is not a
 bug in your code — see Part 4.
 
-!!! warning "`msg.linear.x` stays non-zero during the turn, deliberately"
-
-    Set it to zero and the vehicle stops turning entirely. MRider is **Ackermann-steered**: the front
-    wheels point, the rear wheels push. With no forward motion there is no rotation, no matter what
-    `angular.z` says. A differential-drive robot would spin in place here; this one cannot, and every
-    planner in this course has to respect that.
+> [!WARNING]
+> **`msg.linear.x` stays non-zero during the turn, deliberately**
+>
+> Set it to zero and the vehicle stops turning entirely. MRider is **Ackermann-steered**: the front
+> wheels point, the rear wheels push. With no forward motion there is no rotation, no matter what
+> `angular.z` says. A differential-drive robot would spin in place here; this one cannot, and every
+> planner in this course has to respect that.
 
 ---
 
@@ -179,15 +181,15 @@ Answer in your submission:
 3. The odometry you subscribed to reports a position. Where does that number physically come
    from, and what can it not possibly know?
 
-!!! quote "The answer to question 3 is a design decision, not an accident"
-
-    On the real vehicle, both rear motors are wired in parallel to a **single** driver channel, and
-    only **one** of them carries an encoder ([ADR C](../../design/dbw.md)). So the measurement is
-    taken at one motor shaft — upstream of the gearbox backlash, upstream of tyre slip, and blind to
-    the fact that in a turn the two rear wheels travel different distances.
-
-    See the diagram in [M5](../../learn/m5-slam.md). This is exactly why odometry gets fused with an
-    IMU in an EKF rather than trusted raw, and it is why Week 6 exists.
+> **The answer to question 3 is a design decision, not an accident**
+>
+> On the real vehicle, both rear motors are wired in parallel to a **single** driver channel, and
+> only **one** of them carries an encoder ([ADR C](../../design/dbw.md)). So the measurement is
+> taken at one motor shaft — upstream of the gearbox backlash, upstream of tyre slip, and blind to
+> the fact that in a turn the two rear wheels travel different distances.
+>
+> See the diagram in [M5](../../learn/m5-slam.md). This is exactly why odometry gets fused with an
+> IMU in an EKF rather than trusted raw, and it is why Week 6 exists.
 
 ---
 
@@ -217,16 +219,17 @@ Write down:
 - Why this behaviour is **correct** — why a controller that keeps executing the last command it
   received would be a serious defect on a real vehicle.
 
-!!! danger "This is a safety mechanism, not a limitation"
-
-    A stale command is not a command. If the process sending steering and throttle dies, freezes, or
-    loses its connection, a controller that holds the last value drives a vehicle at its last
-    commanded speed into whatever is in front of it.
-
-    `reference_timeout: 0.5` is the software layer of that protection. The real vehicle implements
-    the same idea three more times in hardware, because — as `twist_mux.yaml` puts it — a software
-    mux cannot do that job. Three of the four real authority layers work with the controller
-    firmware completely dead.
+> [!CAUTION]
+> **This is a safety mechanism, not a limitation**
+>
+> A stale command is not a command. If the process sending steering and throttle dies, freezes, or
+> loses its connection, a controller that holds the last value drives a vehicle at its last
+> commanded speed into whatever is in front of it.
+>
+> `reference_timeout: 0.5` is the software layer of that protection. The real vehicle implements
+> the same idea three more times in hardware, because — as `twist_mux.yaml` puts it — a software
+> mux cannot do that job. Three of the four real authority layers work with the controller
+> firmware completely dead.
 
 Set the timer back to `0.1` before submitting.
 

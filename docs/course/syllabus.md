@@ -38,12 +38,12 @@ exist today:
 The last one is not decoration. In this project, **the write-up is the claim**. A result nobody can
 reproduce is not a result.
 
-!!! quote "The standard this course is held to"
-
-    "Honest failure outscores a lucky success." — [M8 capstone rubric](../learn/m8-capstone.md)
-
-    A subsystem that does not work, with a correct and evidenced diagnosis of *why*, earns more than
-    one that works for reasons you cannot explain.
+> **The standard this course is held to**
+>
+> "Honest failure outscores a lucky success." — [M8 capstone rubric](../learn/m8-capstone.md)
+>
+> A subsystem that does not work, with a correct and evidenced diagnosis of *why*, earns more than
+> one that works for reasons you cannot explain.
 
 ---
 
@@ -54,11 +54,12 @@ reproduce is not a result.
 **Not required:** Linux, ROS, robotics, control theory, or C++. The course teaches Linux and ROS 2
 from the beginning, and reaches C++ only in the second half, where it is optional for most tracks.
 
-!!! danger "One hard prerequisite: a working machine on day one"
-
-    Week 1 opens with a lab. Complete [Environment Setup](environment.md) **before September 7** and
-    verify it with `bash scripts/check_env.sh`. Budget 2–4 hours. Students who arrive without a
-    working Ubuntu 22.04 install lose Lab 1.
+> [!CAUTION]
+> **One hard prerequisite: a working machine on day one**
+>
+> Week 1 opens with a lab. Complete [Environment Setup](environment.md) **before September 7** and
+> verify it with `bash scripts/check_env.sh`. Budget 2–4 hours. Students who arrive without a
+> working Ubuntu 22.04 install lose Lab 1.
 
 ---
 
@@ -137,20 +138,22 @@ Reading keys: **B** = *ROS 2: Zero to Robot* · **M** = [MRider learn module](..
 | 15 | **12/14** | Validation and failure analysis. Behavior cloning, previewed | Measure against the acceptance gates; dress rehearsal | Peer eval 2 |
 | 16 | **12/21** | — | **★ FINAL DEMO + PRESENTATIONS** | Final report · demo |
 
-!!! info "Why Week 4 is dense and Week 5 is self-study"
+> [!NOTE]
+> **Why Week 4 is dense and Week 5 is self-study**
+>
+> The 10/5 holiday landed on what would have been the most important foundation week. Rather than
+> cut content, the *systems* material — URDF through `ros2_control`, which is what people fail at
+> unsupervised — moved into the live Week 4 session. What went to self-study is the *mathematics*:
+> the bicycle model and the minimum-turning-radius derivation read perfectly well on paper, and
+> Lab 5 measures against an already-working simulator rather than asking you to configure one.
 
-    The 10/5 holiday landed on what would have been the most important foundation week. Rather than
-    cut content, the *systems* material — URDF through `ros2_control`, which is what people fail at
-    unsupervised — moved into the live Week 4 session. What went to self-study is the *mathematics*:
-    the bicycle model and the minimum-turning-radius derivation read perfectly well on paper, and
-    Lab 5 measures against an already-working simulator rather than asking you to configure one.
-
-!!! note "A note on the textbook"
-
-    *ROS 2: Zero to Robot* targets ROS 2 **Jazzy**; this course uses **Humble**. Most content
-    transfers directly. Where commands differ — `ros_gz` package naming, the `gz_ros2_control` source
-    build, and several Nav2 parameter renames — the weekly notes carry a **Humble note** callout.
-    Follow the weekly notes, not the book, when they disagree.
+> [!NOTE]
+> **A note on the textbook**
+>
+> *ROS 2: Zero to Robot* targets ROS 2 **Jazzy**; this course uses **Humble**. Most content
+> transfers directly. Where commands differ — `ros_gz` package naming, the `gz_ros2_control` source
+> build, and several Nav2 parameter renames — the weekly notes carry a **Humble note** callout.
+> Follow the weekly notes, not the book, when they disagree.
 
 ---
 

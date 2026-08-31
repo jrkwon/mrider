@@ -8,10 +8,11 @@ about that.
 You will add a sensor to MRider's description, watch it appear in the transform tree and in RViz, and
 then move it a few centimetres and see how thoroughly that ruins everything downstream.
 
-!!! note "Two weeks for this one"
-
-    Week 5 (10/5) has no class — 개천절 대체공휴일. Lab 4 and [Lab 5](lab5.md) are both due 10/12, and
-    you have the intervening two weeks for them.
+> [!NOTE]
+> **Two weeks for this one**
+>
+> Week 5 (10/5) has no class — 개천절 대체공휴일. Lab 4 and [Lab 5](lab5.md) are both due 10/12, and
+> you have the intervening two weeks for them.
 
 | | |
 |---|---|
@@ -74,11 +75,12 @@ This writes `frames.pdf` in your current directory. Open it.
 ros2 run tf2_ros tf2_echo base_link laser_link --ros-args -p use_sim_time:=true
 ```
 
-!!! warning "`use_sim_time:=true` is not optional here"
-
-    Without it, `tf2_echo` uses wall-clock time while every transform in the system is stamped with
-    *simulation* time. The two never line up and you get a stream of extrapolation errors that look
-    like a broken TF tree. This costs people an hour the first time.
+> [!WARNING]
+> **`use_sim_time:=true` is not optional here**
+>
+> Without it, `tf2_echo` uses wall-clock time while every transform in the system is stamped with
+> *simulation* time. The two never line up and you get a stream of extrapolation errors that look
+> like a broken TF tree. This costs people an hour the first time.
 
 Record the translation and rotation from `base_link` to `laser_link`.
 
@@ -131,11 +133,12 @@ ros2 run tf2_ros tf2_echo base_link rear_camera_link --ros-args -p use_sim_time:
 
 The rotation should show a yaw of π — it is pointing backwards.
 
-!!! tip "If the link does not appear"
-
-    Check `ros2 topic echo /robot_description --once | head -40`. If your link is not in there, xacro
-    did not pick up your edit — you probably did not rebuild, or `--symlink-install` is not in effect.
-    If it *is* there but not in TF, `robot_state_publisher` did not restart.
+> [!TIP]
+> **If the link does not appear**
+>
+> Check `ros2 topic echo /robot_description --once | head -40`. If your link is not in there, xacro
+> did not pick up your edit — you probably did not rebuild, or `--symlink-install` is not in effect.
+> If it *is* there but not in TF, `robot_state_publisher` did not restart.
 
 ---
 
@@ -182,21 +185,22 @@ Write down:
   points as the vehicle rotates.)
 - Why this is much harder to diagnose than a sensor that has simply stopped publishing.
 
-!!! danger "This is the third silent failure, and the worst of the three"
-
-    Nothing errors. The LiDAR publishes, TF is complete, SLAM runs, and the map is *wrong*. Every
-    component reports healthy because every component **is** healthy — the system is faithfully
-    computing the consequences of one bad number.
-
-    | Lab | Failure | Symptom |
-    |---|---|---|
-    | 1 | `ROS_DOMAIN_ID` mismatch | Nothing visible at all |
-    | 3 | QoS incompatibility | Connection silently never forms |
-    | 4 | Wrong extrinsic | Everything runs, and the output is quietly wrong |
-
-    The MRider acceptance gate for mapping is that repeated observations of the same wall agree
-    within **10 cm** over a 30 m loop. Now you know what that number is defending against — and why
-    the Chassis track measuring the real vehicle is not busywork.
+> [!CAUTION]
+> **This is the third silent failure, and the worst of the three**
+>
+> Nothing errors. The LiDAR publishes, TF is complete, SLAM runs, and the map is *wrong*. Every
+> component reports healthy because every component **is** healthy — the system is faithfully
+> computing the consequences of one bad number.
+>
+> | Lab | Failure | Symptom |
+> |---|---|---|
+> | 1 | `ROS_DOMAIN_ID` mismatch | Nothing visible at all |
+> | 3 | QoS incompatibility | Connection silently never forms |
+> | 4 | Wrong extrinsic | Everything runs, and the output is quietly wrong |
+>
+> The MRider acceptance gate for mapping is that repeated observations of the same wall agree
+> within **10 cm** over a 30 m loop. Now you know what that number is defending against — and why
+> the Chassis track measuring the real vehicle is not busywork.
 
 Restore the original value before submitting.
 

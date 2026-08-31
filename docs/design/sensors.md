@@ -49,17 +49,18 @@ trains on RGB frames.
 a color global-shutter USB3 camera** (e.g., **Arducam AR0234**, 2.3 MP, global shutter, up to
 80 fps, ~$160–180). RealSense D435i remains the option if depth is wanted later.
 
-!!! info "Re-tiered 2026-08-07 — deferred, not deleted"
-
-    Behavior cloning is **phase 2**
-    ([software.md §8](software.md#8-semester-1-scope-and-software-acceptance-gates)), and the
-    global-shutter argument below is *entirely* about training-label quality. Semester 1
-    delivers teleop and LiDAR SLAM, neither of which cares about rolling-shutter skew, so the
-    $150 premium buys nothing this term.
-
-    **The reasoning below still stands and still applies at phase 2.** Do not train a
-    behavior-cloning policy on rolling-shutter data and attribute the result to the platform —
-    budget the +$150 when the pipeline comes back ([bom.md](bom.md#phase-2-growth-path)).
+> [!NOTE]
+> **Re-tiered 2026-08-07 — deferred, not deleted**
+>
+> Behavior cloning is **phase 2**
+> ([software.md §8](software.md#8-semester-1-scope-and-software-acceptance-gates)), and the
+> global-shutter argument below is *entirely* about training-label quality. Semester 1
+> delivers teleop and LiDAR SLAM, neither of which cares about rolling-shutter skew, so the
+> $150 premium buys nothing this term.
+>
+> **The reasoning below still stands and still applies at phase 2.** Do not train a
+> behavior-cloning policy on rolling-shutter data and attribute the result to the platform —
+> budget the +$150 when the pipeline comes back ([bom.md](bom.md#phase-2-growth-path)).
 
 **Key finding (verified July 2026):** the RealSense D435i uses a **global-shutter
 stereo depth pair but a *rolling-shutter* RGB sensor** (1920×1080). So if the
@@ -173,18 +174,19 @@ extrinsics are tier-independent.
 **Decision:** a **standalone BNO085-class 9-DoF IMU** with onboard sensor fusion,
 connected directly to the laptop and publishing `sensor_msgs/Imu` on `/imu/data`.
 
-!!! info "Revised 2026-08-07 — this ADR was reversed by D3"
-
-    This previously specified "use the Pixhawk 6C's internal IMUs — no separate standalone
-    IMU," on the rationale that PX4's EKF2 was being reused. [D3](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)
-    removed the Pixhawk, so a standalone IMU is now required.
-
-    **The reuse argument was weaker than it read even before D3.** Finding F11 verified that
-    MRider's estimator was always `robot_localization` on the laptop
-    ([software.md §4.1](software.md#41-robot_localization-ekf-configekfyaml)), with PX4
-    supplying **raw `SensorCombined` only** — EKF2's output was not what the stack consumed.
-    So this is a **driver swap, not an estimator change**, and the "PX4 gives you the EKF"
-    leg of the original topology argument did not hold.
+> [!NOTE]
+> **Revised 2026-08-07 — this ADR was reversed by D3**
+>
+> This previously specified "use the Pixhawk 6C's internal IMUs — no separate standalone
+> IMU," on the rationale that PX4's EKF2 was being reused. [D3](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)
+> removed the Pixhawk, so a standalone IMU is now required.
+>
+> **The reuse argument was weaker than it read even before D3.** Finding F11 verified that
+> MRider's estimator was always `robot_localization` on the laptop
+> ([software.md §4.1](software.md#41-robot_localization-ekf-configekfyaml)), with PX4
+> supplying **raw `SensorCombined` only** — EKF2's output was not what the stack consumed.
+> So this is a **driver swap, not an estimator change**, and the "PX4 gives you the EKF"
+> leg of the original topology argument did not hold.
 
 Wheel/steering odometry from [`DbwStatus`](dbw.md#101-primary-transport-micro-ros-typed-messages)
 fuses with this IMU in `robot_localization`'s EKF to bound the paralleled-motor /
@@ -230,28 +232,28 @@ carry the sensor-selection weight.
 
 ## 5. Mounting / Mast Concept
 
-!!! danger "Mast height reduced to ~0.65 m — 2026-08-08"
-
-    This section was written for a **24 V two-seater**. [ADR D was reversed](vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08)
-    and MRider now uses a **12 V single-seater**: 98 × 56 × 47 cm, 10 kg.
-
-    **A 1.0–1.2 m mast does not belong on a 47 cm tall, 56 cm wide, 10 kg chassis.** With
-    ~6 kg of equipment already riding high on the plate, a mast that tall puts the combined
-    centre of mass well above the roofline on a track of only ~46 cm. That is a tip-over
-    risk in exactly the manoeuvre the vehicle performs most — a full-lock turn.
-
-    **Mast total height is now ~0.65 m**, giving roughly 0.55 m for the camera and LiDAR
-    above the plate. Every height figure below should be read against that.
-
-    **Consequence, stated rather than buried:** the camera sits lower and pitches down ~12°,
-    so it frames the floor closer in. That changes the input distribution for phase-2
-    behavior cloning — a policy trained on 1.2 m framing would not transfer. Not a problem
-    today (behavior cloning is phase 2), but it must not be rediscovered later.
-
-    The [digital twin](software.md#8-semester-1-scope-and-software-acceptance-gates) models
-    the equipment plate as a real 6 kg link so this margin is testable in simulation before
-    anything is bolted to the real car.
-
+> [!CAUTION]
+> **Mast height reduced to ~0.65 m — 2026-08-08**
+>
+> This section was written for a **24 V two-seater**. [ADR D was reversed](vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08)
+> and MRider now uses a **12 V single-seater**: 98 × 56 × 47 cm, 10 kg.
+>
+> **A 1.0–1.2 m mast does not belong on a 47 cm tall, 56 cm wide, 10 kg chassis.** With
+> ~6 kg of equipment already riding high on the plate, a mast that tall puts the combined
+> centre of mass well above the roofline on a track of only ~46 cm. That is a tip-over
+> risk in exactly the manoeuvre the vehicle performs most — a full-lock turn.
+>
+> **Mast total height is now ~0.65 m**, giving roughly 0.55 m for the camera and LiDAR
+> above the plate. Every height figure below should be read against that.
+>
+> **Consequence, stated rather than buried:** the camera sits lower and pitches down ~12°,
+> so it frames the floor closer in. That changes the input distribution for phase-2
+> behavior cloning — a policy trained on 1.2 m framing would not transfer. Not a problem
+> today (behavior cloning is phase 2), but it must not be rediscovered later.
+>
+> The [digital twin](software.md#8-semester-1-scope-and-software-acceptance-gates) models
+> the equipment plate as a real 6 kg link so this margin is testable in simulation before
+> anything is bolted to the real car.
 
 The sensors share a single **mast** on the deck/bed ([vehicle.md](vehicle.md) C5)
 so their extrinsics are fixed once ([calibration.md](calibration.md)).

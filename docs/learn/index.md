@@ -9,15 +9,16 @@ the design document that grounds the theory in the real vehicle.
 some Python. **Format:** short lecture + guided lab per module. **Prerequisites for the
 course:** basic Python and Linux; no robotics background assumed.
 
-!!! info "What state this curriculum is in"
-
-    Lecture notes, labs, and slide outlines are written. Modules **M1** and **M4–M8** are
-    hardware-independent enough to teach or self-study now — several can be run against
-    recorded data or simulation. **M2** and **M3** include bench-rig labs that have not yet
-    been run on a physical MRider; those pages carry a Draft banner.
-
-    Slides are provided as **outlines**, not as binary decks — an instructor builds the deck
-    from the outline in whatever tool their institution uses.
+> [!NOTE]
+> **What state this curriculum is in**
+>
+> Lecture notes, labs, and slide outlines are written. Modules **M1** and **M4–M8** are
+> hardware-independent enough to teach or self-study now — several can be run against
+> recorded data or simulation. **M2** and **M3** include bench-rig labs that have not yet
+> been run on a physical MRider; those pages carry a Draft banner.
+>
+> Slides are provided as **outlines**, not as binary decks — an instructor builds the deck
+> from the outline in whatever tool their institution uses.
 
 ## The eight modules
 

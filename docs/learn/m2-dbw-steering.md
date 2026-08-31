@@ -9,24 +9,26 @@
 
 **Reference:** [design/dbw.md](../design/dbw.md)
 
-!!! info "Architecture updated 2026-08-07"
+> [!NOTE]
+> **Architecture updated 2026-08-07**
+>
+> This module previously taught a two-controller datapath (`MANUAL_CONTROL.roll` → PX4
+> servo-PWM → Arduino Nano). MRider now uses a **single Teensy 4.1 running micro-ROS**
+> ([D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)). The
+> control theory in this module is unchanged — a position loop is a position loop — but the
+> PWM-capture step is gone: the setpoint is a typed ROS 2 message the loop reads directly.
+>
+> **This is worth teaching as a design lesson in itself.** That PWM round trip existed only
+> because the setpoint had to cross from one board to another. Removing a board removed an
+> entire class of firmware, and a whole category of debugging.
 
-    This module previously taught a two-controller datapath (`MANUAL_CONTROL.roll` → PX4
-    servo-PWM → Arduino Nano). MRider now uses a **single Teensy 4.1 running micro-ROS**
-    ([D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)). The
-    control theory in this module is unchanged — a position loop is a position loop — but the
-    PWM-capture step is gone: the setpoint is a typed ROS 2 message the loop reads directly.
-
-    **This is worth teaching as a design lesson in itself.** That PWM round trip existed only
-    because the setpoint had to cross from one board to another. Removing a board removed an
-    entire class of firmware, and a whole category of debugging.
-
-!!! warning "Draft — lab not yet run on hardware"
-
-    The lecture content is grounded in [dbw.md](../design/dbw.md), which is authoritative. The
-    **lab requires a bench steering rig that has not yet been built**, and no step-response
-    data from a real MRider exists. Expected values below are marked *(measure)* — the lab
-    produces them rather than confirming them.
+> [!WARNING]
+> **Draft — lab not yet run on hardware**
+>
+> The lecture content is grounded in [dbw.md](../design/dbw.md), which is authoritative. The
+> **lab requires a bench steering rig that has not yet been built**, and no step-response
+> data from a real MRider exists. Expected values below are marked *(measure)* — the lab
+> produces them rather than confirming them.
 
 ---
 
@@ -62,12 +64,13 @@ setpoint (rad) ──▶( Σ )──▶ [ PID ] ──▶ effort ──▶ [ Sab
 The Teensy runs this loop at **≥ 200 Hz**. Each iteration: read the most recent setpoint from
 the subscription, read the filtered angle, compute error, output a signed effort.
 
-!!! info "The Sabertooth never hears about angles"
-
-    The Teensy commands a **signed effort** — drive left, drive right, stop — which is the
-    *output* of the position loop. Angle regulation lives entirely in the Teensy. This keeps
-    the Sabertooth a dumb, fast power stage, exactly its role in mrover
-    ([dbw.md §2.3](../design/dbw.md#23-why-the-sabertooth-receives-an-effort-command)).
+> [!NOTE]
+> **The Sabertooth never hears about angles**
+>
+> The Teensy commands a **signed effort** — drive left, drive right, stop — which is the
+> *output* of the position loop. Angle regulation lives entirely in the Teensy. This keeps
+> the Sabertooth a dumb, fast power stage, exactly its role in mrover
+> ([dbw.md §2.3](../design/dbw.md#23-why-the-sabertooth-receives-an-effort-command)).
 
 ### Why the loop lives on the MCU — ADR E
 
@@ -87,16 +90,17 @@ adopt E4 rather than tuning without bound. That is what a good ADR looks like. F
 is unbounded work, so the decision to stop is made *in advance*, on a number, by someone not yet
 frustrated.
 
-!!! warning "One argument for E2 evaporated on inspection"
-
-    Earlier drafts credited E2 with "maximum reuse of mrover's `carlikebot_system.cpp`". Someone
-    eventually opened that file. It is the **unmodified upstream demo stub**: `read()` assigns
-    `state.position = command.position` — echoing the command back as the measurement — and
-    `write()` only logs. Both sit under the upstream comment *"Please do not copy to your
-    production code."*
-
-    So mrover's steering controller was wired to a mock, and E2's reuse advantage never existed.
-    **Verify the code behind a reuse claim before you weigh it.** A citation is not evidence.
+> [!WARNING]
+> **One argument for E2 evaporated on inspection**
+>
+> Earlier drafts credited E2 with "maximum reuse of mrover's `carlikebot_system.cpp`". Someone
+> eventually opened that file. It is the **unmodified upstream demo stub**: `read()` assigns
+> `state.position = command.position` — echoing the command back as the measurement — and
+> `write()` only logs. Both sit under the upstream comment *"Please do not copy to your
+> production code."*
+>
+> So mrover's steering controller was wired to a mock, and E2's reuse advantage never existed.
+> **Verify the code behind a reuse claim before you weigh it.** A citation is not evidence.
 
 ### Setpoint rate is not loop rate
 
@@ -108,17 +112,18 @@ A subtlety students consistently trip over.
 These are decoupled. Each loop iteration uses the *most recent* setpoint and the *current*
 angle. The loop does not wait for a new setpoint.
 
-!!! danger "But there is a third rate, and forgetting it silently caps everything"
-
-    The loop can only act as fast as its **output** reaches the motor driver. The earlier design
-    pinned a ≥ 100 Hz loop but never pinned the output frame rate — and with the standard Arduino
-    `Servo` library, effort commands arrived at the driver at ~50 Hz. The loop ran twice as fast
-    as anything could act on.
-
-    MRider has *not* fully escaped this — the override hardware forces R/C PWM output, so the
-    ceiling is real and the interface contract now says **measure it at Stage 1 and pin it**
-    rather than asserting a number. **Ask of any control loop: how fast does the output actually
-    leave?**
+> [!CAUTION]
+> **But there is a third rate, and forgetting it silently caps everything**
+>
+> The loop can only act as fast as its **output** reaches the motor driver. The earlier design
+> pinned a ≥ 100 Hz loop but never pinned the output frame rate — and with the standard Arduino
+> `Servo` library, effort commands arrived at the driver at ~50 Hz. The loop ran twice as fast
+> as anything could act on.
+>
+> MRider has *not* fully escaped this — the override hardware forces R/C PWM output, so the
+> ceiling is real and the interface contract now says **measure it at Stage 1 and pin it**
+> rather than asserting a number. **Ask of any control loop: how fast does the output actually
+> leave?**
 
 ### Absolute vs. incremental — ADR B
 
@@ -176,29 +181,31 @@ failure, and *silent* is what makes it severe.
 A **single-turn potentiometer** maps monotonically across whatever travel its shaft sees,
 within one turn. It costs analog filtering, a ratiometric reference, and wiper wear.
 
-!!! success "Notice how the earlier decision resolved itself"
+> [!TIP]
+> **Notice how the earlier decision resolved itself**
+>
+> An earlier draft of this course pinned the **potentiometer**, reasoning that a steering
+> *column* is often geared down past one full turn, so the AS5600 would wrap.
+>
+> That reasoning was correct — **for a sensor on the column.** Once ADR B moved the sensor
+> load-side, where total travel is ±22.5°, wrap became *mechanically impossible*, and the
+> objection dissolved. The magnetic encoder became the default; the pot stayed as the
+> fallback for chassis where no shaft under 340° is reachable.
+>
+> **A component debate that will not resolve is often a mounting debate in disguise.** The
+> two options were never really "pot vs. encoder" — they were "which shaft?", and answering
+> that answered the other.
 
-    An earlier draft of this course pinned the **potentiometer**, reasoning that a steering
-    *column* is often geared down past one full turn, so the AS5600 would wrap.
-
-    That reasoning was correct — **for a sensor on the column.** Once ADR B moved the sensor
-    load-side, where total travel is ±22.5°, wrap became *mechanically impossible*, and the
-    objection dissolved. The magnetic encoder became the default; the pot stayed as the
-    fallback for chassis where no shaft under 340° is reachable.
-
-    **A component debate that will not resolve is often a mounting debate in disguise.** The
-    two options were never really "pot vs. encoder" — they were "which shaft?", and answering
-    that answered the other.
-
-!!! note "The general lesson survives, sharpened"
-
-    You still **choose parts by how they fail, not by their spec sheet** — the AS5600 is only
-    acceptable because its failure mode was engineered out mechanically, not because its specs
-    are better. And because *silent* wrong is worse than *noisy* wrong, the firmware
-    range-checks the sensor every loop and refuses to run on an implausible angle.
-
-    Which is why the very first bench step is: rotate the shaft lock-to-lock and confirm the
-    reading never jumps.
+> [!NOTE]
+> **The general lesson survives, sharpened**
+>
+> You still **choose parts by how they fail, not by their spec sheet** — the AS5600 is only
+> acceptable because its failure mode was engineered out mechanically, not because its specs
+> are better. And because *silent* wrong is worse than *noisy* wrong, the firmware
+> range-checks the sensor every loop and refuses to run on an implausible angle.
+>
+> Which is why the very first bench step is: rotate the shaft lock-to-lock and confirm the
+> reading never jumps.
 
 ### Counts → radians
 
@@ -230,11 +237,12 @@ response, and measure settling time and steady-state error.
 Sabertooth), a bench supply **with a current limit**, and a laptop running the micro-ROS agent
 so you can publish setpoints as `DbwCommand` messages.
 
-!!! danger "Current limit first, always"
-
-    A sign error in the effort output makes the loop drive to the mechanical stop at full
-    power. A current-limited supply turns that from a broken linkage into a buzz. Set the
-    limit before you set a gain.
+> [!CAUTION]
+> **Current limit first, always**
+>
+> A sign error in the effort output makes the loop drive to the mechanical stop at full
+> power. A current-limited supply turns that from a broken linkage into a buzz. Set the
+> limit before you set a gain.
 
 ### Part 1 — Read the sensor (open loop, motor disconnected)
 
@@ -258,14 +266,15 @@ ros2 topic echo /mitt/dbw/status
 | **Sensed-shaft travel, lock to lock** | *(measure)* ° — must be ≤ 340° for a single-turn encoder |
 | Road-wheel travel, lock to lock | *(measure)* ° |
 
-!!! danger "Do not proceed with a noisy reading"
-
-    Jitter here becomes loop dither later — the motor buzzes at rest and you will misdiagnose
-    it as a PID problem for a long time. Fix the filtering, the cable routing, and (on the pot
-    fallback) the ratiometric reference first.
-
-    Also run the motor near the sensor while watching the reading. A magnetic encoder sitting
-    next to a DC motor can pick up its field, and that failure looks exactly like bad tuning.
+> [!CAUTION]
+> **Do not proceed with a noisy reading**
+>
+> Jitter here becomes loop dither later — the motor buzzes at rest and you will misdiagnose
+> it as a PID problem for a long time. Fix the filtering, the cable routing, and (on the pot
+> fallback) the ratiometric reference first.
+>
+> Also run the motor near the sensor while watching the reading. A magnetic encoder sitting
+> next to a DC motor can pick up its field, and that failure looks exactly like bad tuning.
 
 ### Part 2 — Calibrate counts → radians
 
@@ -307,13 +316,14 @@ clock — no correlation across logs required.
 **Target:** steady-state error ≤ 1°, RMS ≤ 1.5° over a ±20° sweep, 10° step to 90% in ≤ 400 ms,
 overshoot ≤ 15%.
 
-!!! info "If you cannot hit it, that is a result — not a failure"
-
-    These numbers are the [pre-registered E4 trigger](../design/dbw.md#3-adr-e-steering-control-loop-location-the-key-dbw-decision).
-    If the loop will not hold ≤ 1° with no sustained oscillation, the project's own rule is to
-    **stop tuning and adopt the motion-controller fallback**. Record your best gains and the
-    numbers they produced, and say so. Deciding in advance when to quit is what stops firmware
-    tuning from consuming a semester.
+> [!NOTE]
+> **If you cannot hit it, that is a result — not a failure**
+>
+> These numbers are the [pre-registered E4 trigger](../design/dbw.md#3-adr-e-steering-control-loop-location-the-key-dbw-decision).
+> If the loop will not hold ≤ 1° with no sustained oscillation, the project's own rule is to
+> **stop tuning and adopt the motion-controller fallback**. Record your best gains and the
+> numbers they produced, and say so. Deciding in advance when to quit is what stops firmware
+> tuning from consuming a semester.
 
 ### Part 4 — Verify the loop rate
 

@@ -24,10 +24,11 @@ The single most important one to read before touching hardware is
 every failure mode, and the staged bring-up protocol that keeps the vehicle on a stand
 until it has earned the right to be on the floor.
 
-!!! danger "Every powered test before *Manual drive* is performed wheels-off, on a stand."
-
-    This is not a formality. The vehicle is a 24 V two-seater with enough torque to injure
-    someone. Read [Safety](design/safety.md) before applying power.
+> [!CAUTION]
+> **Every powered test before *Manual drive* is performed wheels-off, on a stand.**
+>
+> This is not a formality. The vehicle is a 24 V two-seater with enough torque to injure
+> someone. Read [Safety](design/safety.md) before applying power.
 
 ## What state is this project in?
 

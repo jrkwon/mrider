@@ -11,12 +11,13 @@ encoder. Keep the modifications minimally invasive and reversible.
 - **Expected outcome:** actuator and sensors mechanically mounted; stock steering still
   reassemblable.
 
-!!! warning "Draft — not yet validated on hardware"
-
-    No MRider vehicle has been disassembled yet. **There are no teardown photos, no bracket
-    dimensions, and no torque figures in this page, because none have been measured.** Every
-    such value is marked *(measure during bring-up)*. This page gives you the procedure and
-    the record sheets; you produce the numbers.
+> [!WARNING]
+> **Draft — not yet validated on hardware**
+>
+> No MRider vehicle has been disassembled yet. **There are no teardown photos, no bracket
+> dimensions, and no torque figures in this page, because none have been measured.** Every
+> such value is marked *(measure during bring-up)*. This page gives you the procedure and
+> the record sheets; you produce the numbers.
 
 ---
 
@@ -39,10 +40,11 @@ in person. Specifically confirm:
 | Paralleled drive-motor **stall current** vs. 32 A/channel | Sabertooth rating limit ([dbw.md §7](../design/dbw.md#7-throttle-path)) | *(measure during bring-up)* |
 | Front wheel travel is ≈ ±22.5° | The pinned steering range ([dbw.md §12](../design/dbw.md#12-numeric-interface-contract)) | *(measure during bring-up)* |
 
-!!! danger "Disconnect the battery before disassembly"
-
-    The traction pack is live at the motor terminals even with the vehicle "off" on many
-    ride-on models. Pull the pack or the main fuse first.
+> [!CAUTION]
+> **Disconnect the battery before disassembly**
+>
+> The traction pack is live at the motor terminals even with the vehicle "off" on many
+> ride-on models. Pull the pack or the main fuse first.
 
 ## 2.2 Teardown
 
@@ -94,13 +96,14 @@ You ordered a sensor in step 1 based on an estimate. Confirm it now, before moun
   multi-turn magnetic option — the escape hatch in
   [dbw.md §6](../design/dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer).
 
-!!! note "The pot's dead-band must sit outside the working range"
-
-    A single-turn pot has a mechanical/electrical dead zone at the ends of its sweep. Mount
-    it so that the **±22.5° road-wheel working range lands near the middle** of the pot's
-    travel, not near either end. You verify this during zeroing in
-    [step 6](06-bench-test.md), but you have to get the mounting clocking approximately right
-    now — rotating a bonded coupler later is unpleasant.
+> [!NOTE]
+> **The pot's dead-band must sit outside the working range**
+>
+> A single-turn pot has a mechanical/electrical dead zone at the ends of its sweep. Mount
+> it so that the **±22.5° road-wheel working range lands near the middle** of the pot's
+> travel, not near either end. You verify this during zeroing in
+> [step 6](06-bench-test.md), but you have to get the mounting clocking approximately right
+> now — rotating a bonded coupler later is unpleasant.
 
 ## 2.4 Mount the steering gearmotor
 
@@ -174,14 +177,15 @@ shaft, with the encoder body bracketed to the motor mount
 - Route the encoder cable away from the motor leads. Encoder lines next to a PWM'd 24 V
   motor pick up noise that reads as phantom ticks.
 
-!!! note "You are instrumenting one motor of a paralleled pair"
-
-    This is a known, documented limitation, not a mistake. Motor-shaft measurement inherits
-    gearbox backlash, wheel slip, and differential wheel speed in turns. The EKF fuses it
-    with the IMU to bound drift, and step 6's roll-out calibration bounds the scale error.
-    See [ADR C consequences](../design/dbw.md#8-adr-c-drive-distance-encoding) — this is
-    worth understanding now, because it is why nobody should expect raw wheel odometry to
-    close a loop.
+> [!NOTE]
+> **You are instrumenting one motor of a paralleled pair**
+>
+> This is a known, documented limitation, not a mistake. Motor-shaft measurement inherits
+> gearbox backlash, wheel slip, and differential wheel speed in turns. The EKF fuses it
+> with the IMU to bound drift, and step 6's roll-out calibration bounds the scale error.
+> See [ADR C consequences](../design/dbw.md#8-adr-c-drive-distance-encoding) — this is
+> worth understanding now, because it is why nobody should expect raw wheel odometry to
+> close a loop.
 
 ## 2.7 Mount the sensor mast and compute
 

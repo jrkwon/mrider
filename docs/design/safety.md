@@ -4,9 +4,10 @@ This is a **standalone** safety document for MRider. It defines the failsafe mat
 
 Design principle: **safety first** — hardware E-stop, override with explicit *electrical* authority, and a failsafe matrix designed in from day one. The vehicle operates at **≤ walking speed** with a person alongside during all early phases, which is what makes several of the mitigations below acceptable.
 
-!!! warning "Architecture change — read this first"
-
-    Under the superseded Pixhawk design, override, arming, and failsafes were delegated to PX4, a field-tested autopilot. Under the adopted single-Teensy design ([D3](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)) **they are project responsibility.** That is the principal safety cost of D3 and it is paid, not waved away, by the layered design in §1: three of the four authority layers are **independent of Teensy firmware**, and the top three are pure hardware. The adoption of D3 was made *conditional* on this layering.
+> [!WARNING]
+> **Architecture change — read this first**
+>
+> Under the superseded Pixhawk design, override, arming, and failsafes were delegated to PX4, a field-tested autopilot. Under the adopted single-Teensy design ([D3](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)) **they are project responsibility.** That is the principal safety cost of D3 and it is paid, not waved away, by the layered design in §1: three of the four authority layers are **independent of Teensy firmware**, and the top three are pure hardware. The adoption of D3 was made *conditional* on this layering.
 
 ---
 
@@ -32,9 +33,10 @@ Because a single MCU now holds the steering loop, the throttle output, override,
 
 **Layer B — hardware RC signal MUX (independent fallback).** A dedicated RC channel drives a **signal multiplexer** that selects either Teensy output *or* direct RC input into the Sabertooth. This is a wiring property: it works with the Teensy hung, crashed, or unprogrammed. **This is a stronger guarantee than the software RC override the superseded PX4 design relied on.**
 
-!!! danger "The trade, stated plainly"
-
-    Through Layer B the override commands raw **effort**, open-loop — not an angle. That is a behavioral change from Layer A and from the superseded design, and it must be **re-analysed at bring-up, not assumed**. It is nonetheless exactly what B-MROVER does in *normal* operation (finding F2: `joystick_control.py:70,75,100-109` map the stick straight to effort with no position loop anywhere in the repository), and it is acceptable for an emergency mode where the goal is to get the vehicle away from a hazard, not to track a trajectory.
+> [!CAUTION]
+> **The trade, stated plainly**
+>
+> Through Layer B the override commands raw **effort**, open-loop — not an angle. That is a behavioral change from Layer A and from the superseded design, and it must be **re-analysed at bring-up, not assumed**. It is nonetheless exactly what B-MROVER does in *normal* operation (finding F2: `joystick_control.py:70,75,100-109` map the stick straight to effort with no position loop anywhere in the repository), and it is acceptable for an emergency mode where the goal is to get the vehicle away from a hazard, not to track a trajectory.
 
 ### 1.3 Authority priority (highest wins)
 
@@ -67,11 +69,12 @@ Behavior on each loss scenario. "Traction" = drive motors; "steering" = the Teen
 
 Rows 1–5 are the required set; 6–9 are additional. Every row is testable on the bench (§6).
 
-!!! warning "Row 2 is a genuine regression from the superseded design — accept it knowingly"
-
-    Under the Pixhawk design, the USB link carried **feedback only**; the steering setpoint arrived separately as PX4 servo-PWM, so a USB dropout left steering still tracking. **Under D3 the same link carries the setpoint**, so a USB dropout removes it.
-
-    This was flagged in [adr §4.2](adr-dbw-architecture-review.md#42-feasibility-verified-against-the-vendor-specification) and is accepted on these grounds: the failure is now **detected in one place with one timeout** and resolves to a defined safe state (center + de-energize) rather than to "keep tracking a setpoint whose author is gone". A stale-setpoint-with-live-actuator state is more dangerous than a stop. **Measure USB session stability at Stage 1 and log dropouts across a ≥ 30 min run** — if dropouts occur at all, treat it as a blocking defect, not a nuisance.
+> [!WARNING]
+> **Row 2 is a genuine regression from the superseded design — accept it knowingly**
+>
+> Under the Pixhawk design, the USB link carried **feedback only**; the steering setpoint arrived separately as PX4 servo-PWM, so a USB dropout left steering still tracking. **Under D3 the same link carries the setpoint**, so a USB dropout removes it.
+>
+> This was flagged in [adr §4.2](adr-dbw-architecture-review.md#42-feasibility-verified-against-the-vendor-specification) and is accepted on these grounds: the failure is now **detected in one place with one timeout** and resolves to a defined safe state (center + de-energize) rather than to "keep tracking a setpoint whose author is gone". A stale-setpoint-with-live-actuator state is more dangerous than a stop. **Measure USB session stability at Stage 1 and log dropouts across a ≥ 30 min run** — if dropouts occur at all, treat it as a blocking defect, not a nuisance.
 
 ---
 
@@ -136,9 +139,10 @@ No stage begins until the previous stage passes. **Bench before vehicle; wheels-
 
 **Stage 1 — bench, steering motor only, off the vehicle.** Wire the Sabertooth in R/C mode (Teensy PWM → signal MUX → S1) and M1 → steering motor on a current-limited bench supply. Verify: closed-loop position tracking at ≥ 200 Hz, no runaway, limit-clamp behavior, stall detection, and freewheel on power cut (§4.4 steps 1–2). **Verify the R/C signal-loss timeout stops the motor when the Teensy stops emitting pulses** (failsafe row 6). **Measure the actuation frame rate and pin it** — see the [§4 warning](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters).
 
-!!! info "E4 decision point"
-
-    Stage 1 is the [pre-registered E4 trigger](dbw.md#3-adr-e-steering-control-loop-location-the-key-dbw-decision). **If the loop cannot hold ≤ 1° steady-state error with no sustained oscillation, adopt the dedicated motion-controller fallback rather than continuing to tune.**
+> [!NOTE]
+> **E4 decision point**
+>
+> Stage 1 is the [pre-registered E4 trigger](dbw.md#3-adr-e-steering-control-loop-location-the-key-dbw-decision). **If the loop cannot hold ≤ 1° steady-state error with no sustained oscillation, adopt the dedicated motion-controller fallback rather than continuing to tune.**
 
 **Stage 2 — bench, both channels + RC.** Add the drive motor on the bench (wheels off). Verify both Sabertooth channels from the single serial master. Bind the RC set and verify **both** override layers: SBUS closed-loop override (Layer A) and the **hardware signal MUX with the Teensy deliberately halted** (Layer B) — the latter is the D3 condition and must be demonstrated, not assumed.
 

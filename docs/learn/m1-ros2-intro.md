@@ -8,12 +8,13 @@
 
 **Reference:** [design/architecture.md](../design/architecture.md)
 
-!!! tip "Prerequisites, and what this module assumes"
-
-    There is **no autopilot to learn first**. The path from ROS 2 concepts to a moving vehicle
-    is short: nodes and topics → micro-ROS → drive. If you have seen an older version of this
-    course that opened with PX4, MAVLink, and XRCE-DDS, that layer is gone — and *why* it went
-    is one of the things this module teaches.
+> [!TIP]
+> **Prerequisites, and what this module assumes**
+>
+> There is **no autopilot to learn first**. The path from ROS 2 concepts to a moving vehicle
+> is short: nodes and topics → micro-ROS → drive. If you have seen an older version of this
+> course that opened with PX4, MAVLink, and XRCE-DDS, that layer is gone — and *why* it went
+> is one of the things this module teaches.
 
 ---
 
@@ -50,27 +51,29 @@ what each owns is most of the architecture:
 | **Teensy 4.1** (micro-ROS) | The steering position loop at ≥ 200 Hz, throttle shaping, encoder reading, SBUS decode, and the safety supervisor | A dedicated MCU has deterministic, direct access to the sensors and the motor driver |
 | **Sabertooth 2x32** | Raw H-bridge power to the motors | A dumb, fast power stage — deliberately not smart |
 
-!!! info "It used to be four computers. That is the interesting part."
+> [!NOTE]
+> **It used to be four computers. That is the interesting part.**
+>
+> An earlier design put a **Pixhawk running PX4** between the laptop and an **Arduino Nano**
+> that closed the steering loop. It was a defensible choice: PX4 is a field-tested autopilot
+> that supplies RC override, failsafes, and arming for free.
+>
+> It was replaced ([D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07))
+> because a command had to cross **four boards and two protocols** to reach a wheel, and the
+> feedback came back a different way entirely. A symptom you saw in ROS could have originated
+> in any of four places, and no single log contained both sides of the loop.
+>
+> **The lesson is worth more than the architecture:** a design can be individually reasonable
+> at every step and still be unmaintainable in aggregate. Count your interfaces, not just your
+> components.
 
-    An earlier design put a **Pixhawk running PX4** between the laptop and an **Arduino Nano**
-    that closed the steering loop. It was a defensible choice: PX4 is a field-tested autopilot
-    that supplies RC override, failsafes, and arming for free.
-
-    It was replaced ([D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07))
-    because a command had to cross **four boards and two protocols** to reach a wheel, and the
-    feedback came back a different way entirely. A symptom you saw in ROS could have originated
-    in any of four places, and no single log contained both sides of the loop.
-
-    **The lesson is worth more than the architecture:** a design can be individually reasonable
-    at every step and still be unmaintainable in aggregate. Count your interfaces, not just your
-    components.
-
-!!! info "Why the steering loop lives on the MCU"
-
-    This is [ADR E](../design/dbw.md#3-adr-e-steering-control-loop-location-the-key-dbw-decision),
-    the key design decision of the project, and M2 covers it properly. The one-sentence version:
-    the loop is placed in the layer that can close it deterministically, off a USB link whose
-    latency varies with laptop load.
+> [!NOTE]
+> **Why the steering loop lives on the MCU**
+>
+> This is [ADR E](../design/dbw.md#3-adr-e-steering-control-loop-location-the-key-dbw-decision),
+> the key design decision of the project, and M2 covers it properly. The one-sentence version:
+> the loop is placed in the layer that can close it deterministically, off a USB link whose
+> latency varies with laptop load.
 
 ### The command path
 
@@ -105,19 +108,20 @@ There is nothing to parse. No ASCII frame, no register map, no protocol translat
 carried encoder data up through PX4 as MAVLink `WHEEL_DISTANCE`; MRider retired that entire
 path ([ADR-SW1](../design/software.md#adr-sw1-one-transport-one-clock-typed-messages)).
 
-!!! note "Command and feedback share one road — and that is the point"
-
-    Because both travel the same transport with the same clock, `ros2 topic echo
-    /mitt/dbw/status` shows you **both sides of the control loop at once**, and `ros2 bag`
-    captures a complete record. Under the old design they shared neither, which is what made
-    latency and dropout faults so hard to localize.
-
-    **The tradeoff is real and you should know it.** That link now carries the setpoint too, so
-    unplugging USB no longer just blinds odometry — it removes the setpoint, and the vehicle
-    goes to `ESTOP`: steering centered, throttle zero. That is
-    [row 2 of the failsafe matrix](../design/safety.md#2-failsafe-matrix), and it is a
-    deliberate trade: a stale setpoint driving a live actuator is more dangerous than a stop.
-    M3 tests it.
+> [!NOTE]
+> **Command and feedback share one road — and that is the point**
+>
+> Because both travel the same transport with the same clock, `ros2 topic echo
+> /mitt/dbw/status` shows you **both sides of the control loop at once**, and `ros2 bag`
+> captures a complete record. Under the old design they shared neither, which is what made
+> latency and dropout faults so hard to localize.
+>
+> **The tradeoff is real and you should know it.** That link now carries the setpoint too, so
+> unplugging USB no longer just blinds odometry — it removes the setpoint, and the vehicle
+> goes to `ESTOP`: steering centered, throttle zero. That is
+> [row 2 of the failsafe matrix](../design/safety.md#2-failsafe-matrix), and it is a
+> deliberate trade: a stale setpoint driving a live actuator is more dangerous than a stop.
+> M3 tests it.
 
 ### ROS 2 concepts you need
 
@@ -146,18 +150,19 @@ just comes out subtly wrong.
 
 These come from the [timing contract](../design/architecture.md#6-timing-heartbeat-contract).
 
-!!! warning "The third row is a trap worth understanding"
-
-    The earlier design pinned a ≥ 100 Hz control loop but never pinned the **output** frame
-    rate to the motor driver. Using the standard Arduino `Servo` library, effort commands
-    actually reached the driver at ~50 Hz — so *actuation bandwidth*, not loop rate, set the
-    real performance ceiling. The loop was running twice as fast as anything could act on.
-
-    **MRider has not escaped this** — the override hardware forces servo-PWM output, so the same
-    ceiling applies. What changed is honesty: the contract now says *measure it at bring-up and
-    pin the number*, instead of asserting a rate nobody checked.
-
-    A rate you never measured is a rate you do not have.
+> [!WARNING]
+> **The third row is a trap worth understanding**
+>
+> The earlier design pinned a ≥ 100 Hz control loop but never pinned the **output** frame
+> rate to the motor driver. Using the standard Arduino `Servo` library, effort commands
+> actually reached the driver at ~50 Hz — so *actuation bandwidth*, not loop rate, set the
+> real performance ceiling. The loop was running twice as fast as anything could act on.
+>
+> **MRider has not escaped this** — the override hardware forces servo-PWM output, so the same
+> ceiling applies. What changed is honesty: the contract now says *measure it at bring-up and
+> pin the number*, instead of asserting a rate nobody checked.
+>
+> A rate you never measured is a rate you do not have.
 
 Note that a missed rate rarely fails loudly — it degrades, and surfaces later as bad odometry
 or a spurious failsafe. Learning to *check* rates is a real skill this course is teaching.
@@ -234,10 +239,11 @@ if __name__ == '__main__':
     main()
 ```
 
-!!! danger "Wheels off the ground for any lab that commands motion"
-
-    If you are on a real vehicle rather than a bag, the vehicle is on stands. A first ROS 2
-    node is exactly the kind of code that publishes NaN at 3 a.m.
+> [!CAUTION]
+> **Wheels off the ground for any lab that commands motion**
+>
+> If you are on a real vehicle rather than a bag, the vehicle is on stands. A first ROS 2
+> node is exactly the kind of code that publishes NaN at 3 a.m.
 
 **4. Visualize TF.**
 

@@ -58,7 +58,21 @@ if [ -n "$OTHER" ]; then
 fi
 printf "   %sok%s\n\n" "$G" "$N"
 
-printf "%s2. anchors%s\n" "$B" "$N"
+printf "%s2. portable Markdown%s\n" "$B" "$N"
+# The source uses GitHub alert syntax so it reads correctly outside the site
+# (hooks/github_alerts.py converts it back for Material). A `!!!` or `???` block
+# would render as a literal marker over a code block in any generic viewer -
+# which is the exact defect this convention exists to prevent.
+BADSYNTAX="$(grep -rnE '^[[:space:]]*(!!!|\?\?\?)[[:space:]]' docs/ --include='*.md' || true)"
+if [ -n "$BADSYNTAX" ]; then
+    printf "   MkDocs-only admonition syntax found:\n%s\n" "$BADSYNTAX" >&2
+    printf "   Use GitHub alerts instead:  > [!NOTE]\\n> **Title**\\n>\\n> body\n" >&2
+    printf "   Types: NOTE TIP IMPORTANT WARNING CAUTION  (see hooks/github_alerts.py)\n" >&2
+    fail "non-portable Markdown in docs/"
+fi
+printf "   %sok%s\n\n" "$G" "$N"
+
+printf "%s3. anchors%s\n" "$B" "$N"
 python3 scripts/check_anchors.py site || fail "broken anchors (see above)"
 printf "   %sok%s\n\n" "$G" "$N"
 

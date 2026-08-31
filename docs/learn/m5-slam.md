@@ -18,18 +18,19 @@ The drive encoder reports some number of **pulses per revolution (PPR)** of the 
 Combined with the steering angle from M2's absolute sensor, a bicycle model integrates a
 trajectory: how far forward, at what heading rate, therefore where.
 
-!!! danger "Do not inherit a PPR figure - measure it (finding F7)"
-
-    It is tempting to quote a number here. Resist it. The source project's firmware pins **52
-    PPR** while its own bill of materials lists a **16 PPR** motor - a factor-of-three
-    disagreement that nobody caught, because in simulation nothing complains.
-
-    [Finding F7](../design/adr-dbw-architecture-review.md) explicitly forbids inheriting either
-    value. **Measure PPR on the encoder actually fitted to your vehicle.**
-
-    This matters less than it looks, and that is the interesting part: the roll-out calibration
-    below is authoritative and bypasses PPR entirely. Which is precisely why it is done that
-    way.
+> [!CAUTION]
+> **Do not inherit a PPR figure - measure it (finding F7)**
+>
+> It is tempting to quote a number here. Resist it. The source project's firmware pins **52
+> PPR** while its own bill of materials lists a **16 PPR** motor - a factor-of-three
+> disagreement that nobody caught, because in simulation nothing complains.
+>
+> [Finding F7](../design/adr-dbw-architecture-review.md) explicitly forbids inheriting either
+> value. **Measure PPR on the encoder actually fitted to your vehicle.**
+>
+> This matters less than it looks, and that is the interesting part: the roll-out calibration
+> below is authoritative and bypasses PPR entirely. Which is precisely why it is done that
+> way.
 
 The conversion needs one constant, `meters_per_tick`, and MRider's calibration deliberately
 avoids deriving it from gear ratios
@@ -42,11 +43,12 @@ This **roll-out calibration is authoritative because it bypasses guessing**. You
 to know the gear ratio, the quadrature decode factor, or the exact tire diameter under load —
 all of those are folded into one empirically measured number.
 
-!!! danger "The classic bug: assuming a 4× quadrature factor"
-
-    Use the effective counts the **firmware actually reports**. mrover's firmware divides the
-    count by PPR before reporting. Assume the wrong decode factor and your odometry is off by
-    an integer multiple — a scale error so large it looks like a mechanical fault.
+> [!CAUTION]
+> **The classic bug: assuming a 4× quadrature factor**
+>
+> Use the effective counts the **firmware actually reports**. mrover's firmware divides the
+> count by PPR before reporting. Assume the wrong decode factor and your odometry is off by
+> an integer multiple — a scale error so large it looks like a mechanical fault.
 
 ### Odometry is wrong, and MRider is honest about why
 
@@ -64,11 +66,12 @@ giving true wheel odometry — was rejected as the default because it is a more 
 per-vehicle mechanical mount, against the "minimally invasive" principle. It is kept as the
 documented upgrade path if odometry proves inadequate.
 
-!!! info "Calibration bounds the scale error. The EKF bounds the drift."
-
-    This is the sentence to remember. `meters_per_tick` fixes how far a tick *means*; nothing
-    in calibration can fix the fact that the instrumented wheel is not the vehicle. That is
-    the EKF's job.
+> [!NOTE]
+> **Calibration bounds the scale error. The EKF bounds the drift.**
+>
+> This is the sentence to remember. `meters_per_tick` fixes how far a tick *means*; nothing
+> in calibration can fix the fact that the instrumented wheel is not the vehicle. That is
+> the EKF's job.
 
 ### Sensor fusion, and why an EKF
 
@@ -112,12 +115,13 @@ MRider reuses slam_toolbox essentially as-is: `solver_plugin: CeresSolver`, `mod
 ([software.md §4.2](../design/software.md#42-slam_toolbox-configslammapper_params_online_asyncyaml)).
 For repeat runs, switch `mode` to `localization` with a saved map.
 
-!!! danger "The frame-mismatch bug you will hit"
-
-    B-MROVER's slam config uses `base_frame: base_footprint` while the EKF uses `base_link`.
-    Design verification caught this and MRider must reconcile it — recommend `base_link`
-    throughout, or add a static transform. **Nothing crashes** if you skip it. The map just
-    comes out subtly wrong, and you spend a day blaming the LiDAR.
+> [!CAUTION]
+> **The frame-mismatch bug you will hit**
+>
+> B-MROVER's slam config uses `base_frame: base_footprint` while the EKF uses `base_link`.
+> Design verification caught this and MRider must reconcile it — recommend `base_link`
+> throughout, or add a static transform. **Nothing crashes** if you skip it. The map just
+> comes out subtly wrong, and you spend a day blaming the LiDAR.
 
 ### Reading a bad map
 

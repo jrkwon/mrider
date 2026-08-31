@@ -10,19 +10,21 @@ encoder ticks→distance, camera intrinsics, and camera/LiDAR→base_link extrin
 - **Specification:** [design/safety.md](../design/safety.md), [design/calibration.md](../design/calibration.md)
 - **Expected outcome:** all failsafes pass wheels-off; calibration constants recorded.
 
-!!! warning "Draft — not yet validated on hardware"
+> [!WARNING]
+> **Draft — not yet validated on hardware**
+>
+> The procedures below come from
+> [safety.md §6](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first) and
+> [calibration.md](../design/calibration.md). **Every result cell is empty because no
+> vehicle has been tested.** The record sheets are the deliverable of this step — fill them
+> in and commit them.
 
-    The procedures below come from
-    [safety.md §6](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first) and
-    [calibration.md](../design/calibration.md). **Every result cell is empty because no
-    vehicle has been tested.** The record sheets are the deliverable of this step — fill them
-    in and commit them.
-
-!!! danger "This is the last step before the vehicle touches the ground"
-
-    Everything the vehicle will do wrong at walking speed in step 7, it will do wrong here
-    first — on a stand, where it is harmless. Do not shorten this step. **Failsafes first,
-    calibration second**: there is no point calibrating a vehicle that cannot be stopped.
+> [!CAUTION]
+> **This is the last step before the vehicle touches the ground**
+>
+> Everything the vehicle will do wrong at walking speed in step 7, it will do wrong here
+> first — on a stand, where it is harmless. Do not shorten this step. **Failsafes first,
+> calibration second**: there is no point calibrating a vehicle that cannot be stopped.
 
 This step covers **Stages 3–4** of the bring-up protocol.
 
@@ -54,26 +56,28 @@ specific way this vehicle can fail; each has a defined behavior; each is testabl
 | 8 | **Teensy firmware hang** | Hold the Teensy in reset | Motors stop (row 6); watchdog resets outputs to neutral | freewheel or held per §6.3 | | ☐ |
 | 9 | **Angle sensor fault** | Unplug the sensor / short I²C | Teensy → `ESTOP`, encoder-fault bit set | de-energized — **must not** drive to a garbage target | | ☐ |
 
-!!! danger "Row 2 changed direction — verify it deliberately"
+> [!CAUTION]
+> **Row 2 changed direction — verify it deliberately**
+>
+> Under the superseded design, unplugging USB left steering still tracking, because the
+> setpoint arrived separately via PX4 servo PWM. **It no longer does.** The same link now
+> carries the setpoint, so a dropout removes it and the vehicle goes to `ESTOP` — centered
+> and de-energized.
+>
+> This is an accepted, analysed regression
+> ([failsafe row 2](../design/safety.md#2-failsafe-matrix)): a stale setpoint with a live
+> actuator is more dangerous than a stop. But an operator who learned the old behavior will
+> misread it. Show them on the bench.
 
-    Under the superseded design, unplugging USB left steering still tracking, because the
-    setpoint arrived separately via PX4 servo PWM. **It no longer does.** The same link now
-    carries the setpoint, so a dropout removes it and the vehicle goes to `ESTOP` — centered
-    and de-energized.
-
-    This is an accepted, analysed regression
-    ([failsafe row 2](../design/safety.md#2-failsafe-matrix)): a stale setpoint with a live
-    actuator is more dangerous than a stop. But an operator who learned the old behavior will
-    misread it. Show them on the bench.
-
-!!! danger "Rows 6 and 8 are the ones that justify the whole architecture"
-
-    A single MCU holds the loop, throttle, override, and arming. The claim that this is
-    acceptable rests on layers *independent* of that MCU. **Test them by actually halting the
-    Teensy**, not by reasoning about it. If row 6 fails — the Sabertooth latches its last
-    command instead of timing out — stop and diagnose before going further. In R/C mode this
-    timeout is inherent to the driver, so a failure here means the wiring or the mode switches
-    are wrong, not that a setting needs tuning.
+> [!CAUTION]
+> **Rows 6 and 8 are the ones that justify the whole architecture**
+>
+> A single MCU holds the loop, throttle, override, and arming. The claim that this is
+> acceptable rests on layers *independent* of that MCU. **Test them by actually halting the
+> Teensy**, not by reasoning about it. If row 6 fails — the Sabertooth latches its last
+> command instead of timing out — stop and diagnose before going further. In R/C mode this
+> timeout is inherent to the driver, so a failure here means the wiring or the mode switches
+> are wrong, not that a setting needs tuning.
 
 ### 6.2.1 Override layer verification
 
@@ -105,13 +109,14 @@ steps 1–2 (step 3 happens in [step 7](07-manual-drive.md) on the ground):
 **Record:** hand-steer force at the rim after E-stop = *(measure during bring-up)* N
 (spring-scale check; expect a few N).
 
-!!! note "Wiper-motor builds behave differently — and that is a re-analysis, not a variation"
-
-    If you took the [wiper-motor fallback](../design/dbw.md#24-wiper-motor-fallback), the
-    worm gear is largely non-back-drivable and the column will **hold** rather than freewheel.
-    That invalidates the analysis in
-    [safety.md §4.3](../design/safety.md#43-why-traction-cut-freewheel-steering-is-acceptable).
-    Write down the actual behavior and re-derive whether it is acceptable **before** step 7.
+> [!NOTE]
+> **Wiper-motor builds behave differently — and that is a re-analysis, not a variation**
+>
+> If you took the [wiper-motor fallback](../design/dbw.md#24-wiper-motor-fallback), the
+> worm gear is largely non-back-drivable and the column will **hold** rather than freewheel.
+> That invalidates the analysis in
+> [safety.md §4.3](../design/safety.md#43-why-traction-cut-freewheel-steering-is-acceptable).
+> Write down the actual behavior and re-derive whether it is acceptable **before** step 7.
 
 ## 6.4 Stage 3 and 4 checks
 
@@ -208,12 +213,13 @@ The roll-out calibration is authoritative because it **bypasses guessing the gea
 3. `meters_per_tick = L / Δticks`. **Repeat 3× and average.**
 4. Store in `config/calibration/odom.yaml`.
 
-!!! note "Do not assume a 4× quadrature factor"
-
-    Use the effective counts the **firmware actually reports**. The mrover firmware divides
-    count by PPR before reporting (`code.ino:83,141`), so an assumed decode factor will put
-    your odometry off by an integer multiple — a scale error large enough to look like a
-    mechanical problem.
+> [!NOTE]
+> **Do not assume a 4× quadrature factor**
+>
+> Use the effective counts the **firmware actually reports**. The mrover firmware divides
+> count by PPR before reporting (`code.ino:83,141`), so an assumed decode factor will put
+> your odometry off by an integer multiple — a scale error large enough to look like a
+> mechanical problem.
 
 **Record sheet — odometry calibration**
 
@@ -230,13 +236,14 @@ Loaded rolling circumference = *(measure)* m · artifact: `config/calibration/od
 within **~2%**. Then drive a known square loop — the closure error is the *fused* odometry
 check (EKF), not a calibration check.
 
-!!! info "What calibration can and cannot fix"
-
-    `meters_per_tick` captures straight-line **scale**. It cannot capture per-turn
-    differential slip or gearbox backlash, because only one motor shaft of a paralleled pair
-    is instrumented ([ADR C](../design/dbw.md#8-adr-c-drive-distance-encoding)). That is why
-    odometry is fused with the IMU in the EKF: **calibration bounds the scale error, the EKF
-    bounds the drift.** Nobody should expect raw wheel odometry to close a loop.
+> [!NOTE]
+> **What calibration can and cannot fix**
+>
+> `meters_per_tick` captures straight-line **scale**. It cannot capture per-turn
+> differential slip or gearbox backlash, because only one motor shaft of a paralleled pair
+> is instrumented ([ADR C](../design/dbw.md#8-adr-c-drive-distance-encoding)). That is why
+> odometry is fused with the IMU in the EKF: **calibration bounds the scale error, the EKF
+> bounds the drift.** Nobody should expect raw wheel odometry to close a loop.
 
 ## 6.7 Camera intrinsics
 
@@ -259,10 +266,11 @@ Reprojection error < ~0.3 px as reported by the tool.
 
 Record: reprojection error = *(measure)* px · squares = *(record)* · resolution = *(record)*
 
-!!! tip "RealSense users: re-verify anyway"
-
-    Factory intrinsics are available from the driver, but re-run the checkerboard for the
-    exact lens and resolution you will actually stream.
+> [!TIP]
+> **RealSense users: re-verify anyway**
+>
+> Factory intrinsics are available from the driver, but re-run the checkerboard for the
+> exact lens and resolution you will actually stream.
 
 ## 6.8 Extrinsics: sensors → `base_link`
 
@@ -297,11 +305,12 @@ onto the correct camera pixel through the intrinsics and both extrinsics chained
 **Verification:** overlay projected LiDAR points on a camera image of a known scene; points
 must land on the corresponding structure.
 
-!!! danger "Extrinsics are only valid while the mast holds its geometry"
-
-    Re-run this section after **any** mechanical change — a re-mounted sensor, a bumped mast,
-    new tires (which change `base_link` height). A silently invalidated extrinsic looks like a
-    SLAM problem in step 8.
+> [!CAUTION]
+> **Extrinsics are only valid while the mast holds its geometry**
+>
+> Re-run this section after **any** mechanical change — a re-mounted sensor, a bumped mast,
+> new tires (which change `base_link` height). A silently invalidated extrinsic looks like a
+> SLAM problem in step 8.
 
 ## 6.9 IMU and time sync
 

@@ -9,12 +9,13 @@ in hand. Cross-check quantities and connectors against the bill of materials.
 - **Specification:** [design/bom.md](../design/bom.md)
 - **Expected outcome:** all line items received; totals reconciled against the BOM.
 
-!!! warning "Draft — not yet validated on hardware"
-
-    This checklist is derived from [bom.md](../design/bom.md). No MRider build has been
-    sourced yet, so vendor availability, current prices, and connector compatibility are
-    **unconfirmed**. Prices in the BOM are estimates as of July 2026 and vary by retailer,
-    coupon, and stock — verify at purchase.
+> [!WARNING]
+> **Draft — not yet validated on hardware**
+>
+> This checklist is derived from [bom.md](../design/bom.md). No MRider build has been
+> sourced yet, so vendor availability, current prices, and connector compatibility are
+> **unconfirmed**. Prices in the BOM are estimates as of July 2026 and vary by retailer,
+> coupon, and stock — verify at purchase.
 
 ---
 
@@ -34,19 +35,20 @@ This is down from ~$1,570 in the previous revision. The Tier 1 figure was also *
 [bom.md § Change record](../design/bom.md#change-record-why-the-total-fell-from-1570-to-1035)
 for where the money went and what was deferred rather than deleted.
 
-!!! tip "Already have an mrover rig?"
-
-    Reusable: **Sabertooth 2x32**, drive encoder + shaft adapter, 3D-printed enclosures
-    (though the controller cases need rework), and the laptop — roughly **−$173**.
-
-    **Not reusable:** the Pixhawk 6C, PM02, Arduino Nano, and USB-TTL adapter. MRider's
-    controller is a single Teensy 4.1
-    ([D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)). Those
-    parts remain useful for other projects; this is a deliberate architectural departure, not
-    a write-off.
-
-    With a used vehicle, lab-reused Sabertooth and encoder, and printed mounts, the realistic
-    floor is **~$620 all-in**.
+> [!TIP]
+> **Already have an mrover rig?**
+>
+> Reusable: **Sabertooth 2x32**, drive encoder + shaft adapter, 3D-printed enclosures
+> (though the controller cases need rework), and the laptop — roughly **−$173**.
+>
+> **Not reusable:** the Pixhawk 6C, PM02, Arduino Nano, and USB-TTL adapter. MRider's
+> controller is a single Teensy 4.1
+> ([D3](../design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)). Those
+> parts remain useful for other projects; this is a deliberate architectural departure, not
+> a write-off.
+>
+> With a used vehicle, lab-reused Sabertooth and encoder, and printed mounts, the realistic
+> floor is **~$620 all-in**.
 
 ## 1.2 Order long-lead items first
 
@@ -91,13 +93,14 @@ at the hardware store the week you need it.
     | Front camera (USB 1080p) | 17 |
     | IMU (BNO085 class) | 18 |
 
-!!! danger "The hardware RC signal MUX is not optional"
-
-    Item #9 is the **condition on which the single-Teensy architecture was adopted**
-    ([safety.md §1.2](../design/safety.md#12-live-override-inside-dbw-mode-two-layers)). With
-    one MCU holding the steering loop, throttle, override, and arming, a firmware hang loses
-    all four — unless override is a *wiring* property. Order it with the RC set, not later.
-    It is $18 and it is the difference between a defensible safety story and a fragile one.
+> [!CAUTION]
+> **The hardware RC signal MUX is not optional**
+>
+> Item #9 is the **condition on which the single-Teensy architecture was adopted**
+> ([safety.md §1.2](../design/safety.md#12-live-override-inside-dbw-mode-two-layers)). With
+> one MCU holding the steering loop, throttle, override, and arming, a firmware hang loses
+> all four — unless override is a *wiring* property. Order it with the RC set, not later.
+> It is $18 and it is the difference between a defensible safety story and a fragile one.
 
 ## 1.3 Two parts you must not order blind
 
@@ -110,19 +113,20 @@ at rated (not stall) torque. The measurement procedure is
 vehicle at full load, on the target surface, spring scale on the rim, record peak force `F`
 to turn lock-to-lock while stationary, then `τ_column = F × r`.
 
-!!! note "Fallback if you cannot source a suitable encoder-gearmotor"
-
-    A **12 V automotive wiper motor** is the documented fallback — high stall torque
-    (typically 10–30 N·m), built-in worm gearing. Two consequences you must accept and
-    re-check against [safety.md](../design/safety.md):
-
-    1. The worm gear is largely **non-back-drivable**, so on power loss the steering
-       **holds** rather than freewheels. This invalidates the freewheel analysis in
-       [safety.md §4](../design/safety.md#4-steering-motor-power-rail-assignment-and-power-loss-behavior-pinned)
-       and must be re-evaluated before the vehicle touches the ground.
-    2. Wiper motors rarely have a usable shaft encoder, so the absolute column sensor
-       becomes the **sole** angle source. Acceptable — [ADR B](../design/dbw.md#5-adr-b-steering-angle-encoding)
-       already makes it authoritative.
+> [!NOTE]
+> **Fallback if you cannot source a suitable encoder-gearmotor**
+>
+> A **12 V automotive wiper motor** is the documented fallback — high stall torque
+> (typically 10–30 N·m), built-in worm gearing. Two consequences you must accept and
+> re-check against [safety.md](../design/safety.md):
+>
+> 1. The worm gear is largely **non-back-drivable**, so on power loss the steering
+>    **holds** rather than freewheels. This invalidates the freewheel analysis in
+>    [safety.md §4](../design/safety.md#4-steering-motor-power-rail-assignment-and-power-loss-behavior-pinned)
+>    and must be re-evaluated before the vehicle touches the ground.
+> 2. Wiper motors rarely have a usable shaft encoder, so the absolute column sensor
+>    becomes the **sole** angle source. Acceptable — [ADR B](../design/dbw.md#5-adr-b-steering-angle-encoding)
+>    already makes it authoritative.
 
 **Absolute steering angle sensor (#5)** — the default is an **AS5600-class magnetic encoder**
 mounted **load-side**: downstream of the steering gearbox, on the kingpin/road-wheel axis or
@@ -131,28 +135,29 @@ it measures what the road wheels actually do, so gearbox backlash appears as *me
 rather than invisible bias
 ([ADR B](../design/dbw.md#5-adr-b-steering-angle-encoding)).
 
-!!! danger "Measure shaft travel before ordering — this is a hard gate"
-
-    The AS5600 is **single-turn absolute (0–360°)**. If the shaft it is mounted on rotates
-    more than one turn lock-to-lock, it wraps and **silently** loses absolute meaning — a
-    garbage angle feeding a position loop that drives a motor. This is FMEA row 2, severity 5.
-
-    **Measure every candidate mounting shaft on the vehicle you actually bought.**
-
-    - Shaft travel ≤ 340° → **AS5600**. Contactless, 12-bit, no wiper wear at the small
-      high-duty-cycle oscillations a steering servo makes, no ADC noise, no ratiometric
-      reference.
-    - No accessible shaft under 340° → **single-turn conductive-plastic potentiometer**, the
-      pre-registered fallback. Costs analog filtering and wiper wear, but maps monotonically
-      across whatever travel its shaft sees.
-
-    Budget for either — they are within a few dollars. Record the measurement in
-    [calibration.md](../design/calibration.md).
-
-    The AS5600 also needs a **diametrically magnetized magnet mounted concentric** to the
-    sensed shaft, with the air gap inside spec. That mechanical precision is the main reason
-    the pot fallback is retained. Check for magnetic interference from the steering motor
-    during bench validation.
+> [!CAUTION]
+> **Measure shaft travel before ordering — this is a hard gate**
+>
+> The AS5600 is **single-turn absolute (0–360°)**. If the shaft it is mounted on rotates
+> more than one turn lock-to-lock, it wraps and **silently** loses absolute meaning — a
+> garbage angle feeding a position loop that drives a motor. This is FMEA row 2, severity 5.
+>
+> **Measure every candidate mounting shaft on the vehicle you actually bought.**
+>
+> - Shaft travel ≤ 340° → **AS5600**. Contactless, 12-bit, no wiper wear at the small
+>   high-duty-cycle oscillations a steering servo makes, no ADC noise, no ratiometric
+>   reference.
+> - No accessible shaft under 340° → **single-turn conductive-plastic potentiometer**, the
+>   pre-registered fallback. Costs analog filtering and wiper wear, but maps monotonically
+>   across whatever travel its shaft sees.
+>
+> Budget for either — they are within a few dollars. Record the measurement in
+> [calibration.md](../design/calibration.md).
+>
+> The AS5600 also needs a **diametrically magnetized magnet mounted concentric** to the
+> sensed shaft, with the air gap inside spec. That mechanical precision is the main reason
+> the pot fallback is retained. Check for magnetic interference from the steering motor
+> during bench validation.
 
 ## 1.4 Substitution notes
 

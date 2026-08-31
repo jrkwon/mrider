@@ -40,17 +40,18 @@ below does not touch it. Same distro (Humble), so these port with minimal change
 3. **Kinematic and frame parameters** — re-parameterized for the chassis, and three B-MROVER
    config artifacts corrected (§4).
 
-!!! warning "One reuse claim was withdrawn (finding F3)"
-
-    Earlier drafts marked the `ros2_control` hardware interface **REUSE**, citing B-MROVER's
-    `carlikebot_system.cpp`. That file is the **unmodified upstream demo stub**: namespace
-    `ros2_control_demo_example_11` (`:27`), `read()` assigns
-    `state.position = command.position` — echoing the command back as state (`:280`) — and
-    `write()` only calls `RCLCPP_INFO` (`:304`). Both are bracketed by the upstream comment
-    *"This part here is for exemplary purposes - Please do not copy to your production code"*.
-    **There is no hardware I/O in it**, so B-MROVER's `steering_position_controller` is wired
-    to a mock. What was reusable is an interface *shape*, not working code. That row is now
-    **NEW**.
+> [!WARNING]
+> **One reuse claim was withdrawn (finding F3)**
+>
+> Earlier drafts marked the `ros2_control` hardware interface **REUSE**, citing B-MROVER's
+> `carlikebot_system.cpp`. That file is the **unmodified upstream demo stub**: namespace
+> `ros2_control_demo_example_11` (`:27`), `read()` assigns
+> `state.position = command.position` — echoing the command back as state (`:280`) — and
+> `write()` only calls `RCLCPP_INFO` (`:304`). Both are bracketed by the upstream comment
+> *"This part here is for exemplary purposes - Please do not copy to your production code"*.
+> **There is no hardware I/O in it**, so B-MROVER's `steering_position_controller` is wired
+> to a mock. What was reusable is an interface *shape*, not working code. That row is now
+> **NEW**.
 
 ---
 
@@ -394,13 +395,14 @@ image crop/size.
 (the steering-angle-labeled source), and `base_pose_topic` to the EKF odometry output.
 The legacy ROS 1 `data_collection_board.py` (rospy / `ScoutControl`) is **not** used.
 
-!!! note "Phase 2"
-
-    Behavior cloning is deferred out of semester 1 (§8). It is documented here because the
-    pipeline is reused intact and the **label quality depends on the DBW work**: B-MROVER's
-    steering labels came from a runtime-auto-ranged incremental encoder whose zero drifts
-    (F4), which is a poor training signal. MRider's absolute load-side angle is a materially
-    better label, and that is a research contribution in its own right.
+> [!NOTE]
+> **Phase 2**
+>
+> Behavior cloning is deferred out of semester 1 (§8). It is documented here because the
+> pipeline is reused intact and the **label quality depends on the DBW work**: B-MROVER's
+> steering labels came from a runtime-auto-ranged incremental encoder whose zero drifts
+> (F4), which is a poor training signal. MRider's absolute load-side angle is a materially
+> better label, and that is a research contribution in its own right.
 
 ### 5.2 End-to-end model
 
@@ -449,37 +451,38 @@ flowchart LR
 
 ### 6.2 Gazebo pairing — RESOLVED 2026-08-08
 
-!!! success "Closed. Humble + Harmonic works, and the gate was narrower than written."
-
-    This section previously treated the whole Gazebo stack as at risk, and advised against a
-    source build. Both halves turned out to be wrong, in opposite directions.
-
-    **`ros_gz` was never the problem.** The lab machine has
-    **`ros-humble-ros-gzharmonic` 0.244.12** — OSRF publishes a Harmonic-paired variant under
-    that name, distinct from the Fortress-targeted `ros-humble-ros-gz-*`. Bridge, sim and
-    interfaces all work against Harmonic out of the box.
-
-    **`gz_ros2_control` was the whole gate.** There is *no* Harmonic build of it for Humble in
-    apt — only 0.7.20, which targets Fortress. Since [ADR-SW4](#7-software-adr-summary) makes
-    the shared controller stack the entire justification for the twin, that package had to be
-    built from source:
-
-    ```bash
-    cd ros2_ws/src && git clone -b humble https://github.com/ros-controls/gz_ros2_control.git
-    cd .. && GZ_VERSION=harmonic colcon build --packages-select gz_ros2_control
-    ```
-
-    It builds cleanly — all `libgz-sim8-dev` headers were already present — and the resulting
-    plugin links against **`libgz-sim8`**, confirming Harmonic. Verified by running the twin:
-    both controllers activate and `slam_toolbox` maps the depot world.
-
-    Set `COLCON_IGNORE` in `gz_ros2_control_demos`, `gz_ros2_control_tests`,
-    `ign_ros2_control` and `ign_ros2_control_demos` — the demos need `control_toolbox`
-    (absent, and unnecessary), and the `ign_*` packages are the Fortress variants.
-
-    **The advice not to source-build was wrong for this package specifically.** It was written
-    to protect the schedule, and would instead have cost the twin its main property.
-    A one-package source build is not the same risk as forking `ros_gz`.
+> [!TIP]
+> **Closed. Humble + Harmonic works, and the gate was narrower than written.**
+>
+> This section previously treated the whole Gazebo stack as at risk, and advised against a
+> source build. Both halves turned out to be wrong, in opposite directions.
+>
+> **`ros_gz` was never the problem.** The lab machine has
+> **`ros-humble-ros-gzharmonic` 0.244.12** — OSRF publishes a Harmonic-paired variant under
+> that name, distinct from the Fortress-targeted `ros-humble-ros-gz-*`. Bridge, sim and
+> interfaces all work against Harmonic out of the box.
+>
+> **`gz_ros2_control` was the whole gate.** There is *no* Harmonic build of it for Humble in
+> apt — only 0.7.20, which targets Fortress. Since [ADR-SW4](#7-software-adr-summary) makes
+> the shared controller stack the entire justification for the twin, that package had to be
+> built from source:
+>
+> ```bash
+> cd ros2_ws/src && git clone -b humble https://github.com/ros-controls/gz_ros2_control.git
+> cd .. && GZ_VERSION=harmonic colcon build --packages-select gz_ros2_control
+> ```
+>
+> It builds cleanly — all `libgz-sim8-dev` headers were already present — and the resulting
+> plugin links against **`libgz-sim8`**, confirming Harmonic. Verified by running the twin:
+> both controllers activate and `slam_toolbox` maps the depot world.
+>
+> Set `COLCON_IGNORE` in `gz_ros2_control_demos`, `gz_ros2_control_tests`,
+> `ign_ros2_control` and `ign_ros2_control_demos` — the demos need `control_toolbox`
+> (absent, and unnecessary), and the `ign_*` packages are the Fortress variants.
+>
+> **The advice not to source-build was wrong for this package specifically.** It was written
+> to protect the schedule, and would instead have cost the twin its main property.
+> A one-package source build is not the same risk as forking `ros_gz`.
 
 ### 6.2.1 RMW: use FastRTPS, not CycloneDDS — open issue
 
@@ -562,18 +565,19 @@ Semester 1 (~14 weeks) commits to a **trustworthy DBW, a working twin, and an in
 map**. Nav2 autonomous goal-seeking is the stretch. **Deferred to phase 2:** outdoor GNSS
 waypoint following and behavior cloning.
 
-!!! info "Scope amended 2026-08-20 — the team is 24, not 1–3, and the course kit is not deferred"
-
-    This section was written for 1–3 students. Semester 1 is now **Fall 2026's
-    [자율주행미들웨어응용](../course/index.md)**: 24 graduate students in four tracks —
-    Electrical, Chassis, Simulation, Software — merging into one vehicle by Week 14.
-
-    Two consequences for what is written below:
-
-    - **The `docs/learn/` course kit is no longer phase 2.** It is assigned reading, week by week.
-    - **The Track A/B split still holds, but is now staffed in parallel rather than sequenced.**
-      Track A work is owned by the Simulation and Software teams, Track B by Electrical and
-      Chassis. The acceptance gates below are unchanged and are what the teams are graded against.
+> [!NOTE]
+> **Scope amended 2026-08-20 — the team is 24, not 1–3, and the course kit is not deferred**
+>
+> This section was written for 1–3 students. Semester 1 is now **Fall 2026's
+> [자율주행미들웨어응용](../course/index.md)**: 24 graduate students in four tracks —
+> Electrical, Chassis, Simulation, Software — merging into one vehicle by Week 14.
+>
+> Two consequences for what is written below:
+>
+> - **The `docs/learn/` course kit is no longer phase 2.** It is assigned reading, week by week.
+> - **The Track A/B split still holds, but is now staffed in parallel rather than sequenced.**
+>   Track A work is owned by the Simulation and Software teams, Track B by Electrical and
+>   Chassis. The acceptance gates below are unchanged and are what the teams are graded against.
 
 The scoping rationale is that the previous generations did not fall short on planning or
 perception — so the semester's prize is a vehicle whose feedback can be *believed*, evidenced

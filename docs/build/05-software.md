@@ -11,12 +11,13 @@ the micro-ROS agent from source, and verify `DbwCommand`/`DbwStatus` round-trip 
 - **Expected outcome:** `/mitt/dbw/status` at ≥ 50 Hz, `ros2_control` loaded, TF tree complete,
   and the identical launch working in simulation.
 
-!!! warning "Draft — not yet validated on hardware"
-
-    Commands are derived from [software.md](../design/software.md). No MRider has been brought
-    up, so package versions and device paths are **unconfirmed**. Record what you actually
-    install — under this architecture, your pinned versions *are* the reproducibility claim
-    ([software.md §6.3](../design/software.md#63-version-pinning)).
+> [!WARNING]
+> **Draft — not yet validated on hardware**
+>
+> Commands are derived from [software.md](../design/software.md). No MRider has been brought
+> up, so package versions and device paths are **unconfirmed**. Record what you actually
+> install — under this architecture, your pinned versions *are* the reproducibility claim
+> ([software.md §6.3](../design/software.md#63-version-pinning)).
 
 ---
 
@@ -64,12 +65,13 @@ apt list --installed 2>/dev/null | grep -E "ros-humble-(ackermann|gz-ros2|ros-gz
 
 ## 5.3 Settle the Gazebo pairing — do this in week 1, not week 12
 
-!!! danger "Humble's paired Gazebo is Fortress; this lab machine has Harmonic"
-
-    `gz sim 8.14.0` (Harmonic) is installed, but Humble's apt `ros_gz` (0.244.x) and
-    `gz_ros2_control` (0.7.x) are built against **Fortress**. This is a known mismatch, and
-    resolving it is a **week-1 gate with a one-day cap**
-    ([software.md §6.2](../design/software.md#62-gazebo-pairing-resolved-2026-08-08)).
+> [!CAUTION]
+> **Humble's paired Gazebo is Fortress; this lab machine has Harmonic**
+>
+> `gz sim 8.14.0` (Harmonic) is installed, but Humble's apt `ros_gz` (0.244.x) and
+> `gz_ros2_control` (0.7.x) are built against **Fortress**. This is a known mismatch, and
+> resolving it is a **week-1 gate with a one-day cap**
+> ([software.md §6.2](../design/software.md#62-gazebo-pairing-resolved-2026-08-08)).
 
 ```bash
 gz sim --version                       # what is actually installed
@@ -77,19 +79,20 @@ ros2 pkg prefix ros_gz_sim             # what ROS thinks it has
 ros2 launch ros_gz_sim gz_sim.launch.py gz_args:="-r empty.sdf"
 ```
 
-!!! success "Resolved 2026-08-08 — narrower than this section assumed"
-
-    **`ros_gz` was never at risk.** The machine has `ros-humble-ros-gzharmonic` 0.244.12,
-    the Harmonic-paired variant OSRF publishes under a different name from the
-    Fortress-targeted `ros-humble-ros-gz-*`. It works against Harmonic as installed.
-
-    **`gz_ros2_control` was the whole gate** and it needed the source build this section
-    advised against — there is no Harmonic build of it for Humble in apt. It builds cleanly
-    (all `libgz-sim8-dev` headers were already present) and links against `libgz-sim8`.
-    See [software.md §6.2](../design/software.md#62-gazebo-pairing-resolved-2026-08-08).
-
-    The "do not source-build" advice was written to protect the schedule and would instead
-    have cost the twin its defining property (ADR-SW4). One package is not a fork of `ros_gz`.
+> [!TIP]
+> **Resolved 2026-08-08 — narrower than this section assumed**
+>
+> **`ros_gz` was never at risk.** The machine has `ros-humble-ros-gzharmonic` 0.244.12,
+> the Harmonic-paired variant OSRF publishes under a different name from the
+> Fortress-targeted `ros-humble-ros-gz-*`. It works against Harmonic as installed.
+>
+> **`gz_ros2_control` was the whole gate** and it needed the source build this section
+> advised against — there is no Harmonic build of it for Humble in apt. It builds cleanly
+> (all `libgz-sim8-dev` headers were already present) and links against `libgz-sim8`.
+> See [software.md §6.2](../design/software.md#62-gazebo-pairing-resolved-2026-08-08).
+>
+> The "do not source-build" advice was written to protect the schedule and would instead
+> have cost the twin its defining property (ADR-SW4). One package is not a fork of `ros_gz`.
 
 ## 5.4 Build the micro-ROS agent from source
 
@@ -142,12 +145,13 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 ls -l /dev/mitt_dbw /dev/mitt_lidar
 ```
 
-!!! danger "Give `/dev/mitt_dbw` a direct laptop port, not a hub"
-
-    This link carries the steering **setpoint** as well as feedback. A dropout removes the
-    setpoint and drops the vehicle to `ESTOP`
-    ([failsafe row 2](../design/safety.md#2-failsafe-matrix)) — safe, but a flaky link is a
-    vehicle that stops repeatedly.
+> [!CAUTION]
+> **Give `/dev/mitt_dbw` a direct laptop port, not a hub**
+>
+> This link carries the steering **setpoint** as well as feedback. A dropout removes the
+> setpoint and drops the vehicle to `ESTOP`
+> ([failsafe row 2](../design/safety.md#2-failsafe-matrix)) — safe, but a flaky link is a
+> vehicle that stops repeatedly.
 
 ## 5.7 `mitt_hardware` — the `ros2_control` interface
 
@@ -170,14 +174,15 @@ the design exists to prevent.
 
 ## 5.8 Re-parameterize for the real chassis
 
-!!! danger "Treat every B-MROVER dimension as a placeholder"
-
-    B-MROVER's URDF mixes a simulation chassis (`chassis_length=1.3`) with a controller
-    `wheelbase=0.325` — these are simulation artifacts, not measurements
-    ([software.md §3.2](../design/software.md#32-ackermann-kinematic-parameters)). Measure
-    everything on your vehicle. The one value consistent across three independent files is the
-    **±22.5° steering range**, adopted as the design target and still to be re-verified against
-    the real mechanical lock.
+> [!CAUTION]
+> **Treat every B-MROVER dimension as a placeholder**
+>
+> B-MROVER's URDF mixes a simulation chassis (`chassis_length=1.3`) with a controller
+> `wheelbase=0.325` — these are simulation artifacts, not measurements
+> ([software.md §3.2](../design/software.md#32-ackermann-kinematic-parameters)). Measure
+> everything on your vehicle. The one value consistent across three independent files is the
+> **±22.5° steering range**, adopted as the design target and still to be re-verified against
+> the real mechanical lock.
 
 | Parameter | Source | Action |
 |---|---|---|
@@ -246,11 +251,12 @@ ros2 launch mitt_bringup sim.launch.py
 
 ---
 
-!!! tip "You can run the whole autonomy stack right now, with no hardware"
-
-    Once the workspace builds, the simulated vehicle will map an indoor world and navigate it
-    on this laptop alone — that is Track A, and it does not wait on the vehicle arriving. See
-    **[Running the Digital Twin](../run-the-twin.md)** for the tested step-by-step.
+> [!TIP]
+> **You can run the whole autonomy stack right now, with no hardware**
+>
+> Once the workspace builds, the simulated vehicle will map an indoor world and navigate it
+> on this laptop alone — that is Track A, and it does not wait on the vehicle arriving. See
+> **[Running the Digital Twin](../run-the-twin.md)** for the tested step-by-step.
 
 ---
 

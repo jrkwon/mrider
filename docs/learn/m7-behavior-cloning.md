@@ -76,13 +76,14 @@ EKF odometry             ─┘                                 │
 [ADR-SW1](../design/software.md#adr-sw1-one-transport-one-clock-typed-messages) — and `base_pose_topic`
 points at the EKF odometry output.
 
-!!! info "The learned policy gets no special privileges"
-
-    Inference output drives `ros2_control`, the same as Nav2 and teleop — **the
-    exact same datapath as Nav2 and as your joystick**. The network cannot reach the motors
-    any more directly than a human can, and the RC transmitter still preempts it through both
-    override layers.
-    Single pinned datapath, again paying off.
+> [!NOTE]
+> **The learned policy gets no special privileges**
+>
+> Inference output drives `ros2_control`, the same as Nav2 and teleop — **the
+> exact same datapath as Nav2 and as your joystick**. The network cannot reach the motors
+> any more directly than a human can, and the RC transmitter still preempts it through both
+> override layers.
+> Single pinned datapath, again paying off.
 
 ### The model
 
@@ -109,15 +110,16 @@ That distinction matters. The label is what the wheels **actually did**, includi
 loop's tracking error and any mechanical lag. Training on the *command* would teach the network
 to reproduce commands that the vehicle does not actually follow.
 
-!!! danger "Time sync is a silent killer here"
-
-    If images and steering labels are misaligned in time, you are training the network to
-    predict what the driver did **half a second ago**. It will still converge — the loss goes
-    down, the plots look fine — and the resulting policy will consistently turn late.
-
-    MRider's answer: the **laptop is the single authoritative clock**; the Teensy uses
-    micro-ROS session time sync, so there is only one clock domain; `use_sim_time=false`
-    ([calibration.md §6](../design/calibration.md#6-time-synchronization)).
+> [!CAUTION]
+> **Time sync is a silent killer here**
+>
+> If images and steering labels are misaligned in time, you are training the network to
+> predict what the driver did **half a second ago**. It will still converge — the loss goes
+> down, the plots look fine — and the resulting policy will consistently turn late.
+>
+> MRider's answer: the **laptop is the single authoritative clock**; the Teensy uses
+> micro-ROS session time sync, so there is only one clock domain; `use_sim_time=false`
+> ([calibration.md §6](../design/calibration.md#6-time-synchronization)).
 
 ### Dataset problems, in order of how often they bite
 
@@ -208,12 +210,13 @@ python neural_net/train.py --data e2e_data/<date>_<course> \
 | Final training loss | *(record)* |
 | Final validation loss | *(record)* |
 
-!!! note "Low loss is not a working policy"
-
-    A network that always outputs 0° scores well on a straight-heavy dataset. **Always check
-    predictions against a held-out set that includes corners**, not just the aggregate loss.
-    Plot predicted vs. actual steering across the validation set; the interesting region is the
-    tails, not the middle.
+> [!NOTE]
+> **Low loss is not a working policy**
+>
+> A network that always outputs 0° scores well on a straight-heavy dataset. **Always check
+> predictions against a held-out set that includes corners**, not just the aggregate loss.
+> Plot predicted vs. actual steering across the validation set; the interesting region is the
+> tails, not the middle.
 
 ### Part 4 — Deploy
 
@@ -221,11 +224,12 @@ python neural_net/train.py --data e2e_data/<date>_<course> \
 ros2 run run_neural run_neural --ros-args -p weights:=<path>
 ```
 
-!!! danger "First autonomous run: same protocol as the first manual drive"
-
-    Operator with **thumbs on the RC sticks**, spotter's hand on the E-stop, clear area sized
-    by the coast-down distance measured in M3, software speed cap at walking pace. **Abort on
-    the first surprise** — a policy that mis-steers once will mis-steer again, faster.
+> [!CAUTION]
+> **First autonomous run: same protocol as the first manual drive**
+>
+> Operator with **thumbs on the RC sticks**, spotter's hand on the E-stop, clear area sized
+> by the coast-down distance measured in M3, software speed cap at walking pace. **Abort on
+> the first surprise** — a policy that mis-steers once will mis-steer again, faster.
 
 Progress: **straight segment → single corner → half lap → full lap.** Do not jump to a full
 lap because the straight worked.
