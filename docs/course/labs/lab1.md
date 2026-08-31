@@ -1,6 +1,6 @@
 # Lab 1 — Bring Up the Twin
 
-**Week 1 · 9/07 · due before Week 2 (9/14)**
+**Week 1 · 9/14 · due before Week 2 (9/21)**
 
 Your first encounter with a working ROS 2 system. You will not write code today. You will bring up a
 robot, find out what is running inside it, make it move, and then deliberately break it in the way

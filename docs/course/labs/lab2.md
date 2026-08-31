@@ -1,6 +1,6 @@
 # Lab 2 — Drive a Square
 
-**Week 2 · 9/14 · due before Week 3 (9/21)**
+**Week 2 · 9/21 · due before Week 3 (9/28)**
 
 Your first ROS 2 code. You will build a package, publish commands to a real controller, subscribe to
 the feedback it produces, and discover that a rate is a contract rather than a preference.

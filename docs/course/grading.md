@@ -3,9 +3,9 @@
 | Component | Weight | When |
 |---|---:|---|
 | [Individual labs 1–5](#individual-labs-30) | **30%** | W1–W5, due weekly |
-| [Mid-semester presentation](#mid-semester-presentation-15) | **15%** | W8 — 10/26 |
-| [Team deliverable](#team-deliverable-25) | **25%** | W16 — 12/21 |
-| [Final demo & presentation](#final-demo-presentation-20) | **20%** | W16 — 12/21 |
+| [Mid-semester presentation](#mid-semester-presentation-15) | **15%** | W8 — 11/02 |
+| [Team deliverable](#team-deliverable-25) | **25%** | W15 — 12/21 |
+| [Final demo & presentation](#final-demo-presentation-20) | **20%** | W15 — 12/21 |
 | [Participation & documentation](#participation-documentation-10) | **10%** | Continuous |
 
 ---
@@ -74,7 +74,7 @@ Due before the next class. Late: −10%/day, floor 50%, up to one week; zero aft
 
 ## Mid-semester presentation (15%)
 
-**Week 8, 10/26.** Each team presents for 12 minutes plus 5 minutes of questions.
+**Week 8, 11/02.** Each team presents for 12 minutes plus 5 minutes of questions.
 
 This is the first checkpoint where the four tracks have to explain themselves to each other — and
 that is its real purpose. Present to your classmates, not to me.
@@ -102,7 +102,7 @@ that is its real purpose. Present to your classmates, not to me.
 
 ## Team deliverable (25%)
 
-**Due Week 16.** The subsystem your track owns, in the repository, with its evidence.
+**Due Week 15.** The subsystem your track owns, in the repository, with its evidence.
 
 ### Rubric (100 points)
 
@@ -133,7 +133,7 @@ replication claim**.
 
 ## Final demo & presentation (20%)
 
-**Week 16, 12/21.** 15 minutes of presentation, 5 of questions, plus the live vehicle demo.
+**Week 15, 12/21.** 15 minutes of presentation, 5 of questions, plus the live vehicle demo.
 
 ### Rubric (100 points)
 

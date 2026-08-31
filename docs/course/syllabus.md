@@ -8,7 +8,7 @@ Graduate course · Fall 2026 · Mondays, 3 hours · 24 students
 | **Instructor** | Jaerock Kwon, PhD |
 | **Contact** | jrkwon@umich.edu |
 | **Meets** | Mondays, one 3-hour block |
-| **First class** | **Monday, September 7, 2026** |
+| **First class** | **Monday, September 14, 2026** |
 | **Last class** | **Monday, December 21, 2026** |
 | **Language** | English — lectures, materials, and all submitted work |
 | **Platform** | [MRider / MITT](../index.md) — a drive-by-wire research vehicle |
@@ -66,38 +66,46 @@ from the beginning, and reaches C++ only in the second half, where it is optiona
 ## Course calendar
 
 The semester begins Tuesday **September 1** and ends Monday **December 21**. Because the class meets
-on Mondays, that is **16 course weeks containing 15 meetings**.
+on Mondays, that is **16 course slots (W0–W15) containing 15 meetings**.
 
 | | |
 |---|---|
-| First meeting | **Mon 9/7** (9/1 is a Tuesday, so there is no Monday class that week) |
+| First meeting | **Mon 9/7 — [Week 0, ROS fundamentals](weeks/w00.md)** (9/1 is a Tuesday, so there is no Monday class that week) |
 | **No class** | **Mon 10/5** — 개천절 대체공휴일 (10/3 falls on a Saturday) |
 | Chuseok | 9/24–26 (Thu–Sat). No substitute holiday, so **Mon 9/28 meets normally** |
 | Last meeting | **Mon 12/21** — final presentations |
 
-**Week 5 has no meeting**, but it is not a week off. You receive a self-study packet and Lab 5 on
-9/28, both due 10/12. That gives a two-week window — which also serves as catch-up time if your
+**Week 4 has no meeting**, but it is not a week off. You receive a self-study packet and Lab 4 on
+9/28, due 10/12. That gives a two-week window — which also serves as catch-up time if your
 environment setup went badly.
+
+**Week 0 is the on-ramp.** It is lecture only, with no lab, and it is written to stand alone — so a
+student who registers late reads [that page](weeks/w00.md) first and catches up from there.
 
 ---
 
 ## Structure
 
 ```
-W1 ─────── W4    Foundations — individual, identical labs for everyone   9/07 – 9/28
-     W5    ○      NO MEETING — self-study packet + Lab 5                     10/05
-W6 ─────── W10   Subsystem tracks — four teams in parallel              10/12 – 11/09
-     W6    ↓      Teams announced; charters written
-     W8    ★      MID-SEMESTER PRESENTATION                                  10/26
-W11 ────── W13   Merge ladder — subsystems combine, pairwise            11/16 – 11/30
-W14 ────── W15   Full integration and validation                        12/07 – 12/14
-     W16   ★      FINAL DEMO + PRESENTATIONS                                 12/21
+W0               ROS fundamentals — lecture only, no lab              9/07
+W1 ─────── W3    Foundations — individual, identical labs        9/14 – 9/28
+     W4    ○     NO MEETING (개천절) — self-study packet + Lab 4       10/05
+W5               Description to motion + Lab 5                        10/12
+W6 ─────── W10   Subsystem tracks — four teams in parallel      10/19 – 11/16
+     W6    ↓     Teams announced; charters written                    10/19
+     W8    ★     MID-SEMESTER PRESENTATION                            11/02
+W11 ────── W13   Merge ladder — subsystems combine, pairwise    11/23 – 12/07
+W14              Full integration, then validation                    12/14
+     W15   ★     FINAL DEMO + PRESENTATIONS                           12/21
 ```
+
+**Week 0 is orientation**, with no lab — it exists so nobody arrives at Lab 1 wondering what the
+course expects, and so a late registrant has one page to start from.
 
 **Weeks 1–5 are individual.** Everyone does the same five labs and is graded on their own work. This
 is deliberate: in a team project, foundational gaps hide. They will not hide here.
 
-**Weeks 6–16 are team-based.** Four teams of six, each owning a real subsystem, merging into one
+**Weeks 6–15 are team-based.** Four teams of six, each owning a real subsystem, merging into one
 working vehicle. See [Teams & Tracks](teams.md).
 
 ### A typical 3-hour session
@@ -106,7 +114,7 @@ working vehicle. See [Teams & Tracks](teams.md).
 |---|---|
 | 0:00 – 0:50 | Lecture |
 | 0:50 – 1:00 | Break |
-| 1:00 – 2:30 | Lab (W1–W5) or team work (W6–W16) |
+| 1:00 – 2:30 | Lab (W1–W5) or team work (W6–W15) |
 | 2:30 – 3:00 | Standup — each team reports progress, blockers, and what it needs from another team |
 
 The final 30 minutes are not filler. From Week 6 on, that is where cross-team integration actually
@@ -121,31 +129,33 @@ Reading keys: **B** = *ROS 2: Zero to Robot* · **M** = [MRider learn module](..
 
 | W | Date | Lecture | Lab / team block | Due |
 |---|---|---|---|---|
-| [1](weeks/w01.md) | **9/07** | Course intro. What middleware *is*. Drive-by-wire. The ROS 2 computation graph | [Lab 1](labs/lab1.md) — Environment; run the twin end to end | — |
-| [2](weeks/w02.md) | **9/14** | Nodes, topics, messages. Packages, `colcon`, launch files | [Lab 2](labs/lab2.md) — Publisher/subscriber; drive the twin in a square | Lab 1 |
-| [3](weeks/w03.md) | **9/21** | Services, actions, parameters. QoS. Command arbitration with `twist_mux` | [Lab 3](labs/lab3.md) — Parameterized speed governor; induce a QoS mismatch | Lab 2 |
-| [4](weeks/w04.md) | **9/28** | Description to motion: URDF/Xacro, TF2, RViz, Gazebo, `ros2_control` | [Lab 4](labs/lab4.md) — Add a sensor link; break an extrinsic and diagnose it | Lab 3 |
-| [**5**](weeks/w05.md) | **10/05** | ○ **NO MEETING** (개천절 대체공휴일) | **Self-study:** Ackermann kinematics. [Lab 5](labs/lab5.md) — measure turning radius against theory | Track preference form (10/9) |
-| [6](weeks/w06.md) | **10/12** | Odometry and sensor fusion. The EKF | **Teams announced.** Kickoff and charter workshop | Lab 5 |
-| [7](weeks/w07.md) | **10/19** | Embedded ROS 2: micro-ROS, the Teensy, `hardware_interface` | Track work | Team charters |
-| [8](weeks/w08.md) | **10/26** | Safety: authority arbitration, failsafe matrices, FSMs | **★ MID-SEMESTER PRESENTATION** | Mid deliverable · peer eval |
-| [9](weeks/w09.md) | **11/02** | Control: PID, pure pursuit, RPP, and the ±22.5° constraint | Track work | — |
-| [10](weeks/w10.md) | **11/09** | Perception: camera and 2D LiDAR, intrinsics and extrinsics | Track work | Track milestone |
-| [11](weeks/w11.md) | **11/16** | SLAM: `slam_toolbox`, loop closure, and how to read a bad map | **Merge 1 — Electrical + Chassis** | — |
-| [12](weeks/w12.md) | **11/23** | Nav2: costmaps, planners, behavior trees, lifecycle nodes | **Merge 2 — Simulation + Software** | — |
-| 13 | **11/30** | Simulation to reality: calibration, QoS/DDS, diagnostics, logging | **Merge 3 — (E+C) + Software** | — |
-| 14 | **12/07** | System architecture. Docker and CI. Reproducibility | **Merge 4 — full integration** | — |
-| 15 | **12/14** | Validation and failure analysis. Behavior cloning, previewed | Measure against the acceptance gates; dress rehearsal | Peer eval 2 |
-| 16 | **12/21** | — | **★ FINAL DEMO + PRESENTATIONS** | Final report · demo |
+| [**0**](weeks/w00.md) | **9/07** | **ROS fundamentals.** What a robot is; Linux, the CLI, and git; what middleware is for; the ROS 2 vocabulary | *No lab* — orientation only | — |
+| [1](weeks/w01.md) | **9/14** | Course intro. What middleware *is*. Drive-by-wire. The ROS 2 computation graph | [Lab 1](labs/lab1.md) — Environment; run the twin end to end | — |
+| [2](weeks/w02.md) | **9/21** | Nodes, topics, messages. Packages, `colcon`, launch files | [Lab 2](labs/lab2.md) — Publisher/subscriber; drive the twin in a square | Lab 1 |
+| [3](weeks/w03.md) | **9/28** | Services, actions, parameters. QoS. Command arbitration with `twist_mux` | [Lab 3](labs/lab3.md) — Parameterized speed governor; induce a QoS mismatch | Lab 2 |
+| [**4**](weeks/w04.md) | **10/05** | ○ **NO MEETING** (개천절 대체공휴일) | **Self-study:** Ackermann kinematics. [Lab 4](labs/lab4.md) — measure turning radius against theory | Lab 3 (online) |
+| [5](weeks/w05.md) | **10/12** | Description to motion: URDF/Xacro, TF2, RViz, Gazebo, `ros2_control` | [Lab 5](labs/lab5.md) — Add a sensor link; break an extrinsic and diagnose it | Lab 4 |
+| [6](weeks/w06.md) | **10/19** | Odometry and sensor fusion. The EKF | **Teams announced.** Kickoff and charter workshop | Lab 5 · preference form (10/16) |
+| [7](weeks/w07.md) | **10/26** | Embedded ROS 2: micro-ROS, the Teensy, `hardware_interface` | Track work | Team charters |
+| [8](weeks/w08.md) | **11/02** | Safety: authority arbitration, failsafe matrices, FSMs | **★ MID-SEMESTER PRESENTATION** | Mid deliverable · peer eval |
+| [9](weeks/w09.md) | **11/09** | Control: PID, pure pursuit, RPP, and the ±22.5° constraint | Track work | — |
+| [10](weeks/w10.md) | **11/16** | Perception: camera and 2D LiDAR, intrinsics and extrinsics | Track work | Track milestone |
+| [11](weeks/w11.md) | **11/23** | SLAM: `slam_toolbox`, loop closure, and how to read a bad map | **Merge 1 — Electrical + Chassis** | — |
+| [12](weeks/w12.md) | **11/30** | Nav2: costmaps, planners, behavior trees, lifecycle nodes | **Merge 2 — Simulation + Software** | — |
+| 13 | **12/07** | Simulation to reality: calibration, QoS/DDS, diagnostics, logging | **Merge 3 — (E+C) + Software** | — |
+| 14 | **12/14** | System architecture, CI, reproducibility. Validation and failure analysis | **Merge 4 — full integration**; measure against the acceptance gates; dress rehearsal | Peer eval 2 |
+| 15 | **12/21** | — | **★ FINAL DEMO + PRESENTATIONS** | Final report · demo |
 
 > [!NOTE]
-> **Why Week 4 is dense and Week 5 is self-study**
+> **Why Week 5 is dense and Week 4 is self-study**
 >
-> The 10/5 holiday landed on what would have been the most important foundation week. Rather than
-> cut content, the *systems* material — URDF through `ros2_control`, which is what people fail at
-> unsupervised — moved into the live Week 4 session. What went to self-study is the *mathematics*:
-> the bicycle model and the minimum-turning-radius derivation read perfectly well on paper, and
-> Lab 5 measures against an already-working simulator rather than asking you to configure one.
+> The 10/5 holiday landed in the middle of the foundation block. Rather than cut content, the weeks
+> were ordered by **what survives being learned alone**.
+>
+> The *systems* material — URDF through `ros2_control`, which is what people fail at unsupervised —
+> sits in the live Week 5 session. What went to self-study is the *mathematics*: the bicycle model
+> and the minimum-turning-radius derivation read perfectly well on paper, and Lab 4 measures against
+> an already-working simulator rather than asking you to configure one.
 
 > [!NOTE]
 > **A note on the textbook**
@@ -163,8 +173,8 @@ Reading keys: **B** = *ROS 2: Zero to Robot* · **M** = [MRider learn module](..
 |---|---:|---|
 | **Individual labs** (Labs 1–5) | **30%** | Your own ROS 2 competence, before teams can hide it |
 | **Mid-semester presentation** (W8) | **15%** | Your team's subsystem, demonstrated live |
-| **Team deliverable** (W16) | **25%** | The subsystem you shipped, and its evidence |
-| **Final demo & presentation** (W16) | **20%** | The integrated vehicle, and how you explain it |
+| **Team deliverable** (W15) | **25%** | The subsystem you shipped, and its evidence |
+| **Final demo & presentation** (W15) | **20%** | The integrated vehicle, and how you explain it |
 | **Participation & documentation** | **10%** | Standups, git history, and what you wrote down |
 
 Full rubrics are in [Grading & Rubrics](grading.md).

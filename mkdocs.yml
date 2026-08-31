@@ -118,14 +118,15 @@ nav:
           - 1 — Bring Up the Twin: course/labs/lab1.md
           - 2 — Drive a Square: course/labs/lab2.md
           - 3 — A Speed Governor: course/labs/lab3.md
-          - 4 — Describe the Robot: course/labs/lab4.md
-          - 5 — How Tightly Can It Turn?: course/labs/lab5.md
+          - 4 — How Tightly Can It Turn?: course/labs/lab4.md
+          - 5 — Describe the Robot: course/labs/lab5.md
       - Weekly Notes:
+          - Week 0 — ROS Fundamentals: course/weeks/w00.md
           - Week 1 — Middleware & the ROS 2 Graph: course/weeks/w01.md
           - Week 2 — Nodes, Topics, Packages: course/weeks/w02.md
           - Week 3 — Services, Parameters, QoS: course/weeks/w03.md
-          - Week 4 — Description to Motion: course/weeks/w04.md
-          - Week 5 — Self-Study Packet: course/weeks/w05.md
+          - Week 4 — Self-Study Packet: course/weeks/w04.md
+          - Week 5 — Description to Motion: course/weeks/w05.md
           - Week 6 — Odometry, Fusion, and Teams: course/weeks/w06.md
           - Week 7 — Embedded ROS 2: course/weeks/w07.md
           - Week 8 — Safety & Mid-Semester Presentation: course/weeks/w08.md

@@ -1,219 +1,238 @@
-# Lab 4 — Describe the Robot
+# Lab 4 — How Tightly Can It Turn?
 
-**Week 4 · 9/28 · due before Week 6 (10/12)**
-
-URDF, Xacro, and TF2 — how a robot knows the shape of itself, and what goes wrong when it is wrong
-about that.
-
-You will add a sensor to MRider's description, watch it appear in the transform tree and in RViz, and
-then move it a few centimetres and see how thoroughly that ruins everything downstream.
+**Week 4 · 10/05 · self-study · handed out 9/28 · due before Week 5 (10/12)**
 
 > [!NOTE]
-> **Two weeks for this one**
+> **No class on 10/5 — 개천절 대체공휴일**
 >
-> Week 5 (10/5) has no class — 개천절 대체공휴일. Lab 4 and [Lab 5](lab5.md) are both due 10/12, and
-> you have the intervening two weeks for them.
+> This lab is self-paced. Everything you need is on this page, including the theory. Work through
+> it alongside [Lab 5](lab5.md); it is due 10/12.
+>
+> Stuck? Post in the course channel. Do not sit on a problem for a week.
+
+You will derive the minimum turning radius of a car-like robot, then measure it in simulation and
+find that theory and measurement **disagree by about 2%**. Explaining that gap is the lab.
 
 | | |
 |---|---|
 | **Time** | ~90 minutes |
-| **Prerequisite** | Lab 3 complete |
-| **Reading** | *Zero to Robot* ch. 4–6 · [calibration.md §4](../../design/calibration.md) |
+| **Prerequisite** | Labs 1–3. Independent of Lab 5 — either order works |
+| **Reading** | This page · [M6 §the non-holonomic constraint](../../learn/m6-nav2.md) |
 
 ---
 
-## Part 1 — Read the description you already have
+## Part 1 — The bicycle model
 
-```bash
-cd ~/mrider/ros2_ws/src/mitt_description
-ls urdf/ config/
-```
-
-Five xacro files, and one YAML. Open `config/mitt_dimensions.yaml` and read its header:
+MRider has four wheels, but for planning purposes it is a **bicycle**: the two front wheels collapse
+to one steered wheel at the centre of the front axle, the two rear wheels to one driven wheel at the
+centre of the rear axle.
 
 ```
-NOTHING IN THIS FILE HAS BEEN MEASURED.
-Every value is an ESTIMATE derived from the vendor's published overall dimensions...
+            ↑ x (forward)
+            |
+    ┌───────────────┐
+    │       ⊙ ← front wheel, steered by δ
+    │       ┆       │
+    │       ┆ L     │      L = wheelbase = 0.63 m
+    │       ┆       │      δ = steering angle
+    │       ⊗ ← rear wheel (base_link is here)
+    └───────────────┘
 ```
 
-That is not an apology. It is a **design decision**, and it is why the URDF contains no literal
-numbers: every dimension is read from this one file, so measured values can drop in without anyone
-touching geometry. The Chassis track will replace these numbers in November, and nothing else will
-need to change.
+The vehicle cannot move sideways. That single fact — the **non-holonomic constraint** — is what makes
+a car harder to plan for than a differential-drive robot, and it is why several later weeks of this
+course exist.
 
-Expand the description to plain URDF and look at what xacro produced:
+When the front wheel is held at angle δ, the vehicle traces a circle. The turn centre lies on the
+extension of the rear axle, at distance *R*:
 
-```bash
-cd ~/mrider/ros2_ws && source setup_env.sh
-xacro src/mitt_description/urdf/mitt.urdf.xacro > /tmp/mitt.urdf
-wc -l /tmp/mitt.urdf src/mitt_description/urdf/*.xacro
-```
+$$ \tan\delta = \frac{L}{R} \qquad\Longrightarrow\qquad R = \frac{L}{\tan\delta} $$
 
-**Expected output:** the expanded URDF is several times longer than the xacro sources. That ratio is
-what xacro buys you.
+The relation between forward speed *v*, yaw rate *ω*, and steering angle follows:
 
-Answer in your submission:
+$$ \omega = \frac{v}{R} = \frac{v\tan\delta}{L} $$
 
-1. `wheelbase` appears in `mitt_dimensions.yaml`. Find **every** place it influences the expanded
-   URDF. (`grep` the expanded file for the value.)
-2. `base_link_height` is `0.09`, and so is `wheel_radius`. Read the comment. Why is that not a
-   coincidence, and where is `base_link` physically located on the vehicle?
+**Read that second equation carefully.** If *v* = 0, then ω = 0 **for any δ whatsoever**. A car
+cannot rotate while stationary. This is why your Lab 2 square driver had to keep `linear.x` non-zero
+during its turns.
 
----
+### The number that shapes this course
 
-## Part 2 — Look at the transform tree
+MRider's front wheels are mechanically limited to **δ_max = 22.5°**. So:
 
-Launch the simulator, then:
+$$ R_{min} = \frac{L}{\tan\delta_{max}} = \frac{0.63}{\tan 22.5°} = \frac{0.63}{0.4142} = 1.52\ \text{m} $$
 
-```bash
-ros2 run tf2_tools view_frames
-```
+**The vehicle cannot turn inside a 1.52 m radius.** Not "prefers not to" — cannot. Its wheels do not
+point that far.
 
-This writes `frames.pdf` in your current directory. Open it.
-
-```bash
-ros2 run tf2_ros tf2_echo base_link laser_link --ros-args -p use_sim_time:=true
-```
-
-> [!WARNING]
-> **`use_sim_time:=true` is not optional here**
+> **Where this number actually shows up**
 >
-> Without it, `tf2_echo` uses wall-clock time while every transform in the system is stamped with
-> *simulation* time. The two never line up and you get a stream of extrapolation errors that look
-> like a broken TF tree. This costs people an hour the first time.
-
-Record the translation and rotation from `base_link` to `laser_link`.
-
-Answer:
-
-3. Which node publishes the `base_link → laser_link` transform, and which publishes
-   `odom → base_link`? Why are those two different nodes?
-4. Is `base_link → laser_link` static or dynamic? How can you tell from the data alone?
+> Open `ros2_ws/src/mitt_navigation/config/nav2_params.yaml` and search for `1.6`. You will find it
+> **twice** — as `minimum_turning_radius` on the planner and `min_turning_radius` on the controller.
+> Both are R_min with a small safety margin.
+>
+> It is also why `xy_goal_tolerance` is 0.6 m rather than the more usual 0.25 m. A vehicle with a
+> 1.52 m turning circle physically cannot make fine positional corrections near a goal; ask it to
+> and it orbits. That tolerance is geometry, not laziness.
 
 ---
 
-## Part 3 — Add a rear-facing camera
+## Part 2 — Predict before you measure
 
-MRider has one forward camera on the mast. Add a second, rear-facing one — the kind of thing you
-would want for reversing, which this vehicle does a lot of.
+Fill in this table **before** running anything. Use `R = v/ω` for the requested radius, and
+`δ = arctan(L·ω/v)` for the steering angle it implies.
 
-Edit `urdf/mitt_sensors.xacro`. Follow the pattern the forward camera already uses:
+| commanded *v* | commanded *ω* | requested *R* = v/ω | implied δ | Is δ ≤ 22.5°? | predicted actual *R* |
+|---|---|---|---|---|---|
+| 0.5 m/s | 0.30 rad/s | | | | |
+| 0.5 m/s | 1.00 rad/s | | | | |
+| 0.5 m/s | 2.00 rad/s | | | | |
 
-```xml
-<!-- ==== Rear camera (Lab 4) ============================================ -->
-<link name="rear_camera_link">
-  <visual>
-    <geometry><box size="0.025 0.09 0.025"/></geometry>
-    <material name="mast_grey"/>
-  </visual>
-</link>
+Write your predictions down and commit them before Part 3. Predicting first is the whole point —
+otherwise you will read the measurement and feel like you knew it all along.
 
-<joint name="rear_camera_joint" type="fixed">
-  <parent link="base_link"/>
-  <child link="rear_camera_link"/>
-  <!-- Behind the rear axle, at roofline height, looking backwards -->
-  <origin xyz="-0.15 0 ${wheel_rr + body_hh*0.9}" rpy="0 0 ${pi}"/>
-</joint>
+---
+
+## Part 3 — Measure it
+
+Launch the simulator. Then write a node that commands a constant `(v, ω)`, records
+`/ackermann_steering_controller/odometry` positions, and fits a circle to them.
+
+You have already written both halves: Lab 2 publishes `Twist` on a timer, and Lab 2 Part 3 subscribes
+to that odometry topic. Combine them.
+
+For the circle fit, this algebraic least-squares fit is enough:
+
+```python
+import math
+
+
+def fit_circle(pts):
+    """Least-squares circle fit. Returns radius."""
+    n = len(pts)
+    mx = sum(p[0] for p in pts) / n
+    my = sum(p[1] for p in pts) / n
+    u = [(p[0] - mx, p[1] - my) for p in pts]
+
+    Suu = sum(a * a for a, b in u)
+    Svv = sum(b * b for a, b in u)
+    Suv = sum(a * b for a, b in u)
+    Suuu = sum(a ** 3 for a, b in u)
+    Svvv = sum(b ** 3 for a, b in u)
+    Suvv = sum(a * b * b for a, b in u)
+    Svuu = sum(b * a * a for a, b in u)
+
+    d = 2 * (Suu * Svv - Suv * Suv)
+    if abs(d) < 1e-12:
+        return float('inf')            # straight line, infinite radius
+
+    uc = (Svv * (Suuu + Suvv) - Suv * (Svvv + Svuu)) / d
+    vc = (Suu * (Svvv + Svuu) - Suv * (Suuu + Suvv)) / d
+    return math.sqrt(uc * uc + vc * vc + (Suu + Svv) / n)
 ```
 
-Rebuild and relaunch:
+Run each case for **at least 20 seconds** so the vehicle completes more than a full circle, and
+**discard the first third of the samples** — the start is a transient while the steering slews to
+angle, and including it biases the fit.
 
-```bash
-colcon build --packages-select mitt_description --symlink-install
-source setup_env.sh
-ros2 launch mitt_bringup sim.launch.py
+**Expected output**, close to this:
+
+```
+commanded w=0.30 rad/s -> v/w= 1.67 m   MEASURED radius= 1.71 m
+commanded w=1.00 rad/s -> v/w= 0.50 m   MEASURED radius= 1.49 m
+commanded w=2.00 rad/s -> v/w= 0.25 m   MEASURED radius= 1.49 m
 ```
 
-**Expected output:** `rear_camera_link` appears in `view_frames`, and a small box is visible at the
-back of the vehicle in RViz's RobotModel display.
+Your numbers will differ slightly. The **pattern** must match.
 
-```bash
-ros2 run tf2_ros tf2_echo base_link rear_camera_link --ros-args -p use_sim_time:=true
-```
+---
 
-The rotation should show a yaw of π — it is pointing backwards.
+## Part 4 — Explain what you found
+
+Three things happened. Account for each.
+
+**7.** At ω = 0.30 the vehicle roughly followed the request (1.67 requested, 1.71 measured). At
+ω = 1.00 and ω = 2.00 it did **not** — both gave the same 1.49 m. Why do those two cases produce an
+identical result despite commanding radii that differ by a factor of two?
+
+**8.** The vehicle **silently ignored** your command. You asked for a 0.25 m radius and got 1.49 m,
+with no error, no warning, and no indication that the command was not honoured. Relate this to the
+silent failures in Labs 1, 3, and 4. What should a planner do about it?
+
+**9.** Theory says 1.52 m. Measurement says 1.49 m — about 2% low. Propose **at least two** distinct
+explanations, and state how you would test each one. Some directions worth considering:
+
+- `base_link` sits at the rear axle centre. Where is the fitted circle's centre relative to it?
+- Real Ackermann steering points the inner and outer wheels at *different* angles. The bicycle model
+  uses one. Which one does the mechanism's 22.5° limit actually apply to?
+- The odometry you measured with is itself computed from a kinematic model. Does that make this test
+  partly circular, and if so, what would break the circularity?
+- Circle-fit error, and sampling over less than a full revolution.
 
 > [!TIP]
-> **If the link does not appear**
+> **There is no single expected answer to question 9**
 >
-> Check `ros2 topic echo /robot_description --once | head -40`. If your link is not in there, xacro
-> did not pick up your edit — you probably did not rebuild, or `--symlink-install` is not in effect.
-> If it *is* there but not in TF, `robot_state_publisher` did not restart.
-
----
-
-## Part 4 — Where sensor frames come from in reality
-
-In simulation you typed the numbers and they became true. On the real vehicle it runs the other way:
-the sensor is bolted somewhere, and you have to **measure** where.
-
-Read [calibration.md §4](../../design/calibration.md), on camera and LiDAR extrinsics to `base_link`.
-
-Answer:
-
-5. What is the procedure for determining the real LiDAR's transform to `base_link`? How accurate can
-   you expect to be?
-6. If your measured LiDAR position is off by 3 cm in *x*, what specifically goes wrong downstream?
-   Name the affected subsystem, not just "things get worse."
+> This is graded on the quality of the reasoning and whether your proposed tests would actually
+> distinguish between your hypotheses. A well-argued wrong answer scores above a right answer with
+> no argument behind it.
+>
+> **"Honest failure outscores a lucky success"** applies to analysis, not just hardware.
 
 ---
 
 ## Part 5 — Break it on purpose
 
-Change the LiDAR's mounting position by 5 cm. In `mitt_sensors.xacro`, find the joint that parents
-`laser_link` and shift its `x` origin by `+0.05`.
+Everything above assumed `wheelbase = 0.63 m`. That number has never been measured — the file it
+lives in says so in capital letters.
 
-Rebuild, relaunch, and this time bring up mapping too:
+Edit `config/mitt_dimensions.yaml`:
 
-```bash
-# Terminal 2
-ros2 launch mitt_navigation slam.launch.py
+```yaml
+wheelbase: 0.75          # was 0.63
 ```
 
-Drive the vehicle around with your Lab 2 square driver, or by publishing to `/cmd_vel_joy`. Watch the
-map build in RViz.
+Rebuild `mitt_description`, relaunch, and repeat **one** of your measurements.
 
-**Expected output:** the map degrades. Walls observed from different headings no longer land on top
-of each other; you get doubled or smeared walls, and the effect grows the more you turn.
+```bash
+colcon build --packages-select mitt_description --symlink-install
+```
 
-Capture a screenshot of the bad map next to a good one.
+Answer:
 
-Write down:
+**10.** What happened to the measured minimum radius? Does it match the new theoretical
+`0.75/tan(22.5°)`?
 
-- What the failure looked like, specifically.
-- Why a **constant** offset produces a **heading-dependent** error. (Think about where that 5 cm
-  points as the vehicle rotates.)
-- Why this is much harder to diagnose than a sensor that has simply stopped publishing.
+**11.** Now suppose the *simulation* says 0.63 m and the *real vehicle* is 0.75 m. Nav2 plans a path
+it believes is feasible. What happens when the real car tries to follow it — and at what point in the
+process does anyone find out?
 
 > [!CAUTION]
-> **This is the third silent failure, and the worst of the three**
+> **This is the exact failure the course is organised to prevent**
 >
-> Nothing errors. The LiDAR publishes, TF is complete, SLAM runs, and the map is *wrong*. Every
-> component reports healthy because every component **is** healthy — the system is faithfully
-> computing the consequences of one bad number.
+> [software.md §8](../../design/software.md) requires that the twin's wheelbase, steering range,
+> rate limit, and command latency all match measured hardware **within 10%**. You just produced a
+> 19% error and watched the consequences.
 >
-> | Lab | Failure | Symptom |
-> |---|---|---|
-> | 1 | `ROS_DOMAIN_ID` mismatch | Nothing visible at all |
-> | 3 | QoS incompatibility | Connection silently never forms |
-> | 4 | Wrong extrinsic | Everything runs, and the output is quietly wrong |
+> This is also why the Chassis track's very first deliverable is a **measured** `mitt_dimensions.yaml`
+> — and why Merge 2 in Week 12 exists to prove the twin runs on measured numbers rather than
+> plausible ones.
 >
-> The MRider acceptance gate for mapping is that repeated observations of the same wall agree
-> within **10 cm** over a 30 m loop. Now you know what that number is defending against — and why
-> the Chassis track measuring the real vehicle is not busywork.
+> The project's own design notes are blunt about the precedent: a predecessor's URDF carried
+> `chassis_mass = 300 kg` for a ride-on car, and its controller config listed a wheelbase
+> contradicting its own URDF. Nobody noticed, because in simulation nothing complains.
 
-Restore the original value before submitting.
+Restore `0.63` before submitting.
 
 ---
 
 ## Check yourself
 
-- [ ] I can trace `wheelbase` from the YAML into the expanded URDF
-- [ ] I know where `base_link` sits on the vehicle and why
-- [ ] My rear camera appears in TF and in RViz, pointing backwards
-- [ ] I know why `tf2_echo` needs `use_sim_time:=true`
-- [ ] I produced a visibly degraded map from a 5 cm extrinsic error
-- [ ] I can explain why a constant offset causes a heading-dependent error
+- [ ] I derived `R = L/tan δ` and can explain why v = 0 means ω = 0
+- [ ] I predicted all three cases before measuring
+- [ ] My measurements show the clamp: two different commands, one identical radius
+- [ ] I proposed at least two testable explanations for the ~2% gap
+- [ ] I changed the wheelbase and confirmed the radius moved as theory predicts
+- [ ] I can explain why a sim/real geometry mismatch is discovered late and expensively
 
 ---
 
@@ -221,17 +240,15 @@ Restore the original value before submitting.
 
 | | |
 |---|---|
-| `mitt_sensors.xacro` | Your version with the rear camera (LiDAR restored to original) |
-| `frames.pdf` | TF tree showing `rear_camera_link` |
-| `lab4_tf.txt` | `tf2_echo` output for both `laser_link` and `rear_camera_link` |
-| `map_good.png`, `map_broken.png` | Before and after the 5 cm error |
-| `lab4_answers.md` | Questions 1–6 and the Part 5 write-up |
+| `lab4_radius/` | Your measurement node |
+| `lab4_predictions.md` | The Part 2 table, filled in **before** measuring |
+| `lab4_results.txt` | Measured output for all three cases, plus the modified-wheelbase run |
+| `lab4_answers.md` | Questions 7–11 |
 | — | **AI-assistance declaration** |
 
 ---
 
 ## See also
 
-- [Lab 5 — How Tightly Can It Turn?](lab5.md) — also due 10/12
-- [calibration.md](../../design/calibration.md) — the real extrinsics procedure
-- [M4 — Perception](../../learn/m4-perception.md)
+- [M6 — Navigation (Nav2)](../../learn/m6-nav2.md) — where R_min becomes a planner parameter
+- [software.md §4.5](../../design/software.md) — why this vehicle needs a planner that can reverse

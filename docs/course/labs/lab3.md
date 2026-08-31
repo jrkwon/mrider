@@ -1,6 +1,6 @@
 # Lab 3 — A Speed Governor
 
-**Week 3 · 9/21 · due before Week 4 (9/28)**
+**Week 3 · 9/28 · due before Week 4 (10/05)**
 
 Parameters, services, and Quality of Service — the three mechanisms that let a ROS 2 system be
 configured, commanded, and silently broken.

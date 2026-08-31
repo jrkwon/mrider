@@ -16,10 +16,10 @@ Weeks 11–14 those subsystems merge, one pair at a time, into a working vehicle
 
 | | |
 |---|---|
-| **9/28 (W4)** | Preference form handed out |
-| **10/9 (Fri)** | Preference form due |
-| **10/12 (W6)** | Teams announced; charter workshop in class |
-| **10/19 (W7)** | Team charters due |
+| **10/05 (W4)** | Preference form handed out |
+| **10/16 (Fri)** | Preference form due |
+| **10/19 (W6)** | Teams announced; charter workshop in class |
+| **10/26 (W7)** | Team charters due |
 
 Assignment is **by the instructor**, from your ranked preferences plus observed Lab 1–4 work. You
 will usually get your first or second choice.
@@ -31,7 +31,7 @@ whoever was left over.
 
 ### Preference form
 
-Submit by **Friday 10/9**:
+Submit by **Friday 10/16**:
 
 1. **Rank all four tracks**, 1 (most wanted) to 4.
 2. **What relevant experience do you have?** Soldering, machining, CAD, embedded C/C++, Python,
@@ -162,18 +162,21 @@ demonstration of a specific claim** — not a meeting, not a status update.
 
 | Week | Date | Merge | The claim it proves |
 |---|---|---|---|
-| **11** | 11/16 | **E + C** | The vehicle steers to a commanded angle under firmware control, wheels off the ground. Closes bring-up Stage 1: ≤ 1° steady-state error, no sustained oscillation |
-| **12** | 11/23 | **S + W** | The twin runs *measured* geometry and the functional test suite is green in CI |
-| **13** | 11/30 | **(E+C) + W** | `mitt_hardware` talks to the real Teensy. **The ADR-SW4 gate:** the identical teleop launch runs in sim and on hardware, differing only in the plugin |
-| **14** | 12/07 | **all four** | Full stack on the vehicle — teleop, then a hallway map, then a Nav2 goal |
-| **15** | 12/14 | — | Measured against the acceptance gates in [software.md §8](../design/software.md) |
+| **11** | 11/23 | **E + C** | The vehicle steers to a commanded angle under firmware control, wheels off the ground. Closes bring-up Stage 1: ≤ 1° steady-state error, no sustained oscillation |
+| **12** | 11/30 | **S + W** | The twin runs *measured* geometry and the functional test suite is green in CI |
+| **13** | 12/07 | **(E+C) + W** | `mitt_hardware` talks to the real Teensy. **The ADR-SW4 gate:** the identical teleop launch runs in sim and on hardware, differing only in the plugin |
+| **14** | 12/14 | **all four** | Full stack on the vehicle — teleop, then a hallway map, then a Nav2 goal. Then measured against the acceptance gates in [software.md §8](../design/software.md) |
+| **15** | 12/21 | — | **★ Final demo and presentations** |
 
 > [!CAUTION]
 > **A merge date cannot slip**
 >
-> A merge that does not happen on its date blocks three other teams. This is why the schedule
-> front-loads: Merge 1 is in Week 11 and full integration is Week 14, leaving Week 15 entirely for
-> the things that go wrong. They will.
+> A merge that does not happen on its date blocks three other teams. Merge 1 is in Week 11 and full
+> integration is Week 14, which leaves exactly **one week** before the demo — and Week 14 is already
+> carrying validation against the acceptance gates.
+>
+> Be clear-eyed about that: this schedule has no dedicated buffer week. Adding the Week 0 on-ramp
+> cost it. So a merge that slips does not eat slack, it eats demo preparation.
 >
 > If your track is going to miss a merge, say so **at the Week 10 standup**, not on the day.
 > Announcing a slip early is professional. Discovering it at the merge is not.
@@ -182,7 +185,7 @@ demonstration of a specific claim** — not a meeting, not a status update.
 
 ## Team charters
 
-Due **Week 7 (10/19)**. One page, committed to the repository at
+Due **Week 7 (10/26)**. One page, committed to the repository at
 `docs/course/charters/<track>.md`. It contains:
 
 1. **Who owns what.** Every deliverable in your track table, with a name against it. Not "the team
@@ -201,7 +204,7 @@ point. An unchanged charter in Week 14 means nobody was reading it.
 
 ## Peer evaluation
 
-Runs twice: **Week 8** and **Week 15**. Confidential; only I see individual responses.
+Runs twice: **Week 8** and **Week 14**. Confidential; only I see individual responses.
 
 For each teammate including yourself, on a 1–5 scale:
 
@@ -219,8 +222,8 @@ Consistent, evidenced under-contribution can reduce it further.
 > [!NOTE]
 > **If your team has a problem**
 >
-> Tell me at Week 8, not Week 15. At Week 8 there are seven weeks left and it is fixable. At Week
-> 15 there is nothing I can do but adjust grades, which helps nobody build anything.
+> Tell me at Week 8, not Week 14. At Week 8 there are seven weeks left and it is fixable. At Week
+> 14 there is nothing I can do but adjust grades, which helps nobody build anything.
 
 ---
 

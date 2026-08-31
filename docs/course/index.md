@@ -68,23 +68,24 @@ And it is unfinished in specific, named ways. By December, these will exist beca
 
 ## Weekly material
 
-Individual labs run Weeks 1–5; team tracks run Weeks 6–16.
+Week 0 is orientation. Individual labs run Weeks 1–5; team tracks run Weeks 6–15.
 
 | W | Date | Topic | Lab |
 |---|---|---|---|
-| [1](weeks/w01.md) | 9/07 | Middleware, drive-by-wire, and the ROS 2 graph | [Lab 1](labs/lab1.md) |
-| [2](weeks/w02.md) | 9/14 | Nodes, topics, packages, launch | [Lab 2](labs/lab2.md) |
-| [3](weeks/w03.md) | 9/21 | Services, actions, parameters, QoS | [Lab 3](labs/lab3.md) |
-| [4](weeks/w04.md) | 9/28 | Description to motion: URDF, TF2, Gazebo, `ros2_control` | [Lab 4](labs/lab4.md) |
-| [5](weeks/w05.md) | 10/05 | ○ No meeting — Ackermann kinematics, self-study | [Lab 5](labs/lab5.md) |
-| [6](weeks/w06.md) | 10/12 | Odometry, sensor fusion, and **teams announced** | — |
-| [7](weeks/w07.md) | 10/19 | Embedded ROS 2: micro-ROS, Teensy, `hardware_interface` | — |
-| [8](weeks/w08.md) | 10/26 | Safety, authority, failsafe — **★ mid-semester presentation** | — |
-| [9](weeks/w09.md) | 11/02 | Control: PID, pure pursuit, RPP | — |
-| [10](weeks/w10.md) | 11/09 | Perception: camera, LiDAR, calibration | — |
-| [11](weeks/w11.md) | 11/16 | SLAM — **★ Merge 1: Electrical + Chassis** | — |
-| [12](weeks/w12.md) | 11/23 | Nav2 — **★ Merge 2: Simulation + Software** | — |
-| 13–16 | 11/30 – 12/21 | Sim-to-real, integration, validation, final demo | see [Teams](teams.md) |
+| [**0**](weeks/w00.md) | **9/07** | **ROS fundamentals** — no lab, and the catch-up path for late registrants | — |
+| [1](weeks/w01.md) | 9/14 | Middleware, drive-by-wire, and the ROS 2 graph | [Lab 1](labs/lab1.md) |
+| [2](weeks/w02.md) | 9/21 | Nodes, topics, packages, launch | [Lab 2](labs/lab2.md) |
+| [3](weeks/w03.md) | 9/28 | Services, actions, parameters, QoS | [Lab 3](labs/lab3.md) |
+| [4](weeks/w04.md) | 10/05 | ○ No meeting — Ackermann kinematics, self-study | [Lab 4](labs/lab4.md) |
+| [5](weeks/w05.md) | 10/12 | Description to motion: URDF, TF2, Gazebo, `ros2_control` | [Lab 5](labs/lab5.md) |
+| [6](weeks/w06.md) | 10/19 | Odometry, sensor fusion, and **teams announced** | — |
+| [7](weeks/w07.md) | 10/26 | Embedded ROS 2: micro-ROS, Teensy, `hardware_interface` | — |
+| [8](weeks/w08.md) | 11/02 | Safety, authority, failsafe — **★ mid-semester presentation** | — |
+| [9](weeks/w09.md) | 11/09 | Control: PID, pure pursuit, RPP | — |
+| [10](weeks/w10.md) | 11/16 | Perception: camera, LiDAR, calibration | — |
+| [11](weeks/w11.md) | 11/23 | SLAM — **★ Merge 1: Electrical + Chassis** | — |
+| [12](weeks/w12.md) | 11/30 | Nav2 — **★ Merge 2: Simulation + Software** | — |
+| 13–15 | 12/07 – 12/21 | Sim-to-real, integration, validation, final demo | see [Teams](teams.md) |
 
 Weekly notes for W13 onward are published once the hardware exists — they depend on
 measured geometry and on which bench kit actually works.
