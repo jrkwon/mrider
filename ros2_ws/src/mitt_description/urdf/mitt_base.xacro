@@ -42,6 +42,11 @@
   <material name="mitt_white"><color rgba="0.92 0.92 0.92 1.0"/></material>
   <material name="mitt_dark"><color rgba="0.15 0.15 0.15 1.0"/></material>
   <material name="mitt_accent"><color rgba="0.10 0.35 0.65 1.0"/></material>
+  <!-- Wheels/sensors were previously all one of two greys, which made the
+       LiDAR, camera and mast indistinguishable and a wheel a black puck.
+       Orientation legibility is worth real points in every TF and Nav2 lab. -->
+  <material name="mitt_tyre"><color rgba="0.10 0.10 0.11 1.0"/></material>
+  <material name="mitt_rim"><color rgba="0.62 0.63 0.66 1.0"/></material>
 
   <!-- ==== base_link ======================================================= -->
   <!-- Massless reference frame at the rear axle centre, on the ground. -->
@@ -67,10 +72,11 @@
         <mesh filename="package://mitt_description/meshes/mitt_body.obj"
               scale="${body_l} ${body_w} ${body_h}"/>
       </geometry>
-      <!-- Stated explicitly so the colour is deterministic rather than
-           whatever each renderer falls back to. The upstream texture is not
-           used - see meshes/mitt_body.mtl for why. -->
-      <material name="mitt_white"/>
+      <!-- NO <material> HERE, DELIBERATELY. A material on a mesh visual is
+           converted to an SDF <material> whose diffuse colour OVERRIDES the
+           mesh's own, which is what suppressed the body texture until
+           2026-09-04. Leaving it off lets mitt_body.mtl paint the shell in
+           both Gazebo and RViz. See meshes/README.md for the full correction. -->
     </visual>
     <!-- Collision stays a PRIMITIVE BOX, deliberately. Mesh collision would
          cost physics time for no benefit here, and would couple the collision
@@ -132,7 +138,32 @@
       <visual>
         <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
         <geometry><cylinder radius="${wheel_r}" length="${wheel_w}"/></geometry>
-        <material name="mitt_dark"/>
+        <material name="mitt_tyre"/>
+      </visual>
+      <!-- Rim: visual only, no collision and no inertia - the tyre cylinder
+           above owns both.
+
+           It must stand PROUD of the tyre by a real margin. At 1.04x the tyre
+           width the rim face was ~1 mm clear, which is sub-pixel at normal
+           viewing distance and z-fought with the tyre. 1.20x gives 5 mm a
+           side, which reads clearly and still looks like a hub rather than an
+           axle stub.
+
+           RENDERER DIFFERENCE, verified 2026-09-04. Gazebo paints this its own
+           colour. RViz2's RobotModel display does NOT: it renders the geometry
+           of every visual but applies ONE material per link, taken from the
+           first visual - so in RViz the rim shows as a stepped hub in tyre
+           black. Same applies to the LiDAR cap and camera lens in
+           mitt_sensors.xacro.
+
+           Left as is deliberately. The fix would be a child link per accent
+           joined by a fixed joint, and that would add half a dozen decorative
+           frames to a TF tree students are asked to read in the Week 5 lab.
+           Cosmetics do not get to pollute the frame graph. -->
+      <visual>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry><cylinder radius="${wheel_r*0.55}" length="${wheel_w*1.20}"/></geometry>
+        <material name="mitt_rim"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
@@ -215,7 +246,11 @@
   <xacro:wheel_gz name="front_left_wheel_link"/>
   <xacro:wheel_gz name="front_right_wheel_link"/>
 
-  <gazebo reference="chassis_link"><material>Gazebo/White</material></gazebo>
-  <gazebo reference="equipment_plate_link"><material>Gazebo/DarkGrey</material></gazebo>
+  <!-- REMOVED 2026-09-04: <gazebo reference="chassis_link">
+         <material>Gazebo/White</material></gazebo> and its DarkGrey twin.
+       Gazebo/* are Gazebo CLASSIC material-script names with no meaning in
+       Harmonic, so they never did anything - and on the chassis the intent was
+       actively wrong, since the body is now textured from its own MTL. Link
+       colours come from the URDF <material> tags above. -->
 
 </robot>
