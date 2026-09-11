@@ -189,6 +189,14 @@ ros2 launch mrider bringup.launch.py
 #   ros2 bag play <course_bag> --loop
 ```
 
+> [!NOTE]
+> **On the MITT course stack, source `ros2_ws/setup_env.sh` instead**
+>
+> It sets the middleware and the loopback isolation for you. The domain number above still applies
+> where a micro-ROS `agent_config.xml` pins one — the two are independent, and localhost-only does
+> not interfere with the agent, because the agent reaches the Teensy over **USB serial**, not the
+> network.
+
 ### Steps
 
 **1. Look around.** Before writing anything, find out what exists.

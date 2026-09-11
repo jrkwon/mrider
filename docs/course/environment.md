@@ -264,16 +264,24 @@ until it prints **Ready**.
 `FAIL: 0` is what matters. Warnings are advisory — read them, because they predict what will be slow
 or surprising later, but they do not block you.
 
-> [!WARNING]
-> **Set a `ROS_DOMAIN_ID`**
+> [!NOTE]
+> **Your machine is already isolated — by two variables, not one**
 >
-> ROS 2 nodes discover each other over the network automatically. In a classroom of 24 people on
-> one Wi-Fi network, **your nodes will see everyone else's**, and your robot will receive their
-> commands. Pick a number 0–101 (the instructor will assign one) and add it to `~/.bashrc`:
+> ROS 2 nodes discover each other over the network automatically. With 24 people on one classroom
+> network, your robot would otherwise receive everyone else's commands. `setup_env.sh` prevents
+> that, and it takes **two** settings because the simulator does not use ROS 2's networking:
 >
-> ```bash
-> echo "export ROS_DOMAIN_ID=<your assigned number>" >> ~/.bashrc
-> ```
+> | | |
+> |---|---|
+> | `ROS_LOCALHOST_ONLY=1` | Confines ROS 2 to loopback. Measured: without it, nodes bind the real LAN address; with it, `127.0.0.1` only |
+> | `GZ_IP=127.0.0.1` | Confines **Gazebo**, which uses `gz-transport`, a separate stack that **ignores** the setting above |
+>
+> That second one is the interesting half. With `ROS_LOCALHOST_ONLY=1` already set, Gazebo was still
+> joining its discovery multicast group on both the Ethernet and Wi-Fi interfaces — so two students'
+> simulators could find each other, and the symptom of that is interleaved `/clock` and `/scan`,
+> which reads like a physics bug rather than a networking one.
+>
+> You do not have to configure either. **Source `setup_env.sh` in every terminal** and both are set.
 
 ---
 
@@ -352,9 +360,11 @@ forces FastRTPS, **and make sure every terminal in the session has it sourced.**
 <details class="failure" markdown>
 <summary>`ros2 topic list` shows nothing while the simulator is clearly running</summary>
 
-Almost always a **`ROS_DOMAIN_ID` mismatch** between terminals. It fails completely silently:
-exit code 0, nothing on stderr. Run `echo $ROS_DOMAIN_ID` in both terminals and confirm they
-match.
+Almost always a terminal where you forgot to `source setup_env.sh`, so its environment does not
+match the one running the simulator. It fails completely silently: exit code 0, nothing on stderr.
+
+Compare `echo $ROS_LOCALHOST_ONLY $ROS_DOMAIN_ID $RMW_IMPLEMENTATION` in both terminals — any
+difference in those three is enough to make one blind to the other.
 
 Add `--no-daemon` when checking. Otherwise the `ros2` CLI answers from a background daemon
 started under a different environment and shows you a cached graph.
@@ -400,7 +410,7 @@ Check RAM in `check_env.sh` output. With 8 GB, close your browser before launchi
 - [ ] `glxinfo -B` reports a real GPU, not `llvmpipe`
 - [ ] `bash scripts/check_env.sh` reports **`FAIL: 0`**
 - [ ] `ros2 control list_controllers` shows both controllers `active`
-- [ ] `ROS_DOMAIN_ID` set in `~/.bashrc`
+- [ ] `source ros2_ws/setup_env.sh` works, and reports `isolated to loopback`
 - [ ] Terminal output of `check_env.sh` saved — you submit it with Lab 1
 
 ---

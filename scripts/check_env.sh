@@ -260,11 +260,28 @@ case "${RMW_IMPLEMENTATION:-unset}" in
     *)     warn "RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION}" "Expected rmw_fastrtps_cpp. setup_env.sh will override." ;;
 esac
 
+# Isolation takes TWO variables, because Gazebo does not use DDS and ignores
+# ROS_LOCALHOST_ONLY entirely. Both are set by ros2_ws/setup_env.sh; this checks
+# the shell you are actually in. A warning, not a failure - a machine that is
+# off the network is fine either way.
+case "${ROS_LOCALHOST_ONLY:-unset}" in
+    1) ok "ROS_LOCALHOST_ONLY=1 (ROS 2 confined to loopback)" ;;
+    *) warn "ROS_LOCALHOST_ONLY is ${ROS_LOCALHOST_ONLY:-unset}" \
+        "Your nodes are reachable from the network. source ros2_ws/setup_env.sh" ;;
+esac
+
+case "${GZ_IP:-unset}" in
+    127.0.0.1) ok "GZ_IP=127.0.0.1 (Gazebo confined to loopback)" ;;
+    *) warn "GZ_IP is ${GZ_IP:-unset}" \
+        "gz-transport ignores ROS_LOCALHOST_ONLY and will discover other students' simulators. source ros2_ws/setup_env.sh" ;;
+esac
+
+# Informational only. The course no longer assigns per-student domain numbers -
+# localhost-only makes that unnecessary - but the variable still partitions, and
+# a leftover export in ~/.bashrc is a real way to make your own tools go blind.
 if [ -n "${ROS_DOMAIN_ID:-}" ]; then
-    ok "ROS_DOMAIN_ID=${ROS_DOMAIN_ID}"
-else
-    warn "ROS_DOMAIN_ID not set" \
-        "In a shared classroom your nodes will see everyone else's. Set a unique value in ~/.bashrc: export ROS_DOMAIN_ID=<your number>"
+    warn "ROS_DOMAIN_ID=${ROS_DOMAIN_ID} is set" \
+        "Harmless if every terminal agrees. If some do not, they will silently see nothing - see Lab 1 Part 5."
 fi
 
 # ---------------------------------------------------------------------------

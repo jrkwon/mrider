@@ -31,6 +31,13 @@ fi
 
 fail() { printf "\n%sFAILED%s  %s\n" "$R" "$N" "$1" >&2; exit 1; }
 
+# ros2_ws/setup_env.sh exports PYTHONNOUSERSITE=1 to keep ~/.local off the ROS
+# build path. mkdocs lives in ~/.local, so running this script from a
+# ROS-sourced shell otherwise dies with "No module named 'mkdocs'" - a
+# confusing failure that says nothing about the docs. Drop the variable for
+# this script only.
+unset PYTHONNOUSERSITE
+
 # mkdocs is sometimes only importable as a module, depending how it was installed.
 if command -v mkdocs >/dev/null 2>&1; then
     MKDOCS=(mkdocs)

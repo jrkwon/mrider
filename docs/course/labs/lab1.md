@@ -241,13 +241,18 @@ Write down, in your own words:
 > what makes it expensive. Learn to recognise the shape of it now: **when something is invisible
 > rather than broken, suspect the environment before you suspect the code.**
 
-> [!WARNING]
-> **This one is not hypothetical for this class**
+> [!NOTE]
+> **You are not relying on this to stay isolated — but you still need to understand it**
 >
-> Twenty-four students on one classroom network, all at the default domain, is twenty-four robots
-> in one namespace. Your `/cmd_vel_joy` reaches everyone's vehicle. Set your assigned
-> `ROS_DOMAIN_ID` in `~/.bashrc` and confirm it with `echo $ROS_DOMAIN_ID` — this is the mechanism
-> that keeps your work yours.
+> Twenty-four students on one network, all at the default domain, would be twenty-four robots in one
+> namespace: your `/cmd_vel_joy` would reach everyone's vehicle. This course does not solve that with
+> domain numbers. `setup_env.sh` sets `ROS_LOCALHOST_ONLY=1`, which stops the traffic leaving your
+> machine at all — a stronger guarantee, and one that cannot be defeated by two people picking the
+> same number.
+>
+> Domain IDs still matter, for two reasons. They are how you partition robots the moment ROS *is* on
+> more than one machine, which is most real deployments. And a stray `ROS_DOMAIN_ID` in one terminal
+> is a live way to blind yourself, exactly as you just did on purpose.
 
 > [!NOTE]
 > **Why `--no-daemon` matters here**
