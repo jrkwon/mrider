@@ -185,23 +185,18 @@ surprising amount of this course.
 Every lab in this course ends here, and this step is worth more of the grade than the happy path.
 The happy path you can copy from a classmate. The diagnosis you cannot.
 
-Leave the simulator running in Terminal 1. Open a **new** terminal:
+Leave the simulator running in Terminal 1. Open a **new** terminal and — this is the whole point —
+**do not source `setup_env.sh`**. Source only ROS itself, exactly as someone in a hurry would:
 
 ```bash
-cd ~/mrider/ros2_ws && source setup_env.sh
-export ROS_DOMAIN_ID=42
-ros2 topic list --no-daemon
+source /opt/ros/humble/setup.bash
+ros2 topic list --no-daemon | wc -l
+ros2 node list --no-daemon
 ```
 
-**Expected output:** exactly two topics.
+**Expected output:** about **7** topics, and exactly **one** node — `/twist_mux`.
 
-```
-/parameter_events
-/rosout
-```
-
-Those two are your own command's. The simulator's other nineteen — `/scan`, `/joint_states`,
-`/cmd_vel_joy`, all of them — are gone.
+A correctly sourced terminal sees **21** topics and the whole graph you mapped in Part 3.
 
 Now check how the failure reported itself:
 
@@ -215,44 +210,61 @@ wc -c /tmp/err.txt
 Fix it in the same terminal:
 
 ```bash
-unset ROS_DOMAIN_ID
-ros2 topic list --no-daemon
+cd ~/mrider/ros2_ws && source setup_env.sh
+ros2 topic list --no-daemon | wc -l
 ```
 
-All twenty-one reappear.
+All 21 are back.
 
 Write down, in your own words:
 
-- What you observed, exactly, including the exit code and the stderr size.
-- Why it happened.
-- Why this failure mode is **more dangerous** than a crash.
+- What you observed, exactly: both topic counts, the node list, the exit code, the stderr size.
+- Which setting caused it. `setup_env.sh` prints what it sets — compare `echo $ROS_LOCALHOST_ONLY`
+  before and after.
+- **Why partial visibility is worse than seeing nothing at all.**
 
 > [!CAUTION]
 > **Why this specific break, in week one**
 >
-> ROS 2 nodes find each other automatically, and `ROS_DOMAIN_ID` partitions who can see whom. Set
-> it differently in two terminals and they are on separate networks as far as ROS is concerned.
+> `setup_env.sh` sets `ROS_LOCALHOST_ONLY=1`, which confines your ROS traffic to your own machine.
+> The simulator started with it. Your new terminal did not. Two ROS processes that disagree about
+> that setting largely **cannot see each other**, even side by side on one laptop as the same user.
 >
-> There is **no error**. Exit code zero. Nothing on stderr. Nothing in any log. Your system looks
-> dead while running perfectly, and every instinct you have — restart it, rebuild it, check the
-> code — is aimed at the wrong place.
+> There is **no error**. Exit code zero. Nothing on stderr. Nothing in any log.
 >
-> A crash hands you a stack trace and a line number. This hands you nothing, and that is precisely
-> what makes it expensive. Learn to recognise the shape of it now: **when something is invisible
-> rather than broken, suspect the environment before you suspect the code.**
+> And look closely at what you got, because this is the part worth remembering: **you did not see
+> nothing. You saw 7 topics and one node.** A system that shows you nothing at least looks broken.
+> A system that shows you *most of a graph* looks like a working system with one node crashed — so
+> you go hunting for that node, restart it, read its source, and the whole time the fault is in a
+> shell variable you never thought to check.
+>
+> A crash hands you a stack trace and a line number. This hands you a plausible wrong answer.
+> **When something is invisible rather than broken, suspect the environment before you suspect the
+> code.**
+>
+> This is the most common mistake in this course, and you will make it again. The goal is that next
+> time you recognise it in thirty seconds instead of losing an evening.
 
 > [!NOTE]
-> **You are not relying on this to stay isolated — but you still need to understand it**
+> **The same signature, a different cause: `ROS_DOMAIN_ID`**
 >
-> Twenty-four students on one network, all at the default domain, would be twenty-four robots in one
-> namespace: your `/cmd_vel_joy` would reach everyone's vehicle. This course does not solve that with
-> domain numbers. `setup_env.sh` sets `ROS_LOCALHOST_ONLY=1`, which stops the traffic leaving your
-> machine at all — a stronger guarantee, and one that cannot be defeated by two people picking the
-> same number.
+> Worth one minute, from a *correctly sourced* terminal:
 >
-> Domain IDs still matter, for two reasons. They are how you partition robots the moment ROS *is* on
-> more than one machine, which is most real deployments. And a stray `ROS_DOMAIN_ID` in one terminal
-> is a live way to blind yourself, exactly as you just did on purpose.
+> ```bash
+> ROS_DOMAIN_ID=42 ros2 topic list --no-daemon
+> ROS_DOMAIN_ID=42 ros2 node list --no-daemon
+> ```
+>
+> This time: **2 topics and 0 nodes** — total blindness rather than partial. Exit 0 and empty stderr
+> again. A different variable, a different severity, an identical *report*.
+>
+> `ROS_DOMAIN_ID` partitions which ROS processes can see each other. This course does not rely on it
+> — `ROS_LOCALHOST_ONLY=1` is the stronger guarantee, and cannot be defeated by two people picking
+> the same number — but it is how you separate robots the moment ROS runs on more than one machine,
+> which is most real deployments.
+>
+> The lesson is not either variable. It is that **several unrelated mistakes all present as
+> silence**, and silence is the one symptom that tells you nothing about its own cause.
 
 > [!NOTE]
 > **Why `--no-daemon` matters here**
@@ -272,7 +284,8 @@ Write down, in your own words:
 - [ ] Both controllers report `active`
 - [ ] I can name what publishes `/scan` and what subscribes to `/cmd_vel_joy`
 - [ ] I made the vehicle drive an arc, and saw it stop on its own when commands stopped
-- [ ] I reproduced the silent `ROS_DOMAIN_ID` blindness, including exit code 0 and empty stderr
+- [ ] I reproduced the silent failure from an unsourced terminal — exit code 0, empty stderr
+- [ ] I can name the setting responsible, and say why silence is worse than a crash
 - [ ] I can explain why `twist_mux` is *not* a safety system
 
 ---
