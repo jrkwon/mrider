@@ -79,7 +79,47 @@ if [ -n "$BADSYNTAX" ]; then
 fi
 printf "   %sok%s\n\n" "$G" "$N"
 
-printf "%s3. anchors%s\n" "$B" "$N"
+printf "%s3. slide decks up to date%s\n" "$B" "$N"
+# The site publishes docs/course/slides/*.pdf, but nothing rebuilds them: they
+# are committed artifacts of course/slides/*.md. Edit a deck source, forget
+# course/build.sh, and the site serves the old slides indefinitely. That is not
+# hypothetical - on 2026-09-11 the published W9 deck read "Merge 1 is 11/16"
+# while every other document said 11/23, because a schedule-wide date shift
+# updated the sources and only some PDFs were rebuilt. The Markdown pages
+# deployed correctly, so nothing else noticed.
+#
+# Compared by COMMIT TIME, not file mtime: a fresh clone gives every file the
+# checkout time, so an mtime test would fire at random in CI.
+STALE=""
+for src in course/slides/*.md; do
+    [ -e "$src" ] || continue
+    deck="$(basename "$src" .md)"
+    pdf="docs/course/slides/${deck}.pdf"
+    if [ ! -e "$pdf" ]; then
+        STALE="${STALE} ${deck}"
+        continue
+    fi
+    src_t="$(git log -1 --format=%ct -- "$src" 2>/dev/null)"
+    pdf_t="$(git log -1 --format=%ct -- "$pdf" 2>/dev/null)"
+    # Uncommitted working-tree edits are newer than anything committed. This
+    # has to apply to BOTH sides: after a rebuild the PDF is modified but not
+    # yet committed, and judging it by its old commit time would report it
+    # stale forever.
+    NOW="$(date +%s)"
+    if ! git diff --quiet -- "$src" 2>/dev/null; then src_t="$NOW"; fi
+    if ! git diff --quiet -- "$pdf" 2>/dev/null; then pdf_t="$NOW"; fi
+    if [ -n "$src_t" ] && [ -n "$pdf_t" ] && [ "$src_t" -gt "$pdf_t" ]; then
+        STALE="${STALE} ${deck}"
+    fi
+done
+if [ -n "$STALE" ]; then
+    printf "   published slides are older than their sources:%s\n" "$STALE" >&2
+    printf "   Rebuild:  bash course/build.sh%s\n" "$STALE" >&2
+    fail "published slides do not match their sources"
+fi
+printf "   %sok%s\n\n" "$G" "$N"
+
+printf "%s4. anchors%s\n" "$B" "$N"
 python3 scripts/check_anchors.py site || fail "broken anchors (see above)"
 printf "   %sok%s\n\n" "$G" "$N"
 
