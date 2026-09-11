@@ -114,6 +114,7 @@ nav:
       - Environment Setup: course/environment.md
       - Teams & Tracks: course/teams.md
       - Grading & Rubrics: course/grading.md
+      - Submitting Labs: course/submission.md
       - Labs:
           - 1 — Bring Up the Twin: course/labs/lab1.md
           - 2 — Drive a Square: course/labs/lab2.md

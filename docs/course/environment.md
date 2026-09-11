@@ -411,12 +411,14 @@ Check RAM in `check_env.sh` output. With 8 GB, close your browser before launchi
 - [ ] `bash scripts/check_env.sh` reports **`FAIL: 0`**
 - [ ] `ros2 control list_controllers` shows both controllers `active`
 - [ ] `source ros2_ws/setup_env.sh` works, and reports `isolated to loopback`
-- [ ] Terminal output of `check_env.sh` saved — you submit it with Lab 1
+- [ ] A **private** repository created for your lab work, with `jrkwon` added as a collaborator
+- [ ] `bash scripts/lab.sh init` run, and `git remote -v` shows both `origin` and `mine`
 
 ---
 
 ## See also
 
+- [Submitting Labs](submission.md) — the one-time setup, and how each lab is handed in
 - [Syllabus](syllabus.md) — the 16-week schedule
 - [Running the Digital Twin](../run-the-twin.md) — the full four-terminal procedure
 - [M1 — Intro to MRider & ROS 2](../learn/m1-ros2-intro.md) — Week 1 assigned reading

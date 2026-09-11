@@ -248,12 +248,20 @@ Set the timer back to `0.1` before submitting.
 
 ## Deliverables
 
-| | |
-|---|---|
-| `lab2_square/` | Your complete package |
-| `lab2_odom.txt` | Logged output showing drift after one and three squares |
-| `lab2_answers.md` | Part 4 questions and the Part 5 write-up |
-| — | **AI-assistance declaration** |
+```bash
+bash scripts/lab.sh new 2
+bash scripts/lab.sh check 2
+bash scripts/lab.sh submit 2
+```
+
+`labs/lab2/REPORT.md`, plus your package at `ros2_ws/src/lab2_square/` — `submit` includes it
+automatically.
+
+Record your drift after one square and after three in the Measurements block. The check is that the
+second is larger than the first; open-loop error accumulates, and a pair that says otherwise means
+the measurement, not the vehicle, is wrong.
+
+**Set the timer back to `0.1` before submitting.** See [Submitting Labs](../submission.md).
 
 **Grading:** correctness 4 · evidence 3 · understanding 2 · reproducibility 1.
 

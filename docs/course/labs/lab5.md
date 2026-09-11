@@ -9,10 +9,10 @@ You will add a sensor to MRider's description, watch it appear in the transform 
 then move it a few centimetres and see how thoroughly that ruins everything downstream.
 
 > [!NOTE]
-> **Two weeks for this one**
+> **Two labs in flight**
 >
-> Week 5 (10/5) has no class — 개천절 대체공휴일. Lab 5 and [Lab 4](lab4.md) are both due 10/19, and
-> you have the intervening two weeks for them.
+> Week 4 (10/5) has no class — 개천절 대체공휴일 — so [Lab 4](lab4.md) is self-study, handed out
+> 9/28 and due 10/12. This one is handed out 10/12 and due 10/19. They overlap; start Lab 4 first.
 
 | | |
 |---|---|
@@ -194,9 +194,10 @@ Write down:
 >
 > | Lab | Failure | Symptom |
 > |---|---|---|
-> | 1 | `ROS_DOMAIN_ID` mismatch | Nothing visible at all |
+> | 1 | An unsourced terminal | Most of the graph invisible — 7 topics instead of 21 |
 > | 3 | QoS incompatibility | Connection silently never forms |
-> | 4 | Wrong extrinsic | Everything runs, and the output is quietly wrong |
+> | 4 | Steering clamp | A command honoured as a different command, with no warning |
+> | 5 | Wrong extrinsic | Everything runs, and the output is quietly wrong |
 >
 > The MRider acceptance gate for mapping is that repeated observations of the same wall agree
 > within **10 cm** over a 30 m loop. Now you know what that number is defending against — and why
@@ -219,14 +220,33 @@ Restore the original value before submitting.
 
 ## Deliverables
 
+```bash
+bash scripts/lab.sh new 5
+bash scripts/lab.sh check 5
+bash scripts/lab.sh submit 5
+```
+
+`labs/lab5/REPORT.md`, plus your edited `mitt_sensors.xacro`, and in `labs/lab5/evidence/`:
+
 | | |
 |---|---|
-| `mitt_sensors.xacro` | Your version with the rear camera (LiDAR restored to original) |
 | `frames.pdf` | TF tree showing `rear_camera_link` |
-| `lab5_tf.txt` | `tf2_echo` output for both `laser_link` and `rear_camera_link` |
 | `map_good.png`, `map_broken.png` | Before and after the 5 cm error |
-| `lab5_answers.md` | Questions 1–6 and the Part 5 write-up |
-| — | **AI-assistance declaration** |
+
+The Measurements block wants the `base_link → rear_camera_link` translation and yaw. The check on
+yaw is ±π: a camera that is not pointing backwards is not a rear camera, however good the rest of
+the report is.
+
+> [!WARNING]
+> **Restore the LiDAR origin before submitting**
+>
+> `check` compares `laser_joint`'s origin against the course repository and refuses the submission
+> if it has moved. A 5 cm offset left in place breaks mapping silently — which is the entire lesson
+> of Part 5, and it applies to your own clone too.
+
+See [Submitting Labs](../submission.md).
+
+**Grading:** correctness 4 · evidence 3 · understanding 2 · reproducibility 1.
 
 ---
 

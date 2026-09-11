@@ -7,14 +7,20 @@
 # Push is publish: the site deploys to jrkwon.github.io/mrider automatically on
 # push to main, and during term 24 students are reading it. Run this first.
 #
-# Two checks, because one is not enough:
+# Five checks. Each one exists because this repository has already shipped the
+# defect it catches:
 #
 #   1. mkdocs build --strict   - broken file links, bad nav entries, config errors
-#   2. check_anchors.py        - broken *heading* anchors, which --strict logs at
+#   2. portable Markdown       - MkDocs-only `!!!` blocks, which render as a
+#                                literal marker in any generic viewer
+#   3. slide freshness         - committed PDFs older than their sources
+#   4. check_anchors.py        - broken *heading* anchors, which --strict logs at
 #                                INFO and then exits 0 on. See that file for the
 #                                three times this repository has shipped one.
+#   5. lab_report selftest     - the automatic grading rules, pinned to known
+#                                good and bad submissions
 #
-# CI runs the same two checks (.github/workflows/docs.yml), and because the
+# CI runs the same checks (.github/workflows/docs.yml), and because the
 # deploy job has `needs: build`, a failure here stops the publish rather than
 # putting a dead link in front of students.
 
@@ -121,6 +127,14 @@ printf "   %sok%s\n\n" "$G" "$N"
 
 printf "%s4. anchors%s\n" "$B" "$N"
 python3 scripts/check_anchors.py site || fail "broken anchors (see above)"
+printf "   %sok%s\n\n" "$G" "$N"
+
+printf "%s5. lab submission rules%s\n" "$B" "$N"
+# scripts/lab_report.py decides part of a grade automatically - whether a
+# submission's numbers contradict the lab it came from. A rule that quietly
+# stops firing is invisible: every submission passes and nobody is told why.
+# The selftest pins each rule to a known-good and a known-bad case.
+python3 scripts/lab_report.py selftest || fail "lab_report selftest (see above)"
 printf "   %sok%s\n\n" "$G" "$N"
 
 printf "%sDocs are publishable.%s\n" "$G" "$N"

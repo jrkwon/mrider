@@ -36,6 +36,12 @@ Mondays, 3 hours · 24 students · taught in English
 
     Every rubric, in full. Read the standard the course is graded against before you write anything.
 
+-   :material-upload: **[Submitting Labs](submission.md)**
+
+    ---
+
+    One report per lab, generated and checked by `scripts/lab.sh`. Set it up once, in Week 0.
+
 </div>
 
 ---

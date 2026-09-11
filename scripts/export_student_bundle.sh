@@ -103,6 +103,9 @@ fi
 # --- the things students actually run --------------------------------------
 mkdir -p "${STAGE}/scripts"
 cp "${REPO}/scripts/check_env.sh" "${STAGE}/scripts/"
+# Lab submission tooling. `new` and `check` work in an unzipped bundle;
+# `submit` needs a git clone, and says so rather than failing obscurely.
+cp "${REPO}/scripts/lab.sh" "${REPO}/scripts/lab_report.py" "${STAGE}/scripts/"
 cp -r "${REPO}/ros2_ws" "${STAGE}/"
 rm -rf "${STAGE}/ros2_ws/build" "${STAGE}/ros2_ws/install" \
        "${STAGE}/ros2_ws/log"   "${STAGE}/ros2_ws/src/gz_ros2_control"
@@ -118,7 +121,11 @@ Built from commit \`${SHA}\` (${STAMP}).
 
 1. Read \`docs/course/environment.md\` and follow it end to end.
 2. Run \`bash scripts/check_env.sh\` until it reports **FAIL: 0**.
-3. Bring that output to class — you submit it with Lab 1.
+3. Keep that output — it is the first evidence block of Lab 1.
+4. Set up lab submission: \`docs/course/submission.md\`. Ten minutes, once.
+
+Note that \`bash scripts/lab.sh submit\` needs a git clone rather than this
+zip. Clone the repository as \`environment.md\` §6 describes before Lab 1 is due.
 
 Budget 2–4 hours. Start early: the one step that can genuinely fail is graphics
 drivers, and that is not fixable in five minutes on the morning of class.

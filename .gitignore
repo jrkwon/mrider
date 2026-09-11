@@ -37,3 +37,10 @@ ros2_ws/src/gz_ros2_control/
 # This repo is public and deploys to GitHub Pages - committing a
 # lecture deck from another course would publish it.
 /course/reference/
+
+# Per-student lab submission config (name, uniqname, private repo URL)
+/.labconfig
+
+# Course roster: student names and repo URLs. This repository is PUBLIC and
+# deploys to GitHub Pages - a committed roster would publish it.
+/course/roster.txt

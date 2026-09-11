@@ -220,7 +220,7 @@ You have now met **two** silent failures in three weeks:
 
 | Lab | Failure | How it reported itself |
 |---|---|---|
-| 1 | `ROS_DOMAIN_ID` mismatch | Exit code 0, empty stderr, 2 topics instead of 21 |
+| 1 | An unsourced terminal | Exit code 0, empty stderr, 7 topics instead of 21 |
 | 3 | QoS incompatibility | Nothing at all |
 
 Write, in your own words:
@@ -275,12 +275,21 @@ That last question is the one worth the marks.
 
 ## Deliverables
 
-| | |
-|---|---|
-| `lab3_governor/` | Your complete package |
-| `lab3_qos.txt` | `ros2 topic info --verbose` for `/scan` and for the broken `/cmd_vel_joy` |
-| `lab3_answers.md` | Part 2 questions, Part 3 observations, Part 4 reflection, Part 5 write-up |
-| — | **AI-assistance declaration** |
+```bash
+bash scripts/lab.sh new 3
+bash scripts/lab.sh check 3
+bash scripts/lab.sh submit 3
+```
+
+`labs/lab3/REPORT.md`, plus your package at `ros2_ws/src/lab3_governor/`.
+
+The Measurements block wants the governor's limit, the speed you commanded, the speed it passed
+through, and `/scan`'s Reliability and Durability exactly as `ros2 topic info --verbose` printed
+them.
+
+See [Submitting Labs](../submission.md).
+
+**Grading:** correctness 4 · evidence 3 · understanding 2 · reproducibility 1.
 
 ---
 

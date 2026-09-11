@@ -157,7 +157,7 @@ identical result despite commanding radii that differ by a factor of two?
 
 **8.** The vehicle **silently ignored** your command. You asked for a 0.25 m radius and got 1.49 m,
 with no error, no warning, and no indication that the command was not honoured. Relate this to the
-silent failures in Labs 1, 3, and 4. What should a planner do about it?
+silent failures in Labs 1 and 3. What should a planner do about it?
 
 **9.** Theory says 1.52 m. Measurement says 1.49 m — about 2% low. Propose **at least two** distinct
 explanations, and state how you would test each one. Some directions worth considering:
@@ -238,13 +238,28 @@ Restore `0.63` before submitting.
 
 ## Deliverables
 
-| | |
-|---|---|
-| `lab4_radius/` | Your measurement node |
-| `lab4_predictions.md` | The Part 2 table, filled in **before** measuring |
-| `lab4_results.txt` | Measured output for all three cases, plus the modified-wheelbase run |
-| `lab4_answers.md` | Questions 7–11 |
-| — | **AI-assistance declaration** |
+```bash
+bash scripts/lab.sh new 4
+bash scripts/lab.sh check 4
+bash scripts/lab.sh submit 4
+```
+
+`labs/lab4/REPORT.md`, plus your measurement node at `ros2_ws/src/lab4_radius/` and
+`mitt_dimensions.yaml`.
+
+Your **predictions go in the Measurements block before you measure**, alongside the measured values.
+The automatic checks are the ones this lab is about: `measured_R_w100_m` and `measured_R_w200_m` must
+agree — that equality *is* the clamp — and the 0.75 m wheelbase must turn wider than the 0.63 m one.
+
+> [!WARNING]
+> **Restore `wheelbase: 0.63` before submitting**
+>
+> `check` refuses the submission if you have not, and not to be pedantic: 0.75 left in place does
+> not break this lab, it quietly poisons Lab 5 and everything after it on that clone.
+
+See [Submitting Labs](../submission.md).
+
+**Grading:** correctness 4 · evidence 3 · understanding 2 · reproducibility 1.
 
 ---
 

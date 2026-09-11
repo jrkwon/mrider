@@ -61,14 +61,40 @@ Five labs, 6% each, Weeks 1–5. Graded individually — **your** work, **your**
 
 ### Submission
 
-Each lab specifies its own deliverables. Universally required:
+One report file per lab, generated and checked by the course tooling:
 
-- **Terminal output**, as text. Not a photo of your screen.
-- **Your code**, if the lab asked for any.
-- **Written answers** to the "Check yourself" questions.
+```bash
+bash scripts/lab.sh new 1        # generate labs/lab1/REPORT.md
+bash scripts/lab.sh check 1      # validate it
+bash scripts/lab.sh submit 1     # commit, push, and build the archive
+```
+
+The full procedure is in [Submitting Labs](submission.md). Universally required, and enforced:
+
+- **Terminal output**, as text, in the report's evidence blocks. Not a photo of your screen.
+- **Your code**, if the lab asked for any — `submit` includes it.
+- **Written answers** to the lab's questions, in your own words.
+- **Measurements**, as numbers, in the block the report reserves for them.
 - **An AI-assistance declaration** — what tool, for what. See the syllabus.
 
-Due before the next class. Late: −10%/day, floor 50%, up to one week; zero after that.
+Due before the next class. Late: −10%/day, floor 50%, up to one week; zero after that. The **LMS
+timestamp** is what that is read from, so a pushed commit alone is not a submission.
+
+> [!NOTE]
+> **Half of this rubric is checked automatically, and it is not the interesting half**
+>
+> `check` verifies the objective facts: that the placeholders are gone, the evidence blocks are not
+> empty, the required files exist, and the numbers do not contradict the lab they came from. Drift
+> grows between one square and three. Two steering commands past the 22.5° limit clamp to one
+> radius. A rear-facing camera sits at yaw ±π.
+>
+> That covers **Correctness (4)** and **Reproducibility (1)**. What it cannot judge is whether your
+> evidence shows what you say it shows, and whether you understood it — **Evidence (3)** and
+> **Understanding (2)**, which are read by a human, along with the "break it on purpose" diagnosis
+> that is worth more than the happy path.
+>
+> A number outside the expected band is a *warning*, not a failure. Machines differ, and a result
+> that surprised you and which you can explain is the best thing you can submit.
 
 ---
 
@@ -216,6 +242,7 @@ Not attendance. Assessed from evidence:
 
 ## See also
 
+- [Submitting Labs](submission.md) — the tooling, and what it checks
 - [Syllabus](syllabus.md) — schedule, policies, academic integrity
 - [Teams & Tracks](teams.md) — track deliverables and peer evaluation
 - [M8 — Capstone](../learn/m8-capstone.md) — the rubric this course inherits

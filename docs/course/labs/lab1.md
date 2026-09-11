@@ -292,16 +292,23 @@ Write down, in your own words:
 
 ## Deliverables
 
-Submit as a single archive or repository folder:
+```bash
+bash scripts/lab.sh new 1        # generate labs/lab1/REPORT.md
+bash scripts/lab.sh check 1      # validate it, as often as you like
+bash scripts/lab.sh submit 1     # commit, push, and build the archive
+```
+
+`REPORT.md` arrives with every heading this lab needs — the evidence blocks, the three Part 3
+questions, and the Part 5 write-up. One file goes beside it:
 
 | | |
 |---|---|
-| `lab1_env_check.txt` | Output of `check_env.sh` |
-| `lab1_graph.txt` | Output of `ros2 node list` and `ros2 topic list` |
-| `lab1_topic_info.txt` | Output of the three `ros2 topic` commands in Part 3 |
-| `rqt_graph.png` | Screenshot of the node graph |
-| `lab1_answers.md` | Answers to the three Part 3 questions, and the Part 5 write-up |
-| — | **AI-assistance declaration** — what tool you used and for what, or "none" |
+| `labs/lab1/evidence/rqt_graph.png` | Screenshot of the node graph |
+
+Its Measurements block asks for the Part 5 numbers: both topic counts, the node count, the exit
+code, and the stderr size. Those are checked automatically, so record what you actually saw.
+
+Full procedure, including the one-time setup: [Submitting Labs](../submission.md).
 
 **Grading:** correctness 4 · evidence 3 · understanding 2 · reproducibility 1. See
 [Grading](../grading.md#individual-labs-30).
