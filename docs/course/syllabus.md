@@ -203,7 +203,9 @@ submission.
 
 **On AI assistants:** you may use them. Most working engineers do. Two conditions, both firm:
 
-1. **Declare it.** Say what tool you used and for what, in your submission.
+1. **Declare it.** Say what tool you used and for what, in your submission. Every lab report has
+   an `## AI assistance` section, and [`lab.sh check`](submission.md) refuses a report that leaves
+   it empty. Writing `none` is a complete answer if it is a true one.
 2. **Own it.** You are responsible for every line you submit. "The AI wrote it" is not a defence for
    code you cannot explain — and in the demo, I will ask you to explain it.
 
@@ -237,4 +239,5 @@ Learn to read it. You will need it after this course ends.
 - [Environment Setup](environment.md) — **do this before September 7**
 - [Teams & Tracks](teams.md) — the four subsystem teams and the merge ladder
 - [Grading & Rubrics](grading.md) — how every component is assessed
+- [Submitting Labs](submission.md) — how the five individual labs are handed in
 - [Running the Digital Twin](../run-the-twin.md) — the four-terminal bring-up procedure
