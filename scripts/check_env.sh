@@ -234,6 +234,25 @@ fi
 
 if [ -d "${REPO_ROOT}/ros2_ws/src/gz_ros2_control" ]; then
     ok "gz_ros2_control source present"
+    # That clone carries five packages; this project builds one. Without these
+    # markers a plain `colcon build` tries the demos (which need controllers we
+    # do not install) and the ign_* packages (which are the Fortress variant of
+    # the very code we are building for Harmonic). Both fail, and neither error
+    # mentions that the package was never wanted.
+    UNWANTED=""; MARKERS=""
+    for p in gz_ros2_control_demos gz_ros2_control_tests ign_ros2_control ign_ros2_control_demos; do
+        d="${REPO_ROOT}/ros2_ws/src/gz_ros2_control/${p}"
+        if [ -d "$d" ] && [ ! -f "${d}/COLCON_IGNORE" ]; then
+            UNWANTED="${UNWANTED} ${p}"
+            MARKERS="${MARKERS} ${p}/COLCON_IGNORE"
+        fi
+    done
+    if [ -n "$UNWANTED" ]; then
+        bad "gz_ros2_control packages not excluded:${UNWANTED}" \
+            "cd ${REPO_ROOT}/ros2_ws/src/gz_ros2_control && touch${MARKERS}"
+    else
+        ok "only gz_ros2_control will be built from that clone"
+    fi
 else
     bad "gz_ros2_control not cloned" \
         "cd ${REPO_ROOT}/ros2_ws/src && git clone -b humble https://github.com/ros-controls/gz_ros2_control.git"

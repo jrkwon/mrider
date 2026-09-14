@@ -203,6 +203,30 @@ cd ~/mrider/ros2_ws/src
 git clone -b humble https://github.com/ros-controls/gz_ros2_control.git
 ```
 
+That clone contains **five** packages, and this project uses exactly **one**. Tell `colcon` to skip
+the other four:
+
+```bash
+cd ~/mrider/ros2_ws/src/gz_ros2_control
+touch gz_ros2_control_demos/COLCON_IGNORE \
+      gz_ros2_control_tests/COLCON_IGNORE \
+      ign_ros2_control/COLCON_IGNORE \
+      ign_ros2_control_demos/COLCON_IGNORE
+```
+
+> [!WARNING]
+> **Skip this and §7 fails with `control_toolbox` not found**
+>
+> `gz_ros2_control_demos` depends on controllers this vehicle does not use — `control_toolbox`,
+> `mecanum_drive_controller`, `tricycle_controller` — which are not installed and not worth
+> installing.
+>
+> The two `ign_*` packages are worse than unnecessary: they are the **Ignition/Fortress** variant of
+> the same code. Building them is the Fortress/Harmonic mix-up from §5, arriving by a different
+> route.
+>
+> `COLCON_IGNORE` is an empty marker file. `colcon` skips any directory containing one.
+
 `gz_ros2_control` is the piece that lets the *same* controller configuration drive both the simulated
 and the real vehicle. There is **no Harmonic build of it in apt for Humble** — apt only offers 0.7.x,
 which targets Fortress — so it must be built from source, with `GZ_VERSION` set:
