@@ -495,6 +495,31 @@ def env_or(name, default='(not set)'):
     return os.environ.get(name) or default
 
 
+def commits_behind(fetch=False):
+    """
+    How many commits origin/main is ahead of HEAD, or None if unknowable.
+
+    WHY THIS IS CHECKED AT ALL
+    `submit` commits the student's lab on top of their working tree, so their
+    branch carries whatever course repository they last pulled - lab
+    instructions, check_env.sh, setup_env.sh, this file. A clone taken in Week 0
+    and never pulled is a clone that predates the submission tooling entirely.
+    Nothing about that announces itself: the labs still open, the twin still
+    runs, and the page they are reading on the website is the current one while
+    the file in front of them is not.
+    """
+    if fetch:
+        # Network, so keep it short and never fatal - a student working offline
+        # is still allowed to write their report.
+        subprocess.run(['git', 'fetch', '--quiet', 'origin', 'main'],
+                       cwd=str(REPO), capture_output=True, timeout=20, check=False)
+    out = git('rev-list', '--count', 'HEAD..origin/main', check=False)
+    try:
+        return int(out)
+    except ValueError:
+        return None
+
+
 def os_release():
     try:
         for line in open('/etc/os-release'):
@@ -511,7 +536,14 @@ def render_report(n, cfg):
     spec = lab_spec(n)
     now = datetime.now(timezone.utc).astimezone().isoformat(timespec='seconds')
     commit = git('rev-parse', '--short', 'HEAD', check=False) or '(unknown)'
-    dirty = ' (uncommitted changes present)' if git('status', '--porcelain', check=False) else ''
+    notes = []
+    if git('status', '--porcelain', check=False):
+        notes.append('uncommitted changes present')
+    # Recorded in the report so the grader sees it too, not only the student.
+    behind = commits_behind()
+    if behind:
+        notes.append(f'{behind} commits behind origin/main')
+    dirty = f' ({"; ".join(notes)})' if notes else ''
 
     out = []
     w = out.append
@@ -659,6 +691,14 @@ def cmd_new(args):
         die(f'{report.relative_to(REPO)} already exists. Use --force to overwrite it '
             f'(your answers will be lost).')
 
+    # Before generating, not after: a stale clone means stale lab instructions,
+    # and that is cheap to fix now and expensive to discover at the deadline.
+    behind = commits_behind(fetch=True)
+    if behind:
+        print(f'WARN  your course repository is {behind} commits behind origin/main.')
+        print('WARN  the lab instructions, check_env.sh and this tooling may all be old.')
+        print('WARN  fix it first:   git pull origin main\n')
+
     (d / 'evidence').mkdir(parents=True, exist_ok=True)
     report.write_text(render_report(n, cfg))
 
@@ -746,6 +786,10 @@ def validate(n, root, label=None):
         m = re.search(rf'^\|\s*{field}\s*\|\s*(.*?)\s*\|', text, re.M)
         if not m or not m.group(1) or m.group(1).startswith(TODO):
             fails.append(f'REPORT.md: the {field} row of the Submission table is empty')
+    m = re.search(r'^\|\s*Course commit\s*\|\s*(.*?)\s*\|', text, re.M)
+    if m and 'behind origin/main' in m.group(1):
+        warns.append(f'generated from a stale clone - {m.group(1)}. The lab instructions '
+                     f'this was written against may not be the current ones.')
     for var, want in (('RMW_IMPLEMENTATION', 'rmw_fastrtps_cpp'), ('ROS_LOCALHOST_ONLY', '1')):
         m = re.search(rf'^\|\s*{var}\s*\|\s*(.*?)\s*\|', text, re.M)
         if m and m.group(1) != want:

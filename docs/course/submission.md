@@ -62,8 +62,19 @@ solutions to next year's class.
 
 ```bash
 cd ~/mrider
+git pull origin main       # do this first — see below
 bash scripts/lab.sh init
 ```
+
+> [!WARNING]
+> **Pull before you start, especially if you cloned in Week 0**
+>
+> This repository is updated as the course is taught. A clone taken during Week 0 predates the
+> submission tooling entirely — `scripts/lab.sh` is not in it, and neither are the current lab
+> instructions.
+>
+> `lab.sh new` checks this for you and says how far behind you are, but it cannot fix it: only
+> `git pull origin main` can.
 
 It asks for your name and uniqname, works out your repository URL from them, and shows it to you.
 Press **Enter** to accept it. It writes `.labconfig`, which is git-ignored — it never leaves your
@@ -156,6 +167,10 @@ When it passes, it switches to your branch, commits your lab directory and any c
 for, pushes to `mine`, and writes `dist/lab3_<uniqname>.zip` — cut from the commit with
 `git archive`, so the archive and the commit cannot disagree.
 
+`submit` **does not pull.** It commits your work on top of the course repository you already have,
+so your branch carries whatever you last pulled. That is why your report's header records the
+course commit it was generated from, and how far behind it was.
+
 ```
 ================================================================
  Lab 3 ready to submit
@@ -201,6 +216,11 @@ An honest declaration costs you nothing. An undeclared one is an integrity matte
 ---
 
 ## Troubleshooting
+
+**`lab.sh: No such file or directory`** — your clone predates the tooling. `git pull origin main`.
+
+**`your course repository is N commits behind origin/main`** — exactly what it says.
+`git pull origin main`, then regenerate the report so its header records the current commit.
 
 **`no .labconfig found`** — run `bash scripts/lab.sh init`.
 
