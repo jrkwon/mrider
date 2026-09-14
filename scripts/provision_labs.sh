@@ -104,6 +104,11 @@
 #      repeatedly in one day is not free - use --status to check before you
 #      re-provision.
 #
+#      INVITATIONS EXPIRE SEVEN DAYS AFTER THEY ARE CREATED. Provision on the
+#      Monday a lab is set and the unaccepted ones lapse on the Monday it is
+#      due. --status counts the days down; re-running this script re-sends a
+#      lapsed invitation.
+#
 #   8. Before the first deadline, check who actually accepted:
 #
 #          bash scripts/provision_labs.sh --status
@@ -197,7 +202,7 @@ printf "%sroster%s  %s\n\n" "$B" "$N" "$ROSTER"
 if [ "$STATUS" = 1 ]; then
     printf "%-8s %-38s %-16s %s\n" "state" "repository" "github user" "note"
     printf "%-8s %-38s %-16s %s\n" "-----" "----------" "-----------" "----"
-    ACCEPTED=0; PENDING=0; MISSING=0
+    ACCEPTED=0; PENDING=0; MISSING=0; EXPIREDN=0
     while read -r line; do
         line="${line%%#*}"
         # shellcheck disable=SC2086
@@ -218,9 +223,20 @@ if [ "$STATUS" = 1 ]; then
         WHEN="$(gh api "repos/${ORG}/${NAME}/invitations" \
                 -q ".[] | select(.invitee.login==\"${GHUSER}\") | .created_at" 2>/dev/null | head -1)"
         if [ -n "$WHEN" ]; then
-            printf "%sPENDING%s  %-38s %-16s invited %s, not accepted\n" \
-                "$Y" "$N" "$NAME" "$GHUSER" "${WHEN%%T*}"
-            PENDING=$((PENDING + 1))
+            # GitHub expires a repository invitation SEVEN DAYS after it is
+            # created. Provision at the start of a week and the invitations die
+            # on the day the first lab is due - so report the countdown, not
+            # just the fact that it is outstanding.
+            LEFT=$(( ( $(date -u -d "$WHEN + 7 days" +%s) - $(date -u +%s) ) / 86400 ))
+            if [ "$LEFT" -lt 0 ]; then
+                printf "%sEXPIRED%s  %-38s %-16s invited %s, invitation has lapsed\n" \
+                    "$R" "$N" "$NAME" "$GHUSER" "${WHEN%%T*}"
+                EXPIREDN=$((EXPIREDN + 1))
+            else
+                printf "%sPENDING%s  %-38s %-16s invited %s, expires in %s day(s)\n" \
+                    "$Y" "$N" "$NAME" "$GHUSER" "${WHEN%%T*}" "$LEFT"
+                PENDING=$((PENDING + 1))
+            fi
         elif gh api "repos/${ORG}/${NAME}/collaborators/${GHUSER}" >/dev/null 2>&1; then
             printf "%sok%s       %-38s %-16s accepted\n" "$G" "$N" "$NAME" "$GHUSER"
             ACCEPTED=$((ACCEPTED + 1))
@@ -232,13 +248,18 @@ if [ "$STATUS" = 1 ]; then
     done < "$ROSTER"
 
     printf "\n%s================================================================%s\n" "$B" "$N"
-    printf " %d accepted, %d still pending, %d missing\n" "$ACCEPTED" "$PENDING" "$MISSING"
+    printf " %d accepted, %d still pending, %d expired, %d missing\n" \
+        "$ACCEPTED" "$PENDING" "$EXPIREDN" "$MISSING"
     printf "%s================================================================%s\n" "$B" "$N"
     if [ "$PENDING" -gt 0 ]; then
         printf "\nPending students cannot push, and will discover that at the deadline.\n"
         printf "Chase them: the invitation is at https://github.com/notifications\n"
     fi
-    [ "$MISSING" -gt 0 ] && exit 1
+    if [ "$EXPIREDN" -gt 0 ]; then
+        printf "\n%d invitation(s) have lapsed. Re-send by simply re-running:\n" "$EXPIREDN"
+        printf "    bash scripts/provision_labs.sh\n"
+    fi
+    [ "$MISSING" -gt 0 ] || [ "$EXPIREDN" -gt 0 ] && exit 1
     exit 0
 fi
 
