@@ -50,10 +50,32 @@
 #
 #      Git-ignored, and it must stay that way: this repository is public.
 #
-#      Ask for the PROFILE URL (github.com/<user>), not the username. Students
-#      paste it from a browser instead of typing it from memory, and the
-#      difference between a username, a display name and the email they signed
-#      up with is not obvious to someone who made the account last week.
+#      UNIQNAME and GITHUB USERNAME ARE DIFFERENT THINGS, and the roster exists
+#      to map one to the other:
+#
+#        uniqname          umich-assigned, the part before @umich.edu. Names the
+#                          repository, so a repo maps to a gradebook row without
+#                          a lookup.
+#        github username   self-chosen, arbitrary, changeable. The only thing
+#                          GitHub will accept when granting access.
+#
+#      Ask for the profile URL rather than the username - same information, but
+#      a student copies it from the address bar instead of recalling it, and
+#      whatever is in that URL IS their username by definition. Someone who made
+#      the account last week may not know which of their display name, login and
+#      signup email is the one being asked for. Either form works below.
+#
+#      Converting a form export (uniqname in column 3, GitHub in column 4):
+#
+#        awk -F, 'NR>1 {
+#            u=$3; g=$4
+#            gsub(/^[ \t]+|[ \t]+$/, "", u); gsub(/^[ \t]+|[ \t]+$/, "", g)
+#            sub(/^.*github\.com\//, "", g)   # URL -> path; bare name untouched
+#            sub(/\?.*$/, "", g)              # drop ?tab=repositories
+#            sub(/\/.*$/, "", g)              # keep ONLY the first path segment
+#            sub(/^@/, "", g)                 # people write @handle
+#            if (u != "" && g != "") printf "%-12s %s\n", u, g
+#        }' responses.csv > course/roster-<term>.txt
 #
 #   5. Run with --dry-run FIRST and read the account-name column. A username
 #      that resolves is not necessarily the right person, and this is the only
