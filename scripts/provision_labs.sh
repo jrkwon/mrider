@@ -50,10 +50,19 @@
 #
 #      Git-ignored, and it must stay that way: this repository is public.
 #
-#   5. Run this script. Re-run it whenever a student registers late; it is
+#      Ask for the PROFILE URL (github.com/<user>), not the username. Students
+#      paste it from a browser instead of typing it from memory, and the
+#      difference between a username, a display name and the email they signed
+#      up with is not obvious to someone who made the account last week.
+#
+#   5. Run with --dry-run FIRST and read the account-name column. A username
+#      that resolves is not necessarily the right person, and this is the only
+#      point at which a wrong one is still harmless.
+#
+#   6. Run it for real. Re-run whenever a student registers late; it is
 #      idempotent and will create nothing that already exists.
 #
-#   6. Tell students their repository exists and to accept the invitation.
+#   7. Tell students their repository exists and to accept the invitation.
 #      `bash scripts/lab.sh init` derives the URL, so they press Enter.
 #
 # Students get `push`, not `admin`: they commit freely and cannot change
@@ -129,7 +138,14 @@ fi
 printf "%sorg%s     %s   %splan%s %s\n" "$B" "$N" "$ORG" "$B" "$N" "$PLAN"
 printf "%sterm%s    %s\n" "$B" "$N" "$TERM_SLUG"
 printf "%sroster%s  %s\n\n" "$B" "$N" "$ROSTER"
-[ "$DRY" = 1 ] && printf "%s-- dry run: nothing will be created --%s\n\n" "$Y" "$N"
+if [ "$DRY" = 1 ]; then
+    printf "%s-- dry run: nothing will be created --%s\n\n" "$Y" "$N"
+    # Read the third column. A username that resolves is not necessarily the
+    # RIGHT person, and this is the only chance to notice before a stranger is
+    # invited into a student's private repository.
+    printf "      %-38s %-16s %s\n" "repository" "github user" "account name"
+    printf "      %-38s %-16s %s\n" "----------" "-----------" "------------"
+fi
 
 CREATED=0; EXISTED=0; INVITED=0; FAILED=0
 
@@ -148,8 +164,26 @@ while read -r line; do
 
     NAME="${PREFIX}-${TERM_SLUG}-${UNIQ}"
 
+    # Resolve the GitHub account BEFORE creating anything.
+    #
+    # Two reasons, and the second is the serious one:
+    #
+    #   1. A typo used to create the repository and then fail to add anyone,
+    #      leaving an orphan nobody can reach.
+    #   2. A typo that happens to name a REAL DIFFERENT PERSON silently invites
+    #      a stranger into a student's private repository. Students type these
+    #      into a form from memory, and GitHub display names, usernames and
+    #      emails all look alike. Printing the account's real name is what lets
+    #      you catch "jdoe -> jsmith (Unrelated Person)" by eye.
+    REALNAME="$(gh api "users/${GHUSER}" -q '.name // .login' 2>/dev/null)"
+    if [ -z "$REALNAME" ]; then
+        printf "%sFAIL%s  %-34s no GitHub user '%s'\n" "$R" "$N" "$NAME" "$GHUSER"
+        FAILED=$((FAILED + 1))
+        continue
+    fi
+
     if [ "$DRY" = 1 ]; then
-        printf "      %-34s create private, add %s as push\n" "$ORG/$NAME" "$GHUSER"
+        printf "      %-38s %-16s %s\n" "$NAME" "$GHUSER" "\"$REALNAME\""
         continue
     fi
 
@@ -176,7 +210,7 @@ while read -r line; do
     # roster corrected after a username typo.
     if gh api "repos/${ORG}/${NAME}/collaborators/${GHUSER}" -X PUT \
             -f "permission=push" >/dev/null 2>&1; then
-        printf ", %s has push\n" "$GHUSER"
+        printf ", %s (%s) has push\n" "$GHUSER" "$REALNAME"
         INVITED=$((INVITED + 1))
     else
         printf ", %scould not add %s%s\n" "$R" "$GHUSER" "$N"
