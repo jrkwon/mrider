@@ -40,8 +40,9 @@ Ten minutes, and you never think about it again.
 **Your lab repository already exists** — it was created for you, it is **private**, and only you and
 the instructor can read it. You do not create anything.
 
-Give GitHub your username in the first class, then go to **[github.com/notifications](https://github.com/notifications)**
-and accept the invitation to:
+Give the instructor your GitHub profile URL in the first class. GitHub then emails you an
+invitation — to whichever address your GitHub account uses, which may not be your umich one — and
+also shows it at **[github.com/notifications](https://github.com/notifications)**. Accept it:
 
 ```
 bimi-courses/mrider-labs-2026-fall-<uniqname>

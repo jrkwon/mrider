@@ -4,6 +4,7 @@
 #
 #     bash scripts/provision_labs.sh --dry-run      # show what it would do
 #     bash scripts/provision_labs.sh                # do it
+#     bash scripts/provision_labs.sh --status       # who has accepted, who has not
 #     bash scripts/provision_labs.sh --roster FILE  # non-default roster
 #
 # INSTRUCTOR ONLY. Students never run this.
@@ -84,8 +85,26 @@
 #   6. Run it for real. Re-run whenever a student registers late; it is
 #      idempotent and will create nothing that already exists.
 #
-#   7. Tell students their repository exists and to accept the invitation.
+#   7. Tell students their repository exists and to ACCEPT THE INVITATION.
 #      `bash scripts/lab.sh init` derives the URL, so they press Enter.
+#
+#      There is no separate "send" step: the collaborator call above IS the
+#      invitation. GitHub creates it pending and delivers it itself, by email to
+#      the account's primary address and on github.com/notifications. Until the
+#      student accepts, they have no access at all and `lab.sh submit` fails at
+#      the push with a bare 403.
+#
+#      GitHub caps invitations to users outside the organisation at 50 per 24
+#      hours. A 24-student cohort is comfortably under that, but re-running this
+#      repeatedly in one day is not free - use --status to check before you
+#      re-provision.
+#
+#   8. Before the first deadline, check who actually accepted:
+#
+#          bash scripts/provision_labs.sh --status
+#
+#      A student who never accepted looks identical to one who is simply not
+#      finished, right up until they cannot submit.
 #
 # Students get `push`, not `admin`: they commit freely and cannot change
 # visibility or delete the repository. That asymmetry is the entire point.
@@ -105,12 +124,14 @@ else
 fi
 
 DRY=0
+STATUS=0
 ROSTER=""
 while [ $# -gt 0 ]; do
     case "$1" in
         --dry-run) DRY=1 ;;
+        --status)  STATUS=1 ;;
         --roster)  ROSTER="${2:-}"; shift ;;
-        -h|--help) sed -n '2,6p' "${BASH_SOURCE[0]}"; exit 0 ;;
+        -h|--help) sed -n '2,9p' "${BASH_SOURCE[0]}"; exit 0 ;;
         *) echo "unknown argument: $1" >&2; exit 2 ;;
     esac
     shift
@@ -160,6 +181,62 @@ fi
 printf "%sorg%s     %s   %splan%s %s\n" "$B" "$N" "$ORG" "$B" "$N" "$PLAN"
 printf "%sterm%s    %s\n" "$B" "$N" "$TERM_SLUG"
 printf "%sroster%s  %s\n\n" "$B" "$N" "$ROSTER"
+# --- --status: who has actually accepted -------------------------------------
+#
+# Adding a collaborator does not grant access; it creates a PENDING INVITATION
+# that GitHub delivers by email and notification, and the student must accept.
+# Until they do, `lab.sh submit` fails at the push with a bare 403.
+#
+# So the gap between "provisioned" and "can submit" is entirely invisible from
+# this side unless you go looking. This is the looking.
+if [ "$STATUS" = 1 ]; then
+    printf "%-8s %-38s %-16s %s\n" "state" "repository" "github user" "note"
+    printf "%-8s %-38s %-16s %s\n" "-----" "----------" "-----------" "----"
+    ACCEPTED=0; PENDING=0; MISSING=0
+    while read -r line; do
+        line="${line%%#*}"
+        # shellcheck disable=SC2086
+        set -- $line
+        [ $# -ge 2 ] || continue
+        UNIQ="$1"; GHUSER="$2"
+        NAME="${PREFIX}-${TERM_SLUG}-${UNIQ}"
+
+        if ! gh api "repos/${ORG}/${NAME}" >/dev/null 2>&1; then
+            printf "%sMISSING%s  %-38s %-16s repository does not exist\n" \
+                "$R" "$N" "$NAME" "$GHUSER"
+            MISSING=$((MISSING + 1))
+            continue
+        fi
+        # Pending invitations are authoritative for "not yet accepted"; check
+        # them first so an invited-but-unaccepted user cannot read as a
+        # collaborator.
+        WHEN="$(gh api "repos/${ORG}/${NAME}/invitations" \
+                -q ".[] | select(.invitee.login==\"${GHUSER}\") | .created_at" 2>/dev/null | head -1)"
+        if [ -n "$WHEN" ]; then
+            printf "%sPENDING%s  %-38s %-16s invited %s, not accepted\n" \
+                "$Y" "$N" "$NAME" "$GHUSER" "${WHEN%%T*}"
+            PENDING=$((PENDING + 1))
+        elif gh api "repos/${ORG}/${NAME}/collaborators/${GHUSER}" >/dev/null 2>&1; then
+            printf "%sok%s       %-38s %-16s accepted\n" "$G" "$N" "$NAME" "$GHUSER"
+            ACCEPTED=$((ACCEPTED + 1))
+        else
+            printf "%sMISSING%s  %-38s %-16s no invitation and not a collaborator\n" \
+                "$R" "$N" "$NAME" "$GHUSER"
+            MISSING=$((MISSING + 1))
+        fi
+    done < "$ROSTER"
+
+    printf "\n%s================================================================%s\n" "$B" "$N"
+    printf " %d accepted, %d still pending, %d missing\n" "$ACCEPTED" "$PENDING" "$MISSING"
+    printf "%s================================================================%s\n" "$B" "$N"
+    if [ "$PENDING" -gt 0 ]; then
+        printf "\nPending students cannot push, and will discover that at the deadline.\n"
+        printf "Chase them: the invitation is at https://github.com/notifications\n"
+    fi
+    [ "$MISSING" -gt 0 ] && exit 1
+    exit 0
+fi
+
 if [ "$DRY" = 1 ]; then
     printf "%s-- dry run: nothing will be created --%s\n\n" "$Y" "$N"
     # Read the third column. A username that resolves is not necessarily the
