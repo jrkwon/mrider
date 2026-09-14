@@ -7,7 +7,10 @@
 # Push is publish: the site deploys to jrkwon.github.io/mrider automatically on
 # push to main, and during term 24 students are reading it. Run this first.
 #
-# Six checks. Each one exists because this repository has already shipped the
+# The name is now narrower than the job - checks 5 and 7 are not documentation -
+# but it is what everyone types, so it stays.
+#
+# Seven checks. Each one exists because this repository has already shipped the
 # defect it catches, or is one cohort away from it:
 #
 #   1. mkdocs build --strict   - broken file links, bad nav entries, config errors
@@ -21,6 +24,9 @@
 #                                good and bad submissions
 #   6. org/term agreement      - docs naming a student repository the tooling
 #                                does not build, after a term rollover
+#   7. package install dirs    - a package installing a directory that is empty,
+#                                therefore untracked, therefore absent from every
+#                                fresh clone
 #
 # CI runs the same checks (.github/workflows/docs.yml), and because the
 # deploy job has `needs: build`, a failure here stops the publish rather than
@@ -159,5 +165,14 @@ if [ -n "$STALE_REFS" ]; then
     fail "course org/term drift between docs and scripts/lab_report.py"
 fi
 printf "   %sok%s  (%s/mrider-labs-%s-<student-id>)\n\n" "$G" "$N" "$CUR_ORG" "$CUR_TERM"
+
+printf "%s7. package install directories%s\n" "$B" "$N"
+# On the first day students cloned this repository, a fresh clone could not
+# build: three packages installed a `launch` directory that had never held a
+# file. Git does not track empty directories, so the folders existed for
+# whoever created them and for nobody else - invisible to everyone who already
+# had a working build, and breaking every new clone at once.
+python3 scripts/check_packages.py || fail "a package installs a directory a fresh clone lacks"
+printf "   %sok%s\n\n" "$G" "$N"
 
 printf "%sDocs are publishable.%s\n" "$G" "$N"
