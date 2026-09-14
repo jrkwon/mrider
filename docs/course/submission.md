@@ -45,7 +45,7 @@ invitation — to whichever address your GitHub account uses, which may not be y
 also shows it at **[github.com/notifications](https://github.com/notifications)**. Accept it:
 
 ```
-bimi-courses/mrider-labs-2026-fall-<uniqname>
+bimi-courses/mrider-labs-2026-fall-<student-id>
 ```
 
 > [!IMPORTANT]
@@ -77,11 +77,12 @@ bash scripts/lab.sh init
 > `lab.sh new` checks this for you and says how far behind you are, but it cannot fix it: only
 > `git pull origin main` can.
 
-It asks for your name and uniqname, works out your repository URL from them, and shows it to you.
+It asks for your name and your **student ID (학번)** — the same one you gave on the sign-up form,
+since your repository is named from it. It works out your repository URL and shows it to you.
 Press **Enter** to accept it. It writes `.labconfig`, which is git-ignored — it never leaves your
 machine.
 
-Your work goes on a branch named `student/<uniqname>`. `origin` stays pointed at the course
+Your work goes on a branch named `student/<student-id>`. `origin` stays pointed at the course
 repository, so you keep receiving course updates with `git pull origin main`; your own commits go to
 `mine`.
 
@@ -165,7 +166,7 @@ bash scripts/lab.sh submit 3
 pushed. The output names each problem and where it is.
 
 When it passes, it switches to your branch, commits your lab directory and any code the lab asked
-for, pushes to `mine`, and writes `dist/lab3_<uniqname>.zip` — cut from the commit with
+for, pushes to `mine`, and writes `dist/lab3_<student-id>.zip` — cut from the commit with
 `git archive`, so the archive and the commit cannot disagree.
 
 `submit` **does not pull.** It commits your work on top of the course repository you already have,
@@ -238,7 +239,7 @@ accepted the repository invitation. One click at
 already safe locally; only the push failed.
 
 **`push to 'mine' failed`** for any other reason — check `git remote -v` points at
-`bimi-courses/mrider-labs-2026-fall-<uniqname>`. `bash scripts/lab.sh init` re-derives and re-sets
+`bimi-courses/mrider-labs-2026-fall-<student-id>`. `bash scripts/lab.sh init` re-derives and re-sets
 it.
 
 **`missing section "..."`** — a generated heading was deleted or edited. Compare against a fresh

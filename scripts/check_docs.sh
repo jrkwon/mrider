@@ -155,9 +155,9 @@ STALE_REFS="$(grep -rnoE '[a-z0-9-]+/mrider-labs-[0-9]{4}-[a-z]+' docs/ --includ
               | grep -v "${CUR_ORG}/mrider-labs-${CUR_TERM}" || true)"
 if [ -n "$STALE_REFS" ]; then
     printf "   docs name a repository the tooling does not build:\n%s\n" "$STALE_REFS" >&2
-    printf "   lab_report.py says  %s/mrider-labs-%s-<uniqname>\n" "$CUR_ORG" "$CUR_TERM" >&2
+    printf "   lab_report.py says  %s/mrider-labs-%s-<student-id>\n" "$CUR_ORG" "$CUR_TERM" >&2
     fail "course org/term drift between docs and scripts/lab_report.py"
 fi
-printf "   %sok%s  (%s/mrider-labs-%s-<uniqname>)\n\n" "$G" "$N" "$CUR_ORG" "$CUR_TERM"
+printf "   %sok%s  (%s/mrider-labs-%s-<student-id>)\n\n" "$G" "$N" "$CUR_ORG" "$CUR_TERM"
 
 printf "%sDocs are publishable.%s\n" "$G" "$N"

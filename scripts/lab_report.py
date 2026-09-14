@@ -648,12 +648,15 @@ def cmd_init(args):
 
     print('Lab submission setup. Stored in .labconfig, which is git-ignored.\n')
     name = ask('name', 'Your full name')
-    uniqname = ask('uniqname', 'Your uniqname (the part before @umich.edu)')
+    uniqname = ask('uniqname', 'Your student ID (학번) - exactly as you gave it on the form')
 
     if not name or not uniqname:
-        die('name and uniqname are both required.')
-    if not re.fullmatch(r'[a-z0-9][a-z0-9._-]*', uniqname):
-        die(f'uniqname {uniqname!r} should be lowercase letters, digits, . _ or -')
+        die('name and student ID are both required.')
+    # Your repository is named from this, so a different answer here derives a
+    # URL for a repository that does not exist - and the failure does not
+    # surface until the push at the end of `submit`.
+    if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]*', uniqname):
+        die(f'student ID {uniqname!r} should be letters, digits, . _ or -')
 
     # Your repository already exists and its name follows from your uniqname, so
     # the answer here is almost always Enter. Typing a URL is the escape hatch,

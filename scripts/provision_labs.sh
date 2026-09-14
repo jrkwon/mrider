@@ -54,11 +54,16 @@
 #      UNIQNAME and GITHUB USERNAME ARE DIFFERENT THINGS, and the roster exists
 #      to map one to the other:
 #
-#        uniqname          umich-assigned, the part before @umich.edu. Names the
+#        student ID        institution-assigned (학번 for this cohort). Names the
 #                          repository, so a repo maps to a gradebook row without
-#                          a lookup.
+#                          a lookup, and unlike the GitHub handle the student
+#                          cannot change it. NO PERSONAL NAMES in repo names.
 #        github username   self-chosen, arbitrary, changeable. The only thing
 #                          GitHub will accept when granting access.
+#
+#      Whatever the student types into `lab.sh init` must match the first column
+#      EXACTLY - it derives their repository URL - so ask for the same
+#      identifier on the form that you tell them to type later.
 #
 #      Ask for the profile URL rather than the username - same information, but
 #      a student copies it from the address bar instead of recalling it, and
