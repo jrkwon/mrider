@@ -128,7 +128,10 @@ jobs:
         run: |
           set -euo pipefail
           cd ros2_ws
-          source setup_env.sh
+          # ROS's own setup.bash reads AMENT_TRACE_SETUP_FILES without a
+          # default, so `set -u` kills the shell before the build starts. Drop
+          # it across the source and put it straight back.
+          set +u; source setup_env.sh; set -u
           colcon list --names-only
           colcon build --symlink-install --event-handlers console_direct+
 
@@ -140,7 +143,7 @@ jobs:
         run: |
           set -euo pipefail
           cd ros2_ws
-          source setup_env.sh
+          set +u; source setup_env.sh; set -u
           xacro "$(ros2 pkg prefix mitt_description)/share/mitt_description/urdf/mitt.urdf.xacro" \
             > /tmp/mitt.urdf
           grep -q 'name="base_link"' /tmp/mitt.urdf
