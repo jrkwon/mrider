@@ -53,6 +53,12 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     container: ros:humble-ros-base
+    defaults:
+      run:
+        # The container's default shell is `sh -e`, and dash has no
+        # `set -o pipefail`. Every step here wants bash anyway - setup_env.sh is
+        # a bash script and uses BASH_SOURCE.
+        shell: bash
     steps:
       - uses: actions/checkout@v4
 
@@ -119,7 +125,6 @@ jobs:
           for marker in $SKIP; do touch "$marker"; done
 
       - name: colcon build
-        shell: bash
         run: |
           set -euo pipefail
           cd ros2_ws
@@ -132,7 +137,6 @@ jobs:
       # expand, and expansion reads mitt_dimensions.yaml through the installed
       # share/ path.
       - name: the installed description expands
-        shell: bash
         run: |
           set -euo pipefail
           cd ros2_ws
