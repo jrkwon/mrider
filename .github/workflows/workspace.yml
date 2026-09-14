@@ -1,40 +1,143 @@
 name: workspace
 
-# The ROS 2 workspace had no CI at all until 2026-09-14, when a fresh clone
-# turned out not to build: three packages installed a `launch` directory that
-# had never held a file, and git does not track empty directories. Every machine
-# that already had a working build was blind to it, which was every machine that
-# could have caught it.
+# The ROS 2 workspace had no CI at all until 2026-09-14. Within two days a fresh
+# clone failed to build twice, and both times the defect was invisible to every
+# machine that could have caught it:
 #
-# This job is the thing that was missing - something that only ever sees a clean
-# checkout.
+#   - three packages installed a `launch` directory that git did not track,
+#     because git does not track empty directories;
+#   - a plain `colcon build` tried to build four packages from the
+#     gz_ros2_control clone that this project does not use, one pair of which is
+#     the Ignition/Fortress variant of the code we build for Harmonic.
+#
+# Neither could be reproduced by anyone who already had a working build. The
+# students who cloned on the first day of term were the first clean checkout
+# this repository ever had. These jobs are what was missing.
 
 on:
   push:
     branches: [main]
     paths:
       - 'ros2_ws/**'
+      - 'docs/course/environment.md'
       - 'scripts/check_packages.py'
       - '.github/workflows/workspace.yml'
   pull_request:
     paths:
       - 'ros2_ws/**'
+      - 'docs/course/environment.md'
       - 'scripts/check_packages.py'
       - '.github/workflows/workspace.yml'
+  # Upstream apt moves underneath us even when we change nothing. Monday 06:00
+  # UTC is Monday afternoon in Seoul - a break that surfaces here is known about
+  # before the week's class rather than during it.
+  schedule:
+    - cron: '0 6 * * 1'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
+  # Seconds, no ROS, runs on every touch of the workspace. Catches the
+  # empty-directory class on its own.
   package-layout:
-    # Deliberately not a ROS container: this check needs git and Python and
-    # nothing else, so it runs in seconds and cannot rot against a distro image.
-    # It is a structural check, not a build - see check_packages.py on what that
-    # does and does not cover.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: every installed directory exists in a clean checkout
         run: python3 scripts/check_packages.py
+
+  # The real thing: follow docs/course/environment.md on a machine that has
+  # never seen this project, and build.
+  build:
+    runs-on: ubuntu-22.04
+    container: ros:humble-ros-base
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: tools the base image lacks
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq curl gnupg lsb-release sudo >/dev/null
+
+      # The package lists are READ OUT OF THE DOCUMENTATION, not copied here.
+      # A student runs what environment.md says; so should this. Copying the
+      # list would let the two drift, and the drift would be silent until
+      # someone followed the page and it did not work.
+      #
+      # Only fenced code blocks are read. Section 5's PROSE deliberately names
+      # the wrong package - "ros-humble-ros-gz-* -> built against Fortress.
+      # Wrong." - so an extraction that scraped prose would one day install
+      # exactly what the warning exists to prevent.
+      - name: Gazebo Harmonic, per environment.md section 5
+        run: |
+          set -euo pipefail
+          curl -sSL https://packages.osrfoundation.org/gazebo.gpg \
+               -o /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] \
+          http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" \
+            > /etc/apt/sources.list.d/gazebo-stable.list
+          apt-get update -qq
+
+          GZ_PKGS=$(sed -n '/^## 5\. Install Gazebo Harmonic/,/^## 6\./p' \
+                    docs/course/environment.md | awk '/^```/{f=!f; next} f' \
+                    | grep -oE '\b(gz-harmonic|libgz-[a-z0-9]+-dev|ros-humble-ros-gzharmonic)\b' \
+                    | sort -u | tr '\n' ' ')
+          echo "from environment.md section 5: $GZ_PKGS"
+          test -n "$GZ_PKGS"
+          # shellcheck disable=SC2086
+          apt-get install -y -qq $GZ_PKGS >/dev/null
+          gz sim --version
+
+      - name: course packages, per environment.md section 4
+        run: |
+          set -euo pipefail
+          ROS_PKGS=$(sed -n '/^## 4\. Install the course packages/,/^## 5\./p' \
+                     docs/course/environment.md | awk '/^```/{f=!f; next} f' \
+                     | grep -oE '\bros-humble-[a-z0-9-]+\b' | sort -u | tr '\n' ' ')
+          echo "from environment.md section 4: $ROS_PKGS"
+          test -n "$ROS_PKGS"
+          # shellcheck disable=SC2086
+          apt-get install -y -qq $ROS_PKGS >/dev/null
+
+      # Section 6 clones five packages and this project uses one. The names of
+      # the four to skip also come from the documentation, so adding a fifth
+      # there is enough to change what CI does.
+      - name: gz_ros2_control source, per environment.md section 6
+        run: |
+          set -euo pipefail
+          cd ros2_ws/src
+          git clone -q -b humble --depth 1 \
+            https://github.com/ros-controls/gz_ros2_control.git
+          cd gz_ros2_control
+          SKIP=$(sed -n '/^## 6\. Clone the repository/,/^## 7\./p' \
+                 ../../../docs/course/environment.md | awk '/^```/{f=!f; next} f' \
+                 | grep -oE '\b(gz|ign)_ros2_control[a-z_]*/COLCON_IGNORE\b' | sort -u)
+          echo "environment.md says to skip:"; echo "$SKIP"
+          test -n "$SKIP"
+          for marker in $SKIP; do touch "$marker"; done
+
+      - name: colcon build
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd ros2_ws
+          source setup_env.sh
+          colcon list --names-only
+          colcon build --symlink-install --event-handlers console_direct+
+
+      # The workspace building is not the same as it being usable. This is the
+      # cheapest assertion that the install tree is real: the description must
+      # expand, and expansion reads mitt_dimensions.yaml through the installed
+      # share/ path.
+      - name: the installed description expands
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd ros2_ws
+          source setup_env.sh
+          xacro "$(ros2 pkg prefix mitt_description)/share/mitt_description/urdf/mitt.urdf.xacro" \
+            > /tmp/mitt.urdf
+          grep -q 'name="base_link"' /tmp/mitt.urdf
+          echo "expanded URDF: $(wc -l < /tmp/mitt.urdf) lines"
