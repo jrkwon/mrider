@@ -71,6 +71,38 @@ REPO = Path(__file__).resolve().parent.parent
 CONFIG = REPO / '.labconfig'
 FORMAT_VERSION = 1
 
+# --- where student repositories live -----------------------------------------
+#
+# One private repository per student, created by the instructor with
+# scripts/provision_labs.sh before term starts. Students are collaborators with
+# push access: they commit freely and cannot change visibility or delete it.
+#
+# WHY THE INSTRUCTOR CREATES THEM, AND NOT THE STUDENTS
+# GitHub Classroom did exactly this underneath, and was retired on 2026-08-28.
+# Doing it by hand is thirty lines of `gh api`, and it removes 24 chances for a
+# repository to end up public - which would publish this course's lab solutions
+# to the next cohort - or to be created without the instructor on it, which
+# makes the work ungradeable at the moment it is due.
+#
+# WHY NOT THE `bimilab` ORG
+# bimilab is on the Team plan, where every outside collaborator on a private
+# repository consumes a paid seat regardless of permission level. 24 students
+# there is ~24 seats. GitHub Free for organizations gives unlimited private
+# repositories and unlimited collaborators, which is all this needs.
+COURSE_ORG = 'bimi-courses'     # change to move orgs
+COURSE_TERM = '2026-fall'       # change once a year
+REPO_PREFIX = 'mrider-labs'
+
+
+def student_repo(uniqname):
+    """Repository name for one student. The term keeps cohorts from colliding."""
+    return f'{REPO_PREFIX}-{COURSE_TERM}-{uniqname}'
+
+
+def student_repo_url(uniqname):
+    return f'https://github.com/{COURSE_ORG}/{student_repo(uniqname)}.git'
+
+
 # Placeholder tokens the generator writes and the validator refuses to accept
 # back. Distinct prefixes so the error message can say what kind of thing is
 # missing rather than just "a placeholder".
@@ -585,12 +617,18 @@ def cmd_init(args):
     print('Lab submission setup. Stored in .labconfig, which is git-ignored.\n')
     name = ask('name', 'Your full name')
     uniqname = ask('uniqname', 'Your uniqname (the part before @umich.edu)')
-    remote = ask('remote', 'Push URL of your private lab repo (blank to set later)')
 
     if not name or not uniqname:
         die('name and uniqname are both required.')
     if not re.fullmatch(r'[a-z0-9][a-z0-9._-]*', uniqname):
         die(f'uniqname {uniqname!r} should be lowercase letters, digits, . _ or -')
+
+    # Your repository already exists and its name follows from your uniqname, so
+    # the answer here is almost always Enter. Typing a URL is the escape hatch,
+    # not the path.
+    derived = student_repo_url(uniqname)
+    print(f'\nYour lab repository is\n    {derived}')
+    remote = input('Push URL [Enter to accept]: ').strip() or cur.get('remote') or derived
 
     cp['student'] = {'name': name, 'uniqname': uniqname, 'remote': remote}
     with open(CONFIG, 'w') as f:
@@ -598,17 +636,15 @@ def cmd_init(args):
     print(f'\nwrote {CONFIG.relative_to(REPO)}')
 
     branch = f'student/{uniqname}'
-    print(f'\nYour work goes on branch  {branch}')
-    if remote:
-        existing = git('remote', 'get-url', 'mine', check=False)
-        if existing != remote:
-            git('remote', 'remove', 'mine', check=False)
-            git('remote', 'add', 'mine', remote)
-            print(f'added remote  mine -> {remote}')
-    else:
-        print('\nNo remote yet. Create a PRIVATE repo, then:\n'
-              '    git remote add mine <your push URL>\n'
-              '    bash scripts/lab.sh init      # re-run to record it')
+    existing = git('remote', 'get-url', 'mine', check=False)
+    if existing != remote:
+        git('remote', 'remove', 'mine', check=False)
+        git('remote', 'add', 'mine', remote)
+    print(f'\n  origin  {git("remote", "get-url", "origin", check=False) or "(none)"}')
+    print(f'  mine    {remote}')
+    print(f'  branch  {branch}')
+    print('\nIf you have not accepted the repository invitation yet, do that now:')
+    print('    https://github.com/notifications')
     return 0
 
 
@@ -889,6 +925,12 @@ def cmd_submit(args):
         pushed = r.returncode == 0
         if not pushed:
             print(f'WARN  push to `mine` failed:\n{r.stderr.strip()}')
+            # By far the most likely cause, and it gives a bare 403 that says
+            # nothing about invitations. The repository exists; you are simply
+            # not on it yet.
+            print('WARN  if that mentions permission or 403: you may not have '
+                  'accepted the\n      repository invitation yet. One click at '
+                  'https://github.com/notifications')
     else:
         print('WARN  no `mine` remote configured; the commit is local only. '
               'Run `bash scripts/lab.sh init`.')
@@ -923,6 +965,35 @@ def cmd_submit(args):
 
 # --- grade -------------------------------------------------------------------
 
+def read_roster(path):
+    """
+    Parse the cohort roster into (uniqname, github_username, clone_url).
+
+    ONE FILE, read by both scripts/provision_labs.sh and `grade --roster`, so a
+    late registrant is added in exactly one place.
+
+        # uniqname   github-username   [clone url, if not the standard one]
+        jdoe         janedoe99
+
+    The URL is derived from COURSE_ORG/COURSE_TERM unless a third column
+    overrides it - which is the escape hatch for a student who, for whatever
+    reason, is submitting from somewhere else.
+    """
+    out = []
+    for lineno, raw in enumerate(Path(path).read_text().splitlines(), start=1):
+        line = raw.split('#', 1)[0].strip()
+        if not line:
+            continue
+        parts = line.split()
+        if len(parts) == 1:
+            print(f'WARN  {path}:{lineno}: no github username, ignoring: {line}')
+            continue
+        who, github = parts[0], parts[1]
+        url = parts[2] if len(parts) > 2 else student_repo_url(who)
+        out.append((who, github, url))
+    return out
+
+
 def cmd_grade(args):
     n = args.lab
     if not args.zips and not args.roster:
@@ -939,15 +1010,8 @@ def cmd_grade(args):
             seen.add(z)
             rows.append(grade_zip(n, z))
     if args.roster:
-        for line in Path(args.roster).read_text().splitlines():
-            line = line.split('#', 1)[0].strip()
-            if not line:
-                continue
-            parts = line.split()
-            if len(parts) < 2:
-                print(f'WARN  roster line ignored (want "uniqname url"): {line}')
-                continue
-            rows.append(grade_remote(n, parts[0], parts[1]))
+        for who, _github, url in read_roster(args.roster):
+            rows.append(grade_remote(n, who, url))
 
     outdir = REPO / 'dist' / 'grade' / f'lab{n}'
     outdir.mkdir(parents=True, exist_ok=True)
@@ -1107,7 +1171,7 @@ def main():
     s = sub.add_parser('grade', help='instructor: check a whole cohort at once')
     s.add_argument('lab', type=int)
     s.add_argument('--zips', metavar='DIR', help='directory of submitted .zip files')
-    s.add_argument('--roster', metavar='FILE', help='lines of "uniqname  clone-url"')
+    s.add_argument('--roster', metavar='FILE', help='lines of "uniqname  github-username"')
     s.set_defaults(fn=cmd_grade)
 
     s = sub.add_parser('selftest', help='check the grading rules themselves')

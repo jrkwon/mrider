@@ -7,8 +7,8 @@
 # Push is publish: the site deploys to jrkwon.github.io/mrider automatically on
 # push to main, and during term 24 students are reading it. Run this first.
 #
-# Five checks. Each one exists because this repository has already shipped the
-# defect it catches:
+# Six checks. Each one exists because this repository has already shipped the
+# defect it catches, or is one cohort away from it:
 #
 #   1. mkdocs build --strict   - broken file links, bad nav entries, config errors
 #   2. portable Markdown       - MkDocs-only `!!!` blocks, which render as a
@@ -19,6 +19,8 @@
 #                                three times this repository has shipped one.
 #   5. lab_report selftest     - the automatic grading rules, pinned to known
 #                                good and bad submissions
+#   6. org/term agreement      - docs naming a student repository the tooling
+#                                does not build, after a term rollover
 #
 # CI runs the same checks (.github/workflows/docs.yml), and because the
 # deploy job has `needs: build`, a failure here stops the publish rather than
@@ -136,5 +138,26 @@ printf "%s5. lab submission rules%s\n" "$B" "$N"
 # The selftest pins each rule to a known-good and a known-bad case.
 python3 scripts/lab_report.py selftest || fail "lab_report selftest (see above)"
 printf "   %sok%s\n\n" "$G" "$N"
+
+printf "%s6. course org and term agree with the tooling%s\n" "$B" "$N"
+# COURSE_ORG and COURSE_TERM in lab_report.py decide where a student's repository
+# actually is; submission.md tells them where to look. Next September someone
+# changes the constant for the new cohort, and three lines of documentation keep
+# quietly naming last year's repository - which exists, is private, and that
+# student cannot see. Nothing else would notice.
+ORG_TERM="$(python3 -c "
+import sys; sys.path.insert(0, 'scripts')
+import lab_report as L
+print(L.COURSE_ORG, L.COURSE_TERM)
+")"
+CUR_ORG="${ORG_TERM% *}"; CUR_TERM="${ORG_TERM#* }"
+STALE_REFS="$(grep -rnoE '[a-z0-9-]+/mrider-labs-[0-9]{4}-[a-z]+' docs/ --include='*.md' \
+              | grep -v "${CUR_ORG}/mrider-labs-${CUR_TERM}" || true)"
+if [ -n "$STALE_REFS" ]; then
+    printf "   docs name a repository the tooling does not build:\n%s\n" "$STALE_REFS" >&2
+    printf "   lab_report.py says  %s/mrider-labs-%s-<uniqname>\n" "$CUR_ORG" "$CUR_TERM" >&2
+    fail "course org/term drift between docs and scripts/lab_report.py"
+fi
+printf "   %sok%s  (%s/mrider-labs-%s-<uniqname>)\n\n" "$G" "$N" "$CUR_ORG" "$CUR_TERM"
 
 printf "%sDocs are publishable.%s\n" "$G" "$N"

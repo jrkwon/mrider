@@ -43,4 +43,4 @@ ros2_ws/src/gz_ros2_control/
 
 # Course roster: student names and repo URLs. This repository is PUBLIC and
 # deploys to GitHub Pages - a committed roster would publish it.
-/course/roster.txt
+/course/roster*.txt

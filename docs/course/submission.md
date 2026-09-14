@@ -33,14 +33,30 @@ your screen**. Screenshots, PDFs and maps — the things that genuinely cannot b
 
 ## Once, at the start of term
 
-### 1. Create a private repository
+Ten minutes, and you never think about it again.
 
-Your lab work is **yours** and must not be readable by the rest of the class. Create an empty
-repository named `mrider-labs-<uniqname>` and **make it private**. Do not fork this repository —
-a fork of a public repository is public.
+### 1. Accept your repository invitation
 
-Then give the instructor read access: on GitHub, **Settings → Collaborators → Add people →
-`jrkwon`**.
+**Your lab repository already exists** — it was created for you, it is **private**, and only you and
+the instructor can read it. You do not create anything.
+
+Give GitHub your username in the first class, then go to **[github.com/notifications](https://github.com/notifications)**
+and accept the invitation to:
+
+```
+bimi-courses/mrider-labs-2026-fall-<uniqname>
+```
+
+> [!IMPORTANT]
+> **This is the one step that fails silently**
+>
+> Until you accept, your account has no access, and `submit` will fail at the very end with a bare
+> permission error that says nothing about invitations. Accept it now, not on the evening Lab 1 is
+> due.
+
+You have **push** access: you can commit whatever you like, and you cannot make the repository
+public or delete it. That is deliberate — a lab repository that goes public publishes this course's
+solutions to next year's class.
 
 ### 2. Record it
 
@@ -49,16 +65,17 @@ cd ~/mrider
 bash scripts/lab.sh init
 ```
 
-It asks for your name, your uniqname, and the push URL of that repository, and writes `.labconfig`.
-That file is git-ignored — it never leaves your machine.
+It asks for your name and uniqname, works out your repository URL from them, and shows it to you.
+Press **Enter** to accept it. It writes `.labconfig`, which is git-ignored — it never leaves your
+machine.
 
 Your work goes on a branch named `student/<uniqname>`. `origin` stays pointed at the course
 repository, so you keep receiving course updates with `git pull origin main`; your own commits go to
 `mine`.
 
 ```
-origin  https://github.com/jrkwon/mrider.git      course updates, read-only to you
-mine    https://github.com/<you>/mrider-labs-...  your branch, private
+origin  https://github.com/jrkwon/mrider.git                     course updates, read-only to you
+mine    https://github.com/bimi-courses/mrider-labs-2026-fall-…  your branch, private
 ```
 
 ---
@@ -194,9 +211,14 @@ really want a fresh skeleton, copy your answers out first.
 report from a shell that had not sourced `setup_env.sh`. Source it and regenerate, or fix the header
 row by hand if the work itself was done correctly.
 
-**`push to 'mine' failed`** — the commit exists locally; only the push failed. Check
-`git remote -v`, and that the repository exists and you can write to it. Re-run `submit` once it is
-fixed.
+**`push to 'mine' failed`**, mentioning permission or `403` — you have almost certainly not
+accepted the repository invitation. One click at
+[github.com/notifications](https://github.com/notifications), then re-run `submit`. Your commit is
+already safe locally; only the push failed.
+
+**`push to 'mine' failed`** for any other reason — check `git remote -v` points at
+`bimi-courses/mrider-labs-2026-fall-<uniqname>`. `bash scripts/lab.sh init` re-derives and re-sets
+it.
 
 **`missing section "..."`** — a generated heading was deleted or edited. Compare against a fresh
 skeleton: `bash scripts/lab.sh new <n> --force` in a scratch clone.
