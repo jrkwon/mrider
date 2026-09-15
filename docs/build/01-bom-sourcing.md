@@ -25,11 +25,11 @@ The BOM is split so the **perception spend follows the DBW gates**. If the steer
 its accuracy gate at [bring-up Stage 1](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first),
 you have not yet bought Tier 2.
 
-| Tier | What it covers | When to order | Line items | With ~10% contingency |
-|---|---|---|---:|---:|
-| **Tier 1** | Vehicle + DBW core + gamepad | Week 1 | $678 | ~$745 |
-| **Tier 2** | LiDAR, camera, IMU | By week 10 | $168 | ~$185 |
-| **Both** | | | **$846** | **~$930** |
+| Tier             | What it covers               | When to order |     Line items | With ~10% contingency |
+| ---------------- | ---------------------------- | ------------- | -------------: | --------------------: |
+| **Tier 1** | Vehicle + DBW core + gamepad | Week 1        |           $678 |                 ~$745 |
+| **Tier 2** | LiDAR, camera, IMU           | By week 10    |           $168 |                 ~$185 |
+| **Both**   |                              |               | **$846** |       **~$930** |
 
 This is down from ~$1,570 in the previous revision. The Tier 1 figure was also **corrected on 2026-08-10** — it had been published as $773 while its line items summed to $638, the vehicle price drop never having been re-added. See
 [bom.md § Change record](../design/bom.md#change-record-why-the-total-fell-from-1570-to-1035)
@@ -57,41 +57,41 @@ at the hardware store the week you need it.
 
 === "Week 0 — order immediately"
 
-    | Item | BOM # | Why it gates the build |
-    |---|---|---|
-    | Vehicle (12 V single-seat ride-on) | 1 | Nothing can be measured until it arrives; seasonal stock |
-    | Teensy 4.1 | 2 | Needed from step 4; cheap enough to buy a spare |
-    | RC transmitter + receiver (SBUS) | 10 | Needed for step 4 override verification |
-    | Hardware RC signal MUX | 9 | Safety-critical and easy to forget — see the warning below |
+| Item                               | BOM # | Why it gates the build                                      | Where to buy                                                                                                                                                                        | Price       |
+| ---------------------------------- | ----- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| Vehicle (12 V single-seat ride-on) | 1     | Nothing can be measured until it arrives; seasonal stock    | [www.coupang.com/vp/products/9597329401?itemId=28670205397&amp;vendorItemId=95592760206](https://www.coupang.com/vp/products/9597329401?itemId=28670205397&vendorItemId=95592760206) | 229,000 KRW |
+| Teensy 4.1                         | 2     | Needed from step 4; cheap enough to buy a spare             |                                                                                                                                                                                     |             |
+| RC transmitter + receiver (SBUS)   | 10    | Needed for step 4 override verification                     |                                                                                                                                                                                     |             |
+| Hardware RC signal MUX             | 9     | Safety-critical and easy to forget — see the warning below |                                                                                                                                                                                     |             |
 
 === "Week 1 — after the vehicle arrives"
 
-    | Item | BOM # | Why it waits |
-    |---|---|---|
-    | Steering gearmotor + encoder | 4 | **Sized from a measurement you cannot take yet** — see §1.3 |
-    | Absolute steering angle sensor | 5 | Technology depends on measured shaft travel (§1.3) |
-    | Steering shaft coupler / adapter | 13 | Depends on the actual column diameter |
+| Item                             | BOM # | Why it waits                                                        | Where to buy  | Price |
+| -------------------------------- | ----- | ------------------------------------------------------------------- | ------------- | ----- |
+| Steering gearmotor + encoder     | 4     | **Sized from a measurement you cannot take yet** — see §1.3 |               |       |
+| Absolute steering angle sensor   | 5     | Technology depends on measured shaft travel (§1.3)                 |               |       |
+| Steering shaft coupler / adapter | 13    | Depends on the actual column diameter                               |               |       |
 
 === "Anytime (Tier 1)"
 
-    | Item | BOM # |
-    |---|---|
-    | Sabertooth 2x32 | 3 |
-    | Drive encoder + 3.15→5 mm shaft adapter | 6 |
-    | Relay MUX hardware (2× DPDT + sockets + flyback diodes + drive transistors) | 7 |
-    | E-stop switch (latching mushroom, traction-rated) | 8 |
-    | Isolated logic rail (12 V SLA + charger + 2× DC-DC) | 11 |
-    | Wiring / connectors / fuses | 12 |
-    | Mounts / 3D prints | 14 |
-    | USB gamepad (Xbox-layout, teleop) | 15 |
+| Item                                                                         | BOM # | Where to buy  | Price |
+| ---------------------------------------------------------------------------- | ----- | ------------- | ----- |
+| Sabertooth 2x32                                                              | 3     |               |       |
+| Drive encoder + 3.15→5 mm shaft adapter                                     | 6     |               |       |
+| Relay MUX hardware (2× DPDT + sockets + flyback diodes + drive transistors) | 7     |               |       |
+| E-stop switch (latching mushroom, traction-rated)                            | 8     |               |       |
+| Isolated logic rail (12 V SLA + charger + 2× DC-DC)                         | 11    |               |       |
+| Wiring / connectors / fuses                                                  | 12    |               |       |
+| Mounts / 3D prints                                                           | 14    |               |       |
+| USB gamepad (Xbox-layout, teleop)                                            | 15    |               |       |
 
 === "By week 10 (Tier 2)"
 
-    | Item | BOM # |
-    |---|---|
-    | 2D LiDAR (RPLIDAR A1M8) | 16 |
-    | Front camera (USB 1080p) | 17 |
-    | IMU (BNO085 class) | 18 |
+| Item                     | BOM # | Where to buy  | Price |
+| ------------------------ | ----- | ------------- | ----- |
+| 2D LiDAR (RPLIDAR A1M8)  | 16    |               |       |
+| Front camera (USB 1080p) | 17    |               |       |
+| IMU (BNO085 class)       | 18    |               |       |
 
 > [!CAUTION]
 > **The hardware RC signal MUX is not optional**
@@ -101,6 +101,57 @@ at the hardware store the week you need it.
 > one MCU holding the steering loop, throttle, override, and arming, a firmware hang loses
 > all four — unless override is a *wiring* property. Order it with the RC set, not later.
 > It is $18 and it is the difference between a defensible safety story and a fragile one.
+
+## 1.2.1 Sourcing in Korea — verified 2026-09-15
+
+Prices below were read off the vendor page on **2026-09-15** at **1 USD = 1,362 KRW**. Anything
+marked *unverified* came from a search result, not from the vendor's own page — treat it as a lead,
+not a quote.
+
+| # | Item | Where | Price | Status |
+|---|------|-------|------:|--------|
+| 1 | Vehicle | [Coupang](https://www.coupang.com/vp/products/9597329401?itemId=28670205397&vendorItemId=95592760206) | ₩229,000 | recorded earlier |
+| 3 | **Sabertooth 2x32** | [Dimension Engineering](https://www.dimensionengineering.com/products/sabertooth2x32), direct import | **$124.99** (≈₩170,200) + shipping/duty | verified |
+| 9 | Pololu RC servo MUX #2806 | [Pololu](https://www.pololu.com/product/2806), direct import | $17.95 | verified — **stock "Rationed"** |
+| 16 | RPLIDAR A1M8-R6 (DFR0315) | [ICBanQ](https://www.icbanq.com/P013130745) | ₩141,300 + VAT = **₩155,430** | verified, ships ≤1 week |
+| 2 | Teensy 4.1 | ICBanQ / [DeviceMart](https://www.devicemart.co.kr/goods/view?no=14276922) | ~₩54,780 VAT incl. | **unverified** |
+| 10 | FlySky FS-i6 + FS-iA6B | 알씨뱅크, 팰콘샵, 다나와 | — | **unverified** — and see the receiver warning below |
+
+**No Korean stock found** for the Sabertooth (DeviceMart and Eleparts both return nothing) or for the
+Pololu MUX. Both are direct imports.
+
+> [!CAUTION]
+> **The one-stop.co.kr listing is a 2x25 sold as a 2x32, at 47% over the 2x32's list price**
+>
+> [one-stop.co.kr #11156](https://one-stop.co.kr/goods/view?no=11156) is titled **DRI0004
+> Sabertooth Dual 25A** while its body text describes "32A continuous / 64A peak". The **part
+> number is the truth**: DFRobot's DRI0004 is the Dual 25A — 25 A continuous, 50 A peak, 6–24 V.
+>
+> The confusion is inherited, not invented. DFRobot themselves publish it inconsistently: their
+> wiki page is titled *Sabertooth Dual 32A* at a URL ending `Sabertooth_Dual_25A..._DRI0004`. The
+> Korean reseller copied that page.
+>
+> What settles it is the price. **Dimension Engineering sells the 2x25 V2 and the 2x32 at the same
+> $124.99.** There is no version of this trade that favours one-stop:
+>
+> | | current | voltage | price |
+> |---|---|---|---|
+> | one-stop DRI0004 | 25 A / 50 A peak | 6–24 V | ₩250,000 (≈$184) |
+> | DE Sabertooth 2x32 | **32 A / 64 A peak** | **6–30 V** | $124.99 (≈₩170,200) |
+>
+> ₩80,000 more for less current and less voltage headroom. Import the 2x32 direct.
+>
+> A 2x25 is not *wrong* — [§1.4](#14-substitution-notes) allows a smaller Sabertooth, and this
+> drivetrain is one the BOM already calls oversized. It is simply not worth more money than the
+> larger part.
+
+> [!WARNING]
+> **Order the Pololu MUX first, not last**
+>
+> Pololu lists #2806 as **"Rationed"**. It is $17.95, it ships from the US, and
+> [§1.2](#12-order-long-lead-items-first) makes it the condition the single-Teensy architecture was
+> adopted under. A cheap part on allocation is exactly the one that arrives last. Order it in the
+> same batch as the RC set.
 
 ## 1.3 Two parts you must not order blind
 
@@ -161,18 +212,18 @@ rather than invisible bias
 
 ## 1.4 Substitution notes
 
-| Item | Safe to substitute? | Constraint |
-|---|---|---|
-| Vehicle | Yes, within class | Must be **12 V, single-seat, dual rear motors, parent-remote class** ([ADR D-R](../design/vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08) reversed the original 24 V two-seater call), with an accessible steering column. Run the [vehicle.md §3 verification checklist](../design/vehicle.md) on whatever you buy. |
-| Teensy 4.1 | Not recommended | A Teensy 4.0 fits the peripheral budget, but 4.1 is $8 more for headroom. **Do not drop to an ESG32/AVR-class part** — the 600 MHz Cortex-M7's timing determinism and 4 hardware quadrature decoders are load-bearing ([dbw.md §9](../design/dbw.md#9-teensy-41-firmware-platform-and-version-pinning)). |
-| Sabertooth 2x32 | Only within class | **Do not substitute a bare H-bridge.** It is disqualified on inputs before current even matters: a BTS7960 takes PWM + DIR, so it cannot sit downstream of the [servo-pulse RC MUX](../design/dbw.md#112-hardware-rc-signal-mux-the-d3-condition), and it has no signal-loss timeout to back [failsafe rows 6 and 8](../design/safety.md#2-failsafe-matrix). A smaller *Sabertooth* is a defensible saving; a bare bridge is not. Drive-motor stall current is **unmeasured** — [measure it](../design/vehicle.md#31-drive-motor-stall-current-vs-sabertooth-rating-critical) against 32 A/channel and log the result. |
-| Drive encoder | Yes | Any quadrature/Hall encoder. **Record the actual PPR — do not assume 52.** The source project conflicts with itself (52 PPR in `code.ino:27` vs 16 PPR in its own BOM, finding F7). The roll-out calibration in step 6 bypasses PPR anyway. |
-| Camera | Yes for semester 1 | A $30 rolling-shutter USB camera is fine for SLAM and teleop. **Behavior cloning (phase 2) needs a global shutter** — rolling shutter smears during turns and corrupts steering labels. Budget +$150 then; do not train on rolling-shutter data and attribute the result to the platform. |
-| LiDAR | Yes | `rplidar_ros` is in apt for Humble. Swapping to YDLidar or another vendor means swapping the ROS 2 driver ([software.md §2](../design/software.md#2-ros-2-stack-reused-adapted-new)). |
-| RC TX/RX | Yes | Must have **SBUS output plus a spare channel** to drive the hardware signal MUX. No longer needs to be PX4-bindable. This is your live override authority — do not economize here. |
-| Hardware RC signal MUX | Within class | Any servo-signal multiplexer that selects between two PWM sources on an RC channel. **Do not omit** — see §1.2. |
-| IMU | Yes | Any 9-DoF publishing `sensor_msgs/Imu`. Onboard fusion (BNO085 class) saves work; the estimator is `robot_localization` either way. |
-| E-stop | No | Must be **traction-rated** (switching the actual motor current, or a contactor coil). A signal-rated mushroom button will weld. |
+| Item                   | Safe to substitute? | Constraint                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ---------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Vehicle                | Yes, within class   | Must be**12 V, single-seat, dual rear motors, parent-remote class** ([ADR D-R](../design/vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08) reversed the original 24 V two-seater call), with an accessible steering column. Run the [vehicle.md §3 verification checklist](../design/vehicle.md) on whatever you buy.                                                                                                                                                                                                                                                                                         |
+| Teensy 4.1             | Not recommended     | A Teensy 4.0 fits the peripheral budget, but 4.1 is $8 more for headroom.**Do not drop to an ESG32/AVR-class part** — the 600 MHz Cortex-M7's timing determinism and 4 hardware quadrature decoders are load-bearing ([dbw.md §9](../design/dbw.md#9-teensy-41-firmware-platform-and-version-pinning)).                                                                                                                                                                                                                                                                                                                     |
+| Sabertooth 2x32        | Only within class   | **Do not substitute a bare H-bridge.** It is disqualified on inputs before current even matters: a BTS7960 takes PWM + DIR, so it cannot sit downstream of the [servo-pulse RC MUX](../design/dbw.md#112-hardware-rc-signal-mux-the-d3-condition), and it has no signal-loss timeout to back [failsafe rows 6 and 8](../design/safety.md#2-failsafe-matrix). A smaller *Sabertooth* is a defensible saving; a bare bridge is not. Drive-motor stall current is **unmeasured** — [measure it](../design/vehicle.md#31-drive-motor-stall-current-vs-sabertooth-rating-critical) against 32 A/channel and log the result. |
+| Drive encoder          | Yes                 | Any quadrature/Hall encoder.**Record the actual PPR — do not assume 52.** The source project conflicts with itself (52 PPR in `code.ino:27` vs 16 PPR in its own BOM, finding F7). The roll-out calibration in step 6 bypasses PPR anyway.                                                                                                                                                                                                                                                                                                                                                                                |
+| Camera                 | Yes for semester 1  | A $30 rolling-shutter USB camera is fine for SLAM and teleop.**Behavior cloning (phase 2) needs a global shutter** — rolling shutter smears during turns and corrupts steering labels. Budget +$150 then; do not train on rolling-shutter data and attribute the result to the platform.                                                                                                                                                                                                                                                                                                                                    |
+| LiDAR                  | Yes                 | `rplidar_ros` is in apt for Humble. Swapping to YDLidar or another vendor means swapping the ROS 2 driver ([software.md §2](../design/software.md#2-ros-2-stack-reused-adapted-new)).                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| RC TX/RX               | Yes                 | Must have**SBUS output plus a spare channel** to drive the hardware signal MUX. No longer needs to be PX4-bindable. This is your live override authority — do not economize here.                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Hardware RC signal MUX | Within class        | Any servo-signal multiplexer that selects between two PWM sources on an RC channel.**Do not omit** — see §1.2.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| IMU                    | Yes                 | Any 9-DoF publishing`sensor_msgs/Imu`. Onboard fusion (BNO085 class) saves work; the estimator is `robot_localization` either way.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| E-stop                 | No                  | Must be**traction-rated** (switching the actual motor current, or a contactor coil). A signal-rated mushroom button will weld.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 
 ## 1.5 Connector and consumable list
 
@@ -244,4 +295,4 @@ stamped with date and operator per
 
 ---
 
-**Next:** [2. Vehicle prep & mechanical](02-mechanical.md)
+**Next:** [2. Vehicle prep &amp; mechanical](02-mechanical.md)
