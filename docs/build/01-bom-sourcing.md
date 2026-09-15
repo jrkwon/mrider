@@ -120,6 +120,57 @@ not a quote.
 **No Korean stock found** for the Sabertooth (DeviceMart and Eleparts both return nothing) or for the
 Pololu MUX. Both are direct imports.
 
+### Leads still to confirm
+
+Everything here came from a search result rather than the vendor's own page — DeviceMart and
+Eleparts render prices in JavaScript, so they cannot be read automatically. **Confirm before
+ordering.**
+
+| # | Item | Lead | Indicative | BOM est. |
+|---|------|------|-----------:|---------:|
+| 2 | Teensy 4.1 | ICBanQ · [DeviceMart 14276922](https://www.devicemart.co.kr/goods/view?no=14276922) | ~₩54,800 | $32 ≈ ₩43,600 |
+| 10 | FlySky FS-i6 + **FS-iA6B** | 알씨뱅크, 팰콘샵, 다나와 | — | $55 ≈ ₩74,900 |
+| 15 | Logitech F710 gamepad | 다나와, 컴퓨존, 11번가 | ₩58,000–69,900 | $40 ≈ ₩54,500 |
+| 18 | BNO085 (Adafruit breakout) | ICBanQ · [DeviceMart 12507416](https://www.devicemart.co.kr/goods/view?no=12507416) · VCTec | ~₩41,800 | $28 ≈ ₩38,100 |
+| 11 | 12 V 7 Ah SLA (로케트 ES7-12) | 11번가, 쿠팡, 판테크 | ~₩19,500 | part of $45 |
+| 11 | Isolated DC-DC (e.g. SPS3-12-5) | DeviceMart 전원/파워 → DC-DC 컨버터 | — | part of $45 |
+| 8 | 22 mm mushroom E-stop | 한국미스미, 레고전자부품, 다아라몰 (IDEC) | — | $15 — **but read the warning** |
+
+> [!IMPORTANT]
+> **Buy the FS-iA6B, not the FS-iA6**
+>
+> Korean RC shops list the FS-i6 bundled with either. The plain **FS-iA6 is PWM only** — no serial
+> stream, so [Layer A](../design/safety.md#12-live-override-inside-dbw-mode-two-layers) cannot be
+> built on it. Only the **FS-iA6B** carries the i-BUS port. One letter, and it is the difference
+> between having a closed-loop override and not.
+
+> [!CAUTION]
+> **A 22 mm mushroom button will not switch this traction circuit — and its rating will not say so**
+>
+> [§1.4](#14-substitution-notes) already requires the E-stop to be traction-rated. What the Korean
+> listings make easy to miss is that their ratings are **AC** ratings: a switch sold as "10 A 250 V"
+> may be rated for a small fraction of that at **12 V DC**, because DC has no zero crossing to
+> extinguish the arc. Drive stall current here is
+> [unmeasured](../design/vehicle.md#31-drive-motor-stall-current-vs-sabertooth-rating-critical) and
+> both rear motors share one channel.
+>
+> Use the pattern the BOM already permits: the **mushroom button switches a contactor coil**, and a
+> **DC-rated contactor** (12 V coil, 100 A+ continuous, sold for winches and battery isolators)
+> carries the traction current. The button then only ever sees coil current, which is what a 22 mm
+> switch is actually good for.
+>
+> Do not buy the button until the contactor is chosen — its coil current sets the button's rating.
+
+### Still unsourced
+
+No usable Korean lead found yet for: **#6** drive encoder + 3.15→5 mm shaft adapter, **#7** relay
+MUX hardware (2× DPDT + sockets + flyback diodes + drive transistors), **#12** wiring / connectors /
+fuses, **#14** 3D-print filament and hardware, **#17** USB 1080p camera.
+
+Most are commodity and will come from DeviceMart, Eleparts or Coupang; they are listed here so the
+gap is visible rather than assumed closed. **#4, #5 and #13 are deliberately absent** — they are the
+[measure-first parts](#13-two-parts-you-must-not-order-blind).
+
 > [!CAUTION]
 > **The one-stop.co.kr listing is a 2x25 sold as a 2x32, at 47% over the 2x32's list price**
 >
