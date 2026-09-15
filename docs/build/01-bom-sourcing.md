@@ -53,45 +53,46 @@ for where the money went and what was deferred rather than deleted.
 ## 1.2 Order long-lead items first
 
 Order in this sequence. The first group gates everything else; the last group can be bought
-at the hardware store the week you need it.
+at the hardware store the week you need it. **Vendors and prices are in
+[§1.2.1](#121-sourcing-in-korea-verified-2026-09-15)**, not here — one place, so they cannot drift.
 
 === "Week 0 — order immediately"
 
-| Item                               | BOM # | Why it gates the build                                      | Where to buy                                                                                                                                                                        | Price       |
-| ---------------------------------- | ----- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| Vehicle (12 V single-seat ride-on) | 1     | Nothing can be measured until it arrives; seasonal stock    | [www.coupang.com/vp/products/9597329401?itemId=28670205397&amp;vendorItemId=95592760206](https://www.coupang.com/vp/products/9597329401?itemId=28670205397&vendorItemId=95592760206) | 229,000 KRW |
-| Teensy 4.1                         | 2     | Needed from step 4; cheap enough to buy a spare             |                                                                                                                                                                                     |             |
-| RC transmitter + receiver (i-BUS)  | 10    | Needed for step 4 override verification                     |                                                                                                                                                                                     |             |
-| Hardware RC signal MUX             | 9     | Safety-critical and easy to forget — see the warning below |                                                                                                                                                                                     |             |
+| Item | BOM # | Why it gates the build |
+|------|-------|------------------------|
+| Vehicle (12 V single-seat ride-on) | 1 | Nothing can be measured until it arrives; seasonal stock |
+| Teensy 4.1 | 2 | Needed from step 4; cheap enough to buy a spare |
+| RC transmitter + receiver (i-BUS) | 10 | Needed for step 4 override verification |
+| Hardware RC signal MUX | 9 | Safety-critical and easy to forget — see the warning below |
 
 === "Week 1 — after the vehicle arrives"
 
-| Item                             | BOM # | Why it waits                                                        | Where to buy  | Price |
-| -------------------------------- | ----- | ------------------------------------------------------------------- | ------------- | ----- |
-| Steering gearmotor + encoder     | 4     | **Sized from a measurement you cannot take yet** — see §1.3 |               |       |
-| Absolute steering angle sensor   | 5     | Technology depends on measured shaft travel (§1.3)                 |               |       |
-| Steering shaft coupler / adapter | 13    | Depends on the actual column diameter                               |               |       |
+| Item | BOM # | Why it waits |
+|------|-------|--------------|
+| Steering gearmotor + encoder | 4 | **Sized from a measurement you cannot take yet** — see §1.3 |
+| Absolute steering angle sensor | 5 | Technology depends on measured shaft travel (§1.3) |
+| Steering shaft coupler / adapter | 13 | Depends on the actual column diameter |
 
 === "Anytime (Tier 1)"
 
-| Item                                                                         | BOM # | Where to buy  | Price |
-| ---------------------------------------------------------------------------- | ----- | ------------- | ----- |
-| Sabertooth 2x32                                                              | 3     |               |       |
-| Drive encoder + 3.15→5 mm shaft adapter                                     | 6     |               |       |
-| Relay MUX hardware (2× DPDT + sockets + flyback diodes + drive transistors) | 7     |               |       |
-| E-stop switch (latching mushroom, traction-rated)                            | 8     |               |       |
-| Isolated logic rail (12 V SLA + charger + 2× DC-DC)                         | 11    |               |       |
-| Wiring / connectors / fuses                                                  | 12    |               |       |
-| Mounts / 3D prints                                                           | 14    |               |       |
-| USB gamepad (Xbox-layout, teleop)                                            | 15    |               |       |
+| Item | BOM # |
+|------|-------|
+| Sabertooth 2x32 | 3 |
+| Drive encoder + 3.15→5 mm shaft adapter | 6 |
+| Relay MUX hardware (2× DPDT + sockets + flyback diodes + drive transistors) | 7 |
+| E-stop switch (latching mushroom, traction-rated) | 8 |
+| Isolated logic rail (12 V SLA + charger + 2× DC-DC) | 11 |
+| Wiring / connectors / fuses | 12 |
+| Mounts / 3D prints | 14 |
+| USB gamepad (Xbox-layout, teleop) | 15 |
 
 === "By week 10 (Tier 2)"
 
-| Item                     | BOM # | Where to buy  | Price |
-| ------------------------ | ----- | ------------- | ----- |
-| 2D LiDAR (RPLIDAR A1M8)  | 16    |               |       |
-| Front camera (USB 1080p) | 17    |               |       |
-| IMU (BNO085 class)       | 18    |               |       |
+| Item | BOM # |
+|------|-------|
+| 2D LiDAR (RPLIDAR A1M8) | 16 |
+| Front camera (USB 1080p) | 17 |
+| IMU (BNO085 class) | 18 |
 
 > [!CAUTION]
 > **The hardware RC signal MUX is not optional**
@@ -111,16 +112,33 @@ not a quote.
 | # | Item | Where | Price | Status |
 |---|------|-------|------:|--------|
 | 1 | Vehicle | [Coupang](https://www.coupang.com/vp/products/9597329401?itemId=28670205397&vendorItemId=95592760206) | ₩229,000 | recorded earlier |
-| 3 | **Sabertooth 2x32** | [one-stop.co.kr](https://one-stop.co.kr/goods/view?no=11156) (domestic) · [Dimension Engineering](https://www.dimensionengineering.com/products/sabertooth2x32) (import) | ₩250,000 · $124.99 (~₩185,000 landed) | verified — **confirm the SKU**, see below |
-| 9 | Pololu RC servo MUX #2806 | DeviceMart (domestic — **link/price needed**) · [Pololu](https://www.pololu.com/product/2806) (import) | — · $17.95 | Pololu stock **"Rationed"**; buy domestic if stocked |
+| 3 | **Sabertooth 2x32** | [Coupang](https://www.coupang.com/vp/products/8926855294?itemId=26092961552&vendorItemId=93333777957) | **₩215,300** | verified — est. arrival **10/8** |
+| 3 | ↳ alternative | [one-stop.co.kr](https://one-stop.co.kr/goods/view?no=11156) | ₩250,000 VAT incl. | verified — ships soon |
+| 3 | ↳ alternative | [Dimension Engineering](https://www.dimensionengineering.com/products/sabertooth2x32) | $124.99 ≈ ₩185,000 landed | verified — ~2 weeks, USPS |
+| 9 | Pololu RC servo MUX #2806 | [DeviceMart 1179242](https://www.devicemart.co.kr/goods/view?no=1179242) | **₩31,680** VAT incl. | verified — ships ~1 week |
+| 2 | Teensy 4.1 | [DeviceMart 14276922](https://www.devicemart.co.kr/goods/view?no=14276922) | **₩74,250** VAT incl. | verified |
 | 16 | RPLIDAR A1M8-R6 (DFR0315) | [ICBanQ](https://www.icbanq.com/P013130745) | ₩141,300 + VAT = **₩155,430** | verified, ships ≤1 week |
-| 2 | Teensy 4.1 | ICBanQ / [DeviceMart](https://www.devicemart.co.kr/goods/view?no=14276922) | ~₩54,780 VAT incl. | **unverified** |
 | 10 | FlySky FS-i6 + FS-iA6B | 알씨뱅크, 팰콘샵, 다나와 | — | **unverified** — and see the receiver warning below |
 
-**Prefer domestic where it exists.** Neither DeviceMart nor Eleparts returns a Sabertooth on an
-automated search, but one-stop.co.kr stocks it, and DeviceMart carries the Pololu MUX — so the
-"no Korean source" reading in the first pass of this section was wrong, and came from searching
-badly rather than from the parts being unavailable.
+**Everything in Tier 1 that was thought to need importing is available domestically.** The
+Sabertooth is on Coupang and at one-stop; the Pololu MUX is at DeviceMart. The "no Korean source"
+reading in the first pass of this section was wrong, and came from searching badly — DeviceMart and
+Eleparts render prices in JavaScript and return nothing to an automated search, which is a limit of
+the search, not a fact about the market.
+
+> [!NOTE]
+> **Two prices came in well over the BOM estimate**
+>
+> | | BOM est. | actual | over by |
+> |---|---:|---:|---:|
+> | Teensy 4.1 | $32 ≈ ₩43,600 | ₩74,250 | **+70%** |
+> | Pololu MUX #2806 | $18 ≈ ₩24,500 | ₩31,680 | +29% |
+>
+> Both are the domestic premium on a US part, and both are worth paying here: the Pololu is
+> [listed "Rationed"](https://www.pololu.com/product/2806) at source, and it is the part
+> [§1.2](#12-order-long-lead-items-first) says not to be waiting on. Together they add about
+> ₩38,000 to Tier 1 — record the actuals in the [Order Log](../order-log.md) rather than the
+> estimates.
 
 ### Leads still to confirm
 
@@ -130,7 +148,6 @@ ordering.**
 
 | # | Item | Lead | Indicative | BOM est. |
 |---|------|------|-----------:|---------:|
-| 2 | Teensy 4.1 | ICBanQ · [DeviceMart 14276922](https://www.devicemart.co.kr/goods/view?no=14276922) | ~₩54,800 | $32 ≈ ₩43,600 |
 | 10 | FlySky FS-i6 + **FS-iA6B** | 알씨뱅크, 팰콘샵, 다나와 | — | $55 ≈ ₩74,900 |
 | 15 | Logitech F710 gamepad | 다나와, 컴퓨존, 11번가 | ₩58,000–69,900 | $40 ≈ ₩54,500 |
 | 18 | BNO085 (Adafruit breakout) | ICBanQ · [DeviceMart 12507416](https://www.devicemart.co.kr/goods/view?no=12507416) · VCTec | ~₩41,800 | $28 ≈ ₩38,100 |
@@ -209,11 +226,18 @@ gap is visible rather than assumed closed. **#4, #5 and #13 are deliberately abs
 >
 > | | landed | arrives | if it fails |
 > |---|---|---|---|
-> | Dimension Engineering | ~$135 ≈ **₩185,000** | ~2 weeks | return shipping to the USA |
-> | one-stop.co.kr | **₩250,000** | domestic | domestic A/S |
+> | **Coupang** | **₩215,300** | est. **10/8** | domestic |
+> | one-stop.co.kr | ₩250,000 | ships soon | domestic A/S |
+> | Dimension Engineering | ~$135 ≈ ₩185,000 | ~2 weeks | return shipping to the USA |
 >
-> Roughly **₩65,000** for two weeks and a local warranty on the single most expensive board in the
-> build. During term, that is a reasonable thing to buy.
+> The spread is about **₩65,000** end to end, which is small against what it buys: a local return
+> path on the most expensive board in the build.
+>
+> **Time is the real variable, not price.** Coupang's estimated 10/8 is roughly three weeks out —
+> slower than importing — so if the bench schedule needs the Sabertooth before then, one-stop
+> shipping now is worth its ₩35,000 premium over Coupang. Check the Coupang listing's seller and
+> dispatch estimate before committing; a long estimate there usually means it ships from overseas
+> anyway, in which case the domestic advantage is only the return path.
 
 > [!WARNING]
 > **Order the Pololu MUX first, not last**
