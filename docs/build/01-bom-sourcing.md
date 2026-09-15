@@ -111,14 +111,16 @@ not a quote.
 | # | Item | Where | Price | Status |
 |---|------|-------|------:|--------|
 | 1 | Vehicle | [Coupang](https://www.coupang.com/vp/products/9597329401?itemId=28670205397&vendorItemId=95592760206) | ₩229,000 | recorded earlier |
-| 3 | **Sabertooth 2x32** | [Dimension Engineering](https://www.dimensionengineering.com/products/sabertooth2x32), direct import | **$124.99** (≈₩170,200) + shipping/duty | verified |
-| 9 | Pololu RC servo MUX #2806 | [Pololu](https://www.pololu.com/product/2806), direct import | $17.95 | verified — **stock "Rationed"** |
+| 3 | **Sabertooth 2x32** | [one-stop.co.kr](https://one-stop.co.kr/goods/view?no=11156) (domestic) · [Dimension Engineering](https://www.dimensionengineering.com/products/sabertooth2x32) (import) | ₩250,000 · $124.99 (~₩185,000 landed) | verified — **confirm the SKU**, see below |
+| 9 | Pololu RC servo MUX #2806 | DeviceMart (domestic — **link/price needed**) · [Pololu](https://www.pololu.com/product/2806) (import) | — · $17.95 | Pololu stock **"Rationed"**; buy domestic if stocked |
 | 16 | RPLIDAR A1M8-R6 (DFR0315) | [ICBanQ](https://www.icbanq.com/P013130745) | ₩141,300 + VAT = **₩155,430** | verified, ships ≤1 week |
 | 2 | Teensy 4.1 | ICBanQ / [DeviceMart](https://www.devicemart.co.kr/goods/view?no=14276922) | ~₩54,780 VAT incl. | **unverified** |
 | 10 | FlySky FS-i6 + FS-iA6B | 알씨뱅크, 팰콘샵, 다나와 | — | **unverified** — and see the receiver warning below |
 
-**No Korean stock found** for the Sabertooth (DeviceMart and Eleparts both return nothing) or for the
-Pololu MUX. Both are direct imports.
+**Prefer domestic where it exists.** Neither DeviceMart nor Eleparts returns a Sabertooth on an
+automated search, but one-stop.co.kr stocks it, and DeviceMart carries the Pololu MUX — so the
+"no Korean source" reading in the first pass of this section was wrong, and came from searching
+badly rather than from the parts being unavailable.
 
 ### Leads still to confirm
 
@@ -171,30 +173,47 @@ Most are commodity and will come from DeviceMart, Eleparts or Coupang; they are 
 gap is visible rather than assumed closed. **#4, #5 and #13 are deliberately absent** — they are the
 [measure-first parts](#13-two-parts-you-must-not-order-blind).
 
-> [!CAUTION]
-> **The one-stop.co.kr listing is a 2x25 sold as a 2x32, at 47% over the 2x32's list price**
+> [!NOTE]
+> **The one-stop.co.kr listing: the title is stale, the product is a 2x32**
 >
-> [one-stop.co.kr #11156](https://one-stop.co.kr/goods/view?no=11156) is titled **DRI0004
-> Sabertooth Dual 25A** while its body text describes "32A continuous / 64A peak". The **part
-> number is the truth**: DFRobot's DRI0004 is the Dual 25A — 25 A continuous, 50 A peak, 6–24 V.
+> [one-stop.co.kr #11156](https://one-stop.co.kr/goods/view?no=11156) is titled **"DRI0004
+> Sabertooth Dual 25A"**, which reads like a mislabelled 2x25. It is not. The page body is
+> unambiguous:
 >
-> The confusion is inherited, not invented. DFRobot themselves publish it inconsistently: their
-> wiki page is titled *Sabertooth Dual 32A* at a URL ending `Sabertooth_Dual_25A..._DRI0004`. The
-> Korean reseller copied that page.
+> - every datasheet link points at **`Sabertooth2x32.pdf`**, `Sabertooth2x32.doc`, and
+>   `Sabertooth2x32QuickStart.pdf` on dimensionengineering.com
+> - it states **6–30 V nominal, 33.6 V absolute max** — the 2x32's range. The 2x25 is 6–24 V
+>   nominal, 30 V max
+> - it states **32 A continuous / 64 A peak**, and names the **v1.1** revision
 >
-> What settles it is the price. **Dimension Engineering sells the 2x25 V2 and the 2x32 at the same
-> $124.99.** There is no version of this trade that favours one-stop:
+> `DRI0004` is DFRobot's legacy SKU string for this line, and DFRobot themselves have not kept it
+> straight: their own wiki page for DRI0004 is titled *Sabertooth Dual 32A* while its specification
+> table says 25 A / 6–24 V. The Korean reseller inherited the title and replaced the body.
 >
-> | | current | voltage | price |
+> **The only residual risk is procurement, not specification.** If the vendor picks stock by SKU
+> rather than by the page you read, a 2x25 could arrive. One email before paying settles it — ask
+> them to confirm 32 A/64 A and the 6–30 V range on the unit they will actually ship.
+
+> [!TIP]
+> **Domestic at ₩250,000 versus importing at ~₩185,000 — both are defensible**
+>
+> Dimension Engineering list the 2x32 at **$124.99** and ship worldwide at a flat rate ("our
+> shipping prices are the same whether you live in the USA or overseas"), by USPS air mail, ~10
+> business days.
+>
+> That routing matters for tax. Korea's **$200** de-minimis under KORUS applies only to **courier**
+> shipments (DHL/FedEx/UPS); goods arriving by **international post** fall under the **$150**
+> threshold. At $124.99 the Sabertooth is below either, so it should clear free of duty and VAT —
+> but the margin is thin enough that adding a second item to the same order could push the parcel
+> over and tax the whole thing, not just the excess.
+>
+> | | landed | arrives | if it fails |
 > |---|---|---|---|
-> | one-stop DRI0004 | 25 A / 50 A peak | 6–24 V | ₩250,000 (≈$184) |
-> | DE Sabertooth 2x32 | **32 A / 64 A peak** | **6–30 V** | $124.99 (≈₩170,200) |
+> | Dimension Engineering | ~$135 ≈ **₩185,000** | ~2 weeks | return shipping to the USA |
+> | one-stop.co.kr | **₩250,000** | domestic | domestic A/S |
 >
-> ₩80,000 more for less current and less voltage headroom. Import the 2x32 direct.
->
-> A 2x25 is not *wrong* — [§1.4](#14-substitution-notes) allows a smaller Sabertooth, and this
-> drivetrain is one the BOM already calls oversized. It is simply not worth more money than the
-> larger part.
+> Roughly **₩65,000** for two weeks and a local warranty on the single most expensive board in the
+> build. During term, that is a reasonable thing to buy.
 
 > [!WARNING]
 > **Order the Pololu MUX first, not last**
