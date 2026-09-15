@@ -234,7 +234,7 @@ ros2 launch mitt_bringup sim.launch.py
 | Actuation frame (Teensy → MUX → Sabertooth) | **measure & pin** | *(from step 4)* | ☐ |
 | Status feedback (Teensy → laptop) | ≥ 50 Hz | *(record)* | ☐ |
 | IMU | ≥ 100 Hz | *(record)* | ☐ |
-| RC override (SBUS) | ~50 Hz | *(record)* | ☐ |
+| RC override (RC serial) | ~50 Hz | *(record)* | ☐ |
 
 ## 5.11 Gate to step 6
 

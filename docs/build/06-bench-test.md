@@ -86,7 +86,7 @@ Both layers, tested separately. Layer B is the **condition D3 was adopted on**
 
 | Layer | Test | Expected | Observed | Pass |
 |---|---|---|---|---|
-| **A — SBUS** | Take the sticks in `AUTONOMOUS` | Mode → `MANUAL_RC` within **≤ 200 ms**; sticks command an **angle**, loop still closed | | ☐ |
+| **A — RC serial** | Take the sticks in `AUTONOMOUS` | Mode → `MANUAL_RC` within **≤ 200 ms**; sticks command an **angle**, loop still closed | | ☐ |
 | **B — hardware MUX** | **Hold the Teensy in reset**, flip the MUX channel | Transmitter drives the Sabertooth **directly**; steering responds with the Teensy dead | | ☐ |
 | B — feel | Compare A and B by hand | B commands raw **effort**, open-loop — a different feel. Record it | | ☐ |
 

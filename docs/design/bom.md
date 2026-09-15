@@ -43,7 +43,7 @@ Tier 2 has not been bought yet.
 | 7 | **Relay MUX hardware** | 2× DPDT automotive relays/contactors + sockets + flyback diodes + drive transistors | [safety.md §1.1](safety.md#11-relay-mux-stock-vs-dbw-selection) | New | 25 | Default de-energized = STOCK |
 | 8 | **E-stop switch** | Latching mushroom, traction-rated | [safety.md §3](safety.md#3-e-stop-semantics) | New | 15 | Cuts traction power only |
 | 9 | **Hardware RC signal MUX** | **Pololu 4-Channel RC Servo Multiplexer #2806** | [dbw.md §11.2](dbw.md#112-hardware-rc-signal-mux-the-d3-condition) | New | 18 | **Required — the condition of D3's adoption.** $17.95, 4 ch (2 used), `FAILMODE` jumper sets loss-of-select behaviour |
-| 10 | **RC transmitter + receiver** | 6-ch 2.4 GHz with **SBUS** out (FlySky FS-i6 + FS-iA6B class) | [safety.md §1.2](safety.md#12-live-override-inside-dbw-mode-two-layers) | New | 55 | Was $120 for a PX4-bindable FrSky set; without PX4 the requirement is just SBUS + a spare channel for the MUX |
+| 10 | **RC transmitter + receiver** | 6-ch 2.4 GHz with a **serial channel stream** — **i-BUS** (FlySky FS-i6 + FS-iA6B) or SBUS | [safety.md §1.2](safety.md#12-live-override-inside-dbw-mode-two-layers) | New | 55 | Was $120 for a PX4-bindable FrSky set. **Not SBUS specifically** — see the note below |
 | 11 | **Isolated logic rail** | 12 V 7 Ah SLA + charger + 2× DC-DC buck | [safety.md §5](safety.md#5-power-rail-isolation-and-brownout-protection) | New | 45 | Replaces the PM02's isolation role. **Not a retrofit** — the Teensy holds the whole safety supervisor |
 | 12 | **Wiring / connectors / fuses** | Silicone wire, spade/XT60, inline fuses, terminals, heatshrink | [safety.md](safety.md) | Partial | 40 | |
 | 13 | **Steering shaft coupler / adapter** | Column coupler, set screws, bracket, magnet mount | [dbw.md](dbw.md) · [calibration.md](calibration.md) | New | 15 | Couples gearmotor + angle sensor. Magnet mount needs concentricity — see [dbw.md §6](dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer) |
@@ -88,6 +88,25 @@ Tier 2 has not been bought yet.
 > The Sabertooth below is now oversized for this drivetrain. **Keep it anyway** — its
 > current limiting and R/C signal-loss timeout are load-bearing in the failsafe matrix, and
 > headroom is not a defect.
+
+> [!NOTE]
+> **The RC link is i-BUS, not SBUS — corrected 2026-09-15**
+>
+> This line said **RC serial (i-BUS)** from the PX4 era, when the receiver had to bind to a Pixhawk. That
+> requirement died with [D3](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07), but the
+> word stayed, and it named a protocol the chosen part does not speak.
+>
+> The **FlySky FS-iA6B outputs PWM, PPM and i-BUS** — never SBUS. They are both serial RC streams
+> and they are **not interchangeable**: SBUS is 100000 baud 8E2 *inverted*, i-BUS is 115200 8N1
+> non-inverted.
+>
+> Sourcing it forced the question, and the answer favours i-BUS. The Teensy needs **no inverter**
+> for it, and the [hardware signal MUX](dbw.md#112-hardware-rc-signal-mux-the-d3-condition) is
+> unaffected either way — it multiplexes *servo pulses*, which the FS-iA6B also provides on its six
+> PWM channels.
+>
+> **What the design actually requires** is a serial channel stream the Teensy can decode, plus a
+> spare channel to drive the MUX. Either protocol satisfies it. The docs now say so.
 
 > [!WARNING]
 > **Do not substitute a cheap H-bridge for the Sabertooth**
@@ -168,7 +187,7 @@ current** ([vehicle.md §3.1](vehicle.md)) forces a current-limit accessory.
 | **Hardware RC signal MUX added** | +$18 | D3's safety condition — [safety.md §1.2](safety.md#12-live-override-inside-dbw-mode-two-layers) |
 | **Isolated logic rail added** (was the PM02's job) | +$45 | D3 — [safety.md §5](safety.md#5-power-rail-isolation-and-brownout-protection) |
 | **D3 subtotal** | **−$123** | |
-| RC set: PX4-bindable FrSky → SBUS-capable FlySky | −$65 | No PX4 to bind to; requirement is now SBUS + a MUX channel |
+| RC set: PX4-bindable FrSky → FlySky FS-i6 + FS-iA6B | −$65 | No PX4 to bind to; requirement is now a serial channel stream + a MUX channel |
 | LiDAR: YDLidar G4 → RPLIDAR A1M8 | −$150 | Semester-1 scope is indoor hallway SLAM |
 | Camera: AR0234 global shutter → USB 1080p | −$150 | Behavior cloning deferred to phase 2 |
 | GNSS excluded | $0 | Already excluded from the minimum tier |

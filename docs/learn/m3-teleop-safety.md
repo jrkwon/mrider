@@ -73,7 +73,7 @@ deliberate abort drops the coil and reverts to the factory-safe vehicle.
 | 1 (highest) | **Hardware E-stop** | Cuts traction power + drops the MUX coil | **Yes** |
 | 2 | **Relay MUX position** | De-energized = STOCK; overrides DBW entirely | **Yes** |
 | 3 | **Hardware RC signal MUX** | Selects RC effort directly into the Sabertooth | **Yes** |
-| 4 | **RC via SBUS** | Teensy switches to `MANUAL_RC`, loop still closed | No |
+| 4 | **RC via serial** | Teensy switches to `MANUAL_RC`, loop still closed | No |
 | 5 (lowest) | **Laptop autonomy** | Only drives when 1–4 all permit | No |
 
 Autonomy is at the **bottom**. The most sophisticated component in the system has the least
@@ -90,7 +90,7 @@ Pixhawk design, a hung Arduino still left PX4 able to cut throttle and honour RC
 That objection is **only fatal if the override lives in software on that same MCU.** So it
 does not:
 
-- **Layer A — SBUS into the Teensy.** Normal manual mode. The sticks command an *angle*, with
+- **Layer A — RC serial into the Teensy.** Normal manual mode. The sticks command an *angle*, with
   the position loop still closed behind them. Better than raw effort — when it works.
 - **Layer B — a hardware RC signal MUX.** A dedicated RC channel drives a multiplexer that
   selects Teensy output *or* the receiver's output into the Sabertooth. This is **wiring**. It
@@ -346,7 +346,7 @@ Verify the priority order holds, from the bottom up:
 2. **The relay MUX** — NC/NO contacts, default de-energized
 3. **Failure direction** — why physics beats software for failing safe
 4. **The priority ladder** — and why autonomy sits at the bottom
-5. **Two override layers** — SBUS for control, hardware MUX for survival
+5. **Two override layers** — RC serial for control, hardware MUX for survival
 6. **Converting a software guarantee into a physical one** — what must be executing for this to work?
 7. **Reading a failsafe matrix** — rows 1, 2, 5 in detail
 8. **Row 2 reversed** — the same cable pull, opposite behaviour, under two reasonable designs

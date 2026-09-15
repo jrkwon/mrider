@@ -66,7 +66,7 @@ Laptop ──▶ its own internal battery (NOT wired to traction in v1)
 > ([safety.md §5](../design/safety.md#5-power-rail-isolation-and-brownout-protection)).
 >
 > This matters more than it did before. The Teensy holds the **entire** safety supervisor —
-> the position loop, throttle shaping, the staleness watchdog, SBUS decode, arming. A reset
+> the position loop, throttle shaping, the staleness watchdog, RC serial decode, arming. A reset
 > mid-drive loses every firmware-layer protection at once (FMEA row 4, severity 5). There is
 > no second controller to survive it.
 
@@ -185,7 +185,7 @@ Set the DIP switches for R/C mode before wiring — consult the Sabertooth manua
 | Absolute angle sensor | Teensy **I²C** (SDA/SCL) | 3.3 V from the logic rail. Pot fallback → an analog input instead |
 | Drive encoder A/B | Teensy **hardware quadrature decoder** pins | Not software interrupts — the Teensy has 4 dedicated QDC channels |
 | Steering motor encoder A/B | Teensy hardware quadrature decoder pins | Second QDC channel |
-| RC receiver **SBUS** | Teensy hardware serial RX | Layer A override (closed-loop) |
+| RC receiver **RC serial (i-BUS)** | Teensy hardware serial RX | Layer A override (closed-loop) |
 | RC receiver **MUX channel** | Hardware RC signal MUX select | Layer B override — see below |
 | RC receiver PWM out ×2 | RC signal MUX **slave** inputs | Emergency path |
 | Signal MUX outputs ×2 | Sabertooth **S1** and **S2** | Whichever source the MUX selects |

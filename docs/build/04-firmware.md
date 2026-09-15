@@ -39,7 +39,7 @@ laptop  /mitt/dbw/command  (DbwCommand: steering_angle rad, speed m/s)
               ▼
       Teensy 4.1  ── position loop >=200 Hz vs. absolute load-side angle sensor
               │  ── throttle ramp / cap / direction interlock
-              │  ── SBUS decode, safety supervisor, watchdog
+              │  ── RC serial decode, safety supervisor, watchdog
               ▼
       Teensy PWM ──▶ RC signal MUX ──▶ Sabertooth 2x32 (R/C mode)
               ├── M1 → steering gearmotor
@@ -237,9 +237,9 @@ Also verify the interlocks:
 Corresponds to [safety.md Stage 2](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first).
 Add the drive motor on the bench, wheels off.
 
-### Layer A — SBUS closed-loop override
+### Layer A — RC serial closed-loop override
 
-Bind the RC set, wire SBUS to a Teensy hardware serial port. Verify:
+Bind the RC set, wire the receiver's i-BUS output to a Teensy hardware serial port (115200 8N1, **not** inverted — SBUS would need inversion, i-BUS does not). Verify:
 
 - Moving the mode switch puts the vehicle in `MANUAL_RC` (visible in `DbwStatus.mode`)
 - The sticks command an **angle** — the position loop is still closed behind them

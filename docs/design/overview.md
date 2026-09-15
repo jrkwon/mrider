@@ -80,7 +80,7 @@ ADR in the linked document below.
   unaffected by the controller change. The same `ros2_control` stack runs in simulation and on
   hardware; only the `hardware_interface` plugin swaps. → [software.md](software.md)
 - **Safety — layered authority.** Hardware E-stop → relay MUX to STOCK → **hardware RC signal
-  MUX** → SBUS closed-loop override. The first three are independent of Teensy firmware. The
+  MUX** → RC serial closed-loop override. The first three are independent of Teensy firmware. The
   RC signal MUX is the **condition** on which the single-MCU architecture was adopted.
   → [safety.md](safety.md)
 - **Scope — semester 1 delivers a trustworthy DBW, a working twin, and an indoor SLAM map**,

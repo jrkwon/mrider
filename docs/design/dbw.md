@@ -229,7 +229,7 @@ Panel 1 is the asymmetry worth staring at: **one motor is instrumented and the o
 
 ## 9. Teensy 4.1 firmware platform and version pinning
 
-- **Controller:** Teensy 4.1 (600 MHz Cortex-M7, FPU, 1024 K RAM). Peripheral budget against MRider's needs: **4 hardware quadrature decoders** (2 used: steering motor, drive shaft), **8 hardware serial ports** (used: SBUS in, debug), **35 PWM-capable pins** (2 used for the Sabertooth), **18 analog inputs** (pot fallback), I²C for the AS5600. Everything fits with spare capacity.
+- **Controller:** Teensy 4.1 (600 MHz Cortex-M7, FPU, 1024 K RAM). Peripheral budget against MRider's needs: **4 hardware quadrature decoders** (2 used: steering motor, drive shaft), **8 hardware serial ports** (used: RC serial in, debug), **35 PWM-capable pins** (2 used for the Sabertooth), **18 analog inputs** (pot fallback), I²C for the AS5600. Everything fits with spare capacity.
 - **Toolchain:** PlatformIO with the Teensy platform. Firmware lives in `firmware/mitt_dbw/`.
 - **ROS 2 transport:** `micro_ros_arduino`, USB serial, with `micro_ros_agent` on the laptop.
 
@@ -281,7 +281,7 @@ Diagnostic/config traffic (PID gains, zeroing) uses ROS 2 **parameters and servi
 3. **Position PID** at ≥ 200 Hz: error = setpoint − measured, output = signed effort.
 4. **Motor output**: servo-style PWM on two lines into the RC signal MUX, then to Sabertooth S1/S2, at the §12 frame rate.
 5. **Throttle shaping**: ramp limit, speed cap, direction interlock.
-6. **RC decode**: SBUS on a hardware serial port — mode switch and closed-loop manual override.
+6. **RC decode**: i-BUS on a hardware serial port — mode switch and closed-loop manual override.
 7. **Safety supervisor**: setpoint-staleness watchdog, mechanical-limit clamp (effort toward center only), stall detection, hardware watchdog timer resetting outputs to neutral.
 
 ### 10.3 Safety state machine
@@ -326,7 +326,7 @@ The stock parent-remote receiver and the Sabertooth **cannot both drive the moto
 >
 > D3's adoption is **conditional** on this. Under a single controller, one MCU otherwise holds the steering loop, the throttle output, RC override, and arming — a firmware hang loses all four at once. The layered override is what makes that objection answerable, and it must be built.
 
-**Layer 1 (normal): SBUS into the Teensy.** RC override in `MANUAL_RC` mode commands an *angle*, with the position loop still closed behind it. This is the everyday manual mode and it is better than raw effort.
+**Layer 1 (normal): RC serial into the Teensy.** RC override in `MANUAL_RC` mode commands an *angle*, with the position loop still closed behind it. This is the everyday manual mode and it is better than raw effort.
 
 **Layer 2 (independent): a hardware RC signal MUX.** A dedicated RC channel drives a **signal multiplexer** that selects either Teensy PWM *or* direct RC PWM into the Sabertooth. This makes override a **wiring property, not a firmware property** — a stronger guarantee than the software override the superseded PX4 design relied on.
 
@@ -365,7 +365,7 @@ The stock parent-remote receiver and the Sabertooth **cannot both drive the moto
 | Hardware E-stop → contactor | 1 (highest) | **Yes** — hardwired, cuts traction power |
 | Relay MUX → STOCK | 2 | **Yes** — de-energize-to-safe |
 | **Hardware RC signal MUX** | 3 | **Yes** — signal-path selection, no firmware |
-| SBUS override into the Teensy | 4 | No — closed-loop, normal manual mode |
+| RC serial override into the Teensy | 4 | No — closed-loop, normal manual mode |
 | Sabertooth serial timeout | — | **Yes** — motors stop when the Teensy stops transmitting (§4, verify at bring-up) |
 | Teensy hardware watchdog | — | Internal; resets outputs to neutral |
 
@@ -382,7 +382,7 @@ flowchart LR
       SB[Sabertooth 2x32 M1/M2]
     end
     TEENSY[Teensy 4.1] -->|servo PWM x2 - master| SMUX{{Hardware RC signal MUX}}
-    RC[RC receiver] -->|SBUS - Layer A| TEENSY
+    RC[RC receiver] -->|RC serial - Layer A| TEENSY
     RC -->|servo PWM x2 - slave| SMUX
     RC -->|SEL channel| SMUX
     SMUX -->|selected pair| SB

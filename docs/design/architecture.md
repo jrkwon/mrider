@@ -68,11 +68,11 @@ All B-MROVER claims below were verified against the local checkout at
 | # | Component | Role in MRider | B-MROVER lineage |
 |---|-----------|----------------|------------------|
 | 1 | **Autonomy laptop** | On-board computer. Runs ROS 2 Humble: perception, SLAM, Nav2, EKF, the `micro_ros_agent`, and `ros2_control`. Powered by its own internal battery (no traction→19 V rail in v1). | Same on-board-laptop topology. |
-| 2 | **Teensy 4.1 (DBW controller)** | Single MCU owning all actuation and vehicle sensing. Subscribes `DbwCommand`, publishes `DbwStatus` over micro-ROS. Closes the steering **position loop at ≥ 200 Hz**, shapes throttle, reads the absolute angle sensor and both encoders, decodes SBUS, and runs the safety supervisor. Commands the Sabertooth over **servo PWM through the RC signal MUX**. | Replaces both the Pixhawk 6C and the Nano (D3). Encoder-read *logic* traces to `code/code.ino`. |
+| 2 | **Teensy 4.1 (DBW controller)** | Single MCU owning all actuation and vehicle sensing. Subscribes `DbwCommand`, publishes `DbwStatus` over micro-ROS. Closes the steering **position loop at ≥ 200 Hz**, shapes throttle, reads the absolute angle sensor and both encoders, decodes the RC serial stream, and runs the safety supervisor. Commands the Sabertooth over **servo PWM through the RC signal MUX**. | Replaces both the Pixhawk 6C and the Nano (D3). Encoder-read *logic* traces to `code/code.ino`. |
 | 3 | **Sabertooth 2x32** | Dual-channel motor driver. **M1** steering gearmotor, **M2** paralleled rear traction motors. Configured in **independent R/C (PWM) mode**; both signal lines come from the Teensy via the hardware RC signal MUX. | Same as B-MROVER's mode. Packetized serial was briefly adopted and reverted — it cannot coexist with an RC signal MUX ([dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)). |
 | 4 | **Relay/contactor MUX** | Authority arbitration. A DPDT relay per motor circuit selects **STOCK** vs **DBW** source. Default (de-energized) = STOCK, so power loss reverts to the parent remote. | New. See [`safety.md`](safety.md). |
 | 5 | **Hardware RC signal MUX** | **The condition of D3's adoption.** An RC channel drives a signal multiplexer selecting Teensy output *or* direct RC input into the Sabertooth — making override a *wiring* property, independent of Teensy firmware. | New. Replaces PX4's software RC override with a stronger guarantee ([dbw.md §11.2](dbw.md#112-hardware-rc-signal-mux-the-d3-condition)). |
-| 6 | **RC transmitter + receiver** | Two roles: SBUS into the Teensy for normal closed-loop manual override, and a dedicated channel driving the hardware MUX (#5) as the independent fallback. | B-MROVER binds RC to the Pixhawk; here the RX serves both layers directly. |
+| 6 | **RC transmitter + receiver** | Two roles: RC serial into the Teensy for normal closed-loop manual override, and a dedicated channel driving the hardware MUX (#5) as the independent fallback. | B-MROVER binds RC to the Pixhawk; here the RX serves both layers directly. |
 | 7 | **Absolute steering-angle sensor** | Boot-absolute road-wheel angle, **mounted load-side** (downstream of the steering gearbox) so backlash appears as measured error, not invisible bias. AS5600-class magnetic, pot fallback — [ADR](dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer). | New — fixes B-MROVER's incremental-only steering and its runtime auto-ranging (F4). |
 | 8 | **IMU (BNO085 class)** | 9-DoF with onboard fusion, straight to the laptop, feeding `robot_localization`. | Replaces the Pixhawk's internal IMU. Note the estimator was *already* `robot_localization` (F11), so this is a driver swap, not an estimator change. |
 | 9 | **Motor encoders** | Incremental encoder on the drive-motor shaft for distance/velocity; incremental encoder on the steering motor for velocity/stall. Both on Teensy **hardware quadrature decoders**. | `code/code.ino` method and the shaft-adapter approach. **PPR must be verified on the part fitted** — the source project conflicts with itself (F7). |
@@ -118,7 +118,7 @@ flowchart LR
 
     ANG["Absolute angle sensor<br/>(load-side)"] -.-> TEENSY
 
-    RC["RC transmitter"] -- "SBUS: closed-loop override" --> TEENSY
+    RC["RC transmitter"] -- "RC serial: closed-loop override" --> TEENSY
     RC -- "MUX select channel" --> SMUX{{"Hardware RC signal MUX"}}
     TEENSY -.-> SMUX
     SMUX --> SABER
@@ -201,7 +201,7 @@ flowchart TB
 
     LAPBAT["Laptop internal battery<br/>(isolated in v1)"] --> LAPTOP["Autonomy laptop"]
 
-    RCRX -. "SBUS override" .-> TEENSY
+    RCRX -. "RC serial override" .-> TEENSY
     RCRX -. "MUX select" .-> SMUX
     ESTOP -. "de-energizes" .-> MUX
 ```
@@ -245,7 +245,7 @@ interface contract is pinned in [`dbw.md §12`](dbw.md#12-numeric-interface-cont
 | **Actuation frame (→ Sabertooth)** | Teensy → MUX → driver | **measure & pin at Stage 1** | R/C signal-loss timeout → motors stop | Sabertooth |
 | Status feedback (`DbwStatus`) | Teensy → laptop | **≥ 50 Hz** | driver flags stale; EKF coasts on IMU | ROS 2 driver |
 | IMU | IMU → laptop | **≥ 100 Hz** (EKF input) | EKF degrades; Nav2 slows/stops | robot_localization |
-| RC override (SBUS) | RX → Teensy | ~50 Hz | RC-loss → `ESTOP` | Teensy supervisor |
+| RC override (RC serial) | RX → Teensy | ~50 Hz | RC-loss → `ESTOP` | Teensy supervisor |
 | RC MUX select | RX → signal MUX | ~50 Hz | **hardware path — independent of firmware** | wiring |
 
 ### 6.2 Link-loss behavior
@@ -283,7 +283,7 @@ The full failsafe matrix and FMEA are in [`safety.md`](safety.md).
 - **Decision.** Single **Teensy 4.1 + micro-ROS** DBW controller owning actuation and vehicle
   sensing; steering position loop on the Teensy at ≥ 200 Hz against a **load-side absolute
   angle sensor**; Sabertooth in **independent R/C (PWM)** behind the signal MUX; **layered authority** —
-  hardware E-stop, relay MUX to STOCK, hardware RC signal MUX, SBUS closed-loop override;
+  hardware E-stop, relay MUX to STOCK, hardware RC signal MUX, RC serial closed-loop override;
   typed `DbwCommand`/`DbwStatus` on one transport with one clock.
 - **Alternatives.** Pixhawk + PX4 with a Nano smart-servo (the superseded design — full trade
   in [the review](adr-dbw-architecture-review.md)); Arduino-only with ASCII serial (no timing

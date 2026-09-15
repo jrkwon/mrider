@@ -48,7 +48,7 @@ what each owns is most of the architecture:
 | Where | What it owns | Why there |
 |---|---|---|
 | **Laptop** (ROS 2 Humble) | Perception, SLAM, Nav2, the learned policy — everything that needs a GPU or a filesystem | Runs on its own battery, so traction sag cannot reset it |
-| **Teensy 4.1** (micro-ROS) | The steering position loop at ≥ 200 Hz, throttle shaping, encoder reading, SBUS decode, and the safety supervisor | A dedicated MCU has deterministic, direct access to the sensors and the motor driver |
+| **Teensy 4.1** (micro-ROS) | The steering position loop at ≥ 200 Hz, throttle shaping, encoder reading, RC serial decode, and the safety supervisor | A dedicated MCU has deterministic, direct access to the sensors and the motor driver |
 | **Sabertooth 2x32** | Raw H-bridge power to the motors | A dumb, fast power stage — deliberately not smart |
 
 > [!NOTE]

@@ -2,7 +2,7 @@
 #
 # On the REAL vehicle this is NOT the safety authority. Authority there is
 # electrical and layered (docs/design/safety.md 1.3): hardware E-stop, relay
-# MUX to STOCK, hardware RC signal MUX, then SBUS override - three of which
+# MUX to STOCK, hardware RC signal MUX, then RC serial override - three of which
 # work with the controller firmware dead. A software mux cannot do that job
 # and must never be presented as if it could.
 #

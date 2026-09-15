@@ -152,7 +152,7 @@ Answer in your submission:
 >
 > Read the comment at the top of `mitt_control/config/twist_mux.yaml`: real authority on this
 > vehicle is **electrical and layered** — a hardware E-stop, a relay MUX that defaults to stock
-> steering, a hardware RC signal MUX, and SBUS override. **Three of those four work with the
+> steering, a hardware RC signal MUX, and RC serial override. **Three of those four work with the
 > software completely dead.**
 >
 > Software that presents itself as a safety system, and then fails silently when its process dies,

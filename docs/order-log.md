@@ -51,7 +51,7 @@ Batch B cannot be specified until it arrives, so it is the long pole.
 | 7 | Relay MUX hardware | 25 | | | | | *record contact rating* |
 | 8 | E-stop, latching mushroom | 15 | | | | | *record current rating* |
 | 9 | Pololu #2806 RC servo MUX | 18 | | | | | *safety-critical* |
-| 10 | RC transmitter + receiver (SBUS) | 55 | | | | | *confirm SBUS + spare channel* |
+| 10 | RC transmitter + receiver (i-BUS) | 55 | | | | | *confirm i-BUS + spare channel* |
 | 11 | Isolated logic rail — SLA + charger + 2× DC-DC | 45 | | | | | *record capacity + rail V* |
 | 12 | Wiring / connectors / fuses | 40 | | | | | |
 | 14 | Mounts / 3D prints | 30 | | | | | |
@@ -72,7 +72,7 @@ vendor's own estimate, not a promise.
 | 7 | Relay MUX (DPDT + sockets + diodes + drivers) | Devicemart / Eleparts (Omron, Autonics) | commodity | category only |
 | 8 | E-stop, traction-rated | **Autonics** (Korean maker) via Devicemart or an industrial supplier | commodity | category only |
 | 9 | Pololu #2806 RC servo MUX | **Devicemart [1179242](https://www.devicemart.co.kr/goods/view?no=1179242)** — titled *"Pololu 4-Channel RC Servo Multiplexer (Assembled) #2806"*, the correct part. Also Eleparts (해외구매, ~6.5 d), or [Pololu](https://www.pololu.com/product/2806) direct $17.95 | Eleparts ₩38,545 ex-VAT | ✅ #2806 confirmed |
-| 10 | RC TX/RX with SBUS | Coupang / RC hobby shops (FlySky FS-i6 + FS-iA6B class) | commodity | category only |
+| 10 | RC TX/RX with a serial channel stream | Coupang / RC hobby shops (FlySky FS-i6 + FS-iA6B class) | commodity | category only |
 | 11 | 12 V 7 Ah SLA + charger + 2× DC-DC | Coupang (battery/charger) + Devicemart (DC-DC) | commodity | category only |
 | 12 | Wiring / connectors / fuses | Devicemart / Coupang | commodity | category only |
 | 14 | Mounts / 3D prints | lab printer, or a local print service | — | — |

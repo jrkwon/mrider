@@ -29,7 +29,7 @@ Key property: **any loss of logic power, any E-stop, or any deliberate abort dro
 
 Because a single MCU now holds the steering loop, the throttle output, override, and arming, a firmware hang would lose all four at once if override lived only in firmware. It does not.
 
-**Layer A — SBUS into the Teensy (normal manual mode).** The RC receiver's SBUS stream is decoded by the Teensy. Taking the sticks switches the vehicle to `MANUAL_RC` and the operator commands a **steering angle**, with the position loop still closed behind it. This is the everyday manual mode and is *better* than raw effort.
+**Layer A — RC serial into the Teensy (normal manual mode).** The RC receiver's serial channel stream — **i-BUS** on the FS-iA6B — is decoded by the Teensy. Taking the sticks switches the vehicle to `MANUAL_RC` and the operator commands a **steering angle**, with the position loop still closed behind it. This is the everyday manual mode and is *better* than raw effort.
 
 **Layer B — hardware RC signal MUX (independent fallback).** A dedicated RC channel drives a **signal multiplexer** that selects either Teensy output *or* direct RC input into the Sabertooth. This is a wiring property: it works with the Teensy hung, crashed, or unprogrammed. **This is a stronger guarantee than the software RC override the superseded PX4 design relied on.**
 
@@ -45,7 +45,7 @@ Because a single MCU now holds the steering loop, the throttle output, override,
 | 1 (highest) | **Hardware E-stop** | cuts traction power + drops MUX coil (§3) | **Yes** |
 | 2 | **Relay MUX position** | de-energized = STOCK; overrides DBW entirely | **Yes** |
 | 3 | **Hardware RC signal MUX** | selects RC effort directly into the Sabertooth | **Yes** |
-| 4 | **RC via SBUS** | Teensy switches to `MANUAL_RC`, closed-loop | No |
+| 4 | **RC via serial** | Teensy switches to `MANUAL_RC`, closed-loop | No |
 | 5 (lowest) | **Laptop autonomy** | only drives when 1–4 all permit | No |
 | — | *Sabertooth serial timeout* | motors stop when the Teensy stops transmitting | **Yes** (verify, §2 row 6) |
 
@@ -59,7 +59,7 @@ Behavior on each loss scenario. "Traction" = drive motors; "steering" = the Teen
 |---|---|---|---|---|---|
 | 1 | **Command loss** (laptop stops publishing `DbwCommand`, or rate < 50 Hz) | Teensy supervisor: setpoint staleness **> 500 ms** | Enter `ESTOP`: **throttle → 0** | **Steering centered**, then motor de-energized | resume when stream returns; operator re-arms via RC |
 | 2 | **USB link loss** (micro-ROS session drops) | Teensy: no session / no setpoint. Laptop: `/mitt/dbw/status` stale > 250 ms | Teensy enters `ESTOP` autonomously; laptop halts Nav2 | **Centered, then de-energized** | reconnect; agent re-establishes session |
-| 3 | **RC loss** (TX off or out of range) | Teensy: SBUS frame timeout; MUX channel goes to failsafe value | Enter `ESTOP`: **throttle → 0** | Centered, then de-energized | TX re-links; explicit re-arm |
+| 3 | **RC loss** (TX off or out of range) | Teensy: RC frame timeout; MUX channel goes to failsafe value | Enter `ESTOP`: **throttle → 0** | Centered, then de-energized | TX re-links; explicit re-arm |
 | 4 | **Battery sag / brownout** (pack droops under stall) | logic-rail undervoltage monitor | logic rail dips below threshold → **MUX coil drops → revert to STOCK**; Sabertooth low-voltage cutoff also stops motors | steering motor de-energizes with the coil → **freewheel** (§4) | recharge/settle; isolation (§5) should prevent the dip |
 | 5 | **E-stop pressed** (operator or bump) | hardwired contactor | **traction power cut**; MUX coil dropped → STOCK | steering motor loses power → **freewheel** (non-self-centering column); acceptable at ≤ walking speed (§4) | manual reset of latch; re-arm sequence |
 | 6 | **Sabertooth command loss** (Teensy stops transmitting) | **Sabertooth serial timeout** | affected channels **stop their motors** | steering motor stops | transmission resumes → motors re-enabled |
@@ -144,7 +144,7 @@ No stage begins until the previous stage passes. **Bench before vehicle; wheels-
 >
 > Stage 1 is the [pre-registered E4 trigger](dbw.md#3-adr-e-steering-control-loop-location-the-key-dbw-decision). **If the loop cannot hold ≤ 1° steady-state error with no sustained oscillation, adopt the dedicated motion-controller fallback rather than continuing to tune.**
 
-**Stage 2 — bench, both channels + RC.** Add the drive motor on the bench (wheels off). Verify both Sabertooth channels from the single serial master. Bind the RC set and verify **both** override layers: SBUS closed-loop override (Layer A) and the **hardware signal MUX with the Teensy deliberately halted** (Layer B) — the latter is the D3 condition and must be demonstrated, not assumed.
+**Stage 2 — bench, both channels + RC.** Add the drive motor on the bench (wheels off). Verify both Sabertooth channels from the single serial master. Bind the RC set and verify **both** override layers: RC serial closed-loop override (Layer A) and the **hardware signal MUX with the Teensy deliberately halted** (Layer B) — the latter is the D3 condition and must be demonstrated, not assumed.
 
 **Stage 3 — relay MUX + E-stop, still wheels off.** Install the DPDT MUX and E-stop. Test every failsafe-matrix row (§2), including the §4.4 E-stop test **with the laptop powered off**. Confirm default = STOCK on every power-up and every fault.
 
@@ -168,9 +168,9 @@ Severity S: 1 = negligible, 5 = hazardous. Detection D: 1 = obvious/monitored, 5
 | 6 | Steering gearmotor stall (jam/limit) | overcurrent, heat, drivetrain stress | 4 | Sabertooth current limit; stall detect (encoder velocity ≈ 0 under effort) → clamp effort toward center | stall bit + current limit (2) |
 | 7 | Drive motors overcurrent exceeds 32 A/ch | Sabertooth thermal/limit trip; loss of drive | 3 | verify paralleled stall current vs. 32 A ([vehicle.md](vehicle.md)); Sabertooth current limiting | thermal/overcurrent (2) |
 | 8 | MUX relay welds closed in DBW mode | cannot revert to STOCK; DBW stuck live | 5 | E-stop still cuts *traction power* independently of the MUX; contact check each bring-up; adequately rated contactor | E-stop remains authoritative (3) |
-| 9 | **Teensy firmware hang** — loses loop, throttle, arming, SBUS override at once | vehicle unresponsive to software | **5** | **This is D3's principal risk.** Four independent layers: Sabertooth serial timeout stops motors; hardware RC signal MUX gives steering back; relay MUX reverts to STOCK; E-stop cuts traction. Hardware watchdog resets to neutral | serial timeout + operator (2) |
+| 9 | **Teensy firmware hang** — loses loop, throttle, arming, RC serial override at once | vehicle unresponsive to software | **5** | **This is D3's principal risk.** Four independent layers: Sabertooth serial timeout stops motors; hardware RC signal MUX gives steering back; relay MUX reverts to STOCK; E-stop cuts traction. Hardware watchdog resets to neutral | serial timeout + operator (2) |
 | 10 | Hardware RC signal MUX fails or is mis-wired | Layer B override unavailable — D3's condition unmet | **5** | **Demonstrated at Stage 2 with the Teensy deliberately halted**, not assumed; E-stop and relay MUX remain as layers 1–2 | Stage 2 test (2) |
-| 11 | Laptop autonomy commands unsafe steer/throttle | vehicle drives wrong | 4 | SBUS override (Layer A); RC MUX (Layer B); ≤ walking speed; operator alongside; E-stop | operator observation (2) |
+| 11 | Laptop autonomy commands unsafe steer/throttle | vehicle drives wrong | 4 | RC serial override (Layer A); RC MUX (Layer B); ≤ walking speed; operator alongside; E-stop | operator observation (2) |
 
 FMEA has **11 rows** (≥ 8 required). Rows 2, 4, 9, and 10 are the severity-5 items introduced or sharpened by D3; each is mitigated by something *independent* of the failing component, and rows 9 and 10 are the ones the bring-up protocol tests explicitly rather than reasoning about.
 
@@ -179,7 +179,7 @@ FMEA has **11 rows** (≥ 8 required). Rows 2, 4, 9, and 10 are the severity-5 i
 ## 8. Summary of pinned safety decisions
 
 - Default authority = **STOCK** (relay de-energized); DBW is opt-in and fails back to STOCK.
-- Live override in DBW is **two-layered**: SBUS closed-loop (Layer A) and a **hardware RC signal MUX** (Layer B) that works with the Teensy dead. Layer B is the **condition of D3's adoption** and must be demonstrated at Stage 2.
+- Live override in DBW is **two-layered**: RC serial closed-loop (Layer A) and a **hardware RC signal MUX** (Layer B) that works with the Teensy dead. Layer B is the **condition of D3's adoption** and must be demonstrated at Stage 2.
 - E-stop **cuts traction power + drops MUX coil**; hardwired, independent of laptop and Teensy, verified with the laptop powered off, ≤ 200 ms, 10/10 trials.
 - **Steering motor is on the traction/motor rail** → freewheels on power loss; acceptable at ≤ walking speed with an operator alongside (§4.3), verified by the §4.4 test.
 - **Logic rail is isolated** from traction sag, built from day one — the Teensy holds the whole supervisor. **Laptop on internal battery.**
