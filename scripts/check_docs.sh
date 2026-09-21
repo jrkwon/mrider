@@ -10,7 +10,7 @@
 # The name is now narrower than the job - checks 5 and 7 are not documentation -
 # but it is what everyone types, so it stays.
 #
-# Seven checks. Each one exists because this repository has already shipped the
+# Eight checks. Each one exists because this repository has already shipped the
 # defect it catches, or is one cohort away from it:
 #
 #   1. mkdocs build --strict   - broken file links, bad nav entries, config errors
@@ -27,6 +27,8 @@
 #   7. package install dirs    - a package installing a directory that is empty,
 #                                therefore untracked, therefore absent from every
 #                                fresh clone
+#   8. translation figures     - an English document and its Korean translation
+#                                quoting different money to different audiences
 #
 # CI runs the same checks (.github/workflows/docs.yml), and because the
 # deploy job has `needs: build`, a failure here stops the publish rather than
@@ -173,6 +175,14 @@ printf "%s7. package install directories%s\n" "$B" "$N"
 # whoever created them and for nobody else - invisible to everyone who already
 # had a working build, and breaking every new clone at once.
 python3 scripts/check_packages.py || fail "a package installs a directory a fresh clone lacks"
+printf "   %sok%s\n\n" "$G" "$N"
+
+printf "%s8. translated documents agree%s\n" "$B" "$N"
+# The purchase request exists in two languages because two audiences read it.
+# Prose may diverge; the figures may not - a price corrected in one language
+# and not the other means the lab and the purchasing office are working from
+# different totals, and nobody finds out until an approval is questioned.
+python3 scripts/check_translations.py || fail "translated documents quote different figures"
 printf "   %sok%s\n\n" "$G" "$N"
 
 printf "%sDocs are publishable.%s\n" "$G" "$N"
