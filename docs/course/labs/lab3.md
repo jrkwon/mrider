@@ -24,7 +24,7 @@ Create the package:
 
 ```bash
 cd ~/mrider/ros2_ws/src
-ros2 pkg create --build-type ament_python --dependencies rclpy geometry_msgs std_srvs lab3_governor
+ros2 pkg create lab3_governor --build-type ament_python --dependencies rclpy geometry_msgs std_srvs
 ```
 
 Create `lab3_governor/lab3_governor/governor.py`:

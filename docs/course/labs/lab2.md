@@ -26,11 +26,24 @@ ros2 launch mitt_bringup sim.launch.py
 
 ```bash
 cd ~/mrider/ros2_ws/src
-ros2 pkg create --build-type ament_python --dependencies rclpy geometry_msgs nav_msgs lab2_square
+ros2 pkg create lab2_square --build-type ament_python --dependencies rclpy geometry_msgs nav_msgs
 ```
 
 **Expected output:** a new `lab2_square/` directory containing `package.xml`, `setup.py`, and a
 `lab2_square/` Python subdirectory.
+
+> [!WARNING]
+> **The package name goes first, before the options**
+>
+> `--dependencies` takes a *list*, so it swallows anything that follows it. Put the package name
+> last and it becomes a fourth dependency, leaving the command with no package to create:
+>
+> ```
+> ros2 pkg create: error: the following arguments are required: package_name
+> ```
+>
+> Nothing is created, and the error names an argument you thought you had supplied. This is an
+> ordinary property of command-line list options, and you will meet it again.
 
 > [!NOTE]
 > **Why `ament_python` here when every MITT package is `ament_cmake`**
