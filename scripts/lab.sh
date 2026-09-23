@@ -8,7 +8,7 @@
 #
 # Instructor:
 #   bash scripts/lab.sh grade 1 --zips ~/Downloads/lab1
-#   bash scripts/lab.sh grade 1 --roster course/roster.txt
+#   bash scripts/lab.sh grade 1 --roster course/roster-yyyy-{winter/fall}.txt
 #
 # A thin wrapper so the command a student types every week stays short, in the
 # same shape as check_env.sh. All the logic is in lab_report.py.

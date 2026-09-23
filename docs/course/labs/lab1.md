@@ -194,7 +194,8 @@ ros2 topic list --no-daemon | wc -l
 ros2 node list --no-daemon
 ```
 
-**Expected output:** about **7** topics, and exactly **one** node — `/twist_mux`.
+**Expected output:** **2** topics and **no** nodes at all. The two that remain — `/parameter_events`
+and `/rosout` — are the local ROS bookkeeping every process has; none of the simulator is visible.
 
 A correctly sourced terminal sees **21** topics and the whole graph you mapped in Part 3.
 
@@ -221,7 +222,7 @@ Write down, in your own words:
 - What you observed, exactly: both topic counts, the node list, the exit code, the stderr size.
 - Which setting caused it. `setup_env.sh` prints what it sets — compare `echo $ROS_LOCALHOST_ONLY`
   before and after.
-- **Why partial visibility is worse than seeing nothing at all.**
+- **Why a silent, zero-exit failure is harder to find than a crash.**
 
 > [!CAUTION]
 > **Why this specific break, in week one**
@@ -232,13 +233,15 @@ Write down, in your own words:
 >
 > There is **no error**. Exit code zero. Nothing on stderr. Nothing in any log.
 >
-> And look closely at what you got, because this is the part worth remembering: **you did not see
-> nothing. You saw 7 topics and one node.** A system that shows you nothing at least looks broken.
-> A system that shows you *most of a graph* looks like a working system with one node crashed — so
-> you go hunting for that node, restart it, read its source, and the whole time the fault is in a
-> shell variable you never thought to check.
+> And look closely at what that means. The simulator is running perfectly, one terminal away. Every
+> node is alive, every topic is publishing. Your terminal reports **2 topics** and asks no questions
+> about it.
 >
-> A crash hands you a stack trace and a line number. This hands you a plausible wrong answer.
+> A crash hands you a stack trace and a line number. This hands you an empty list that looks exactly
+> like an empty list would look if nothing were running — and nothing in the output distinguishes
+> "the simulator is not running" from "the simulator is running and I cannot see it". Those have
+> completely different fixes.
+>
 > **When something is invisible rather than broken, suspect the environment before you suspect the
 > code.**
 >
@@ -255,16 +258,34 @@ Write down, in your own words:
 > ROS_DOMAIN_ID=42 ros2 node list --no-daemon
 > ```
 >
-> This time: **2 topics and 0 nodes** — total blindness rather than partial. Exit 0 and empty stderr
-> again. A different variable, a different severity, an identical *report*.
+> **Exactly what you just saw: 2 topics, 0 nodes, exit 0, empty stderr.** A different variable, a
+> different mechanism, and an output you cannot tell apart from the one before it.
 >
 > `ROS_DOMAIN_ID` partitions which ROS processes can see each other. This course does not rely on it
 > — `ROS_LOCALHOST_ONLY=1` is the stronger guarantee, and cannot be defeated by two people picking
 > the same number — but it is how you separate robots the moment ROS runs on more than one machine,
 > which is most real deployments.
 >
-> The lesson is not either variable. It is that **several unrelated mistakes all present as
-> silence**, and silence is the one symptom that tells you nothing about its own cause.
+> The lesson is not either variable. It is that **two unrelated mistakes produced byte-identical
+> output**, so the output cannot tell you which one you made. Silence is the one symptom that says
+> nothing about its own cause — which is why the habit has to be *check the environment*, not
+> *guess the cause*.
+
+> [!TIP]
+> **If you see a partial graph instead — some topics, but not all**
+>
+> A few topics and one or two nodes, rather than the 2/0 above, means you have **a second mismatch
+> as well**: most often a different `RMW_IMPLEMENTATION` between your terminal and the simulator,
+> which some shells set in `~/.bashrc`. Check with `echo $RMW_IMPLEMENTATION` in both.
+>
+> That case is genuinely worse than total silence, and worth understanding even if you do not hit
+> it. Nothing at least *looks* broken. **Most of a graph looks like a working system with one node
+> crashed** — so you go hunting for that node, restart it, read its source, and the fault was in a
+> shell variable you never thought to check. It hands you a plausible wrong answer instead of no
+> answer.
+>
+> Record what you actually observed either way. A result that disagrees with this page and which
+> you can explain is worth more than one that matches it.
 
 > [!NOTE]
 > **Why `--no-daemon` matters here**

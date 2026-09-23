@@ -28,7 +28,7 @@ WHY ONE REPORT FILE RATHER THAN A FOLDER OF .txt
 The earlier deliverable lists asked for four to six loose files per lab. At 24
 students x 5 labs that is roughly 600 files, in 24 different layouts, with
 colliding names once unpacked, and with every objective fact - `FAIL: 0`, both
-controllers `active`, 7 topics versus 21 - checked by eye.
+controllers `active`, 2 topics versus 21 - checked by eye.
 
 One REPORT.md per lab, with fixed headings in rubric order, puts each claim next
 to the evidence for it. Fenced code blocks still satisfy "terminal output as
@@ -170,11 +170,15 @@ def check_lab1(m):
         out.append(('FAIL', 'exit_code is not 0; Part 5 turns on the failure being silent'))
     if _num(m, 'stderr_bytes') not in (None, 0):
         out.append(('FAIL', 'stderr_bytes is not 0; Part 5 turns on the failure being silent'))
-    _band(out, m, 'topics_unsourced', 2, 12, 'measured 7 on the reference machine')
-    _band(out, m, 'topics_sourced', 15, 30, 'measured 21 on the reference machine')
-    if nodes is not None and nodes > 3:
-        out.append(('WARN', f'nodes_unsourced = {nodes:g}; measured 1 (/twist_mux) on '
-                            f'the reference machine'))
+    _band(out, m, 'topics_unsourced', 1, 12, 'the whole 2026 cohort measured 2')
+    _band(out, m, 'topics_sourced', 15, 30, 'the whole 2026 cohort measured 21')
+    # 0 is the expected answer. A non-zero count means a SECOND mismatch as well
+    # (usually RMW_IMPLEMENTATION differing between the shell and the simulator),
+    # which is a different and more misleading failure - worth looking at, not
+    # worth failing.
+    if nodes is not None and nodes > 0:
+        out.append(('WARN', f'nodes_unsourced = {nodes:g}; the 2026 cohort all measured 0. '
+                            f'A partial graph usually means RMW_IMPLEMENTATION differs too'))
     return out
 
 
@@ -1144,8 +1148,12 @@ def grade_remote(n, who, url):
 # that starts failing.
 
 SELFTEST = [
-    ('lab1 nominal', 1, dict(topics_unsourced='7', topics_sourced='21', nodes_unsourced='1',
+    # What the 2026 cohort actually produced, all twelve of them.
+    ('lab1 nominal', 1, dict(topics_unsourced='2', topics_sourced='21', nodes_unsourced='0',
                              exit_code='0', stderr_bytes='0'), 0),
+    # A partial graph is legal but means a second mismatch; warn, never fail.
+    ('lab1 partial graph', 1, dict(topics_unsourced='7', topics_sourced='21',
+                                   nodes_unsourced='1', exit_code='0', stderr_bytes='0'), 0),
     ('lab1 unsourced sees more', 1, dict(topics_unsourced='25', topics_sourced='21'), 1),
     ('lab1 not silent', 1, dict(exit_code='1', stderr_bytes='40'), 2),
     ('lab2 nominal', 2, dict(drift_after_1_square_m='0.4',

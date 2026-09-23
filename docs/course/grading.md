@@ -96,6 +96,46 @@ timestamp** is what that is read from, so a pushed commit alone is not a submiss
 > A number outside the expected band is a *warning*, not a failure. Machines differ, and a result
 > that surprised you and which you can explain is the best thing you can submit.
 
+### How the two human scores are decided
+
+**Evidence (3).** One question: *does the pasted output actually show what the report claims?*
+
+| | |
+|---|---|
+| **3** | Every block carries real, complete output, and it **corroborates the Measurements block** |
+| **2** | Present but thin — trimmed to the one good line, or summarised instead of pasted |
+| **1** | Present but does not support the claim: the output disagrees with the report's own numbers, or has clearly been retyped |
+| **0** | Assertions only |
+
+The automated check validates measurements against *each other* — never against the pasted text. So
+the cross-check that matters is between the two: if the evidence block shows one thing and the
+Measurements block says another, that is the gap no script can see.
+
+**Understanding (2).** One question: *are these their own words, and do they reach the point?*
+
+| | |
+|---|---|
+| **2** | Correct, in their own words, and arrives at what the lab flags as the point |
+| **1** | Correct but mechanical — describes what happened, not why it matters |
+| **0** | Wrong, or lifted from the lab page |
+
+Every lab marks which of its questions is the interesting one. Lab 1's is `twist_mux`: naming the
+node is the *1*; the priorities, the arbitration, and *"this is not the safety system"* is the *2*.
+
+**Score the "break it on purpose" write-up separately, and let it dominate.** A report with thin
+question answers and a sharp diagnosis is worth more than the reverse, because the diagnosis is the
+part that cannot be copied.
+
+> [!TIP]
+> **Reading order, when there are twelve of them**
+>
+> Measurements → the diagnosis → the flagged question. Thirty seconds gets you most of a defensible
+> score; the rest of the report confirms it rather than changing it.
+>
+> And take seriously a report that **disagrees with the lab page and explains why**. It happens —
+> Lab 1 shipped a wrong expected output in 2026, and the whole cohort reported the true number
+> against a page telling them otherwise. That is the standard working, not a deviation from it.
+
 ---
 
 ## Mid-semester presentation (15%)
