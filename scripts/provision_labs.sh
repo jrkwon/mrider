@@ -203,7 +203,11 @@ if [ "$STATUS" = 1 ]; then
     printf "%-8s %-38s %-16s %s\n" "state" "repository" "github user" "note"
     printf "%-8s %-38s %-16s %s\n" "-----" "----------" "-----------" "----"
     ACCEPTED=0; PENDING=0; MISSING=0; EXPIREDN=0
-    while read -r line; do
+    # `|| [ -n "$line" ]` matters: read returns non-zero at EOF, so a final line
+    # with no trailing newline is populated and then DISCARDED. An editor that
+    # does not add one silently loses the last student on the roster - no error,
+    # no row, and an invitation that is never sent.
+    while read -r line || [ -n "$line" ]; do
         line="${line%%#*}"
         # shellcheck disable=SC2086
         set -- $line
@@ -274,7 +278,11 @@ fi
 
 CREATED=0; EXISTED=0; INVITED=0; FAILED=0
 
-while read -r line; do
+# `|| [ -n "$line" ]` matters: read returns non-zero at EOF, so a final line
+# with no trailing newline is populated and then DISCARDED. An editor that
+# does not add one silently loses the last student on the roster - no error,
+# no row, and an invitation that is never sent.
+while read -r line || [ -n "$line" ]; do
     line="${line%%#*}"
     # shellcheck disable=SC2086
     set -- $line

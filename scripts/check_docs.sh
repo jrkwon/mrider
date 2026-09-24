@@ -10,7 +10,7 @@
 # The name is now narrower than the job - checks 5 and 7 are not documentation -
 # but it is what everyone types, so it stays.
 #
-# Eight checks. Each one exists because this repository has already shipped the
+# Nine checks. Each one exists because this repository has already shipped the
 # defect it catches, or is one cohort away from it:
 #
 #   1. mkdocs build --strict   - broken file links, bad nav entries, config errors
@@ -29,6 +29,9 @@
 #                                fresh clone
 #   8. translation figures     - an English document and its Korean translation
 #                                quoting different money to different audiences
+#   9. student identifiers     - a real 학번 reaching a published page. This site
+#                                is public; the roster and the marks files are
+#                                git-ignored precisely so they cannot
 #
 # CI runs the same checks (.github/workflows/docs.yml), and because the
 # deploy job has `needs: build`, a failure here stops the publish rather than
@@ -183,6 +186,32 @@ printf "%s8. translated documents agree%s\n" "$B" "$N"
 # and not the other means the lab and the purchasing office are working from
 # different totals, and nobody finds out until an approval is questioned.
 python3 scripts/check_translations.py || fail "translated documents quote different figures"
+printf "   %sok%s\n\n" "$G" "$N"
+
+printf "%s9. no student identifiers in docs%s\n" "$B" "$N"
+# course/roster-*.txt and course/scores-*.tsv are git-ignored because this site
+# is public. That protects the files, not the IDs - a student number pasted into
+# a worked example on a documentation page is published just as surely, and
+# nothing else would notice. Worked examples must use fabricated IDs.
+#
+# Skipped when no roster is present, which is the case in CI and in any fresh
+# clone. This check runs where the data actually is: the instructor's machine,
+# before the push.
+LEAKED=""
+for roster in course/roster-*.txt; do
+    [ -e "$roster" ] || continue
+    while read -r uniq _rest || [ -n "$uniq" ]; do
+        case "$uniq" in \#*|"") continue;; esac
+        HITS="$(grep -rl -- "$uniq" docs/ --include='*.md' 2>/dev/null || true)"
+        [ -n "$HITS" ] && LEAKED="${LEAKED}  ${uniq} appears in: $(echo $HITS)\n"
+    done < "$roster"
+done
+if [ -n "$LEAKED" ]; then
+    printf "   real student identifiers on published pages:\n" >&2
+    printf "%b" "$LEAKED" >&2
+    printf "   Use fabricated IDs in worked examples - this site is public.\n" >&2
+    fail "student identifier in docs/"
+fi
 printf "   %sok%s\n\n" "$G" "$N"
 
 printf "%sDocs are publishable.%s\n" "$G" "$N"
