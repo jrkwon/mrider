@@ -133,6 +133,20 @@ bash scripts/provision_labs.sh --status     # confirm it is pending, then accept
 There is no separate "send invitation" step: the collaborator call *is* the invitation, and GitHub
 delivers it by email and on the notifications page.
 
+> [!NOTE]
+> **Re-running also turns GitHub Actions off**
+>
+> `submit` pushes the student's whole tree, including this project's
+> `.github/workflows/`. Those then run in *their* repository: the `docs` workflow builds the course
+> site and fails deploying it to GitHub Pages, which is not enabled there.
+>
+> The student sees a red ✗ on their repository the moment they submit. One of them read that as a
+> failed submission and spent a morning fixing Pages permissions in a repository where Pages was
+> never meant to run — while their work had uploaded correctly the whole time.
+>
+> `provision_labs.sh` switches Actions off on every repository it touches. **Editing the script is
+> not retroactive** — run it once after any change, and `--status` flags anything still outstanding.
+
 > [!CAUTION]
 > **End the roster with a newline**
 >

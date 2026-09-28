@@ -109,6 +109,11 @@
 #      due. --status counts the days down; re-running this script re-sends a
 #      lapsed invitation.
 #
+#      Re-running also switches GitHub Actions OFF on every repository it
+#      touches. THIS IS NOT RETROACTIVE ON ITS OWN - editing this script does
+#      nothing to repositories that already exist. Run it once after any change
+#      here, and --status will show what is still outstanding.
+#
 #   8. Before the first deadline, check who actually accepted:
 #
 #          bash scripts/provision_labs.sh --status
@@ -242,7 +247,16 @@ if [ "$STATUS" = 1 ]; then
                 PENDING=$((PENDING + 1))
             fi
         elif gh api "repos/${ORG}/${NAME}/collaborators/${GHUSER}" >/dev/null 2>&1; then
-            printf "%sok%s       %-38s %-16s accepted\n" "$G" "$N" "$NAME" "$GHUSER"
+            # Flag repositories still running this project's workflows. They
+            # were created before that was turned off, and will show the student
+            # a failing `docs` run the moment they submit. Re-running
+            # provision_labs.sh fixes them.
+            ACT=""
+            if [ "$(gh api "repos/${ORG}/${NAME}/actions/permissions" \
+                    -q '.enabled' 2>/dev/null)" = "true" ]; then
+                ACT="  ${Y}actions still on${N}"
+            fi
+            printf "%sok%s       %-38s %-16s accepted%b\n" "$G" "$N" "$NAME" "$GHUSER" "$ACT"
             ACCEPTED=$((ACCEPTED + 1))
         else
             printf "%sMISSING%s  %-38s %-16s no invitation and not a collaborator\n" \
@@ -343,11 +357,32 @@ while read -r line || [ -n "$line" ]; do
     # roster corrected after a username typo.
     if gh api "repos/${ORG}/${NAME}/collaborators/${GHUSER}" -X PUT \
             -f "permission=push" >/dev/null 2>&1; then
-        printf ", %s (%s) has push\n" "$GHUSER" "$REALNAME"
+        printf ", %s (%s) has push" "$GHUSER" "$REALNAME"
         INVITED=$((INVITED + 1))
     else
-        printf ", %scould not add %s%s\n" "$R" "$GHUSER" "$N"
+        printf ", %scould not add %s%s" "$R" "$GHUSER" "$N"
         FAILED=$((FAILED + 1))
+    fi
+
+    # TURN ACTIONS OFF.
+    #
+    # `submit` pushes the student's whole working tree, which includes this
+    # project's .github/workflows/. Those then RUN in the student's repository:
+    # `docs` builds the course site and fails deploying it to GitHub Pages,
+    # which is not enabled there and never should be.
+    #
+    # The student sees a red X on their repository the moment they submit. In
+    # 2026 one of them read that as "my submission failed", and spent a morning
+    # trying to fix Pages permissions in a repository where Pages was never
+    # meant to run - while their work had uploaded correctly the whole time.
+    #
+    # Students never use Actions. Switching it off costs nothing and removes a
+    # failure signal that means nothing.
+    if gh api "repos/${ORG}/${NAME}/actions/permissions" -X PUT \
+            -F enabled=false >/dev/null 2>&1; then
+        printf ", actions off\n"
+    else
+        printf ", %sactions still on%s\n" "$Y" "$N"
     fi
 done < "$ROSTER"
 
