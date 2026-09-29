@@ -294,6 +294,33 @@ things that decide whether the camera is usable are the format and the frame rat
 > ```
 >
 > If `grep` returns nothing, the camera will hunt forever and there is no software fix.
+
+> [!WARNING]
+> **What autofocus actually breaks — it is narrower than "blurry pictures", and worse**
+>
+> The damage is not blur. It is that **autofocus changes the focal length**, and
+> [calibration.md §3](../design/calibration.md#3-camera-intrinsics) produces a `camera_matrix`
+> (`fx`, `fy`, `cx`, `cy`) that is only valid for **one fixed focus position**. A camera that
+> refocuses has different intrinsics from moment to moment, so the stored
+> `config/calibration/camera_front.yaml` is describing a lens the camera no longer has.
+>
+> [§4](../design/calibration.md#4-camera--lidar-extrinsics) then chains through those intrinsics —
+> it verifies that a LiDAR return projects onto the correct camera pixel — so it inherits the error.
+>
+> | Use | Affected by uncontrollable AF? |
+> |---|---|
+> | **Navigation, SLAM, obstacle avoidance** | **No.** The camera is not in that pipeline at all — it is LiDAR ([software.md](../design/software.md)) |
+> | Teleoperation | No. Occasional hunting is a nuisance, nothing more |
+> | CNN object recognition | Largely no. Networks tolerate moderate blur; hunting is intermittent |
+> | **Camera intrinsics (§3)** | **Yes — this is the one that breaks** |
+> | **Camera↔LiDAR extrinsics (§4)** | **Yes**, because it is computed through §3 |
+> | Projecting detections into 3D, camera/LiDAR fusion | **Yes**, same reason |
+>
+> These land in **weeks 12–14**, during merge. So an AF camera whose focus cannot be locked is
+> usable for two thirds of the semester and then fails exactly when the tracks integrate.
+>
+> **Not a reason to avoid autofocus cameras** — nearly all UVC webcams expose the control, and one
+> command settles it. It is a reason to run that command **on arrival in week 10**, not in week 12.
 >
 > Run all of this on **one unit before buying three**. It is also the natural `Secured` check for
 > this row.
