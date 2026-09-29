@@ -304,7 +304,7 @@ things that decide whether the camera is usable are the format and the frame rat
 > refocuses has different intrinsics from moment to moment, so the stored
 > `config/calibration/camera_front.yaml` is describing a lens the camera no longer has.
 >
-> [§4](../design/calibration.md#4-camera--lidar-extrinsics) then chains through those intrinsics —
+> [§4](../design/calibration.md#4-extrinsics-camera-lidar-base_link) then chains through those intrinsics —
 > it verifies that a LiDAR return projects onto the correct camera pixel — so it inherits the error.
 >
 > | Use | Affected by uncontrollable AF? |
