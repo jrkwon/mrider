@@ -120,7 +120,7 @@ Prices are the verified figures from
 | 7 | Relay MUX — 2× DPDT + sockets, diodes, drivers | 3 | 디바이스마트 | 34,000 | . | . | 0/3 | | Contact rating ≥ traction current |
 | 8 | E-stop + DC contactor | 3 | 한국미스미 | 35,000 | . | . | 0/3 | | **DC rating, not AC.** Contactor first — it sets the button's rating |
 | 9 | Pololu #2806 RC servo MUX | 3 | 디바이스마트 | 31,680 | . | . | 0/3 | | `FAILMODE` jumper present |
-| 10 | RC TX/RX — FS-i6 transmitter + **FS-iA6B** receiver | 3 | [ercmall](https://ercmall.co.kr/product/%EC%98%88%EC%95%BD%EC%83%81%ED%92%88flysky-fs-i6-24g-6ch-afhds-rc-transmitter-with-fs-ia6b-receiver/3152/) 해외구매대행 | 122,700 | . | . | 0/3 | | **Receiver must be iA6B.** Confirm the i-BUS port is physically present on the delivered unit — see the trap below |
+| 10 | RC TX/RX — FS-i6 transmitter + **FS-iA6B** receiver | 3 | [팰콘샵 100004832](https://www.falconshop.co.kr/shop/goods/goods_view.php?goodsno=100004832) KC인증 | 142,000 | . | . | 0/3 | | **Receiver must be iA6B.** Confirm the i-BUS port is physically present on the delivered unit — see the trap below |
 | 11 | Isolated logic rail — SLA + charger + 2× DC-DC | 3 | 11번가 / 디바이스마트 | 60,000 | . | . | 0/3 | | Record capacity + both rail voltages |
 | 12 | Wiring / connectors / fuses | 3 | 디바이스마트 | 55,000 | . | . | 0/3 | | Wire gauge sized for stall, not nominal |
 | 14 | Mounts / 3D-print material | 3 | 로컬 | 41,000 | . | . | 0/3 | | |
@@ -146,29 +146,31 @@ not repeated here — a second copy of a price table is a second copy to keep cu
 Three notes worth re-reading at the moment of ordering, when a cheaper option is in front of you.
 
 > [!CAUTION]
-> **#10 — almost every Korean FS-i6 bundle ships the WRONG receiver**
+> **#10 — read the 구성품 table, not the product title**
 >
 > The transmitter is not the risk; the receiver is, and the difference is one letter.
 >
 > | | Outputs | Usable here? |
 > |---|---|---|
 > | **FS-iA6** | PWM only | **No.** No serial stream, so [Layer A](design/safety.md#12-live-override-inside-dbw-mode-two-layers) cannot be built on it |
-> | **FS-iA6B** | PWM + PPM + **i-BUS** | Yes |
+> | **FS-iA6B** | PWM + PPM + **i-BUS** (+ s.bus per the vendor spec) | Yes |
 >
-> Checked 2026-09-30, and the pattern is consistent: **팰콘샵 `100004832`, 알씨뱅크 `93882` and
-> FirstBot all bundle the plain `iA6`.** 팰콘샵 `100004833` *is* the iA6B — but it is the
-> **receiver alone at ₩31,000**, with no transmitter. It is easy to read that listing as the set.
+> **팰콘샵 `100004832` is titled "… + iA6 6채널 수신기 포함" and ships the iA6B.** Its own
+> specification table reads `Product Model: FS-iA6B`, `Data port: PWM / PPM / i.bus / s.bus`. The
+> title is stale; the contents are correct — the same failure as the
+> [Sabertooth listing](#1-2-1-sourcing-in-korea-verified-2026-09-15), where a legacy SKU string sat
+> above an accurate description.
 >
-> A genuine **FS-i6 + FS-iA6B** set was found at
-> [ercmall](https://ercmall.co.kr/product/%EC%98%88%EC%95%BD%EC%83%81%ED%92%88flysky-fs-i6-24g-6ch-afhds-rc-transmitter-with-fs-ia6b-receiver/3152/)
-> — **₩122,700**, 해외구매대행, about a week. That is *cheaper* than the 팰콘샵 iA6 bundle at
-> ₩142,000 and has the correct part.
+> Two related listings that are *not* the set, and are easy to grab by mistake:
 >
-> **Verify on arrival regardless of what the listing said.** The iA6B has a physically separate
-> **i-BUS port** next to the servo channels; the iA6 does not. Look at the board, not the box.
+> - 팰콘샵 **`100004833`** — the **iA6B receiver alone**, ₩31,000, no transmitter
+> - 알씨뱅크 `93882`, FirstBot — genuinely bundle the plain **iA6**
 >
-> If a wrong-receiver bundle does arrive, it is recoverable — buy the iA6B separately for ₩31,000
-> and keep the iA6 as a spare PWM receiver. It costs money, not a redesign.
+> **Verify on arrival regardless of what any listing said.** The iA6B has a physically separate
+> **i-BUS port** beside the servo channels; the iA6 does not. Look at the board, not the box.
+>
+> If a wrong-receiver bundle does arrive it is recoverable — ₩31,000 for a separate iA6B, and the
+> iA6 becomes a spare PWM receiver. Money, not a redesign.
 
 > [!CAUTION]
 > **#6 is only half orderable — the shaft adapter is gated, and the BOM hides this**

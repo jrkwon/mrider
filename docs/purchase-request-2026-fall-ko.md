@@ -55,7 +55,7 @@
 | 7 | 릴레이 MUX 부품 (DPDT 2개 + 소켓, 다이오드, 트랜지스터) | 순정 리모컨 제어와 컴퓨터 제어를 하드웨어로 전환. 전원이 없으면 순정 제어로 복귀 | 디바이스마트<br>`https://www.devicemart.co.kr` | 34,000 | E |
 | 8 | 비상정지 스위치 + DC 컨택터 | 구동 전원 비상 차단. 컨택터가 모터 전류를 담당하고, 버튼은 코일 전류만 개폐 | 한국미스미<br>`https://kr.misumi-ec.com` | 35,000 | E |
 | 9 | Pololu 4채널 RC 서보 멀티플렉서 #2806 | 제어 소프트웨어가 완전히 정지해도 동작하는 하드웨어 조작권 전환. 아키텍처 검토에서 필수 조건으로 채택 | 디바이스마트<br>`https://www.devicemart.co.kr/goods/view?no=1179242` | 31,680 | V |
-| 10 | RC 조종기 + 수신기 (FlySky FS-i6 + FS-iA6B) | 모든 시험 중 안전 담당자의 실시간 수동 개입 수단 | ercmall<br>`https://ercmall.co.kr/product/flysky-fs-i6-with-fs-ia6b-receiver/3152/` | 75,000 | E |
+| 10 | RC 조종기 + 수신기 (FlySky FS-i6 + FS-iA6B) | 모든 시험 중 안전 담당자의 실시간 수동 개입 수단 | 팰콘샵<br>`https://www.falconshop.co.kr/shop/goods/goods_view.php?goodsno=100004832` | 75,000 | E |
 | 11 | 절연 로직 전원 (12V 7Ah 배터리 + 충전기 + DC-DC 2개) | 제어기 전원과 모터 전원을 분리. 모터 돌입 전류로 안전 제어기가 리셋되지 않도록 함 | 11번가 / 디바이스마트<br>`https://www.11st.co.kr/products/1334182072` | 60,000 | E |
 | 12 | 배선, 커넥터, 퓨즈 | 실리콘 전선, XT60/단자, 인라인 퓨즈, 수축튜브 | 디바이스마트<br>`https://www.devicemart.co.kr` | 55,000 | E |
 | 13 | 조향축 커플러 / 어댑터 | 감속모터와 각도 센서를 조향 컬럼에 결합. 실측 컬럼 직경에 따라 결정 — 2차 발주 품목 | 로컬 가공 (2차 발주) | 20,000 | E |
