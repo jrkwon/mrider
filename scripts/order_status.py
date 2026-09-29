@@ -44,8 +44,10 @@ Any markdown table row whose first cell is an integer is read as a line item:
 Dates are YYYY-MM-DD, or `.` for not yet. Secured is `n/N`. Paid is the total
 actually charged for that row, blank until it is known.
 """
+import argparse
 import re
 import sys
+from datetime import datetime
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
@@ -108,7 +110,90 @@ def secured_count(cell):
     return (int(m.group(1)), int(m.group(2))) if m else (0, 0)
 
 
+# --- writing back --------------------------------------------------------------
+#
+# The tables are the record and a human may always edit them by hand. But the
+# three state transitions are the things that happen often, under time pressure,
+# on a phone, months apart - and hand-editing a markdown cell is how a row gets
+# mangled or a column shifted. These do it in place and leave the table valid.
+
+COL = dict(ordered=5, arrived=6, secured=7, paid=8)
+
+
+def set_cell(bom, column, value):
+    """Set one cell of one line item, in place. Returns the row's item name."""
+    lines = LOG.read_text().split('\n')
+    for i, raw in enumerate(lines):
+        line = raw.strip()
+        if not line.startswith('|'):
+            continue
+        cells = line.strip('|').split('|')
+        if len(cells) < 9 or cells[0].strip() != str(bom):
+            continue
+        # Preserve each cell's padding style by writing a single-space pad; the
+        # table stays valid markdown and the parser does not care about width.
+        cells[COL[column]] = f' {value} '
+        lines[i] = '|' + '|'.join(cells) + '|'
+        LOG.write_text('\n'.join(lines))
+        return cells[1].strip()
+    die(f'no line item #{bom} in {LOG.relative_to(REPO)}')
+
+
+def die(msg):
+    print(f'error: {msg}', file=sys.stderr)
+    sys.exit(1)
+
+
 def main():
+    ap = argparse.ArgumentParser(
+        description='Report or update procurement status in docs/order-log.md')
+    ap.add_argument('--order', type=int, metavar='BOM#',
+                    help='mark ordered: needs --date, and --paid if known')
+    ap.add_argument('--arrive', type=int, metavar='BOM#', help='mark arrived: needs --date')
+    ap.add_argument('--secure', type=int, metavar='BOM#',
+                    help='raise the secured count: needs --count')
+    ap.add_argument('--date', help='YYYY-MM-DD (default: today)')
+    ap.add_argument('--paid', help='total KRW charged for that row')
+    ap.add_argument('--count', type=int, help='how many units are now secured')
+    args = ap.parse_args()
+
+    acted = False
+    if args.order is not None:
+        d = args.date or datetime.now().strftime('%Y-%m-%d')
+        if not DATE.match(d):
+            die(f'--date {d!r} is not YYYY-MM-DD')
+        name = set_cell(args.order, 'ordered', d)
+        print(f'#{args.order} {name}: ordered {d}')
+        if args.paid:
+            v = re.sub(r'[^\d]', '', args.paid)
+            set_cell(args.order, 'paid', f'{int(v):,}')
+            print(f'{"":>{len(str(args.order)) + 2}} paid {int(v):,}')
+        else:
+            print('      (no --paid given; fill Paid KRW in when the charge is known)')
+        acted = True
+    if args.arrive is not None:
+        d = args.date or datetime.now().strftime('%Y-%m-%d')
+        if not DATE.match(d):
+            die(f'--date {d!r} is not YYYY-MM-DD')
+        name = set_cell(args.arrive, 'arrived', d)
+        print(f'#{args.arrive} {name}: arrived {d}')
+        print('      NOT yet secured - run the Verify check, then --secure')
+        acted = True
+    if args.secure is not None:
+        if args.count is None:
+            die('--secure needs --count (how many units are confirmed good)')
+        rows = {r['bom']: r for r in parse()}
+        if args.secure not in rows:
+            die(f'no line item #{args.secure}')
+        _have, need = secured_count(rows[args.secure]['secured'])
+        if args.count > need:
+            die(f'--count {args.count} exceeds the {need} on order for #{args.secure}')
+        name = set_cell(args.secure, 'secured', f'{args.count}/{need}')
+        print(f'#{args.secure} {name}: secured {args.count}/{need}')
+        acted = True
+    if acted:
+        print()
+
     if not LOG.exists():
         print(f'no {LOG.relative_to(REPO)}', file=sys.stderr)
         return 1

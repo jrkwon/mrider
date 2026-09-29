@@ -29,11 +29,29 @@ the record, and a script reads them.
 python3 scripts/order_status.py
 ```
 
+Either edit the tables directly, or let the script do it — it writes the same cells and cannot
+shift a column:
+
+```bash
+# ordered 3 vehicles, charged ₩687,000        (--date defaults to today)
+python3 scripts/order_status.py --order 1 --paid 687000
+
+# the boxes arrived
+python3 scripts/order_status.py --arrive 1 --date 2026-10-05
+
+# opened them, ran the Verify check, all three are good
+python3 scripts/order_status.py --secure 1 --count 3
+```
+
 | When | Do this |
 |---|---|
-| You place an order | Put the date in `Ordered` and the amount charged in `Paid ₩` |
-| The box arrives | Put the date in `Arrived` |
-| You have opened it and **run the check in the Verify column** | Raise the `Secured` count |
+| You place an order | `--order <#> --paid <KRW>` |
+| The box arrives | `--arrive <#>` |
+| You have opened it and **run the check in the Verify column** | `--secure <#> --count <n>` |
+
+It refuses to secure more units than were ordered, rejects a date that is not `YYYY-MM-DD`, and
+errors on a line item that does not exist. Partial deliveries are expected — `--secure 1 --count 2`
+today and `--count 3` next week is the normal path.
 
 `order_status.py` totals what has been paid, projects the rest, compares both against the approved
 request, and lists two things you cannot see by eye: what was **ordered and has not arrived**, and
@@ -95,7 +113,7 @@ Prices are the verified figures from
 
 | # | Item | Qty | Vendor | Unit ₩ | Ordered | Arrived | Secured | Paid ₩ | Verify on arrival |
 |---|------|----:|--------|-------:|:-------:|:-------:|:-------:|-------:|-------------------|
-| 1 | Vehicle — 12 V single-seat ride-on | 3 | 쿠팡 | 229,000 | . | . | 0/3 | | Record model + serial per unit |
+| 1 | Vehicle — 12 V single-seat ride-on | 3 | 쿠팡 | 229,000 | 2026-09-29 | . | 0/3 | 687,000 | Record model + serial per unit |
 | 2 | Teensy 4.1 | 3 | 디바이스마트 | 74,250 | . | . | 0/3 | | **4.1, not 4.0** — count the pins |
 | 3 | Sabertooth 2x32 | 3 | 원스톱 | 250,000 | . | . | 0/3 | | **Label must read 32 A / 6–30 V.** A 2x25 is the wrong part |
 | 6 | Drive encoder (5 mm bore) | 3 | 디바이스마트 | 25,000 | . | . | 0/3 | | Measure PPR — **do not trust the label** |
