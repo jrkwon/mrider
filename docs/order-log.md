@@ -115,7 +115,7 @@ Prices are the verified figures from
 |---|------|----:|--------|-------:|:-------:|:-------:|:-------:|-------:|-------------------|
 | 1 | Vehicle — 12 V single-seat ride-on | 3 | 쿠팡 | 229,000 | 2026-09-29 | . | 0/3 | 687,000 | Record model + serial per unit |
 | 2 | Teensy 4.1 | 3 | 디바이스마트 | 74,250 | . | . | 0/3 | | **4.1, not 4.0** — count the pins |
-| 3 | Sabertooth 2x32 | 3 | 원스톱 | 250,000 | . | . | 0/3 | | **Label must read 32 A / 6–30 V.** A 2x25 is the wrong part |
+| 3 | Sabertooth 2x32 — **M1 steering, M2 drive** | 3 | 원스톱 | 250,000 | . | . | 0/3 | | **Label must read 32 A / 6–30 V.** A 2x25 is the wrong part |
 | 6 | Drive encoder (5 mm bore) | 3 | 디바이스마트 | 25,000 | . | . | 0/3 | | Measure PPR — **do not trust the label** |
 | 7 | Relay MUX — 2× DPDT + sockets, diodes, drivers | 3 | 디바이스마트 | 34,000 | . | . | 0/3 | | Contact rating ≥ traction current |
 | 8 | E-stop + DC contactor | 3 | 한국미스미 | 35,000 | . | . | 0/3 | | **DC rating, not AC.** Contactor first — it sets the button's rating |
@@ -168,6 +168,25 @@ Three notes worth re-reading at the moment of ordering, when a cheaper option is
 > no software in the path at all.
 >
 > Buying only one leaves either no convenient teleop, or no firmware-independent override.
+
+> [!NOTE]
+> **One driver actuates the whole vehicle — there is no second motor driver in this BOM**
+>
+> The Sabertooth is **dual channel**, and both channels are used
+> ([dbw.md §11.3](design/dbw.md#112-hardware-rc-signal-mux-the-d3-condition)):
+>
+> | Input | Output | Drives |
+> |---|---|---|
+> | S1 | **M1** | steering gearmotor (#4) |
+> | S2 | **M2** | the two rear traction motors, **paralleled** |
+>
+> So #4 needs no driver of its own. Note this project **inverts mrover's assignment** — mrover uses
+> M1 = throttle, M2 = steering. If you reuse an mrover harness or printed enclosure, the wiring
+> differs; [dbw.md §2.1](design/dbw.md#2-steering-actuation-design) records why.
+>
+> The rear pair sharing one channel is also why there is no differential and why only one shaft is
+> instrumented — see [ADR C](design/dbw.md#8-adr-c-drive-distance-encoding) for what that costs
+> odometry.
 
 > [!NOTE]
 > **Why the Sabertooth costs what it costs**
