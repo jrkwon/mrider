@@ -55,7 +55,7 @@ states how each price is known.
 | 7 | Relay MUX hardware (2× DPDT + sockets, diodes, transistors) | Hardware selection between factory remote control and computer control. Defaults to factory control when unpowered | 디바이스마트<br>`https://www.devicemart.co.kr` | 34,000 | E |
 | 8 | E-stop switch + DC contactor | Emergency traction cut-off. The contactor carries motor current; the mushroom button only switches its coil | 한국미스미<br>`https://kr.misumi-ec.com` | 35,000 | E |
 | 9 | Pololu 4-channel RC servo multiplexer #2806 | Hardware override that works with the controller software completely dead. Required by the architecture review | 디바이스마트<br>`https://www.devicemart.co.kr/goods/view?no=1179242` | 31,680 | V |
-| 10 | RC transmitter + receiver (FlySky FS-i6 + FS-iA6B) | Live manual override for the safety operator during all testing | 팰콘샵<br>`https://www.falconshop.co.kr/shop/goods/goods_view.php?goodsno=100004833` | 75,000 | E |
+| 10 | RC transmitter + receiver (FlySky FS-i6 + FS-iA6B) | Live manual override for the safety operator during all testing | ercmall<br>`https://ercmall.co.kr/product/flysky-fs-i6-with-fs-ia6b-receiver/3152/` | 75,000 | E |
 | 11 | Isolated logic rail (12 V 7 Ah battery + charger + 2× DC-DC) | Separates controller power from motor power, so motor current surges cannot reset the safety controller | 11번가 / 디바이스마트<br>`https://www.11st.co.kr/products/1334182072` | 60,000 | E |
 | 12 | Wiring, connectors, fuses | Silicone wire, XT60/spade terminals, inline fuses, heatshrink | 디바이스마트<br>`https://www.devicemart.co.kr` | 55,000 | E |
 | 13 | Steering shaft coupler / adapter | Couples gearmotor and angle sensor to the column. Depends on the measured column diameter — second batch | 로컬 가공 (2차 발주) | 20,000 | E |

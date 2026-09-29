@@ -120,7 +120,7 @@ Prices are the verified figures from
 | 7 | Relay MUX — 2× DPDT + sockets, diodes, drivers | 3 | 디바이스마트 | 34,000 | . | . | 0/3 | | Contact rating ≥ traction current |
 | 8 | E-stop + DC contactor | 3 | 한국미스미 | 35,000 | . | . | 0/3 | | **DC rating, not AC.** Contactor first — it sets the button's rating |
 | 9 | Pololu #2806 RC servo MUX | 3 | 디바이스마트 | 31,680 | . | . | 0/3 | | `FAILMODE` jumper present |
-| 10 | RC TX/RX — FlySky FS-i6 + **FS-iA6B** | 3 | 팰콘샵 | 75,000 | . | . | 0/3 | | **iA6B, not iA6** — the i-BUS port must be there |
+| 10 | RC TX/RX — FS-i6 transmitter + **FS-iA6B** receiver | 3 | [ercmall](https://ercmall.co.kr/product/%EC%98%88%EC%95%BD%EC%83%81%ED%92%88flysky-fs-i6-24g-6ch-afhds-rc-transmitter-with-fs-ia6b-receiver/3152/) 해외구매대행 | 122,700 | . | . | 0/3 | | **Receiver must be iA6B.** Confirm the i-BUS port is physically present on the delivered unit — see the trap below |
 | 11 | Isolated logic rail — SLA + charger + 2× DC-DC | 3 | 11번가 / 디바이스마트 | 60,000 | . | . | 0/3 | | Record capacity + both rail voltages |
 | 12 | Wiring / connectors / fuses | 3 | 디바이스마트 | 55,000 | . | . | 0/3 | | Wire gauge sized for stall, not nominal |
 | 14 | Mounts / 3D-print material | 3 | 로컬 | 41,000 | . | . | 0/3 | | |
@@ -144,6 +144,31 @@ not repeated here — a second copy of a price table is a second copy to keep cu
 ### Why some of these parts are not interchangeable
 
 Three notes worth re-reading at the moment of ordering, when a cheaper option is in front of you.
+
+> [!CAUTION]
+> **#10 — almost every Korean FS-i6 bundle ships the WRONG receiver**
+>
+> The transmitter is not the risk; the receiver is, and the difference is one letter.
+>
+> | | Outputs | Usable here? |
+> |---|---|---|
+> | **FS-iA6** | PWM only | **No.** No serial stream, so [Layer A](design/safety.md#12-live-override-inside-dbw-mode-two-layers) cannot be built on it |
+> | **FS-iA6B** | PWM + PPM + **i-BUS** | Yes |
+>
+> Checked 2026-09-30, and the pattern is consistent: **팰콘샵 `100004832`, 알씨뱅크 `93882` and
+> FirstBot all bundle the plain `iA6`.** 팰콘샵 `100004833` *is* the iA6B — but it is the
+> **receiver alone at ₩31,000**, with no transmitter. It is easy to read that listing as the set.
+>
+> A genuine **FS-i6 + FS-iA6B** set was found at
+> [ercmall](https://ercmall.co.kr/product/%EC%98%88%EC%95%BD%EC%83%81%ED%92%88flysky-fs-i6-24g-6ch-afhds-rc-transmitter-with-fs-ia6b-receiver/3152/)
+> — **₩122,700**, 해외구매대행, about a week. That is *cheaper* than the 팰콘샵 iA6 bundle at
+> ₩142,000 and has the correct part.
+>
+> **Verify on arrival regardless of what the listing said.** The iA6B has a physically separate
+> **i-BUS port** next to the servo channels; the iA6 does not. Look at the board, not the box.
+>
+> If a wrong-receiver bundle does arrive, it is recoverable — buy the iA6B separately for ₩31,000
+> and keep the iA6 as a spare PWM receiver. It costs money, not a redesign.
 
 > [!CAUTION]
 > **#6 is only half orderable — the shaft adapter is gated, and the BOM hides this**
@@ -357,7 +382,7 @@ been spent yet. That sequencing is the entire point of the two-tier split.
 |---|------|----:|--------|-------:|:-------:|:-------:|:-------:|-------:|-------------------|
 | 16 | 2D LiDAR — RPLIDAR A1M8 | 3 | — **already held** | 0 | — | — | 3/3 | 0 | **In hand before approval.** Confirm 3 units and that each spins up |
 | 17 | Front camera — USB 1080p wide-FOV | 3 | 디바이스마트 | 41,000 | . | . | 0/3 | | **`v4l2-ctl --list-formats-ext` must show MJPG 1280x720 @30 fps.** UVC, fixed focus, 70–120° H-FOV — see [§1.2.2](build/01-bom-sourcing.md#17-usb-camera-what-1080p-wide-fov-actually-has-to-mean) |
-| 18 | IMU — BNO085 class | 3 | 아이씨뱅큐 | 41,800 | . | . | 0/3 | | 9-DoF with **onboard fusion** |
+| 18 | IMU — BNO085 class | 3 | 아이씨뱅큐 | 41,800 | 2026-09-29 | . | 0/3 | 137,940 | 9-DoF with **onboard fusion** |
 | | **Batch 2** | | | **82,800** | | | | | **× 3 = 248,400** |
 
 > [!IMPORTANT]
