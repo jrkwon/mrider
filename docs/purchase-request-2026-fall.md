@@ -141,6 +141,7 @@ agreed to. Divergences are listed here instead, and the live state of every item
 | # | Approved | Actual | Δ × 3 | Why |
 |---|---|---|---:|---|
 | 3 | Sabertooth 2x32 · ₩250,000 | **Cytron SmartDriveDuo-30** · ₩143,440 | −319,680 | Sabertooth unavailable; vendor cancelled with no ETA. Meets every requirement and costs less |
+| 6 | Encoder + adapter, ₩25,000 | Same ₩25,000, split into **6a** encoder · **6b** adapter · **6c** bracket · **6d** fasteners | 0 | The line hid four parts and never funded the **mounting bracket**, which [02-mechanical §2.6](build/02-mechanical.md) requires. Moved to the measurement-gated batch: the shaft diameter and the motor's mounting face are both unknown until teardown |
 | 10 | ₩75,000 | ₩139,160 | +192,480 | The estimate was low. The bundle carrying the **correct receiver** costs more than the category average |
 | 15 | ₩64,000 | ₩66,680 | +8,040 | Actual charge |
 | 16 | ₩155,430 | **₩0** | −466,290 | Already held before approval; never purchased |

@@ -247,6 +247,119 @@ gap is visible rather than assumed closed. **#4, #5 and #13 are deliberately abs
 > adopted under. A cheap part on allocation is exactly the one that arrives last. Order it in the
 > same batch as the RC set.
 
+### #6 drive encoder — what to actually buy
+
+`드라이브 엔코더 + 샤프트 어댑터` names **four** parts, funds three of them, and omits the electrical
+limits that decide which encoder is even safe to connect. This section is the buyable version.
+
+**Quantity: one per vehicle — three in total, not six.** Only one motor of the paralleled rear pair
+is instrumented ([ADR C](../design/dbw.md#8-adr-c-drive-distance-encoding)). That is deliberate, and
+the reason it is stated here is so nobody "corrects" it to two per vehicle.
+
+#### The four parts
+
+| | Part | Gated on a measurement? |
+|---|---|---|
+| **6a** | Quadrature encoder | No — specify now |
+| **6b** | Shaft adapter / coupling | **Yes** — the shaft diameter is unknown |
+| **6c** | **Encoder mounting bracket** | **Yes** — depends on the motor's mounting face |
+| **6d** | Fasteners, threadlock, cable tie-downs | No |
+
+**6c has never been in the BOM.** [02-mechanical.md §2.6](02-mechanical.md) requires *"the encoder
+body bracketed to the motor mount"*, and #13 is the steering coupler while #14 is the sensor mast.
+Nothing funded the part that holds the encoder still. **Without it the body simply rotates with the
+shaft and reads zero** — a failure that looks like a dead sensor.
+
+#### Hard electrical requirements
+
+> [!CAUTION]
+> **3.3 V logic. The Teensy 4.1 is not 5 V tolerant.**
+>
+> Its GPIO is 3.3 V, and a 5 V push-pull encoder output **will damage the pin it is wired to**. This
+> limit appears nowhere else in the design record, which is why it is stated here as a hard filter.
+>
+> Most hobby encoder modules are sold as "3.3 V–5 V" and are fine. If a part outputs 5 V only, it
+> needs a level shifter — budget one, and record the substitution.
+
+**Quadrature A/B is required. A single-channel speed sensor is not sufficient**, and this is the
+easiest mistake to make because those sensors are cheaper and far more common. A single channel
+gives pulse *rate* with no direction, so it cannot distinguish forward from reverse.
+
+That matters concretely here:
+
+- Nav2 plans with **Reeds-Shepp** paths and `allow_reversing: true` — this vehicle reverses as a
+  matter of course, not as an exception
+- The vehicle can roll backwards on a slope, or be pushed, with no command to infer sign from
+
+Inferring direction from the *commanded* throttle instead would be wrong in exactly the cases where
+odometry matters most. `03-electrical.md` wires this to a **Teensy hardware quadrature decoder**, so
+A/B is what the design already assumes.
+
+| Requirement | Value |
+|---|---|
+| Output | **Quadrature A/B**, two channels. Index/Z not needed |
+| Logic level | **3.3 V** (or 3.3–5 V compatible) |
+| Supply | From the logic rail — state the voltage at purchase |
+| Output type | Open-collector or push-pull, **stated**. Open-collector needs pull-ups |
+| Resolution | **Any** — see below |
+
+#### PPR is deliberately unconstrained
+
+The [roll-out calibration](../design/calibration.md#2-drive-distance-encoder-ticksmeters) derives
+`meters_per_tick` from a measured distance and bypasses PPR entirely, so the *result* is correct
+whatever the part turns out to be. **Do not pay for resolution.** Do not inherit a number either —
+see finding **F7**.
+
+The geometry sets a floor rather than a target. At walking pace the wheel turns about **2.5 rev/s**:
+
+| Where the encoder sits | Resolution | Distance per count |
+|---|---|---|
+| Motor shaft, behind ~20:1 gearing, 12 PPR | ~2,400 counts/s | **0.6 mm** |
+| Wheel or axle, 20 PPR | ~200 counts/s | **7.1 mm** |
+
+Both clear the **≤ 2 % drift over 20 m** acceptance gate
+([dbw.md §12](../design/dbw.md#8-adr-c-drive-distance-encoding)). The difference is velocity
+smoothness at low speed, not whether odometry works.
+
+#### Which one to buy depends on what the vehicle turns out to be
+
+![Three ways to instrument the drive, keyed on what the teardown finds: a rear shaft stub, an accessible output shaft, or neither](../images/drive-encoder-options.svg)
+
+**Measure first** — the fields are in [M3](../order-log.md#m3-shaft-diameter-sizes-13). The motor
+class on this vehicle is [explicitly unknown](../design/vehicle.md), and the `3.15 mm` in the BOM is
+**B-MROVER's** motor, inherited with the method and then orphaned when
+[ADR D-R](../design/vehicle.md) changed the vehicle class entirely. Treat it as a hint that the shaft
+is probably **3.175 mm (1/8")**, which is the RS-550 family standard — not as a specification.
+
+| | What the teardown finds | What to buy |
+|---|---|---|
+| **A** | A **rear shaft stub** on the motor | Magnetic ring + dual-Hall board clamped to the stub, or a bore-matched incremental encoder. Bracket to the motor's rear face |
+| **B** | No rear stub, but the **output shaft is reachable** before the gearbox | Ring magnet on the output shaft + Hall board on a bracket. Same electrical spec, different mount |
+| **C** | Neither is accessible | **Wheel or axle side.** This is **[ADR C2](../design/dbw.md#8-adr-c-drive-distance-encoding)**, already recorded as the pre-registered upgrade path — taking it is a documented choice, not an improvisation |
+
+> [!TIP]
+> **The magnetic ring + Hall board serves all three branches**
+>
+> It needs no shaft *end* — only a cylindrical surface to grip and somewhere to bolt the sensor. That
+> makes it the one part worth buying before the teardown decides anything, and it is why the tree
+> does not fork into three incompatible shopping lists.
+>
+> Search **디바이스마트 → 센서 → 마그네틱/홀/리드/엔코더**
+> ([category 000400040012](https://www.devicemart.co.kr/goods/catalog?code=000400040012)) and filter
+> on the electrical requirements above.
+
+> [!WARNING]
+> **The cheap optical sensors are single-channel — check before buying**
+>
+> **HC-020K** (~₩8,800) and the LM393 slot-type speed modules are the obvious hits when searching for
+> a motor encoder, and they are **one channel**. They measure speed, not direction.
+>
+> They are usable only in pairs, mounted with a quarter-slot offset to synthesise A/B — which is
+> fiddly to align and easy to get wrong. If the budget allows, a purpose-built quadrature part is
+> the better buy at this scale. ₩25,000 per vehicle covers it.
+
+---
+
 ### #17 USB camera — what "1080p wide-FOV" actually has to mean
 
 The BOM line said *"USB 1080p wide-FOV"*, which is not a specification — it is the marketing copy on

@@ -133,7 +133,6 @@ Prices are the verified figures from
 | 1 | Vehicle — 12 V single-seat ride-on | 3 | 쿠팡 | 229,000 | 2026-09-29 | . | 0/3 | 687,000 | Record model + serial per unit |
 | 2 | Teensy 4.1 | 3 | 디바이스마트 | 74,250 | . | . | 0/3 | | **4.1, not 4.0** — count the pins |
 | 3 | **Cytron SmartDriveDuo-30 (MDDS30)** — M1 steering, M2 drive *(replaces Sabertooth 2x32)* | 3 | [디바이스마트 13186549](https://www.devicemart.co.kr/goods/view?no=13186549) 해외구매 | 143,440 | . | . | 0/3 |  | VAT incl. **`SW1:SW2=00` RC · `SW3:SW4=11` independent · `SW6=0` timeout ON** — verify SW6 on the bench; `SW6=1` disables the stop |
-| 6 | Drive encoder (5 mm bore) | 3 | 디바이스마트 | 25,000 | . | . | 0/3 | | Measure PPR — **do not trust the label** |
 | 7 | Relay MUX — 2× DPDT + sockets, diodes, drivers | 3 | 디바이스마트 | 34,000 | . | . | 0/3 | | Contact rating ≥ traction current |
 | 8 | E-stop + DC contactor | 3 | 한국미스미 | 35,000 | . | . | 0/3 | | **DC rating, not AC.** Contactor first — it sets the button's rating |
 | 9 | Pololu #2806 RC servo MUX | 3 | 디바이스마트 | 31,680 | . | . | 0/3 | | `FAILMODE` jumper present |
@@ -228,17 +227,22 @@ Three notes worth re-reading at the moment of ordering, when a cheaper option is
 > all three the same.
 
 > [!CAUTION]
-> **#6 is only half orderable — the shaft adapter is gated, and the BOM hides this**
+> **#6 was one line hiding four parts, and one of them was never funded**
 >
-> The encoder itself (**5 mm bore**) can be bought now. The **3.15 → 5 mm adapter cannot**: that
-> 3.15 mm is *B-MROVER's* motor shaft, inherited along with the method
-> ([dbw.md §8](design/dbw.md#8-adr-c-drive-distance-encoding)), and this vehicle's drive-motor
-> shaft has never been measured.
+> Split into **6a–6d** above and moved to Batch 1G, because three of the four cannot be specified
+> until the vehicle is on the bench.
 >
-> Order the encoder with Batch 1 and treat the adapter as **Batch 1G** — or buy an assortment of
-> adapter sleeves, which is a few thousand won and removes the dependency entirely.
+> - **6a encoder** — could in principle be bought now, but **quadrature A/B and 3.3 V logic** are
+>   hard requirements that the old line never stated. The Teensy 4.1 is **not 5 V tolerant**
+> - **6b adapter** — the BOM's `3.15 mm` is *B-MROVER's* motor shaft. [ADR D-R](design/vehicle.md)
+>   then changed the vehicle class entirely, so that number has no remaining basis here
+> - **6c bracket** — **never in the BOM at all.** [02-mechanical §2.6](build/02-mechanical.md)
+>   requires the encoder body bracketed to the motor mount; #13 is the steering coupler and #14 is
+>   the sensor mast. Without it the body turns with the shaft and reads zero
+> - **6d** — fasteners and cable tie-downs
 >
-> Add the motor-shaft diameter to the M3 form when you tear the vehicle down.
+> Full specification, including the decision tree for what the teardown finds:
+> **[§1.2.3](build/01-bom-sourcing.md#6-drive-encoder-what-to-actually-buy)**.
 
 > [!WARNING]
 > **#15 and #10 are not the same thing, and you need both**
@@ -364,7 +368,11 @@ them with Batch 1 is the documented way to waste money on this build. Take the m
 | 4 | Steering gearmotor + encoder | 3 | TBD | 48,000 | . | . | 0/3 | | **M1**: column torque τ, size at **≥ 2×** rated |
 | 5 | Absolute angle sensor (AS5600 **or** pot) | 3 | TBD | 27,000 | . | . | 0/3 | | **M2**: lock-to-lock travel — **≤ 340° ⇒ AS5600** |
 | 13 | Steering coupler + magnet mount | 3 | TBD | 20,000 | . | . | 0/3 | | **M3**: column / kingpin shaft diameter |
-| | **Batch 1G** | | | **95,000** | | | | | **× 3 = 285,000** |
+| 60 | **#6a** Quadrature encoder | 3 | 디바이스마트 | 18,000 | . | . | 0/3 | | **Quadrature A/B, 3.3 V.** Not single-channel — it must sense direction. PPR: any, but **measure it** |
+| 61 | **#6b** Shaft adapter / coupling | 3 | TBD | 3,000 | . | . | 0/3 | | **M3**: the measured motor-shaft diameter. The BOM's 3.15 mm is B-MROVER's motor |
+| 62 | **#6c** Encoder mounting bracket | 3 | 로컬 / 3D print | 3,000 | . | . | 0/3 | | **M3**: the motor's rear mounting face. **Never previously in the BOM** |
+| 63 | **#6d** Fasteners, threadlock, tie-downs | 3 | 로컬 | 1,000 | . | . | 0/3 | | Route the encoder cable away from the motor leads |
+| | **Batch 1G** | | | **120,000** | | | | | **× 3 = 360,000** |
 
 ## Measurements that unblock Batch B
 
@@ -422,7 +430,11 @@ Measure **every** candidate mounting shaft, not just the intended one.
 |---|---|
 | Column diameter (mm) | |
 | Kingpin / sensed shaft diameter (mm) | |
-| **Drive-motor shaft diameter (mm)** | | 
+| **Drive-motor shaft diameter (mm)** | |
+| **Rear shaft stub present?** (Y/N) | |
+| **Rear stub diameter (mm) / length protruding** | |
+| **Output shaft reachable before the gearbox?** (Y/N) | |
+| **Encoder branch chosen** (A / B / C — [§1.2.3](build/01-bom-sourcing.md#6-drive-encoder-what-to-actually-buy)) | |
 | Coupler type selected | |
 | Magnet mount approach (concentricity + air gap) | |
 | Date / by | |

@@ -50,12 +50,28 @@ Command a sweep (0 → +22.5 → −22.5 → 0) and confirm the measured road-wh
 
 ## 2. Drive distance: encoder ticks→meters
 
-The drive encoder is **52 PPR** on the motor shaft (`code.ino:27`, verified). Distance needs the wheel-diameter and the gear/coupling ratio between the instrumented motor shaft and the wheel.
+The drive encoder's **PPR is a measured value, not an inherited one** — record it here from the part
+actually fitted. Distance needs the wheel diameter and the gear/coupling ratio between the
+instrumented motor shaft and the wheel.
+
+> [!CAUTION]
+> **Do not use 52. This paragraph used to say so, and it was wrong.**
+>
+> The source project **contradicts itself** — 52 PPR in `code.ino:27` against 16 PPR in its own BOM
+> (finding **F7**) — so neither number can be inherited. An earlier revision of this file asserted
+> "52 PPR … verified" and propagated it into the `N_wheel` formula below. Every other document in
+> this record says the opposite ([dbw.md §8](dbw.md#8-adr-c-drive-distance-encoding),
+> [software.md](software.md), [architecture.md](architecture.md), `DbwStatus.msg`), and they are
+> right.
+>
+> It mattered: a student following the old text would have baked a wrong constant into their
+> odometry and then spent the debugging on the mechanism. **§2.1 step 3 below is authoritative** and
+> bypasses PPR entirely.
 
 ### 2.1 Effective distance-per-tick
 
 1. Measure the **loaded** wheel diameter `D` (person/payload aboard, correct tire pressure) — measure rolling circumference directly by marking the tire and rolling one full revolution on the floor; `C_wheel = ` measured rollout (more accurate than `πD` because of tire squish).
-2. Determine ticks-per-wheel-revolution `N_wheel`. If the encoder is on the motor shaft through gear ratio `G` (motor:wheel), then `N_wheel = 52 × G × (quadrature factor)`. If the firmware counts one edge (as `code.ino` divides count by PPR for the throttle wheel, `code.ino:83,141`), use the effective counts the firmware actually reports — do **not** assume 4× unless the firmware decodes all quadrature edges.
+2. Determine ticks-per-wheel-revolution `N_wheel`. If the encoder is on the motor shaft through gear ratio `G` (motor:wheel), then `N_wheel = PPR_measured × G × (quadrature factor)`. If the firmware counts one edge (as `code.ino` divides count by PPR for the throttle wheel, `code.ino:83,141`), use the effective counts the firmware actually reports — do **not** assume 4× unless the firmware decodes all quadrature edges.
 3. **Roll-out calibration (authoritative, bypasses guessing G):** drive/push the vehicle a **measured straight distance** `L` (e.g. 10.0 m marked with a tape), record the tick delta `Δticks` from the feedback frame. Then `meters_per_tick = L / Δticks`. Repeat 3× and average.
 4. Store `meters_per_tick` in `config/calibration/odom.yaml`.
 

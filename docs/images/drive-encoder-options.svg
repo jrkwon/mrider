@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 700" width="980" height="700"
+     font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+  <title>MITT drive encoder — what to buy, keyed on what the teardown finds</title>
+  <desc>A decision tree for BOM item 6. Measure the motor first; three branches follow from whether
+  the motor has a rear shaft stub, an accessible output shaft, or neither. All three branches share
+  the same electrical requirements: quadrature A/B and 3.3 V logic.</desc>
+
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#334155"/>
+    </marker>
+  </defs>
+
+  <rect width="980" height="700" fill="#ffffff"/>
+
+  <text x="24" y="34" font-size="19" font-weight="bold" fill="#0f172a">
+    Drive encoder (#6) — which part to buy depends on the motor you actually receive
+  </text>
+  <text x="24" y="56" font-size="13" fill="#475569">
+    The motor class is unknown until teardown. Measure first; the branch follows from what is there.
+  </text>
+
+  <!-- ===== measure first ===== -->
+  <rect x="24" y="78" width="932" height="96" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  <text x="44" y="103" font-size="15" font-weight="bold" fill="#92400e">1 — Measure before ordering 6b and 6c (form M3)</text>
+  <text x="44" y="126" font-size="13" fill="#78350f">• Is there a shaft stub at the BACK of the motor?  → diameter, and how much protrudes</text>
+  <text x="44" y="146" font-size="13" fill="#78350f">• Is the output shaft reachable between motor and gearbox?  → diameter</text>
+  <text x="44" y="166" font-size="13" fill="#78350f">• What does the motor's rear face offer to bolt a bracket to?</text>
+  <text x="600" y="126" font-size="12" fill="#b45309" font-style="italic">The BOM's &quot;3.15 mm&quot; is</text>
+  <text x="600" y="143" font-size="12" fill="#b45309" font-style="italic">B-MROVER's motor, not this one.</text>
+  <text x="600" y="160" font-size="12" fill="#b45309" font-style="italic">ADR D-R changed the vehicle class.</text>
+
+  <path d="M490,174 L490,202" stroke="#334155" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- ===== three branches ===== -->
+  <!-- A -->
+  <rect x="24" y="208" width="296" height="228" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="44" y="234" font-size="15" font-weight="bold" fill="#1e3a8a">A — rear shaft stub present</text>
+  <line x1="44" y1="244" x2="300" y2="244" stroke="#93c5fd"/>
+  <g stroke="#1e40af" stroke-width="2" fill="none">
+    <rect x="52" y="262" width="96" height="54" rx="4" fill="#dbeafe"/>
+    <line x1="148" y1="289" x2="196" y2="289"/>
+    <circle cx="214" cy="289" r="18" fill="#bfdbfe"/>
+  </g>
+  <text x="66" y="294" font-size="12" fill="#1e3a8a">motor</text>
+  <text x="152" y="282" font-size="10" fill="#1e40af">stub</text>
+  <text x="196" y="322" font-size="11" fill="#1e3a8a">encoder</text>
+  <text x="44" y="348" font-size="12.5" fill="#1e3a8a">Ring magnet or bore-matched encoder</text>
+  <text x="44" y="367" font-size="12.5" fill="#1e3a8a">clamped to the stub.</text>
+  <text x="44" y="392" font-size="12.5" fill="#1e3a8a" font-weight="bold">6b  sleeve to the measured dia.</text>
+  <text x="44" y="411" font-size="12.5" fill="#1e3a8a" font-weight="bold">6c  bracket to the rear face</text>
+  <text x="44" y="429" font-size="11.5" fill="#64748b">Highest resolution — ~0.6 mm/count</text>
+
+  <!-- B -->
+  <rect x="342" y="208" width="296" height="228" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+  <text x="362" y="234" font-size="15" font-weight="bold" fill="#14532d">B — output shaft reachable</text>
+  <line x1="362" y1="244" x2="618" y2="244" stroke="#86efac"/>
+  <g stroke="#15803d" stroke-width="2" fill="none">
+    <rect x="360" y="262" width="80" height="54" rx="4" fill="#dcfce7"/>
+    <line x1="440" y1="289" x2="500" y2="289"/>
+    <ellipse cx="470" cy="289" rx="13" ry="22" fill="#bbf7d0"/>
+    <rect x="500" y="262" width="66" height="54" rx="4" fill="#dcfce7"/>
+    <rect x="452" y="322" width="36" height="20" rx="3" fill="#bbf7d0"/>
+  </g>
+  <text x="372" y="294" font-size="12" fill="#14532d">motor</text>
+  <text x="512" y="294" font-size="12" fill="#14532d">gearbox</text>
+  <text x="440" y="358" font-size="11" fill="#14532d">Hall board</text>
+  <text x="362" y="380" font-size="12.5" fill="#14532d">Ring magnet on the shaft, sensor</text>
+  <text x="362" y="399" font-size="12.5" fill="#14532d">board bracketed beside it.</text>
+  <text x="362" y="420" font-size="12.5" fill="#14532d" font-weight="bold">6c  bracket is the whole job here</text>
+  <text x="362" y="437" font-size="11.5" fill="#64748b">Needs no shaft END — only a surface</text>
+
+  <!-- C -->
+  <rect x="660" y="208" width="296" height="228" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+  <text x="680" y="234" font-size="15" font-weight="bold" fill="#7f1d1d">C — neither is accessible</text>
+  <line x1="680" y1="244" x2="936" y2="244" stroke="#fca5a5"/>
+  <g stroke="#b91c1c" stroke-width="2" fill="none">
+    <circle cx="742" cy="296" r="38" fill="#fee2e2"/>
+    <circle cx="742" cy="296" r="13" fill="#fecaca"/>
+    <rect x="800" y="284" width="40" height="24" rx="3" fill="#fecaca"/>
+    <line x1="780" y1="296" x2="800" y2="296"/>
+  </g>
+  <text x="716" y="352" font-size="11" fill="#7f1d1d">wheel / axle</text>
+  <text x="798" y="326" font-size="11" fill="#7f1d1d">sensor</text>
+  <text x="680" y="378" font-size="12.5" fill="#7f1d1d">Measure at the wheel instead.</text>
+  <text x="680" y="399" font-size="12.5" fill="#7f1d1d" font-weight="bold">This is ADR C2 — already the</text>
+  <text x="680" y="417" font-size="12.5" fill="#7f1d1d" font-weight="bold">pre-registered upgrade path.</text>
+  <text x="680" y="437" font-size="11.5" fill="#64748b">Coarser (~7 mm/count) but still passes</text>
+
+  <!-- ===== shared electrical spec ===== -->
+  <path d="M172,436 L172,466" stroke="#334155" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M490,436 L490,466" stroke="#334155" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M808,436 L808,466" stroke="#334155" stroke-width="2" marker-end="url(#ar)"/>
+
+  <rect x="24" y="472" width="932" height="116" rx="8" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+  <text x="44" y="498" font-size="15" font-weight="bold" fill="#0f172a">
+    2 — Every branch shares the same electrical requirements
+  </text>
+  <text x="44" y="524" font-size="13" fill="#dc2626" font-weight="bold">
+    3.3 V logic — the Teensy 4.1 is NOT 5 V tolerant. A 5 V push-pull output damages the pin.
+  </text>
+  <text x="44" y="548" font-size="13" fill="#0f172a" font-weight="bold">
+    Quadrature A/B — a single-channel speed sensor cannot tell forward from reverse.
+  </text>
+  <text x="44" y="570" font-size="12.5" fill="#475569">
+    This vehicle reverses under Nav2 (Reeds-Shepp, allow_reversing) and can roll backwards unpowered.
+  </text>
+  <text x="600" y="548" font-size="12.5" fill="#475569">Resolution: any. The roll-out</text>
+  <text x="600" y="566" font-size="12.5" fill="#475569">calibration bypasses PPR entirely.</text>
+
+  <!-- ===== footer ===== -->
+  <rect x="24" y="606" width="932" height="72" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="44" y="630" font-size="13" font-weight="bold" fill="#92400e">
+    6c — the encoder bracket — has never been in the BOM
+  </text>
+  <text x="44" y="652" font-size="12.5" fill="#78350f">
+    02-mechanical §2.6 requires it; #13 is the steering coupler and #14 is the sensor mast. Nothing funded it.
+  </text>
+  <text x="44" y="671" font-size="12.5" fill="#78350f">
+    Without a bracket the encoder body rotates with the shaft and reads zero — which looks exactly like a dead sensor.
+  </text>
+</svg>
