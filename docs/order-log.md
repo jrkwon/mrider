@@ -20,194 +20,171 @@ caused a rebuild is exactly the entry the next person needs.
 
 ---
 
-## Status at a glance
+## How to use this log
 
-Update as you go.
+Each line item moves through three states. **Edit the tables below as it happens** — the columns are
+the record, and a script reads them.
 
-| Batch | What | Est. $ | Actual $ | Ordered | Received |
-|---|---|---:|---:|:---:|:---:|
-| **A** | Order now — nothing gates these | 608 | | ☐ | ☐ |
-| **B** | After the vehicle arrives and is measured | 70 | | ☐ | ☐ |
-| **C** | Perception — by week 10 | 168 | | ☐ | ☐ |
-| | **Line items** | **846** | | | |
-| | *With ~10% contingency* | *~931* | | | |
+```bash
+python3 scripts/order_status.py
+```
 
-Contingency covers shipping, tax, fasteners, and the odd stripped gear. It is not a line item;
-it is the number to have approved.
+| When | Do this |
+|---|---|
+| You place an order | Put the date in `Ordered` and the amount charged in `Paid ₩` |
+| The box arrives | Put the date in `Arrived` |
+| You have opened it and **run the check in the Verify column** | Raise the `Secured` count |
+
+`order_status.py` totals what has been paid, projects the rest, compares both against the approved
+request, and lists two things you cannot see by eye: what was **ordered and has not arrived**, and
+what **arrived but is not yet secured**. Record each unit individually where it matters — three
+vehicles arriving on three different days is the normal case, not an exception.
 
 ---
 
-## Batch A — order now
+## Status at a glance
 
-Nothing in this batch depends on a measurement. **Order the vehicle first regardless** —
-Batch B cannot be specified until it arrives, so it is the long pole.
+**Approved 2026-09-28** — see [Purchase Request](purchase-request-2026-fall.md). **3 sets.**
+Run `python3 scripts/order_status.py` for the live totals and what is outstanding.
 
-| # | Item | Est $ | Vendor | Ordered | Actual | Received | Notes |
-|---|------|------:|--------|---------|-------:|----------|-------|
-| 1 | Vehicle — 12 V single-seat ride-on | 165 | | | | | *record model + serial* |
-| 2 | Teensy 4.1 | 32 | | | | | *buy a spare* |
-| 3 | Sabertooth 2x32 | 125 | | | | | *see stall-current note below* |
-| 6 | Drive encoder + 3.15→5 mm adapter | 18 | | | | | *record measured PPR* |
-| 7 | Relay MUX hardware | 25 | | | | | *record contact rating* |
-| 8 | E-stop, latching mushroom | 15 | | | | | *record current rating* |
-| 9 | Pololu #2806 RC servo MUX | 18 | | | | | *safety-critical* |
-| 10 | RC transmitter + receiver (i-BUS) | 55 | | | | | *confirm i-BUS + spare channel* |
-| 11 | Isolated logic rail — SLA + charger + 2× DC-DC | 45 | | | | | *record capacity + rail V* |
-| 12 | Wiring / connectors / fuses | 40 | | | | | |
-| 14 | Mounts / 3D prints | 30 | | | | | |
-| 15 | USB gamepad, Xbox layout | 40 | | | | | *record button/axis map if not Xbox* |
-| | **Batch A** | **608** | | | | | |
+| Batch | Card | What | Per set | × 3 sets |
+|---|---|---|---:|---:|
+| **1** | **A** | Tier 1, orderable now — 12 items | 973,930 | **2,921,790** |
+| **1G** | **A** | Tier 1, gated on vehicle measurements — #4, #5, #13 | 95,000 | **285,000** |
+| **2** | **B** | Tier 2 perception — #17, #18 | 82,800 | **248,400** |
+| — | — | #16 2D LiDAR — **already in hand, not purchased** | 0 | **0** |
+| | | **Total to pay** | **1,151,730** | **₩3,455,190** |
 
-### Sourcing — Korea (checked 2026-08-12)
+> [!TIP]
+> **The LiDAR already being in hand fixes the headroom problem**
+>
+> The approved request assumed #16 would be bought: 3 × ₩155,430 = **₩466,290**. It is already
+> held, so that money is never spent.
+>
+> Headroom against the ₩4,000,000 ceiling therefore goes from **₩78,520 (2.0%)** to
+> **₩544,810 (13.6%)**. The warning attached to the approval — that a 10% overrun on the
+> estimated items would breach the ceiling — no longer applies. There is now room for the
+> estimated items to land high, for shipping and duties, and for a stripped gear.
+>
+> **This does not authorise spending it.** It is contingency, and the approved figure is still
+> ₩3,921,480.
 
-Prices at Korean distributors are quoted **부가세 별도 (ex-VAT)** — add 10%. Lead times are the
-vendor's own estimate, not a promise.
+### The three states, and why "arrived" is not enough
 
-| # | Item | Source | Price seen | Verified? |
-|---|------|--------|-----------|-----------|
-| 1 | Vehicle | daehotoys | ₩229,000 | you found it |
-| 2 | Teensy 4.1 | **Eleparts** — SparkFun `20359` "TEENSY 4.1 WITHOUT ETHERNET" | ₩52,182 ex-VAT (~₩57,400) | ✅ listed, ~6 d |
-| 3 | Sabertooth 2x32 | **Import** — [Dimension Engineering](https://www.dimensionengineering.com/products/sabertooth2x32) direct | $124.99 | ✅ no Korean source; see table below |
-| 6 | Drive encoder (5 mm bore) | Devicemart / Eleparts / AliExpress | ~₩20–40k | ⚠️ adapter is gated — see below |
-| 7 | Relay MUX (DPDT + sockets + diodes + drivers) | Devicemart / Eleparts (Omron, Autonics) | commodity | category only |
-| 8 | E-stop, traction-rated | **Autonics** (Korean maker) via Devicemart or an industrial supplier | commodity | category only |
-| 9 | Pololu #2806 RC servo MUX | **Devicemart [1179242](https://www.devicemart.co.kr/goods/view?no=1179242)** — titled *"Pololu 4-Channel RC Servo Multiplexer (Assembled) #2806"*, the correct part. Also Eleparts (해외구매, ~6.5 d), or [Pololu](https://www.pololu.com/product/2806) direct $17.95 | Eleparts ₩38,545 ex-VAT | ✅ #2806 confirmed |
-| 10 | RC TX/RX with a serial channel stream | Coupang / RC hobby shops (FlySky FS-i6 + FS-iA6B class) | commodity | category only |
-| 11 | 12 V 7 Ah SLA + charger + 2× DC-DC | Coupang (battery/charger) + Devicemart (DC-DC) | commodity | category only |
-| 12 | Wiring / connectors / fuses | Devicemart / Coupang | commodity | category only |
-| 14 | Mounts / 3D prints | lab printer, or a local print service | — | — |
-| 15 | USB gamepad | Coupang (Logitech F710 class) | commodity | category only |
+| State | Means | Recorded as |
+|---|---|---|
+| **Ordered** (주문) | Paid for, vendor has the order | date in `Ordered` |
+| **Arrived** (도착) | The box is physically here | date in `Arrived` |
+| **Secured** (확보) | Opened, **checked against the Verify column**, and it is the right part in the right quantity | `n/3` |
 
-**"Category only" means I did not verify a specific SKU or price.** Those items are genuine
-commodities in Korea and specifying a part number here would be inventing precision. Search
-the named vendor and record what you actually buy.
+Arrival is not acquisition. The listing this project's sourcing started from carries a
+**2x25 SKU on a 2x32 description** — if the wrong board ships, the box still arrives on time. The
+`Secured` count is what separates "a package came" from "I have three working parts", and it is a
+**count**, not a tick, because a partial delivery is the normal case.
 
-> [!NOTE]
-> **#3 Sabertooth — Korean options priced 2026-08-12, and why the 2x12 is not the saving it looks like**
->
-> | Option | Cont / peak per channel | Price seen | Source |
-> |---|---|---|---|
-> | **2x12** (DFRobot `DRI0003`) | 12 A / 25 A | **₩154,900 ex-VAT → ₩170,390 inc-VAT** | Devicemart [1065967](https://www.devicemart.co.kr/goods/view?no=1065967), own stock |
-> | 2x5 (`DRI0012`) | 5 A / 10 A | ₩114,370 | Devicemart via Digi-Key — **품절** |
-> | 2x12 (`DRI0003`) | 12 A / 25 A | ₩181,550 | Devicemart via Digi-Key — **품절** |
-> | 2x25 (`DRI0004`) | 25 A / 50 A | ₩284,520 | Devicemart via Digi-Key — **품절** |
-> | **2x32** | 32 A / 64 A | **$124.99** + intl shipping | [Dimension Engineering](https://www.dimensionengineering.com/products/sabertooth2x32) — **no Korean source found** |
->
-> **There is no 2x32 in the Korean channel.** Devicemart lists 2x5 / 2x12 / 2x25 through the
-> Digi-Key feed and all three read 품절; only its own 2x12 is stocked.
->
-> **The 2x12 is roughly the same money as importing a 2x32.** ₩170,390 is about $120 at
-> ₩1,400/USD; the 2x32 lands near $150–165 with international shipping. Paying ~$30–45 more
-> buys **2.7× the continuous rating** — on the one parameter this project has explicitly
-> failed to measure. The 2x25 via Digi-Key is out of stock *and* ₩284,520 (~$205), i.e. more
-> than the bigger part.
->
-> Check the **de minimis** before assuming customs cost: Korea clears US-origin goods under
-> 목록통관 at a higher threshold than general imports, and Dimension Engineering ships from
-> Ohio, so a single $125 board plausibly arrives with no duty or import VAT. Verify current
-> thresholds at order time and record what you actually paid.
->
-> All Sabertooth variants support **R/C input** — the 2x12 is not disqualified on
-> architecture, only on headroom.
+---
 
-> [!WARNING]
-> **#3 Sabertooth is the only true import, and it is worth checking the local markup**
->
-> Not stocked at Eleparts. Dimension Engineering sells direct at **$124.99** and ships
-> internationally. Before importing, note what the Pololu MUX shows: Eleparts lists it at
-> ~₩42,400 inc-VAT against **$17.95** direct — roughly a 70% markup, which is still often
-> worth paying to avoid customs handling on a small order.
->
-> For the Sabertooth, check RobotShop / Generation Robots / DFRobot as alternates, and
-> compare landed cost including **customs and 부가세 on import** before assuming direct is
-> cheaper.
+## Batch 1 — Tier 1, card A, order now
 
-> [!CAUTION]
-> **#6 is only half orderable — the shaft adapter is gated, and the BOM hides this**
->
-> The encoder itself (**5 mm bore**) can be bought now. The **3.15 → 5 mm adapter cannot**:
-> that 3.15 mm is *B-MROVER's* motor shaft, inherited along with the method
-> ([dbw.md §8](design/dbw.md#8-adr-c-drive-distance-encoding)), and the Defender's drive-motor
-> shaft has never been measured.
->
-> Order the encoder with Batch A, and treat the adapter as a **Batch B** item alongside the
-> other measure-first parts — or buy an assortment of adapter sleeves, which is a few
-> thousand won and removes the dependency entirely.
->
-> Add the motor-shaft diameter to the M3 measurement form when you tear the vehicle down.
+Nothing here waits on a measurement. **Order the vehicle first regardless** — Batch 1G cannot be
+specified until it arrives, so it is the long pole.
 
-> [!NOTE]
-> **Why the Sabertooth costs $125, and why it is still bought before measuring**
->
-> The price does not buy amps, it buys three properties, in descending order of how binding
-> they are:
->
-> 1. **It accepts R/C servo pulses.** The [Pololu #2806 MUX](design/dbw.md#112-hardware-rc-signal-mux-the-d3-condition)
->    multiplexes *servo pulses only* — which is why
->    [ADR §4](design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)
->    was reverted from packetized serial to R/C PWM. Any driver sitting downstream of that
->    MUX must take pulses directly. This is architecture, not budget.
-> 2. **It stops the motors when the pulses stop.** [Failsafe rows 6 and 8](design/safety.md#2-failsafe-matrix)
->    and [FMEA row 9](design/safety.md#7-fmea-lightweight) — D3's principal risk, severity 5 —
->    all lean on this. When the Teensy hangs, traction must die with **no software
->    involved**. That is a property of the driver.
-> 3. **It survives and limits stall current**, with thermal protection.
->
-> **Property 3 is the one that is genuinely unsettled**, and the honest position is that
-> nobody knows yet: `vehicle.md` asserts the motor class twice, differently
-> ([see the warning there](design/vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08)),
-> and it has never been measured.
->
-> Buy it anyway, now, for a scheduling reason rather than an electrical one: the sizing
-> question concerns **M2 (drive)**, which cannot be measured until the vehicle is in hand,
-> while [bench Stage 1](design/safety.md#6-bring-up-protocol-staged-wheels-off-first) needs
-> **M1 (steering)** working before that. You need *a* driver to make progress either way, and
-> a second order cycle costs more than the part.
->
-> **Correction, 2026-08-12.** An earlier version of this note said ~$30 could be saved by
-> dropping to a 2x25. That is wrong: Dimension Engineering prices the **2x25 V2 and the 2x32
-> identically at $124.99**. There is no cheaper mid-range Sabertooth. The only real
-> step down is the 2x12 at $79.99 — see the sourcing comparison below.
->
-> Record the measured paralleled stall current in §Measurements. If it comes in low, that is
-> evidence for the *next* build, not a reason to re-buy this one.
+Prices are the verified figures from
+[§1.2.1](build/01-bom-sourcing.md#121-sourcing-in-korea-verified-2026-09-15). Record what you
+*actually* paid in `Paid ₩` — that is the column the reconciliation uses.
+
+| # | Item | Qty | Vendor | Unit ₩ | Ordered | Arrived | Secured | Paid ₩ | Verify on arrival |
+|---|------|----:|--------|-------:|:-------:|:-------:|:-------:|-------:|-------------------|
+| 1 | Vehicle — 12 V single-seat ride-on | 3 | 쿠팡 | 229,000 | . | . | 0/3 | | Record model + serial per unit |
+| 2 | Teensy 4.1 | 3 | 디바이스마트 | 74,250 | . | . | 0/3 | | **4.1, not 4.0** — count the pins |
+| 3 | Sabertooth 2x32 | 3 | 원스톱 | 250,000 | . | . | 0/3 | | **Label must read 32 A / 6–30 V.** A 2x25 is the wrong part |
+| 6 | Drive encoder (5 mm bore) | 3 | 디바이스마트 | 25,000 | . | . | 0/3 | | Measure PPR — **do not trust the label** |
+| 7 | Relay MUX — 2× DPDT + sockets, diodes, drivers | 3 | 디바이스마트 | 34,000 | . | . | 0/3 | | Contact rating ≥ traction current |
+| 8 | E-stop + DC contactor | 3 | 한국미스미 | 35,000 | . | . | 0/3 | | **DC rating, not AC.** Contactor first — it sets the button's rating |
+| 9 | Pololu #2806 RC servo MUX | 3 | 디바이스마트 | 31,680 | . | . | 0/3 | | `FAILMODE` jumper present |
+| 10 | RC TX/RX — FlySky FS-i6 + **FS-iA6B** | 3 | 팰콘샵 | 75,000 | . | . | 0/3 | | **iA6B, not iA6** — the i-BUS port must be there |
+| 11 | Isolated logic rail — SLA + charger + 2× DC-DC | 3 | 11번가 / 디바이스마트 | 60,000 | . | . | 0/3 | | Record capacity + both rail voltages |
+| 12 | Wiring / connectors / fuses | 3 | 디바이스마트 | 55,000 | . | . | 0/3 | | Wire gauge sized for stall, not nominal |
+| 14 | Mounts / 3D-print material | 3 | 로컬 | 41,000 | . | . | 0/3 | | |
+| 15 | USB gamepad — Logitech F710 class | 3 | 컴퓨존 / 11번가 | 64,000 | . | . | 0/3 | | Xbox layout; record the map if not |
+| | **Batch 1** | | | **973,930** | | | | | **× 3 = 2,921,790** |
 
 > [!CAUTION]
 > **Do not let #9 slip to a later order**
 >
-> The Pololu RC signal MUX is **$18 and it is the condition the single-Teensy architecture
-> was adopted under** ([safety.md §1.2](design/safety.md#12-live-override-inside-dbw-mode-two-layers)).
-> With one MCU holding steering, throttle, override and arming, a firmware hang loses all
-> four — unless override is a *wiring* property. Order it with the RC set, in this batch.
+> The Pololu RC signal MUX is **₩31,680 and it is the condition the single-Teensy architecture was
+> adopted under** ([safety.md §1.2](design/safety.md#12-live-override-inside-dbw-mode-two-layers)).
+> Pololu list it as **"Rationed"** at source, so the domestic listing is the whole supply as far as
+> this build is concerned. A cheap part on allocation is exactly the one that arrives last.
+
+### Sourcing reference
+
+Verified vendors, prices, links and the date each was read live in
+**[Build Guide §1.2.1](build/01-bom-sourcing.md#121-sourcing-in-korea-verified-2026-09-15)**. It is
+not repeated here — a second copy of a price table is a second copy to keep current.
+
+### Why some of these parts are not interchangeable
+
+Three notes worth re-reading at the moment of ordering, when a cheaper option is in front of you.
+
+> [!CAUTION]
+> **#6 is only half orderable — the shaft adapter is gated, and the BOM hides this**
+>
+> The encoder itself (**5 mm bore**) can be bought now. The **3.15 → 5 mm adapter cannot**: that
+> 3.15 mm is *B-MROVER's* motor shaft, inherited along with the method
+> ([dbw.md §8](design/dbw.md#8-adr-c-drive-distance-encoding)), and this vehicle's drive-motor
+> shaft has never been measured.
+>
+> Order the encoder with Batch 1 and treat the adapter as **Batch 1G** — or buy an assortment of
+> adapter sleeves, which is a few thousand won and removes the dependency entirely.
+>
+> Add the motor-shaft diameter to the M3 form when you tear the vehicle down.
 
 > [!WARNING]
-> **#15 and #10 are not the same thing**
+> **#15 and #10 are not the same thing, and you need both**
 >
 > The **gamepad (#15)** is a software input: `joy_node` reads it and its Twist goes through
 > `twist_mux`, so a firmware or laptop hang takes it down too.
 >
-> The **RC transmitter (#10)** is the hardware override, switching servo pulses through the
-> MUX with no software in the path at all.
+> The **RC transmitter (#10)** is the hardware override, switching servo pulses through the MUX with
+> no software in the path at all.
 >
-> Both are needed. Buying only one leaves either no convenient teleop, or no
-> firmware-independent override.
+> Buying only one leaves either no convenient teleop, or no firmware-independent override.
+
+> [!NOTE]
+> **Why the Sabertooth costs what it costs**
+>
+> The price does not buy amps, it buys three properties, in descending order of how binding they
+> are:
+>
+> 1. **It accepts R/C servo pulses.** The [Pololu #2806 MUX](design/dbw.md#112-hardware-rc-signal-mux-the-d3-condition)
+>    multiplexes *servo pulses only*, so any driver downstream of it must take pulses directly.
+>    Architecture, not budget.
+> 2. **It stops the motors when the pulses stop.** [Failsafe rows 6 and 8](design/safety.md#2-failsafe-matrix)
+>    and [FMEA row 9](design/safety.md#7-fmea-lightweight) — D3's principal risk, severity 5 — all
+>    lean on this. When the Teensy hangs, traction must die with **no software involved**.
+> 3. **It survives and limits stall current**, with thermal protection.
+>
+> Property 3 is the one still unsettled: the paralleled drive-motor stall current has never been
+> measured. Record it in [§Measurements](#measurements-to-record-on-arrival) when you can. If it
+> comes in low, that is evidence for the *next* build, not a reason to re-buy this one.
+>
+> **Do not substitute a bare H-bridge.** It fails on property 1 before current even matters.
 
 ---
 
-## Batch B — only after the vehicle is measured
+## Batch 1G — Tier 1, card A, gated on measurement
 
-**These three cannot be specified from a catalogue.** Ordering them with Batch A is the
-documented way to waste money on this build. Record the measurements in §Measurements below
-*before* ordering, and put the value that decided each choice in the Notes column.
+**Same card as Batch 1, later date.** These three cannot be specified from a catalogue; ordering
+them with Batch 1 is the documented way to waste money on this build. Take the measurements below
+*first* and put the value that decided each choice in the Verify column.
 
-| # | Item | Est $ | Gate — measure this first | Vendor | Ordered | Actual | Received |
-|---|------|------:|---------------------------|--------|---------|-------:|----------|
-| 4 | Steering gearmotor + encoder | 35 | Column torque **τ**, size at **≥2×** | | | | |
-| 5 | Absolute angle sensor (AS5600 **or** pot) | 20 | Lock-to-lock travel — **≤340° ⇒ AS5600** | | | | |
-| 13 | Steering coupler + magnet mount | 15 | Column / kingpin shaft **diameter** | | | | |
-| | **Batch B** | **70** | | | | | |
-
----
+| # | Item | Qty | Vendor | Unit ₩ | Ordered | Arrived | Secured | Paid ₩ | Verify — measure before ordering |
+|---|------|----:|--------|-------:|:-------:|:-------:|:-------:|-------:|----------------------------------|
+| 4 | Steering gearmotor + encoder | 3 | TBD | 48,000 | . | . | 0/3 | | **M1**: column torque τ, size at **≥ 2×** rated |
+| 5 | Absolute angle sensor (AS5600 **or** pot) | 3 | TBD | 27,000 | . | . | 0/3 | | **M2**: lock-to-lock travel — **≤ 340° ⇒ AS5600** |
+| 13 | Steering coupler + magnet mount | 3 | TBD | 20,000 | . | . | 0/3 | | **M3**: column / kingpin shaft diameter |
+| | **Batch 1G** | | | **95,000** | | | | | **× 3 = 285,000** |
 
 ## Measurements that unblock Batch B
 
@@ -272,26 +249,37 @@ Measure **every** candidate mounting shaft, not just the intended one.
 
 ---
 
-## Batch C — perception, by week 10
+## Batch 2 — Tier 2 perception, card B
 
-Deliberately last. If the steering loop fails its accuracy gate at
-[bench Stage 1](design/safety.md#6-bring-up-protocol-staged-wheels-off-first), this money has
-not been spent yet — that sequencing is the entire point of the two-tier split.
+**A different card from Batch 1.** Deliberately last: if the steering loop fails its accuracy gate
+at [bench Stage 1](design/safety.md#6-bring-up-protocol-staged-wheels-off-first), this money has not
+been spent yet. That sequencing is the entire point of the two-tier split.
 
-| # | Item | Est $ | Vendor | Ordered | Actual | Received | Notes |
-|---|------|------:|--------|---------|-------:|----------|-------|
-| 16 | 2D LiDAR — RPLIDAR A1M8 | 110 | | | | | |
-| 17 | Front camera — USB 1080p wide-FOV | 30 | | | | | *rolling shutter is fine for now* |
-| 18 | IMU — BNO085 class | 28 | | | | | |
-| | **Batch C** | **168** | | | | | |
+| # | Item | Qty | Vendor | Unit ₩ | Ordered | Arrived | Secured | Paid ₩ | Verify on arrival |
+|---|------|----:|--------|-------:|:-------:|:-------:|:-------:|-------:|-------------------|
+| 16 | 2D LiDAR — RPLIDAR A1M8 | 3 | — **already held** | 0 | — | — | 3/3 | 0 | **In hand before approval.** Confirm 3 units and that each spins up |
+| 17 | Front camera — USB 1080p wide-FOV | 3 | 디바이스마트 | 41,000 | . | . | 0/3 | | Rolling shutter is fine for now — see below |
+| 18 | IMU — BNO085 class | 3 | 아이씨뱅큐 | 41,800 | . | . | 0/3 | | 9-DoF with **onboard fusion** |
+| | **Batch 2** | | | **82,800** | | | | | **× 3 = 248,400** |
+
+> [!IMPORTANT]
+> **#16 is not purchased — verify the three units anyway**
+>
+> The three LiDARs were already held when the request was approved, which is why this row is
+> `3/3` at ₩0 and why ₩466,290 of the approved amount is never spent.
+>
+> **Secured still means checked.** Confirm there are genuinely three, that each powers up and
+> spins, and that `ros-humble-rplidar-ros` sees each one. A unit that has sat in a drawer since
+> a previous project is exactly the one that turns out to be dead in week 10, when there is no
+> budget cycle left to replace it.
 
 > [!NOTE]
 > **The camera is a knowing compromise**
 >
-> Rolling shutter is fine for SLAM and teleop. **Behavior cloning (phase 2) needs a global
+> Rolling shutter is fine for SLAM and teleop. **Behaviour cloning (phase 2) needs a global
 > shutter** — rolling shutter smears during turns and corrupts the steering labels. Budget
-> **+$150** then. Do not train a policy on rolling-shutter data and attribute the result to
-> the platform.
+> **+₩200,000 per set** then. Do not train a policy on rolling-shutter data and attribute the
+> result to the platform.
 
 ---
 
@@ -352,24 +340,32 @@ reproducible rather than folklore.
 
 ## Reconciliation
 
-Fill in when ordering is complete.
+Fill in as each batch closes. **`python3 scripts/order_status.py` computes these from the tables
+above** — this section is for the variance narrative, which a script cannot write.
 
-| | Estimated | Actual | Δ |
-|---|---:|---:|---:|
-| Batch A | 608 | | |
-| Batch B | 70 | | |
-| Batch C | 168 | | |
-| Shipping / tax / duties | — | | |
-| **Total** | **846** | | |
+| Batch | Card | Approved | Actual | Δ |
+|---|---|---:|---:|---:|
+| 1 — Tier 1 now | A | 2,921,790 | | |
+| 1G — Tier 1 gated | A | 285,000 | | |
+| 2 — Tier 2 perception | B | 248,400 | | |
+| #16 LiDAR — already held | — | 0 | 0 | 0 |
+| Shipping / duties / tax not in unit prices | | — | | |
+| **Total** | | **3,455,190** | | |
+| *Approved request* | | *3,921,480* | | |
+| *Ceiling* | | *4,000,000* | | |
 
-**Notes on variance** — what came in over or under, and whether it was price drift, shipping,
-or a spec change:
+**Notes on variance** — what came in over or under, and whether it was price drift, shipping, or a
+spec change:
 
 > _(write here)_
 
 > [!TIP]
-> **Your real numbers are more useful than these estimates**
+> **Your real numbers are worth more than these estimates**
 >
-> The BOM figures are budgeting estimates from a single retailer survey. Once this table is
-> filled in, the actuals are worth folding back into
-> [design/bom.md](design/bom.md) so the next build starts from evidence.
+> 43% of the approved figure was still an estimate at approval time, converted from USD at
+> 1,362 KRW. Once this table is filled in, fold the actuals back into
+> [design/bom.md](design/bom.md) so the next build starts from evidence rather than from a
+> retailer survey.
+>
+> Record **per-card totals** too: two cards were used, and the university will reconcile each
+> statement separately.

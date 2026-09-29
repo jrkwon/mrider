@@ -10,7 +10,7 @@
 # The name is now narrower than the job - checks 5 and 7 are not documentation -
 # but it is what everyone types, so it stays.
 #
-# Nine checks. Each one exists because this repository has already shipped the
+# Ten checks. Each one exists because this repository has already shipped the
 # defect it catches, or is one cohort away from it:
 #
 #   1. mkdocs build --strict   - broken file links, bad nav entries, config errors
@@ -32,6 +32,8 @@
 #   9. student identifiers     - a real 학번 reaching a published page. This site
 #                                is public; the roster and the marks files are
 #                                git-ignored precisely so they cannot
+# 10. order log parses        - the procurement tables still readable by the
+#                                script that totals them
 #
 # CI runs the same checks (.github/workflows/docs.yml), and because the
 # deploy job has `needs: build`, a failure here stops the publish rather than
@@ -212,6 +214,14 @@ if [ -n "$LEAKED" ]; then
     printf "   Use fabricated IDs in worked examples - this site is public.\n" >&2
     fail "student identifier in docs/"
 fi
+printf "   %sok%s\n\n" "$G" "$N"
+
+printf "%s10. order log parses%s\n" "$B" "$N"
+# The procurement tables are edited by hand and read by a script. Reformat a
+# table - or let an editor prettify it - and the parser silently finds fewer
+# line items, under-reporting the spend against an approved budget. Better to
+# fail here than to trust a total that quietly dropped a row.
+python3 scripts/order_status.py >/dev/null || fail "scripts/order_status.py cannot read docs/order-log.md"
 printf "   %sok%s\n\n" "$G" "$N"
 
 printf "%sDocs are publishable.%s\n" "$G" "$N"
