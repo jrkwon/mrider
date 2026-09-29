@@ -257,7 +257,7 @@ every camera in the category. What semester 1 actually needs:
 | **UVC class, no driver** | It must enumerate as `/dev/video*` and work with `v4l2_camera` or `usb_cam`. A camera needing a vendor SDK or a Windows-only driver is a dead end on Ubuntu 22.04 — [sensors.md](../design/sensors.md) makes plain UVC a requirement, not a preference |
 | **MJPEG at the resolution you will use** | **The trap in this category.** USB 2.0 cannot carry 1080p raw at 30 fps. Many cameras advertise "1080p 30fps" and deliver it *only* in MJPEG; in raw YUYV the same camera drops to **5 fps**. A student sees 5 fps and concludes ROS is broken |
 | **≥ 30 fps at 1280×720** | Teleop needs frame *rate*, not pixels. 720p30 is better to drive from than 1080p5, and this vehicle is driven at walking pace by someone watching the feed |
-| **Fixed focus** | Autofocus hunts continuously on a moving vehicle, and every hunt is a blurred frame |
+| **Focus that can be locked** | Autofocus hunts continuously on a moving vehicle and every hunt is a blurred frame. Fixed focus avoids this by construction; an autofocus camera is fine **if** it exposes the UVC focus control, because then you turn AF off once and forget it. If it does not, you cannot |
 | **70–120° horizontal FOV** | Wide enough for situational awareness. Past ~120° the fisheye distortion is severe enough to complicate calibration for no teleop benefit |
 | USB 2.0 | Sufficient at 720p30 MJPEG. USB 3.0 buys nothing here |
 
@@ -278,7 +278,25 @@ things that decide whether the camera is usable are the format and the frame rat
 > under `MJPG` and not `YUYV`, that is normal and fine; it just means the ROS node must request
 > MJPEG.
 >
-> Run this **before** buying three. It is also the natural `Secured` check for this row.
+> **If the camera is autofocus**, add a third command — this is what decides whether AF is a
+> non-issue or a permanent defect:
+>
+> ```bash
+> v4l2-ctl -d /dev/video0 --list-ctrls | grep -i focus
+> ```
+>
+> You want to see `focus_automatic_continuous` (or `focus_auto` on older kernels). If it is there,
+> AF is fully solved:
+>
+> ```bash
+> v4l2-ctl -d /dev/video0 -c focus_automatic_continuous=0
+> v4l2-ctl -d /dev/video0 -c focus_absolute=<value>      # tune once, outdoors, at driving distance
+> ```
+>
+> If `grep` returns nothing, the camera will hunt forever and there is no software fix.
+>
+> Run all of this on **one unit before buying three**. It is also the natural `Secured` check for
+> this row.
 
 > [!NOTE]
 > **Phase 2 will need a different camera, and that is already decided**
