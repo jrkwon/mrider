@@ -239,7 +239,7 @@ def main():
         print('no line items found - has the table format changed?', file=sys.stderr)
         return 1
 
-    waiting, unverified, unpriced = [], [], []
+    waiting, unverified, unpriced, mismatch = [], [], [], []
     committed, paid_total = 0, 0
     for r in rows:
         have, need = secured_count(r['secured'])
@@ -257,6 +257,26 @@ def main():
             # under-report the projection and make the budget look healthier
             # than it is - the exact failure this script exists to prevent.
             unpriced.append(r)
+        # Paid should be unit x qty. When it is not, say so rather than letting
+        # the row sit there looking settled.
+        #
+        # This catches the VAT trap, which has now bitten twice: Korean vendors
+        # show 상품금액 EX-VAT in an order summary while the quoted unit price
+        # was VAT-inclusive, so `paid` comes out at exactly 1/1.1 of unit x qty
+        # and the log silently understates what the card was charged. It also
+        # catches the honest cases - a discount, a price that moved - which
+        # deserve a note either way.
+        if r['paid'] is not None and r['unit'] is not None:
+            try:
+                q = int(re.sub(r'\D', '', r['qty']) or 0)
+            except ValueError:
+                q = 0
+            if q:
+                want = r['unit'] * q
+                if abs(r['paid'] - want) > 1:
+                    ratio = want / r['paid'] if r['paid'] else 0
+                    why = '  <- looks like VAT was omitted' if abs(ratio - 1.1) < 0.01 else ''
+                    mismatch.append((r, want, why))
         if placed and not landed:
             waiting.append(r)
         if landed and have < need:
@@ -297,6 +317,11 @@ def main():
     if paid_total + committed > CEILING:
         print(f'  vs ceiling           {paid_total + committed - CEILING:>12,}   '
               f'OVER THE {CEILING:,} CEILING')
+    if mismatch:
+        print(f'  CHECK: {len(mismatch)} row(s) where paid does not equal unit x qty:')
+        for r, want, why in mismatch:
+            print(f'      #{r["bom"]} {r["item"][:30]:<30} paid {r["paid"]:>9,} '
+                  f'vs {want:>9,}{why}')
     if unpriced:
         print(f'  NOT IN THE TOTAL: {len(unpriced)} row(s) have no unit price and are not paid.')
         for r in unpriced:
