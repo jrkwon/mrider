@@ -115,7 +115,7 @@ Prices are the verified figures from
 |---|------|----:|--------|-------:|:-------:|:-------:|:-------:|-------:|-------------------|
 | 1 | Vehicle — 12 V single-seat ride-on | 3 | 쿠팡 | 229,000 | 2026-09-29 | . | 0/3 | 687,000 | Record model + serial per unit |
 | 2 | Teensy 4.1 | 3 | 디바이스마트 | 74,250 | . | . | 0/3 | | **4.1, not 4.0** — count the pins |
-| 3 | Sabertooth 2x32 — **M1 steering, M2 drive** | 3 | 원스톱 | 250,000 | . | . | 0/3 | | **Label must read 32 A / 6–30 V.** A 2x25 is the wrong part |
+| 3 | Sabertooth 2x32 — **M1 steering, M2 drive** | 3 | 원스톱 | 250,000 | . | . | 0/3 |  | **Label must read 32 A / 6–30 V.** ⚠ **2026-09-30: vendor cancelled — no stock, no ETA. See the sourcing note below** |
 | 6 | Drive encoder (5 mm bore) | 3 | 디바이스마트 | 25,000 | . | . | 0/3 | | Measure PPR — **do not trust the label** |
 | 7 | Relay MUX — 2× DPDT + sockets, diodes, drivers | 3 | 디바이스마트 | 34,000 | . | . | 0/3 | | Contact rating ≥ traction current |
 | 8 | E-stop + DC contactor | 3 | 한국미스미 | 35,000 | . | . | 0/3 | | **DC rating, not AC.** Contactor first — it sets the button's rating |
@@ -124,7 +124,7 @@ Prices are the verified figures from
 | 11 | Isolated logic rail — SLA + charger + 2× DC-DC | 3 | 11번가 / 디바이스마트 | 60,000 | . | . | 0/3 | | Record capacity + both rail voltages |
 | 12 | Wiring / connectors / fuses | 3 | 디바이스마트 | 55,000 | . | . | 0/3 | | Wire gauge sized for stall, not nominal |
 | 14 | Mounts / 3D-print material | 3 | 로컬 | 41,000 | . | . | 0/3 | | |
-| 15 | USB gamepad — Logitech F710 class | 3 | 컴퓨존 / 11번가 | 64,000 | . | . | 0/3 | | Xbox layout; record the map if not |
+| 15 | USB gamepad — Logitech F710 class | 3 | [옥션](https://itempage3.auction.co.kr/DetailView.aspx?ItemNo=E428299758) | 64,000 | 2026-09-29 | . | 0/3 | 200,040 | Xbox layout; record the map if not |
 | | **Batch 1** | | | **973,930** | | | | | **× 3 = 2,921,790** |
 
 > [!CAUTION]
@@ -168,6 +168,67 @@ Three notes worth re-reading at the moment of ordering, when a cheaper option is
 > no software in the path at all.
 >
 > Buying only one leaves either no convenient teleop, or no firmware-independent override.
+
+> [!CAUTION]
+> **#3 Sabertooth 2x32 — unavailable as of 2026-09-30. Candidate replacement below**
+>
+> The order placed 2026-09-29 was cancelled by the vendor: **no stock, no ETA.** The row above is
+> cleared; nothing is committed.
+>
+> **What a replacement must do**, from the design rather than from preference:
+>
+> | | Requirement | Why it is not negotiable |
+> |---|---|---|
+> | 1 | **Accepts R/C servo pulses** | The [Pololu #2806 MUX](design/dbw.md#112-hardware-rc-signal-mux-the-d3-condition) multiplexes *servo pulses only*. [ADR §4](design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters) was **reverted** from packetized serial for exactly this reason |
+> | 2 | **Stops the motors when the pulses stop** | [Failsafe rows 6 and 8](design/safety.md#2-failsafe-matrix), [FMEA row 9](design/safety.md#7-fmea-lightweight) — severity 5. Traction must die with **no software involved** |
+> | 3 | **Two independently controlled channels** | M1 steering, M2 paralleled drive |
+> | 4 | 12 V, adequate current, limiting + thermal | The paralleled stall current is still unmeasured |
+>
+> **Requirement 2 is the one that eliminates most of the market.** Plenty of dual drivers take RC
+> pulses; far fewer stop when the pulses stop, and a driver that holds its last command when its
+> controller dies is the *stale-setpoint-with-live-actuator* state the design calls more dangerous
+> than a stop.
+>
+> **Leading candidate: Cytron SmartDriveDuo-30 (MDDS30).** Verified against its
+> [user manual](https://makermotor.com/content/cytron/pn00218-cyt14/MDDS30_User_Manual.pdf) rev 1.11,
+> not from a product blurb:
+>
+> | | Sabertooth 2x32 | Cytron MDDS30 |
+> |---|---|---|
+> | Continuous / peak per channel | 32 A / 64 A | **30 A / 80 A** |
+> | Voltage | 6–30 V | **7–35 V** |
+> | R/C pulse input | yes | **yes** — `SW1:SW2 = 00` |
+> | Independent dual control | yes | **yes** — `SW3:SW4 = 11`, "INDEPENDENT BOTH" |
+> | **Signal-loss stop** | yes | **yes — 100 ms**, `SW6 = 0` |
+> | Current limit + thermal | yes | yes |
+> | Price | ₩250,000 | **$76–87** (≈₩104,000–119,000) |
+>
+> Slightly less continuous current, more peak, wider voltage, and roughly **half the price** — on a
+> driver the BOM already calls oversized for this drivetrain.
+>
+> > [!WARNING]
+> > **`SW6 = 1` disables the timeout, and the manual says so plainly**
+> >
+> > *"The centre point is fixed at 1.5 ms and the timeout feature is disabled. Motor will continue
+> > to run…"*
+> >
+> > That single DIP switch is the difference between satisfying failsafe row 6 and silently
+> > violating it. **`SW6` must be OFF**, and it must be *verified on the bench*, not assumed from
+> > the factory default. Add it to the Stage 1 checklist.
+> >
+> > Also operational: *"The RC transmitter must be ON before power up."* That changes the bring-up
+> > order and needs re-checking against [safety.md §6](design/safety.md#6-bring-up-protocol-staged-wheels-off-first).
+>
+> **Still to settle before ordering** — none of these are blockers, all are unverified:
+>
+> - **Korean stock.** Seeed is out of stock; Makermotor (US) lists it. No Korean distributor found.
+>   Lead time is the reason the Sabertooth order was placed domestically in the first place.
+> - **NTREX `NT-M-DCDM2430`** — dual 30 A, 7–36 V, RC and joystick input, sold through
+>   **디바이스마트**, i.e. domestic and fast. Korean-made. **Its signal-loss behaviour is
+>   undocumented in anything found so far** — get the manual and check requirement 2 before
+>   considering it, because that is the requirement it is most likely to fail.
+> - **Sabertooth 2x25 V2** — same family, same manual, same DIP layout, same $124.99. The
+>   lowest-risk swap if it is in stock anywhere, since nothing else in the design changes.
 
 > [!NOTE]
 > **One driver actuates the whole vehicle — there is no second motor driver in this BOM**
