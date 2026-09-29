@@ -72,8 +72,16 @@ DATE = re.compile(r'^\d{4}-\d{2}-\d{2}$')
 
 
 def money(cell):
-    """A KRW cell as int. Blank, '.', or '-' mean not yet known."""
-    s = re.sub(r'[₩,\s]', '', cell)
+    """
+    A KRW cell as int. Blank, '.', or '-' mean not yet known.
+
+    A leading '~' or '약' is accepted and treated as the number: "approximately
+    135,000" is a legitimate thing to write before an invoice exists, and
+    refusing to parse it would drop the row out of the total - which reads as
+    the budget being healthier than it is.
+    """
+    s = re.sub(r'^[~약≈]\s*', '', cell.strip())
+    s = re.sub(r'[₩,\s]', '', s)
     if not s or s in ('.', '-'):
         return None
     try:
@@ -202,7 +210,8 @@ def main():
         print('no line items found - has the table format changed?', file=sys.stderr)
         return 1
 
-    waiting, unverified, committed, paid_total = [], [], 0, 0
+    waiting, unverified, unpriced = [], [], []
+    committed, paid_total = 0, 0
     for r in rows:
         have, need = secured_count(r['secured'])
         placed = bool(DATE.match(r['ordered']))
@@ -214,6 +223,11 @@ def main():
                 committed += r['unit'] * int(re.sub(r'\D', '', r['qty']) or 0)
             except ValueError:
                 pass
+        else:
+            # Neither paid nor priced. Counting this as zero would quietly
+            # under-report the projection and make the budget look healthier
+            # than it is - the exact failure this script exists to prevent.
+            unpriced.append(r)
         if placed and not landed:
             waiting.append(r)
         if landed and have < need:
@@ -249,6 +263,11 @@ def main():
     if paid_total + committed > CEILING:
         print(f'  vs ceiling           {paid_total + committed - CEILING:>12,}   '
               f'OVER THE {CEILING:,} CEILING')
+    if unpriced:
+        print(f'  NOT IN THE TOTAL: {len(unpriced)} row(s) have no unit price and are not paid.')
+        for r in unpriced:
+            print(f'      #{r["bom"]} {r["item"][:44]}')
+        print('  The projection above is therefore a FLOOR, not an estimate.')
     print('=' * 92)
 
     if waiting:

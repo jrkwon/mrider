@@ -115,7 +115,7 @@ Prices are the verified figures from
 |---|------|----:|--------|-------:|:-------:|:-------:|:-------:|-------:|-------------------|
 | 1 | Vehicle — 12 V single-seat ride-on | 3 | 쿠팡 | 229,000 | 2026-09-29 | . | 0/3 | 687,000 | Record model + serial per unit |
 | 2 | Teensy 4.1 | 3 | 디바이스마트 | 74,250 | . | . | 0/3 | | **4.1, not 4.0** — count the pins |
-| 3 | Sabertooth 2x32 — **M1 steering, M2 drive** | 3 | 원스톱 | 250,000 | . | . | 0/3 |  | **Label must read 32 A / 6–30 V.** ⚠ **2026-09-30: vendor cancelled — no stock, no ETA. See the sourcing note below** |
+| 3 | **Cytron SmartDriveDuo-30 (MDDS30)** — M1 steering, M2 drive *(replaces Sabertooth 2x32)* | 3 | [디바이스마트 13186549](https://www.devicemart.co.kr/goods/view?no=13186549) 해외구매 | 143,440 | . | . | 0/3 |  | VAT incl. **`SW1:SW2=00` RC · `SW3:SW4=11` independent · `SW6=0` timeout ON** — verify SW6 on the bench; `SW6=1` disables the stop |
 | 6 | Drive encoder (5 mm bore) | 3 | 디바이스마트 | 25,000 | . | . | 0/3 | | Measure PPR — **do not trust the label** |
 | 7 | Relay MUX — 2× DPDT + sockets, diodes, drivers | 3 | 디바이스마트 | 34,000 | . | . | 0/3 | | Contact rating ≥ traction current |
 | 8 | E-stop + DC contactor | 3 | 한국미스미 | 35,000 | . | . | 0/3 | | **DC rating, not AC.** Contactor first — it sets the button's rating |
@@ -417,8 +417,44 @@ reproducible rather than folklore.
 
 | BOM # | Specified | Bought instead | Why | Consequence checked? |
 |---|---|---|---|---|
+| **3** | Sabertooth 2x32 | **Cytron SmartDriveDuo-30 (MDDS30)** | Sabertooth unavailable — vendor cancelled 2026-09-30, no stock and no ETA. The Cytron meets all four hard requirements and costs ₩106,560 less per unit | **Partly** — see below |
 | | | | | |
-| | | | | |
+
+> [!IMPORTANT]
+> **#3 Sabertooth → Cytron MDDS30: what changes, and what deliberately does not**
+>
+> **Nothing above the driver changes.** The Teensy firmware, the
+> [signal MUX wiring](design/dbw.md#112-hardware-rc-signal-mux-the-d3-condition), and the
+> `ros2_control` stack are all untouched, because the interface is **servo pulses** either way.
+>
+> That is not luck. [ADR §4](design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)
+> was reverted from packetized serial to R/C PWM so the hardware MUX could sit in the path — a
+> decision that read as a constraint at the time. It is what makes the driver a **swappable box**
+> today, under supply pressure, four days before a build. A serial-protocol design would have
+> needed firmware work and a re-verified failsafe.
+>
+> | | Sabertooth 2x32 | Cytron MDDS30 |
+> |---|---|---|
+> | Continuous / peak per channel | 32 A / 64 A | 30 A / **80 A** |
+> | Voltage | 6–30 V | **7–35 V** |
+> | Signal-loss stop | yes | **yes, 100 ms** (`SW6=0`) |
+> | Unit price | ₩250,000 | **₩143,440** |
+>
+> **What still needs checking, and must not be assumed:**
+>
+> 1. **`SW6=0` on every board, verified on the bench.** `SW6=1` disables the timeout entirely —
+>    *"motor will continue to run"*. One switch is the difference between honouring
+>    [failsafe row 6](design/safety.md#2-failsafe-matrix) and silently violating it. This is the
+>    single highest-consequence item in this substitution.
+> 2. **"The RC transmitter must be ON before power up."** The MDDS30 manual says so; the Sabertooth
+>    has no such requirement. Re-check the
+>    [staged bring-up order](design/safety.md#6-bring-up-protocol-staged-wheels-off-first) against it.
+> 3. **30 A continuous vs 32 A.** Immaterial on paper — the BOM already calls the 2x32 oversized —
+>    but the paralleled drive-motor stall current is *still unmeasured*. Measure it at teardown and
+>    record it below. 80 A peak is comfortably above the Sabertooth's 64 A.
+> 4. **The design documents still say "Sabertooth 2x32" throughout.** Deliberately not rewritten
+>    yet: update them when the boards arrive and Stage 1 passes, not on the strength of an order.
+>    A design record that tracks intentions rather than hardware is worse than one that lags.
 
 > [!WARNING]
 > **Substitutions with teeth**
