@@ -10,7 +10,7 @@
 # The name is now narrower than the job - checks 5 and 7 are not documentation -
 # but it is what everyone types, so it stays.
 #
-# Ten checks. Each one exists because this repository has already shipped the
+# Eleven checks. Each one exists because this repository has already shipped the
 # defect it catches, or is one cohort away from it:
 #
 #   1. mkdocs build --strict   - broken file links, bad nav entries, config errors
@@ -34,6 +34,8 @@
 #                                git-ignored precisely so they cannot
 # 10. order log parses        - the procurement tables still readable by the
 #                                script that totals them
+# 11. purchase request adds up - an approved total edited after the fact, which
+#                                would move the bar silently
 #
 # CI runs the same checks (.github/workflows/docs.yml), and because the
 # deploy job has `needs: build`, a failure here stops the publish rather than
@@ -222,6 +224,18 @@ printf "%s10. order log parses%s\n" "$B" "$N"
 # line items, under-reporting the spend against an approved budget. Better to
 # fail here than to trust a total that quietly dropped a row.
 python3 scripts/order_status.py >/dev/null || fail "scripts/order_status.py cannot read docs/order-log.md"
+printf "   %sok%s\n\n" "$G" "$N"
+
+printf "%s11. purchase request still adds up%s\n" "$B" "$N"
+# order_status.py READS the approved total out of the purchase request, so an
+# edit there moves the bar the order log is measured against and nothing would
+# notice - the log would keep reporting "under approved" against a figure
+# nobody approved. The request is checked against itself: subtotals x 3 must
+# equal the stated total.
+if python3 scripts/order_status.py 2>&1 | grep -q "does not add up"; then
+    python3 scripts/order_status.py 2>&1 | grep -A1 "does not add up" >&2
+    fail "the purchase request's own arithmetic is inconsistent"
+fi
 printf "   %sok%s\n\n" "$G" "$N"
 
 printf "%sDocs are publishable.%s\n" "$G" "$N"

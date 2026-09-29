@@ -131,6 +131,39 @@ loop into a harmless buzz at first power-on.
 
 ---
 
+## Amendments since approval
+
+**This request is a record of what was approved on 2026-09-28. Its line-item tables are not edited
+as procurement proceeds** — that would destroy the only evidence of what the university actually
+agreed to. Divergences are listed here instead, and the live state of every item is in the
+[Order Log](order-log.md).
+
+| # | Approved | Actual | Δ × 3 | Why |
+|---|---|---|---:|---|
+| 3 | Sabertooth 2x32 · ₩250,000 | **Cytron SmartDriveDuo-30** · ₩143,440 | −319,680 | Sabertooth unavailable; vendor cancelled with no ETA. Meets every requirement and costs less |
+| 10 | ₩75,000 | ₩139,160 | +192,480 | The estimate was low. The bundle carrying the **correct receiver** costs more than the category average |
+| 15 | ₩64,000 | ₩66,680 | +8,040 | Actual charge |
+| 16 | ₩155,430 | **₩0** | −466,290 | Already held before approval; never purchased |
+| 18 | ₩41,800 | ₩45,980 | +12,540 | The approved figure was **ex-VAT**; every other line was VAT-inclusive |
+| | | **Net** | **−572,910** | |
+
+**Projected total ₩3,348,570 against ₩3,921,480 approved.** No amendment increases the total, and
+none requires re-approval.
+
+> [!NOTE]
+> **Which document to trust for what**
+>
+> | | Authority for |
+> |---|---|
+> | **This request** | What was **approved**, and the amount approved. Frozen |
+> | **[Order Log](order-log.md)** | What was **actually bought** — vendor, price paid, state, dates. Live |
+> | **[Build Guide §1.2.1](build/01-bom-sourcing.md#121-sourcing-in-korea-verified-2026-09-15)** | **Where to buy** and what to verify, with the date each price was read |
+>
+> Vendor links appear here only as they stood at approval. **Use the Order Log's links to buy from**
+> — several have since been corrected, and one of them pointed at a receiver rather than a set.
+
+---
+
 ## Sources
 
 Vendor links, the date each price was read, and the exchange rate used are recorded in

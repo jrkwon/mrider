@@ -58,6 +58,7 @@ LOG = REPO / 'docs' / 'order-log.md'
 # the log would reconcile happily against a number nobody approved.
 REQUEST = REPO / 'docs' / 'purchase-request-2026-fall.md'
 CEILING = 4_000_000
+SETS = 3
 
 
 def approved():
@@ -66,6 +67,34 @@ def approved():
         return None
     m = re.search(r'\*\*Total\*\*\s*\|\s*\*\*₩([\d,]+)\*\*', REQUEST.read_text())
     return int(m.group(1).replace(',', '')) if m else None
+
+
+def request_is_consistent():
+    """
+    Does the purchase request still add up?
+
+    The approved total is read from that document, so an edit to it silently
+    moves the bar this log is measured against, and nobody would notice: the
+    log would keep reporting "under approved" against a number nobody approved.
+
+    This does not pin the figure - a pinned copy here is just a second thing to
+    keep current. It checks the document against ITSELF: the per-set subtotals
+    times three must equal the stated total. A hand-edit to a line item, or to
+    the total, breaks that equality.
+    """
+    if not REQUEST.exists():
+        return True, ''
+    text = REQUEST.read_text()
+    subs = [int(x.replace(',', '')) for x in
+            re.findall(r'\*\*Tier [12] subtotal\*\*\s*\|\s*\*\*([\d,]+)\*\*', text)]
+    total = approved()
+    if len(subs) != 2 or total is None:
+        return True, 'purchase request: could not read its subtotals; consistency not checked'
+    want = sum(subs) * SETS
+    if want != total:
+        return False, (f'purchase request does not add up: ({subs[0]:,} + {subs[1]:,}) '
+                       f'x {SETS} = {want:,}, but its Total says {total:,}')
+    return True, ''
 
 
 DATE = re.compile(r'^\d{4}-\d{2}-\d{2}$')
@@ -252,6 +281,11 @@ def main():
     print(f'  paid so far          {paid_total:>12,}')
     print(f'  still to pay (est.)  {committed:>12,}')
     print(f'  projected total      {paid_total + committed:>12,}')
+    ok, msg = request_is_consistent()
+    if msg:
+        print(f'  {msg}')
+    if not ok:
+        print('  The approved figure below cannot be trusted until that is resolved.')
     app = approved()
     if app is None:
         print('  approved             (could not read the purchase request)')

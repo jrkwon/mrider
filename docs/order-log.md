@@ -7,9 +7,26 @@ what was actually bought, from whom, for how much, and what was substituted.
 Keep it honest even when it is unflattering — a substitution that seemed harmless and later
 caused a rebuild is exactly the entry the next person needs.
 
-- **What to buy and why:** [design/bom.md](design/bom.md)
-- **How to buy it, substitution rules, connector lists:** [build/01](build/01-bom-sourcing.md)
-- **This page:** what you actually ordered
+- **What to buy and why:** [design/bom.md](design/bom.md) — the specification
+- **Where to buy it, and what to verify:** [build/01 §1.2.1](build/01-bom-sourcing.md#121-sourcing-in-korea-verified-2026-09-15) — vendors, prices, the date each was read
+- **What was approved:** [Purchase Request](purchase-request-2026-fall.md) — **frozen** at 2026-09-28; divergences are in its [Amendments](purchase-request-2026-fall.md#amendments-since-approval) section
+- **This page:** what was **actually ordered, paid and received.** The live record — edit it freely
+
+> [!IMPORTANT]
+> **Which document changes, and which does not**
+>
+> The purchase request is evidence of what the university agreed to fund. Editing its tables as
+> procurement proceeds would destroy the only record of that, so it is **frozen** and every
+> divergence is listed in its Amendments section instead.
+>
+> **This page is the opposite** — it is meant to be edited, every day if need be, and it is the
+> authority for what was actually bought. When the two disagree, this page is what happened and the
+> request is what was promised. The gap between them is the reconciliation, and it is the useful
+> part.
+>
+> **Vendor links live here**, not in the request. Several have been corrected since approval — one
+> pointed at a receiver rather than a transmitter-and-receiver set — and a frozen document cannot
+> carry corrections.
 
 > [!NOTE]
 > **Currency**
@@ -120,7 +137,7 @@ Prices are the verified figures from
 | 7 | Relay MUX — 2× DPDT + sockets, diodes, drivers | 3 | 디바이스마트 | 34,000 | . | . | 0/3 | | Contact rating ≥ traction current |
 | 8 | E-stop + DC contactor | 3 | 한국미스미 | 35,000 | . | . | 0/3 | | **DC rating, not AC.** Contactor first — it sets the button's rating |
 | 9 | Pololu #2806 RC servo MUX | 3 | 디바이스마트 | 31,680 | . | . | 0/3 | | `FAILMODE` jumper present |
-| 10 | RC TX/RX — FS-i6 transmitter + **FS-iA6B** receiver | 3 | [팰콘샵 100004832](https://www.falconshop.co.kr/shop/goods/goods_view.php?goodsno=100004832) KC인증 | 142,000 | . | . | 0/3 | | **Receiver must be iA6B.** Confirm the i-BUS port is physically present on the delivered unit — see the trap below |
+| 10 | RC TX/RX — FS-i6 transmitter + **FS-iA6B** receiver | 3 | [팰콘샵 100004832](https://www.falconshop.co.kr/shop/goods/goods_view.php?goodsno=100004832) KC인증 | 139,160 | 2026-09-29 | . | 0/3 | 417,480 | ₩142,000 list, **₩417,480 paid for 3** (≈2% off). **Receiver must be iA6B** — confirm the i-BUS port on the board, not the box. **Mode 2** — see the note below |
 | 11 | Isolated logic rail — SLA + charger + 2× DC-DC | 3 | 11번가 / 디바이스마트 | 60,000 | . | . | 0/3 | | Record capacity + both rail voltages |
 | 12 | Wiring / connectors / fuses | 3 | 디바이스마트 | 55,000 | . | . | 0/3 | | Wire gauge sized for stall, not nominal |
 | 14 | Mounts / 3D-print material | 3 | 로컬 | 41,000 | . | . | 0/3 | | |
@@ -421,8 +438,8 @@ been spent yet. That sequencing is the entire point of the two-tier split.
 | # | Item | Qty | Vendor | Unit ₩ | Ordered | Arrived | Secured | Paid ₩ | Verify on arrival |
 |---|------|----:|--------|-------:|:-------:|:-------:|:-------:|-------:|-------------------|
 | 16 | 2D LiDAR — RPLIDAR A1M8 | 3 | — **already held** | 0 | — | — | 3/3 | 0 | **In hand before approval.** Confirm 3 units and that each spins up |
-| 17 | Front camera — USB 1080p wide-FOV | 3 | 디바이스마트 | 41,000 | . | . | 0/3 | | **`v4l2-ctl --list-formats-ext` must show MJPG 1280x720 @30 fps.** UVC, fixed focus, 70–120° H-FOV — see [§1.2.2](build/01-bom-sourcing.md#17-usb-camera-what-1080p-wide-fov-actually-has-to-mean) |
-| 18 | IMU — BNO085 class | 3 | 아이씨뱅큐 | 41,800 | 2026-09-29 | . | 0/3 | 137,940 | 9-DoF with **onboard fusion** |
+| 17 | Front camera — USB 1080p, 120° wide, **고정초점** | 3 | [쿠팡](https://www.coupang.com/vp/products/9574234009?vendorItemId=95522090726) | 41,000 | . | . | 0/3 | | ⚠ **The listing text supplied on 2026-09-29 said 자동 초점(AF).** Settle it on the first unit: `v4l2-ctl -d /dev/video0 --list-ctrls \| grep -i focus`. **`v4l2-ctl --list-formats-ext` must show MJPG 1280x720 @30 fps** |
+| 18 | IMU — BNO085 class | 3 | 아이씨뱅큐 | 45,980 | 2026-09-29 | . | 0/3 | 137,940 | ₩41,800 ex-VAT = **₩45,980 incl**; the approved figure was the ex-VAT one. 9-DoF with **onboard fusion** |
 | | **Batch 2** | | | **82,800** | | | | | **× 3 = 248,400** |
 
 > [!IMPORTANT]
