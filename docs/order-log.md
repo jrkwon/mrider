@@ -356,7 +356,7 @@ been spent yet. That sequencing is the entire point of the two-tier split.
 | # | Item | Qty | Vendor | Unit ₩ | Ordered | Arrived | Secured | Paid ₩ | Verify on arrival |
 |---|------|----:|--------|-------:|:-------:|:-------:|:-------:|-------:|-------------------|
 | 16 | 2D LiDAR — RPLIDAR A1M8 | 3 | — **already held** | 0 | — | — | 3/3 | 0 | **In hand before approval.** Confirm 3 units and that each spins up |
-| 17 | Front camera — USB 1080p wide-FOV | 3 | 디바이스마트 | 41,000 | . | . | 0/3 | | Rolling shutter is fine for now — see below |
+| 17 | Front camera — USB 1080p wide-FOV | 3 | 디바이스마트 | 41,000 | . | . | 0/3 | | **`v4l2-ctl --list-formats-ext` must show MJPG 1280x720 @30 fps.** UVC, fixed focus, 70–120° H-FOV — see [§1.2.2](build/01-bom-sourcing.md#17-usb-camera--what-1080p-wide-fov-actually-has-to-mean) |
 | 18 | IMU — BNO085 class | 3 | 아이씨뱅큐 | 41,800 | . | . | 0/3 | | 9-DoF with **onboard fusion** |
 | | **Batch 2** | | | **82,800** | | | | | **× 3 = 248,400** |
 

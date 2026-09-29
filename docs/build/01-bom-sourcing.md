@@ -247,6 +247,52 @@ gap is visible rather than assumed closed. **#4, #5 and #13 are deliberately abs
 > adopted under. A cheap part on allocation is exactly the one that arrives last. Order it in the
 > same batch as the RC set.
 
+### #17 USB camera — what "1080p wide-FOV" actually has to mean
+
+The BOM line said *"USB 1080p wide-FOV"*, which is not a specification — it is the marketing copy on
+every camera in the category. What semester 1 actually needs:
+
+| Requirement | Why it matters |
+|---|---|
+| **UVC class, no driver** | It must enumerate as `/dev/video*` and work with `v4l2_camera` or `usb_cam`. A camera needing a vendor SDK or a Windows-only driver is a dead end on Ubuntu 22.04 — [sensors.md](../design/sensors.md) makes plain UVC a requirement, not a preference |
+| **MJPEG at the resolution you will use** | **The trap in this category.** USB 2.0 cannot carry 1080p raw at 30 fps. Many cameras advertise "1080p 30fps" and deliver it *only* in MJPEG; in raw YUYV the same camera drops to **5 fps**. A student sees 5 fps and concludes ROS is broken |
+| **≥ 30 fps at 1280×720** | Teleop needs frame *rate*, not pixels. 720p30 is better to drive from than 1080p5, and this vehicle is driven at walking pace by someone watching the feed |
+| **Fixed focus** | Autofocus hunts continuously on a moving vehicle, and every hunt is a blurred frame |
+| **70–120° horizontal FOV** | Wide enough for situational awareness. Past ~120° the fisheye distortion is severe enough to complicate calibration for no teleop benefit |
+| USB 2.0 | Sufficient at 720p30 MJPEG. USB 3.0 buys nothing here |
+
+**Resolution is the least important item on this list.** 1080p is already more than teleop needs; the
+things that decide whether the camera is usable are the format and the frame rate.
+
+> [!TIP]
+> **The acceptance test is two commands, and it settles every question above**
+>
+> ```bash
+> sudo apt install v4l-utils
+> v4l2-ctl --list-devices
+> v4l2-ctl -d /dev/video0 --list-formats-ext
+> ```
+>
+> The second prints **every format, resolution and frame rate the camera actually supports** — not
+> what the box claims. Look for a line like `MJPG … 1280x720 … 30.000 fps`. If 30 fps appears only
+> under `MJPG` and not `YUYV`, that is normal and fine; it just means the ROS node must request
+> MJPEG.
+>
+> Run this **before** buying three. It is also the natural `Secured` check for this row.
+
+> [!NOTE]
+> **Phase 2 will need a different camera, and that is already decided**
+>
+> Behaviour cloning needs a **global shutter** — rolling shutter smears during turns and corrupts
+> the steering labels. [sensors.md](../design/sensors.md) pre-registers an **Arducam AR0234** class
+> part (~$160–180) for that phase.
+>
+> So do not over-buy now. Semester 1 delivers teleop and LiDAR SLAM, neither of which cares about
+> rolling-shutter skew. A cheap compliant camera is the correct choice, and the money is better
+> kept for the global-shutter part later.
+
+---
+
 ## 1.3 Two parts you must not order blind
 
 Two line items depend on measurements taken on the vehicle you actually bought. Ordering

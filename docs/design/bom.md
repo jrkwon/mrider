@@ -134,7 +134,7 @@ Tier 2 has not been bought yet.
 | # | Item | Spec / Model | Design ref | Reuse? | Est. ($) | Source / note |
 |---|------|--------------|-----------|--------|---------:|---------------|
 | 16 | **2D LiDAR** | RPLIDAR A1M8 (360°, 12 m) | [sensors.md §2](sensors.md) | No | 110 | Sufficient for indoor hallway SLAM. `ros-humble-rplidar-ros` is in apt. Upgrade path: RPLidar S3 / YDLidar G4 |
-| 17 | **Front camera** | USB 1080p wide-FOV | [sensors.md §1](sensors.md) | No | 30 | **See the behavior-cloning note below** |
+| 17 | **Front camera** | **UVC** USB, **MJPEG ≥30 fps @ 1280×720**, fixed focus, 70–120° H-FOV | [sensors.md §1](sensors.md) | No | 30 | **See the behavior-cloning note below** |
 | 18 | **IMU** | BNO085-class 9-DoF with onboard fusion | [sensors.md §3](sensors.md) | New | 28 | Replaces the Pixhawk's internal IMU. Estimator is unchanged — it was always `robot_localization` (F11) |
 | | | | | **Tier 2** | **$168** | |
 
