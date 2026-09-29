@@ -172,6 +172,44 @@ Three notes worth re-reading at the moment of ordering, when a cheaper option is
 > If a wrong-receiver bundle does arrive it is recoverable — ₩31,000 for a separate iA6B, and the
 > iA6 becomes a spare PWM receiver. Money, not a redesign.
 
+> [!IMPORTANT]
+> **#10 — buy **Mode 2**, and drive from the right stick**
+>
+> Mode 1 and Mode 2 are an *aircraft* convention for which stick holds throttle. This is a car, so
+> the question is really: **which stick self-centres?**
+>
+> | | Left stick | Right stick |
+> |---|---|---|
+> | **Mode 2** | throttle (V, **ratcheted**) + rudder (H) | elevator (V) + aileron (H) — **both spring-centred** |
+> | Mode 1 | elevator (V) + rudder (H) | **throttle (V, ratcheted)** + aileron (H) |
+>
+> On the FS-i6 the throttle gimbal is **physically ratcheted** — it stays where you leave it, which
+> is correct for an aircraft and wrong for this vehicle. Mode 2 puts that ratchet on the **left**
+> stick, leaving the entire right stick self-centring.
+>
+> **So: Mode 2, and map the vehicle to the right stick.**
+>
+> | Function | Channel | Stick |
+> |---|---|---|
+> | Steering | CH1 (aileron) | right stick, horizontal |
+> | Throttle | **CH2 (elevator)** — *not* CH3 | right stick, vertical |
+> | MUX `SEL` | CH5 or CH6 | a two-position switch (SwA–SwD) |
+>
+> Using CH2 rather than the nominal throttle channel is the whole point: **release the stick and the
+> vehicle stops and straightens**, which is what
+> [failsafe rows 1–3](design/safety.md#2-failsafe-matrix) already specify. It also makes the right
+> stick behave exactly like the gamepad's (#15), so an operator switching between them does not
+> have to re-learn anything.
+>
+> This matters most in **Layer B**, where the MUX routes the receiver *straight to the motor driver*
+> with the Teensy out of the loop entirely. There, stick position **is** motor command — nothing is
+> going to zero it for you. A ratcheted throttle in that path means letting go leaves the vehicle
+> driving.
+>
+> **Buy Mode 2 units; do not buy Mode 1 and switch it in the menu.** The menu remaps the channels
+> but cannot move the ratchet, which leaves a transmitter whose labels and springs disagree. Order
+> all three the same.
+
 > [!CAUTION]
 > **#6 is only half orderable — the shaft adapter is gated, and the BOM hides this**
 >
