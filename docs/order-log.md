@@ -158,7 +158,7 @@ Three notes worth re-reading at the moment of ordering, when a cheaper option is
 > **팰콘샵 `100004832` is titled "… + iA6 6채널 수신기 포함" and ships the iA6B.** Its own
 > specification table reads `Product Model: FS-iA6B`, `Data port: PWM / PPM / i.bus / s.bus`. The
 > title is stale; the contents are correct — the same failure as the
-> [Sabertooth listing](#1-2-1-sourcing-in-korea-verified-2026-09-15), where a legacy SKU string sat
+> [Sabertooth listing](build/01-bom-sourcing.md#121-sourcing-in-korea-verified-2026-09-15), where a legacy SKU string sat
 > above an accurate description.
 >
 > Two related listings that are *not* the set, and are easy to grab by mistake:
