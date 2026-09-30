@@ -450,7 +450,7 @@ been spent yet. That sequencing is the entire point of the two-tier split.
 | # | Item | Qty | Vendor | Unit ₩ | Ordered | Arrived | Secured | Paid ₩ | Verify on arrival |
 |---|------|----:|--------|-------:|:-------:|:-------:|:-------:|-------:|-------------------|
 | 16 | 2D LiDAR — RPLIDAR A1M8 | 3 | — **already held** | 0 | — | — | 3/3 | 0 | **In hand before approval.** Confirm 3 units and that each spins up |
-| 17 | Front camera — USB 1080p, 120° wide, **고정초점** | 3 | [쿠팡](https://www.coupang.com/vp/products/9574234009?vendorItemId=95522090726) | 41,000 | . | . | 0/3 | | ⚠ **The listing text supplied on 2026-09-29 said 자동 초점(AF).** Settle it on the first unit: `v4l2-ctl -d /dev/video0 --list-ctrls \| grep -i focus`. **`v4l2-ctl --list-formats-ext` must show MJPG 1280x720 @30 fps** |
+| 17 | Front camera — USB 1080p, 120° wide, **고정초점** | 3 | [쿠팡](https://www.coupang.com/vp/products/9574234009?vendorItemId=95522090726) | 41,000 | . | . | 0/3 | | **고정초점 confirmed 2026-09-30** — `--list-ctrls` exposes no focus unit, while listing other controls as `inactive`, so nothing is hidden. Camera calibration (§3/§4) is therefore unaffected. Still to check: `--list-formats-ext` must show MJPG 1280x720 @30 fps | grep -i focus`. **`v4l2-ctl --list-formats-ext` must show MJPG 1280x720 @30 fps** |
 | 18 | IMU — BNO085 class | 3 | 아이씨뱅큐 | 45,980 | 2026-09-29 | . | 0/3 | 137,940 | ₩41,800 ex-VAT = **₩45,980 incl**; the approved figure was the ex-VAT one. 9-DoF with **onboard fusion** |
 | | **Batch 2** | | | **82,800** | | | | | **× 3 = 248,400** |
 

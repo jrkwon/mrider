@@ -406,7 +406,26 @@ things that decide whether the camera is usable are the format and the frame rat
 > v4l2-ctl -d /dev/video0 -c focus_absolute=<value>      # tune once, outdoors, at driving distance
 > ```
 >
-> If `grep` returns nothing, the camera will hunt forever and there is no software fix.
+> **An empty result has two readings, and they are opposites.** Either the camera has no focus
+> mechanism at all — fixed focus, nothing to control, which is the *good* outcome — or it has
+> autofocus the driver does not expose, which cannot be fixed in software.
+>
+> Distinguish them from the rest of the same output, not by guessing:
+>
+> ```
+> white_balance_temperature ... flags=inactive
+> exposure_time_absolute    ... flags=inactive
+> ```
+>
+> **If controls appear marked `inactive`, the driver is listing hardware that exists but is
+> currently overridden by an auto mode.** A driver that surfaces inactive controls is not hiding
+> anything — so the absence of *any* focus entry means there is no focus unit to expose. That is a
+> fixed-focus camera.
+>
+> Confirm optically, because it takes ten seconds: point the camera at detailed text at **20 cm**,
+> then at something **2–3 m** away, and watch the stream. A fixed-focus lens simply goes soft up
+> close and stays that way. An autofocus lens visibly hunts — the image pulses out of focus and
+> back — within a second or two of the scene changing.
 
 > [!WARNING]
 > **What autofocus actually breaks — it is narrower than "blurry pictures", and worse**
@@ -434,6 +453,10 @@ things that decide whether the camera is usable are the format and the frame rat
 >
 > **Not a reason to avoid autofocus cameras** — nearly all UVC webcams expose the control, and one
 > command settles it. It is a reason to run that command **on arrival in week 10**, not in week 12.
+>
+> **Outcome for the 2026 cohort's camera:** fixed focus, confirmed 2026-09-30. `--list-ctrls`
+> exposes no focus unit at all while listing other controls as `inactive`, so nothing is being
+> hidden. The intrinsics are stable and §3/§4 are unaffected — this risk did not materialise.
 >
 > Run all of this on **one unit before buying three**. It is also the natural `Secured` check for
 > this row.
