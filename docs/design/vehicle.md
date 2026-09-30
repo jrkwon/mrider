@@ -15,9 +15,10 @@ chassis decision as [ADR D](#adr-d-24-v-two-seater-vs-12-v-single-seater).
 
 The choice is driven by the project's decision drivers: payload
 for an onboard laptop plus sensors, an accessible steering column for the
-[DBW](dbw.md) angle actuator and absolute sensor, 24 V electrical headroom, and
-reuse of the [mrover](https://github.com/jrkwon/mrover) Sabertooth + chassis-conversion
-recipe.
+[DBW](dbw.md) angle actuator and absolute sensor, electrical headroom for the motor
+driver, and reuse of the [mrover](https://github.com/jrkwon/mrover) chassis-conversion
+recipe. **[ADR D-R](#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08) traded the
+voltage headroom away** for cost and storage footprint.
 
 ---
 
@@ -28,9 +29,9 @@ fails a "must" criterion is rejected regardless of price.
 
 | # | Criterion | Target | Why (which subsystem needs it) |
 |---|-----------|--------|--------------------------------|
-| C1 | **Payload margin** | ≥ ~6 kg usable deck load (laptop ~2 kg + LiDAR/camera/mast + Teensy/Sabertooth/relay MUX/RC signal MUX/logic battery + wiring ~3–4 kg), on top of the rated child weight the vehicle already carries | Onboard compute ([sensors.md](sensors.md)) and the DBW control box ride on the deck. A two-seater rated for ~60 kg of kids trivially carries the ~6 kg kit. |
-| C2 | **24 V electrical system** | 24 V battery pack, dual drive motors | Voltage headroom for the [Sabertooth 2x32](dbw.md) throttle channel; matches the mrover recipe; more torque margin on grass/ramps than 12 V. |
-| C3 | **Dual rear drive motors** | 2 rear motors (4WD acceptable) | The two rear motors parallel onto one Sabertooth channel ([ADR C](dbw.md), throttle path). Confirms a real H-bridge-drivable DC traction path, not a sealed ESC. |
+| C1 | **Payload margin** | ≥ ~6 kg usable deck load (laptop ~2 kg + LiDAR/camera/mast + Teensy/motor driver/relay MUX/RC signal MUX/logic battery + wiring ~3–4 kg), on top of the rated child weight the vehicle already carries | Onboard compute ([sensors.md](sensors.md)) and the DBW control box ride on the deck. A two-seater rated for ~60 kg of kids trivially carries the ~6 kg kit. |
+| C2 | **Pack voltage** | ~~24 V battery pack~~ → **12 V**, dual drive motors | Originally 24 V, for voltage headroom on the motor driver's throttle channel, to match the mrover recipe, and for torque margin on grass/ramps. **[ADR D-R](#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08) reversed this on 2026-08-08**: the adopted chassis is 12 V, and the torque margin was knowingly given up. |
+| C3 | **Dual rear drive motors** | 2 rear motors (4WD acceptable) | The two rear motors parallel onto one motor-driver channel ([ADR C](dbw.md), throttle path). Confirms a real H-bridge-drivable DC traction path, not a sealed ESC. |
 | C4 | **Accessible steering column** | Exposed vertical steering shaft between wheel and linkage, with ~30–50 mm of clear shaft | The [steering angle gearmotor](dbw.md) couples to the column, and the **absolute angle sensor** ([ADR B, sensor-tech ADR](dbw.md)) mounts on the shaft. A sealed/rack-hidden column blocks both. |
 | C5 | **Deck / cargo space** | Flat area ≥ ~30 × 30 cm, or a rear bed (UTV/truck style) | Mounting the control enclosure, mast base ([sensors.md](sensors.md)), and E-stop. UTV beds are ideal. |
 | C6 | **Metal gearbox (preferred)** | Steel/metal reduction gears on drive motors | Plastic gearboxes strip under the extra mass + autonomous duty cycle. Not a hard reject, but a strong preference and a stated risk if unmet. |
@@ -44,6 +45,16 @@ ignored in scoring.
 ---
 
 ## 2. Candidate Models (July 2026)
+
+> [!CAUTION]
+> **Superseded — this section evaluates a vehicle class MRider no longer uses**
+>
+> All three candidates below are **24 V two-seaters**, which was the ADR D decision.
+> **[ADR D-R reversed that on 2026-08-08](#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08)** and the adopted vehicle is a
+> **12 V single-seat Land Rover Defender**. The evaluation is dated July 2026 and is kept
+> unedited as the record of how the class was chosen — including its **Recommendation**, which
+> is not current advice. **Do not buy from this section.** What to buy is in the
+> [Order Log](../order-log.md) and [Build Guide §1.2.1](../build/01-bom-sourcing.md).
 
 All three are 24 V two-seaters with parent remote and dual/quad motors, in the
 $250–450 street-price band, and are the vehicle class the
@@ -100,10 +111,10 @@ motors in this size range run from RS-380/390 up to RS-550/775, that their stall
 close to an order of magnitude, and that **the range straddles the driver's ceiling**. That posture
 was right, and it is now discharged by a label rather than by a lookup.
 
-**The answer lands on the safe side.** RS-390 is the small end of that range, against a **30 A
-continuous / 80 A peak** channel on the [Cytron MDDS30](../order-log.md) that replaced the
-Sabertooth. A large-motor car was the case that would have breached the ceiling, and this is not
-one.
+**The answer lands on the safe side.** RS-390 is the small end of that range, against a
+per-channel rating of **30 A continuous / 80 A peak** on the board now being procured — see the
+[Order Log](../order-log.md) for which board that is and whether it has arrived. A large-motor
+car was the case that would have breached the ceiling, and this is not one.
 
 > [!IMPORTANT]
 > **This does not discharge the measurement. Take it anyway.**
@@ -181,7 +192,8 @@ motor leads are tapped:
 ### 3.4 Secondary checks
 
 - Gearbox material (C6): open one drive gearbox — steel vs nylon gears.
-- Pack: confirm 24 V (nominal) battery, connector type, and charger.
+- Pack: confirm the pack voltage matches the adopted class — **12 V nominal**
+  ([ADR D-R](#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08)) — plus connector type and charger.
 - Confirm the parent remote's receiver board is a **separable module** whose
   motor-drive lines can be routed through the [relay MUX](safety.md).
 

@@ -4,7 +4,7 @@ This is the core drive-by-wire design document for MRider. It specifies how a st
 
 **Architecture note (2026-08-07).** This document formerly specified a Pixhawk 6C + PX4 + Arduino Nano topology inherited from `jrkwon/mrover`. That topology was superseded by **decision D3** in [adr-dbw-architecture-review.md §4.6](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07): a **single Teensy 4.1 running micro-ROS** replaces both the flight controller and the Nano. The reasoning, including what the Pixhawk path had going for it, is preserved in that review. What follows is the adopted specification.
 
-MRider still reuses mrover at the layers where mrover is strong — the chassis conversion method, the connector-tap approach, the Sabertooth power stage, and the entire autonomy stack above the vehicle interface. It departs at the controller.
+MRider still reuses mrover at the layers where mrover is strong — the chassis conversion method, the connector-tap approach, the motor-driver power stage, and the entire autonomy stack above the vehicle interface. It departs at the controller.
 
 Sibling documents: [architecture.md](architecture.md) (system block diagram, command/feedback flow), [vehicle.md](vehicle.md) (chassis selection), [safety.md](safety.md) (failsafe matrix, authority arbitration, FMEA), [sensors.md](sensors.md), [calibration.md](calibration.md) (zeroing, counts→degrees, ticks→distance), [software.md](software.md) (ROS 2 stack), [bom.md](bom.md).
 
@@ -36,7 +36,7 @@ The **NEW** row is the one genuinely new control problem. mrover has no steering
 
 ### 2.1 Actuator
 
-The stock steering column is mechanically linked to the front wheels but has **no servo** — it is turned by hand (or, on RC models, by a stock DC gearmotor driven by the parent remote). MRider drives the column with a **DC gearmotor equipped with an incremental encoder**, coupled to the existing steering linkage, and driven by **Sabertooth 2x32 channel 1 (M1 output)**.
+The stock steering column is mechanically linked to the front wheels but has **no servo** — it is turned by hand (or, on RC models, by a stock DC gearmotor driven by the parent remote). MRider drives the column with a **DC gearmotor equipped with an incremental encoder**, coupled to the existing steering linkage, and driven by the **motor driver's channel 1 (M1 output)**.
 
 > [!NOTE]
 > **M1/M2 assignment — intentional departure (resolves finding F6)**
@@ -64,7 +64,7 @@ The Sabertooth outputs a **bidirectional motor drive** (PWM-controlled H-bridge)
 
 ### 2.4 Wiper-motor fallback
 
-If the encoder-gearmotor path is blocked at build time, substitute a wiper motor on Sabertooth M1. Consequences: (a) the wiper's internal worm gear is largely non-back-drivable, so on power loss the steering **holds** rather than freewheels — this changes the E-stop analysis and **must** be re-evaluated against [safety.md](safety.md); (b) wiper motors rarely have a usable shaft encoder, so the **absolute sensor becomes the sole angle source** and the motor-side incremental encoder (for stall/velocity) is lost — acceptable because ADR B already makes the absolute sensor authoritative.
+If the encoder-gearmotor path is blocked at build time, substitute a wiper motor on driver M1. Consequences: (a) the wiper's internal worm gear is largely non-back-drivable, so on power loss the steering **holds** rather than freewheels — this changes the E-stop analysis and **must** be re-evaluated against [safety.md](safety.md); (b) wiper motors rarely have a usable shaft encoder, so the **absolute sensor becomes the sole angle source** and the motor-side incremental encoder (for stall/velocity) is lost — acceptable because ADR B already makes the absolute sensor authoritative.
 
 ---
 
@@ -83,7 +83,7 @@ laptop  /mitt/dbw/command  (DbwCommand, steering_angle in rad)
               │  ── closes position loop ≥200 Hz vs. absolute angle sensor
               │  ── outputs signed effort
               ▼
-      Sabertooth 2x32  ── independent R/C (PWM) via the signal MUX, M1 → steering gearmotor
+      Motor driver     ── independent R/C (PWM) via the signal MUX, M1 → steering gearmotor
 ```
 
 **What this deletes.** The previous design carried the setpoint through PX4 as a servo-PWM pulse that a second MCU had to capture and decode. That entire round trip — `roll` → servo PWM → PWM input capture → degrees — existed *only* because the setpoint had to cross from PX4 to another board. With one controller the setpoint is a message the loop reads. The PWM input-capture firmware block, the ASCII framing, and the I²C register map all disappear with it.
@@ -137,7 +137,7 @@ laptop  /mitt/dbw/command  (DbwCommand, steering_angle in rad)
 
 - **The Sabertooth's R/C signal-loss timeout comes back for free** — motors stop when pulses stop, with no configuration. This backs [failsafe matrix row 6](safety.md#2-failsafe-matrix) and is one of the layers independent of Teensy firmware. Under packetized serial it would have been a configured behaviour requiring verification; here it is inherent.
 - Two Teensy PWM outputs are consumed instead of one serial port. The Teensy has 35 PWM-capable pins, so this is free.
-- Signal grounds between Teensy, RC receiver, signal MUX, and Sabertooth must be star-tied at the Sabertooth ([architecture.md](architecture.md) power tree).
+- Signal grounds between Teensy, RC receiver, signal MUX, and the motor driver must be star-tied at the motor driver ([architecture.md](architecture.md) power tree).
 - **The actuation frame-rate ceiling returns as an open question** — see §12 and the warning below. This is the real cost of the reversal, and it is *not* resolved by assertion.
 
 > [!WARNING]
@@ -196,11 +196,11 @@ Panel 2 is the part that is easy to get wrong in the shop. The magnet is **bonde
 
 ## 7. Throttle path
 
-The stock vehicle has **two rear drive motors**, electrically **paralleled onto Sabertooth channel 2 (M2 output)**. Throttle command originates as `DbwCommand.speed` and is emitted by the Teensy as a servo pulse on S2, through the same signal MUX as steering.
+The stock vehicle has **two rear drive motors**, electrically **paralleled onto the motor driver's channel 2 (M2 output)**. Throttle command originates as `DbwCommand.speed` and is emitted by the Teensy as a servo pulse on S2, through the same signal MUX as steering.
 
 The Teensy applies **ramp limiting, a speed cap, and a direction interlock** (no reversal above a threshold speed) before commanding the driver. These were previously PX4's responsibility and are now explicit project firmware — see [safety.md](safety.md).
 
-Paralleling is acceptable because the two motors are mechanically coupled through the ground and share a load; the consequence for **odometry** (only one shaft is instrumented) is handled in ADR C. Verify the **paralleled stall current against the Sabertooth's 32 A/channel rating** in [vehicle.md](vehicle.md); if the pair can exceed 32 A stalled, current-limit in the Sabertooth config or select lower-draw motors.
+Paralleling is acceptable because the two motors are mechanically coupled through the ground and share a load; the consequence for **odometry** (only one shaft is instrumented) is handled in ADR C. Verify the **paralleled stall current against the driver's 32 A/channel rating** in [vehicle.md](vehicle.md); if the pair can exceed 32 A stalled, current-limit in the driver config or select lower-draw motors.
 
 ---
 
@@ -208,7 +208,7 @@ Paralleling is acceptable because the two motors are mechanically coupled throug
 
 **Decision.** A **quadrature/Hall incremental encoder on the drive-motor shaft** (the mrover **3.15 mm → 5 mm shaft-adapter** method, `vehicle_setup.md:70-72`), read by a Teensy **hardware quadrature decoder**, converted to distance with a wheel-diameter calibration ([calibration.md](calibration.md)). Odometry is **fused with the IMU in the EKF** to bound error.
 
-![Rear drive sensing: both rear motors paralleled onto one Sabertooth channel with a single quadrature encoder on one motor shaft, and the chain of mechanical error sources that sit between that measurement and actual ground distance](../images/drive-sensing.svg)
+![Rear drive sensing: both rear motors paralleled onto one motor-driver channel with a single quadrature encoder on one motor shaft, and the chain of mechanical error sources that sit between that measurement and actual ground distance](../images/drive-sensing.svg)
 
 Panel 1 is the asymmetry worth staring at: **one motor is instrumented and the other is not**, and because both are paralleled onto a single channel there is no differential and no independent control. Panel 3 is the honest consequence — the measurement is taken *upstream* of backlash, slip and the speed difference between inner and outer wheels in a turn. Each of those biases raw odometry, which is precisely why it is fused rather than trusted.
 
@@ -264,7 +264,7 @@ Panel 1 is the asymmetry worth staring at: **one motor is instrumented and the o
 
 ## 9. Teensy 4.1 firmware platform and version pinning
 
-- **Controller:** Teensy 4.1 (600 MHz Cortex-M7, FPU, 1024 K RAM). Peripheral budget against MRider's needs: **4 hardware quadrature decoders** (2 used: steering motor, drive shaft), **8 hardware serial ports** (used: RC serial in, debug), **35 PWM-capable pins** (2 used for the Sabertooth), **18 analog inputs** (pot fallback), I²C for the AS5600. Everything fits with spare capacity.
+- **Controller:** Teensy 4.1 (600 MHz Cortex-M7, FPU, 1024 K RAM). Peripheral budget against MRider's needs: **4 hardware quadrature decoders** (2 used: steering motor, drive shaft), **8 hardware serial ports** (used: RC serial in, debug), **35 PWM-capable pins** (2 used for the motor driver), **18 analog inputs** (pot fallback), I²C for the AS5600. Everything fits with spare capacity.
 - **Toolchain:** PlatformIO with the Teensy platform. Firmware lives in `firmware/mitt_dbw/`.
 - **ROS 2 transport:** `micro_ros_arduino`, USB serial, with `micro_ros_agent` on the laptop.
 
@@ -314,7 +314,7 @@ Diagnostic/config traffic (PID gains, zeroing) uses ROS 2 **parameters and servi
 1. **micro-ROS node**: publisher, subscriber, session time synchronisation. Session sync replaces the MAVLink `TIMESYNC` offset estimation the superseded design needed — see [calibration.md](calibration.md) §6.
 2. **Absolute-sensor read**: AS5600 over I²C (or ADC + median/low-pass for the pot fallback), counts→radians per [calibration.md](calibration.md).
 3. **Position PID** at ≥ 200 Hz: error = setpoint − measured, output = signed effort.
-4. **Motor output**: servo-style PWM on two lines into the RC signal MUX, then to Sabertooth S1/S2, at the §12 frame rate.
+4. **Motor output**: servo-style PWM on two lines into the RC signal MUX, then to driver S1/S2, at the §12 frame rate.
 5. **Throttle shaping**: ramp limit, speed cap, direction interlock.
 6. **RC decode**: i-BUS on a hardware serial port — mode switch and closed-loop manual override.
 7. **Safety supervisor**: setpoint-staleness watchdog, mechanical-limit clamp (effort toward center only), stall detection, hardware watchdog timer resetting outputs to neutral.
@@ -352,7 +352,7 @@ Invariants:
 
 Two independent mechanisms, neither of which depends on Teensy firmware being alive.
 
-The stock parent-remote receiver and the Sabertooth **cannot both drive the motors at once**. A **DPDT relay/contactor MUX** selects STOCK vs. DBW mode per motor circuit. **Default (de-energized) = STOCK**, so any power or logic failure reverts to the safe, factory-controlled vehicle.
+The stock parent-remote receiver and the motor driver **cannot both drive the motors at once**. A **DPDT relay/contactor MUX** selects STOCK vs. DBW mode per motor circuit. **Default (de-energized) = STOCK**, so any power or logic failure reverts to the safe, factory-controlled vehicle.
 
 ### 11.2 Hardware RC signal MUX — the D3 condition
 
@@ -363,7 +363,7 @@ The stock parent-remote receiver and the Sabertooth **cannot both drive the moto
 
 **Layer 1 (normal): RC serial into the Teensy.** RC override in `MANUAL_RC` mode commands an *angle*, with the position loop still closed behind it. This is the everyday manual mode and it is better than raw effort.
 
-**Layer 2 (independent): a hardware RC signal MUX.** A dedicated RC channel drives a **signal multiplexer** that selects either Teensy PWM *or* direct RC PWM into the Sabertooth. This makes override a **wiring property, not a firmware property** — a stronger guarantee than the software override the superseded PX4 design relied on.
+**Layer 2 (independent): a hardware RC signal MUX.** A dedicated RC channel drives a **signal multiplexer** that selects either Teensy PWM *or* direct RC PWM into the motor driver. This makes override a **wiring property, not a firmware property** — a stronger guarantee than the software override the superseded PX4 design relied on.
 
 **Pinned part: [Pololu 4-Channel RC Servo Multiplexer #2806](https://www.pololu.com/product/2806)** (~$18). Selected 2026-08-08.
 
@@ -383,7 +383,7 @@ The stock parent-remote receiver and the Sabertooth **cannot both drive the moto
 > [row 3](safety.md#2-failsafe-matrix) drops it to `ESTOP`. Leaving the Teensy in control lets
 > that defined behaviour run.
 >
-> The alternative (outputs low) also stops the vehicle, via the Sabertooth's signal-loss
+> The alternative (outputs low) also stops the vehicle, via the driver's signal-loss
 > timeout, but it does so by removing *all* control rather than by executing a designed
 > response — and it makes an RC dropout indistinguishable from a controller failure.
 >
@@ -414,7 +414,7 @@ flowchart LR
       PR[Parent-remote receiver / stock ECU]
     end
     subgraph DBW["DBW path (relay energized)"]
-      SB[Sabertooth 2x32 M1/M2]
+      SB[Motor driver M1/M2]
     end
     TEENSY[Teensy 4.1] -->|servo PWM x2 - master| SMUX{{Hardware RC signal MUX}}
     RC[RC receiver] -->|RC serial - Layer A| TEENSY
@@ -429,7 +429,7 @@ flowchart LR
 ```
 
 - **NC contacts** route the **stock** controller to the motors when the coil is de-energized.
-- **NO contacts** route the **Sabertooth** to the motors when the coil is energized (DBW mode).
+- **NO contacts** route the **motor driver** to the motors when the coil is energized (DBW mode).
 - Any event that drops the coil (E-stop, logic-rail brownout, deliberate mode switch) reverts to STOCK.
 
 ### 11.5 3-tap connector spec (minimally invasive)
@@ -438,9 +438,9 @@ Following mrover's connector-tap approach (`vehicle_setup.md:5-23`), three inlin
 
 | Tap | Intercepts | MUX side | Notes |
 |---|---|---|---|
-| **Throttle tap** | stock throttle motor leads | NC→stock ECU, NO→Sabertooth M2 | paralleled rear motors (§7) |
-| **Steering tap** | stock steering motor leads | NC→stock ECU, NO→Sabertooth M1 | MRider adds the gearmotor if the column had none. **Note the M1/M2 inversion vs. mrover — §2.1.** |
-| **Power tap** | main battery pack | feeds Sabertooth B+ and the isolated logic rail | fused; brownout isolation per [safety.md](safety.md) |
+| **Throttle tap** | stock throttle motor leads | NC→stock ECU, NO→driver M2 | paralleled rear motors (§7) |
+| **Steering tap** | stock steering motor leads | NC→stock ECU, NO→driver M1 | MRider adds the gearmotor if the column had none. **Note the M1/M2 inversion vs. mrover — §2.1.** |
+| **Power tap** | main battery pack | feeds driver B+ and the isolated logic rail | fused; brownout isolation per [safety.md](safety.md) |
 
 All three are keyed inline connectors so the stock wiring is restorable without cutting. Unplug the three taps and the vehicle is factory-stock.
 
@@ -456,7 +456,7 @@ The pinned, testable contract for the DBW interface.
 | Steering command | `DbwCommand.steering_angle`, **radians**, clamped to range | §10.1 |
 | Throttle command | `DbwCommand.speed`, **m/s**, signed | §10.1 |
 | Steering position loop rate | **≥ 200 Hz** on the Teensy | ADR E |
-| **Actuation frame rate (Teensy→Sabertooth)** | **measure at Stage 1**, then pin — see the §4 warning | The datasheet states no maximum R/C input rate. Unpinning this is what silently capped the superseded design |
+| **Actuation frame rate (Teensy→driver)** | **measure at Stage 1**, then pin — see the §4 warning | The datasheet states no maximum R/C input rate. Unpinning this is what silently capped the superseded design |
 | Command stream rate (laptop→Teensy) | **≥ 50 Hz** | §10.1 |
 | Command-staleness failsafe | **> 500 ms** → `ESTOP`, throttle zeroed, steering centered | §10.3 |
 | Feedback rate (Teensy→laptop) | **≥ 50 Hz** | odometry/telemetry needs |
@@ -464,7 +464,7 @@ The pinned, testable contract for the DBW interface.
 | E-stop traction cut | **≤ 200 ms**, works with laptop powered off | [safety.md](safety.md) |
 | Absolute sensor resolution | **12-bit** over one turn (AS5600 class) | §6 |
 | Drive encoder resolution | **verify on the encoder fitted** — do not inherit 52 | §8, finding F7 |
-| Sabertooth mode | **independent R/C (PWM)**; both lines Teensy → signal MUX → S1/S2 | §4 |
+| Motor driver mode | **independent R/C (PWM)**; both lines Teensy → signal MUX → S1/S2 | §4 |
 | Steering steady-state accuracy | **≤ 1.0°** error, RMS **≤ 1.5°** over ±20° sweep | acceptance gate; E4 trigger if unmet |
 | Steering step response | 10° step to 90% in **≤ 400 ms**, overshoot **≤ 15%** | acceptance gate |
 | Odometry drift | **≤ 2%** of distance over 20 m straight | acceptance gate |
@@ -475,8 +475,8 @@ The pinned, testable contract for the DBW interface.
 
 - **Bench gate:** measured lock-to-lock travel of each candidate sensor shaft → confirms magnetic vs. pot (§6). **Before ordering.**
 - Torque measurement on the actual chassis → gearmotor spec and wiper-motor fallback decision (§2.2).
-- Paralleled drive-motor stall current vs. Sabertooth 32 A/channel → [vehicle.md](vehicle.md).
-- **Actuation frame rate** measured and pinned at Stage 1 → the §4 warning. The Sabertooth's R/C signal-loss timeout is inherent in this mode, but confirm it stops the motors ([failsafe row 6](safety.md#2-failsafe-matrix)).
+- Paralleled drive-motor stall current vs. the driver's 32 A/channel → [vehicle.md](vehicle.md).
+- **Actuation frame rate** measured and pinned at Stage 1 → the §4 warning. The driver's R/C signal-loss timeout is inherent in this mode, but confirm it stops the motors ([failsafe row 6](safety.md#2-failsafe-matrix)).
 - **FAILMODE jumper direction** on the RC signal MUX decided and recorded → §11.2.
 - ~~`micro_ros_arduino` Humble availability and USB-serial transport acceptance~~ → **closed 2026-08-08**, see §9.
 - ~~Hardware RC signal MUX part selection~~ → **closed 2026-08-08**: Pololu 4-Channel RC Servo Multiplexer #2806 ([bom.md](bom.md)). Wiring and FAILMODE jumper direction still to be set → §11.2.

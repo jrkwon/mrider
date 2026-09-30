@@ -77,7 +77,7 @@ dedicated global-shutter color camera** rather than "just the RealSense."
 - **RealSense D435i** — adds stereo depth + Bosch BMI055 IMU + global-shutter
   depth; RGB is rolling shutter; heavier USB/CPU load; needs `realsense-ros`.
   *Chosen for full tier* (depth for obstacle context; IMU as a cross-check to the
-  Pixhawk).
+  discrete BNO085, §3).
 - **Raspberry-Pi/CSI rolling-shutter webcam** — cheapest, but rolling shutter on
   the cloning stream; rejected as the primary forward camera.
 
@@ -89,7 +89,8 @@ so it earns its place only in the full tier via the D435i.
 **Consequences.** Minimum tier has **no depth** — obstacle sensing is
 LiDAR-only (§2), acceptable at ≤ walking speed. Full tier adds a second IMU
 (D435i) that [calibration.md](calibration.md)/[software.md](software.md) treat as
-a cross-check, with the **Pixhawk IMU remaining the EKF primary** (§3). If a
+a cross-check, with the **discrete BNO085 remaining the EKF primary** (§3) — D3 removed the
+Pixhawk, so there is no flight-controller IMU to fall back on. If a
 future build wants both cheap global-shutter RGB *and* depth, run the AR0234 for
 cloning alongside the D435i for depth.
 
@@ -298,7 +299,7 @@ real constraints.
 |-----------|--------|-----|
 | **GPU (NN inference)** | Discrete NVIDIA GPU (e.g., RTX 3050/4050+), CUDA-capable | Real-time behavior-cloning inference and on-vehicle Keras/TensorRT; CUDA is the path of least resistance for the reused `neural_net/` stack. |
 | **USB ports** | ≥ 4× USB-A/USB-C (USB3): camera + LiDAR + Teensy + IMU, plus spare | Camera (USB3), LiDAR (USB-serial), **Teensy (micro-ROS — carries command *and* feedback)**, IMU. Give the Teensy a **direct port, not a hub**: this link carries the steering setpoint, and a dropout stops the vehicle ([failsafe row 2](safety.md#2-failsafe-matrix)). |
-| **Battery runtime** | ≥ ~2 h under sensor + light-inference load | Full data-collection/mapping session without a 24 V tap; drives the [power budget](safety.md) assumption that logic and traction rails are isolated. |
+| **Battery runtime** | ≥ ~2 h under sensor + light-inference load | Full data-collection/mapping session without tapping the traction pack; drives the [power budget](safety.md) assumption that logic and traction rails are isolated. |
 | **RAM / storage** | ≥ 16 GB RAM, ≥ 512 GB NVMe | ROS 2 + rosbag logging of camera/LiDAR is storage-hungry; SLAM and training want RAM. |
 | **OS** | Ubuntu 22.04 (ROS 2 Humble) | Matches the mrover/OSCAR reused stack ([software.md](software.md)). |
 | **Ruggedness/thermals** | Sustained GPU load without thermal throttle; secure mount | It rides on a vibrating vehicle; sustained inference must not throttle. |

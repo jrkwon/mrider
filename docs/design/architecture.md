@@ -33,7 +33,7 @@ AVCS Kit (IEEE AFRICON 2017) → Ridon Vehicle (Energies 2021) → OSCAR/thesis 
 The governing principle remains **reuse before invent** — but a
 [direct re-reading of the B-MROVER source](adr-dbw-architecture-review.md) established
 where the reuse is real and where it was assumed. **Reuse is real** at the chassis
-conversion (connector taps, motor selection, shaft-adapter encoder method), the Sabertooth
+conversion (connector taps, motor selection, shaft-adapter encoder method), the motor-driver
 power stage, and the entire autonomy stack above the vehicle interface —
 `robot_localization`, slam_toolbox, Nav2, `data_collection`, and the `neural_net`
 behavior-cloning pipeline, all of which are transport-agnostic. **Reuse was weaker than
@@ -68,16 +68,16 @@ All B-MROVER claims below were verified against the local checkout at
 | # | Component | Role in MRider | B-MROVER lineage |
 |---|-----------|----------------|------------------|
 | 1 | **Autonomy laptop** | On-board computer. Runs ROS 2 Humble: perception, SLAM, Nav2, EKF, the `micro_ros_agent`, and `ros2_control`. Powered by its own internal battery (no traction→19 V rail in v1). | Same on-board-laptop topology. |
-| 2 | **Teensy 4.1 (DBW controller)** | Single MCU owning all actuation and vehicle sensing. Subscribes `DbwCommand`, publishes `DbwStatus` over micro-ROS. Closes the steering **position loop at ≥ 200 Hz**, shapes throttle, reads the absolute angle sensor and both encoders, decodes the RC serial stream, and runs the safety supervisor. Commands the Sabertooth over **servo PWM through the RC signal MUX**. | Replaces both the Pixhawk 6C and the Nano (D3). Encoder-read *logic* traces to `code/code.ino`. |
-| 3 | **Sabertooth 2x32** | Dual-channel motor driver. **M1** steering gearmotor, **M2** paralleled rear traction motors. Configured in **independent R/C (PWM) mode**; both signal lines come from the Teensy via the hardware RC signal MUX. | Same as B-MROVER's mode. Packetized serial was briefly adopted and reverted — it cannot coexist with an RC signal MUX ([dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)). |
+| 2 | **Teensy 4.1 (DBW controller)** | Single MCU owning all actuation and vehicle sensing. Subscribes `DbwCommand`, publishes `DbwStatus` over micro-ROS. Closes the steering **position loop at ≥ 200 Hz**, shapes throttle, reads the absolute angle sensor and both encoders, decodes the RC serial stream, and runs the safety supervisor. Commands the motor driver over **servo PWM through the RC signal MUX**. | Replaces both the Pixhawk 6C and the Nano (D3). Encoder-read *logic* traces to `code/code.ino`. |
+| 3 | **Motor driver** ([which part](bom.md)) | Dual-channel. **M1** steering gearmotor, **M2** paralleled rear traction motors. Configured in **independent R/C (PWM) mode**; both signal lines come from the Teensy via the hardware RC signal MUX. | Same as B-MROVER's mode. Packetized serial was briefly adopted and reverted — it cannot coexist with an RC signal MUX ([dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)). |
 | 4 | **Relay/contactor MUX** | Authority arbitration. A DPDT relay per motor circuit selects **STOCK** vs **DBW** source. Default (de-energized) = STOCK, so power loss reverts to the parent remote. | New. See [`safety.md`](safety.md). |
-| 5 | **Hardware RC signal MUX** | **The condition of D3's adoption.** An RC channel drives a signal multiplexer selecting Teensy output *or* direct RC input into the Sabertooth — making override a *wiring* property, independent of Teensy firmware. | New. Replaces PX4's software RC override with a stronger guarantee ([dbw.md §11.2](dbw.md#112-hardware-rc-signal-mux-the-d3-condition)). |
+| 5 | **Hardware RC signal MUX** | **The condition of D3's adoption.** An RC channel drives a signal multiplexer selecting Teensy output *or* direct RC input into the motor driver — making override a *wiring* property, independent of Teensy firmware. | New. Replaces PX4's software RC override with a stronger guarantee ([dbw.md §11.2](dbw.md#112-hardware-rc-signal-mux-the-d3-condition)). |
 | 6 | **RC transmitter + receiver** | Two roles: RC serial into the Teensy for normal closed-loop manual override, and a dedicated channel driving the hardware MUX (#5) as the independent fallback. | B-MROVER binds RC to the Pixhawk; here the RX serves both layers directly. |
 | 7 | **Absolute steering-angle sensor** | Boot-absolute road-wheel angle, **mounted load-side** (downstream of the steering gearbox) so backlash appears as measured error, not invisible bias. AS5600-class magnetic, pot fallback — [ADR](dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer). | New — fixes B-MROVER's incremental-only steering and its runtime auto-ranging (F4). |
 | 8 | **IMU (BNO085 class)** | 9-DoF with onboard fusion, straight to the laptop, feeding `robot_localization`. | Replaces the Pixhawk's internal IMU. Note the estimator was *already* `robot_localization` (F11), so this is a driver swap, not an estimator change. |
 | 9 | **Motor encoders** | Incremental encoder on the drive-motor shaft for distance/velocity; incremental encoder on the steering motor for velocity/stall. Both on Teensy **hardware quadrature decoders**. | `code/code.ino` method and the shaft-adapter approach. **PPR must be verified on the part fitted** — the source project conflicts with itself (F7). |
 | 10 | **Sensors** | Minimum set: one front camera + one 2D LiDAR. Optional GNSS/RTK (phase 2). Detailed in [`sensors.md`](sensors.md). | B-MROVER camera + YDLidar. |
-| 11 | **Traction battery pack** | Traction source, feeding the Sabertooth. An **isolated logic rail** supplies the Teensy so motor transients cannot brown it out. Laptop is **not** on this rail in v1. | Same class. |
+| 11 | **Traction battery pack** | Traction source, feeding the motor driver. An **isolated logic rail** supplies the Teensy so motor transients cannot brown it out. Laptop is **not** on this rail in v1. | Same class. |
 
 **Deleted from the superseded design:** Pixhawk 6C, PM02 power module, Arduino Nano,
 USB-TTL adapter, the Micro-XRCE-DDS agent, `mavlink_bridge.py`, the `px4_msgs` dependency,
@@ -91,7 +91,7 @@ retained I²C register map. See
 
 The autonomy stack produces a steering angle (radians) and a speed (m/s). Both travel as a
 single typed ROS 2 message to the Teensy, which closes the steering loop locally and drives
-both Sabertooth channels over one serial link.
+both driver channels over one link.
 
 **There is exactly one command datapath.** No PWM round trip, no protocol translation, no
 second controller. This single-path rule is the pinned
@@ -112,7 +112,7 @@ flowchart LR
     AGENT -- "micro-ROS / USB serial" --> TEENSY["Teensy 4.1<br/>position loop >=200 Hz<br/>throttle shaping, safety supervisor"]
 
     TEENSY -- "servo PWM x2" --> SMUX
-    SMUX -- "selected source" --> SABER["Sabertooth 2x32 (R/C mode)"]
+    SMUX -- "selected source" --> SABER["Motor driver (R/C mode)"]
     SABER --> STEERM["M1 - Steering gearmotor"]
     SABER --> DRIVEM["M2 - Rear traction motors (paralleled)"]
 
@@ -132,7 +132,7 @@ flowchart LR
   frame is ~50 Hz, which would cap closed-loop performance regardless of loop rate — the defect
   the superseded design carried unstated. **Measure it at Stage 1 and pin it**
   ([`dbw.md §4`](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)).
-- The Sabertooth's **R/C signal-loss timeout is inherent in this mode** — motors stop when
+- The driver's **R/C signal-loss timeout is inherent in this mode** — motors stop when
   pulses stop, with no configuration. One more layer independent of Teensy firmware.
 
 ---
@@ -190,7 +190,7 @@ flowchart TB
     ESTOP --> MUX["Relay / contactor MUX<br/>DPDT per motor circuit<br/>default de-energized = STOCK"]
 
     MUX -- "STOCK (default)" --> STOCKRX["Stock parent-remote receiver + ESC"]
-    MUX -- "DBW (energized)" --> SABER["Sabertooth 2x32<br/>M1 steering / M2 throttle"]
+    MUX -- "DBW (energized)" --> SABER["Motor driver<br/>M1 steering / M2 throttle"]
 
     STOCKRX --> MOTORS["Steering + traction motors"]
     SABER --> MOTORS
@@ -208,7 +208,7 @@ flowchart TB
 
 **Authority arbitration (safety-critical).** Four layers, three of them independent of Teensy
 firmware — see the [authority table](dbw.md#113-authority-layers). The stock parent-remote
-receiver and the Sabertooth must never drive the motors simultaneously; the DPDT relay MUX
+receiver and the motor driver must never drive the motors simultaneously; the DPDT relay MUX
 selects one source per motor circuit, **de-energized default = STOCK**.
 
 **Why the hardware RC MUX exists.** Under a single controller, one MCU would otherwise hold
@@ -242,7 +242,7 @@ interface contract is pinned in [`dbw.md §12`](dbw.md#12-numeric-interface-cont
 |-------------|-----------|--------------|--------------------|-------|
 | Command stream (`DbwCommand`) | laptop → Teensy | **≥ 50 Hz** | staleness > 500 ms → `ESTOP` | Teensy supervisor |
 | Steering position loop | Teensy-local | **≥ 200 Hz** | at limit → clamp effort toward center only | Teensy |
-| **Actuation frame (→ Sabertooth)** | Teensy → MUX → driver | **measure & pin at Stage 1** | R/C signal-loss timeout → motors stop | Sabertooth |
+| **Actuation frame (→ driver)** | Teensy → MUX → driver | **measure & pin at Stage 1** | R/C signal-loss timeout → motors stop | motor driver |
 | Status feedback (`DbwStatus`) | Teensy → laptop | **≥ 50 Hz** | driver flags stale; EKF coasts on IMU | ROS 2 driver |
 | IMU | IMU → laptop | **≥ 100 Hz** (EKF input) | EKF degrades; Nav2 slows/stops | robot_localization |
 | RC override (RC serial) | RX → Teensy | ~50 Hz | RC-loss → `ESTOP` | Teensy supervisor |
@@ -282,7 +282,7 @@ The full failsafe matrix and FMEA are in [`safety.md`](safety.md).
 
 - **Decision.** Single **Teensy 4.1 + micro-ROS** DBW controller owning actuation and vehicle
   sensing; steering position loop on the Teensy at ≥ 200 Hz against a **load-side absolute
-  angle sensor**; Sabertooth in **independent R/C (PWM)** behind the signal MUX; **layered authority** —
+  angle sensor**; the motor driver in **independent R/C (PWM)** behind the signal MUX; **layered authority** —
   hardware E-stop, relay MUX to STOCK, hardware RC signal MUX, RC serial closed-loop override;
   typed `DbwCommand`/`DbwStatus` on one transport with one clock.
 - **Alternatives.** Pixhawk + PX4 with a Nano smart-servo (the superseded design — full trade
