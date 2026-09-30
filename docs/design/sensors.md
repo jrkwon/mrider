@@ -72,7 +72,7 @@ dedicated global-shutter color camera** rather than "just the RealSense."
 
 **Alternatives.**
 - **Global-shutter color USB3 (Arducam AR0234)** — global-shutter RGB (correct for
-  cloning), cheap, plain UVC (works in ROS 2 via `usb_cam`/`v4l2_camera`), no
+  cloning), cheap, plain UVC (works in ROS 2 via **`usb_cam`** — `v4l2_camera` cannot request MJPEG in Humble, and an MJPEG-only 30 fps mode is the norm in this class of camera), no
   depth, no IMU. *Chosen for minimum tier.*
 - **RealSense D435i** — adds stereo depth + Bosch BMI055 IMU + global-shutter
   depth; RGB is rolling shutter; heavier USB/CPU load; needs `realsense-ros`.

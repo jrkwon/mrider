@@ -461,6 +461,34 @@ things that decide whether the camera is usable are the format and the frame rat
 > Run all of this on **one unit before buying three**. It is also the natural `Secured` check for
 > this row.
 
+> [!CAUTION]
+> **The camera meeting the spec is not enough — the ROS driver has to ask for MJPEG**
+>
+> Validated on the 2026 test unit, which is exactly the shape the warning above predicts:
+>
+> | | 1920×1080 | 1280×720 | 640×480 |
+> |---|---|---|---|
+> | **MJPG** | 30 fps | **30 fps** | 30 fps |
+> | **YUYV** | **5 fps** | **10 fps** | 30 fps |
+>
+> Now the part that bites. In Humble:
+>
+> | Driver | MJPEG? | Default `pixel_format` |
+> |---|---|---|
+> | **`v4l2_camera`** | **No** — YUYV / UYVY / GREY only | **`YUYV`** |
+> | **`usb_cam`** | **Yes** — `mjpeg2rgb`, `raw_mjpeg` | — |
+>
+> So `ros2 run v4l2_camera v4l2_camera_node` at its defaults asks this camera for **YUYV at 10 fps**
+> on 720p. Nothing errors. The image is live, correct, and a third the rate it should be.
+>
+> **Use `usb_cam` with `pixel_format: mjpeg2rgb`.** [sensors.md](../design/sensors.md) names
+> "`usb_cam`/`v4l2_camera`" as if interchangeable; for a camera whose 30 fps lives only in MJPEG,
+> they are not.
+>
+> The diagnostic signature is worth knowing, because it looks like a hardware problem: **640×480
+> runs at 30 fps while 720p runs at 10.** That is not a slow camera or a slow laptop — it is YUYV
+> hitting the USB 2.0 bandwidth ceiling, and the ceiling moves with resolution.
+
 > [!NOTE]
 > **Phase 2 will need a different camera, and that is already decided**
 >
