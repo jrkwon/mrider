@@ -368,9 +368,9 @@ them with Batch 1 is the documented way to waste money on this build. Take the m
 | 4 | Steering gearmotor + encoder | 3 | TBD | 48,000 | . | . | 0/3 | | **M1**: column torque τ, size at **≥ 2×** rated |
 | 5 | Absolute angle sensor (AS5600 **or** pot) | 3 | TBD | 27,000 | . | . | 0/3 | | **M2**: lock-to-lock travel — **≤ 340° ⇒ AS5600** |
 | 13 | Steering coupler + magnet mount | 3 | TBD | 20,000 | . | . | 0/3 | | **M3**: column / kingpin shaft diameter |
-| 60 | **#6a** Quadrature encoder | 3 | 디바이스마트 | 18,000 | . | . | 0/3 | | **Quadrature A/B, 3.3 V.** Not single-channel — it must sense direction. PPR: any, but **measure it** |
-| 61 | **#6b** Shaft adapter / coupling | 3 | TBD | 3,000 | . | . | 0/3 | | **M3**: the measured motor-shaft diameter. The BOM's 3.15 mm is B-MROVER's motor |
-| 62 | **#6c** Encoder mounting bracket | 3 | 로컬 / 3D print | 3,000 | . | . | 0/3 | | **M3**: the motor's rear mounting face. **Never previously in the BOM** |
+| 60 | **#6a** Hall sensor board ×2 (quadrature) | 3 | 디바이스마트 | 14,000 | . | . | 0/3 | | **3.3 V, two sensors offset ¼ magnet pitch** → A/B. Not single-channel — it must sense direction ([§1.2.3](build/01-bom-sourcing.md#6-drive-encoder-what-to-actually-buy)) |
+| 61 | **#6b** Magnets for the carrier ring | 3 | TBD | 4,000 | . | . | 0/3 | | *(was: shaft adapter — **no longer needed**, there is no shaft.)* Sized to the printed pocket; 8–16 pairs, spacing matters more than count |
+| 62 | **#6c** Printed carrier ring + sensor bracket | 3 | 로컬 / 3D print | 6,000 | . | . | 0/3 | | Ring clips over the **gearbox output hub**; bracket to the gearbox screw bosses. **Print the ring — do not glue magnets by hand**, uneven spacing aliases into odometry |
 | 63 | **#6d** Fasteners, threadlock, tie-downs | 3 | 로컬 | 1,000 | . | . | 0/3 | | Route the encoder cable away from the motor leads |
 | | **Batch 1G** | | | **120,000** | | | | | **× 3 = 360,000** |
 
@@ -430,11 +430,13 @@ Measure **every** candidate mounting shaft, not just the intended one.
 |---|---|
 | Column diameter (mm) | |
 | Kingpin / sensed shaft diameter (mm) | |
-| **Drive-motor shaft diameter (mm)** | |
-| **Rear shaft stub present?** (Y/N) | |
-| **Rear stub diameter (mm) / length protruding** | |
-| **Output shaft reachable before the gearbox?** (Y/N) | |
-| **Encoder branch chosen** (A / B / C — [§1.2.3](build/01-bom-sourcing.md#6-drive-encoder-what-to-actually-buy)) | |
+| **Drive motor (from the can)** | **`DING LI RS 390-12V RPM 18000`** — 2026-09-30 |
+| **Drive-motor shaft diameter (mm)** | ~2 mm, carrying a 12-tooth pinion — not accessible |
+| **Rear shaft stub present?** (Y/N) | **N** — RS-390 is single-ended |
+| **Rear stub diameter (mm) / length protruding** | n/a |
+| **Output shaft reachable before the gearbox?** (Y/N) | **N** — pinion meshes directly into a sealed gearbox |
+| **Encoder branch chosen** (A / B / C — [§1.2.3](build/01-bom-sourcing.md#6-drive-encoder-what-to-actually-buy)) | **C**, mounted at the **gearbox output hub** (1:1 with the wheel) |
+| **Paralleled drive-motor stall current (A)** — §3.1, locked rotor | *(measure — RS-390 expected well inside the 30 A channel, but a class is not a current)* |
 | Coupler type selected | |
 | Magnet mount approach (concentricity + air gap) | |
 | Date / by | |

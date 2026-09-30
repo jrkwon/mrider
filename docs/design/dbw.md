@@ -223,6 +223,41 @@ Panel 1 is the asymmetry worth staring at: **one motor is instrumented and the o
 
 **Rationale.** Instrumenting the motor shaft reuses mrover's proven encoder + adapter method and mounts inside the drivetrain rather than on the wheel. Minimally invasive and cheap.
 
+> [!IMPORTANT]
+> **Outcome, 2026-09-30 — C1 is infeasible on the delivered vehicle. C2 is adopted.**
+>
+> Teardown found a **`DING LI RS 390-12V RPM 18000`** driving a sealed gearbox. The RS-390 carries a
+> ~2 mm shaft with a 12-tooth pinion pressed onto it, meshing straight into the gearbox: **no rear
+> stub, and no bare output shaft.** That is the family's construction, not this vehicle's packaging
+> — opening the gearbox would not produce one.
+>
+> So **the decision above cannot be executed.** The mrover shaft-adapter method it reuses has no
+> shaft to adapt.
+>
+> **C2's rejection does not survive the loss of C1.** It was rejected for being *"a more invasive,
+> per-vehicle mechanical mount"* — a comparison against clamping onto an exposed motor shaft. With
+> that shaft gone, the real comparison is C2 against **splitting a gearbox on three vehicles that
+> students will maintain for a semester**. C2 is plainly the less invasive of the two. The premise
+> failed, not the reasoning.
+>
+> **And C2 was always the better measurement.** This ADR says so itself — *"true wheel odometry,
+> immune to gearbox backlash and drivetrain slip."* C1 was preferred for convenience, never
+> accuracy, and the convenience is what disappeared.
+>
+> **Mount: the gearbox output hub**, not the wheel rim. The gearbox drives a splined plastic hub
+> that the wheel slides onto, with the rear axle passing through its bore, and there is clearance at
+> the hub with the wheel fitted. That gives a target turning **1:1 with the wheel**, in plastic that
+> accepts magnets, beside a fixed housing with screw bosses for the sensor bracket — and pulling a
+> wheel does not disturb the sensor.
+>
+> The consequences below change accordingly: **(a) gearbox backlash no longer applies**, because the
+> measurement is taken downstream of the gearbox. (b) wheel slip and (c) differential wheel speed in
+> turns still do, because one wheel is still the only one observed. Odometry is still fused rather
+> than trusted.
+>
+> Full purchasing specification and the decision tree this outcome came from:
+> [§1.2.3](../build/01-bom-sourcing.md#6-drive-encoder-what-to-actually-buy).
+
 **Consequences (stated explicitly).** The two rear motors are paralleled on one channel and **only one motor shaft is observed**. Motor-side measurement therefore inherits (a) **gearbox backlash** between encoder and wheel, (b) **wheel slip** and tire deformation, and (c) **differential wheel speed** in turns (only one side measured). These bias raw odometry; `robot_localization` fuses the encoder with the IMU (and GNSS when present) to bound drift. Documented so students understand *why* the odometry is fused rather than trusted raw.
 
 ---

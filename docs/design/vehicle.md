@@ -92,12 +92,30 @@ The two rear motors are wired **in parallel onto one Sabertooth 2x32 channel**
 per channel (~64 A peak per channel for a few seconds)**. The paralleled pair
 must stay within that.
 
-**The motor class on the delivered vehicle is not known, and this document
-deliberately no longer guesses it.** Ride-on drive motors in this size range run
-from RS-380/390 up to RS-550/775. Their stall currents differ by close to an
-order of magnitude, and — this is the point — **that range straddles the
-Sabertooth ceiling**. A small-motor car is comfortably inside it; a large-motor
-car is not. No lookup resolves that. Measure it.
+**Resolved on the delivered vehicle, 2026-09-30: `DING LI RS 390-12V RPM 18000`**, read off the
+motor can during teardown.
+
+This document had recorded the class as unknown since 2026-08-11, on the grounds that ride-on drive
+motors in this size range run from RS-380/390 up to RS-550/775, that their stall currents differ by
+close to an order of magnitude, and that **the range straddles the driver's ceiling**. That posture
+was right, and it is now discharged by a label rather than by a lookup.
+
+**The answer lands on the safe side.** RS-390 is the small end of that range, against a **30 A
+continuous / 80 A peak** channel on the [Cytron MDDS30](../order-log.md) that replaced the
+Sabertooth. A large-motor car was the case that would have breached the ceiling, and this is not
+one.
+
+> [!IMPORTANT]
+> **This does not discharge the measurement. Take it anyway.**
+>
+> A class label is not a current. Winding variants inside a single RS-390 part number differ by
+> several times, the vehicle is loaded differently from any datasheet's test rig, and the whole
+> point of §3.1 is that catalogue figures are not evidence — see the warning below, which still
+> stands unchanged.
+>
+> What the label changes is the **expected outcome**, not the obligation. Every gate below, in
+> [safety.md FMEA row 7](safety.md#7-fmea-lightweight), and in
+> [03-electrical](../build/03-electrical.md) remains in force.
 
 - **Procedure:** with wheels off the ground, measure per-motor no-load current
   (clamp meter on one motor lead) at each OEM speed. Then measure locked-rotor
@@ -254,10 +272,18 @@ against the build.
 > for the 24 V two-seater and never re-scoped when ADR D was reversed; the RS-390 claim had
 > no source at all.
 >
-> **Neither is now asserted.** The motor class on the delivered vehicle is unknown, the
-> plausible range straddles the Sabertooth's limit, and §3.1 makes the measurement the
-> authority rather than any catalogue figure. That is the correct posture for a number that
-> decides whether a $125 part is adequate.
+> **Neither was asserted after that.** The motor class was recorded as unknown, the plausible range
+> straddles the driver's limit, and §3.1 made the measurement the authority rather than any
+> catalogue figure. That was the correct posture for a number that decides whether the most
+> expensive board in the build is adequate.
+>
+> **Closed 2026-09-30 by teardown: it is an RS-390.** So the claim that was struck for having *no
+> source at all* turns out to have been right.
+>
+> That does not make striking it wrong. It was unsourced when it was written, and an unsourced
+> right answer is indistinguishable from an unsourced wrong one until someone checks — which is the
+> entire reason §3.1 exists. The label is the source it never had. **The measurement is still
+> required**; being on the safe side of a ceiling is not the same as knowing the distance to it.
 
 **Payload is not the problem it first appears.** These cars are rated for a child (~25–30 kg);
 ~6 kg of kit is well inside that. The real risks are **centre of mass** and **mounting
@@ -270,7 +296,7 @@ simulation rather than discovered on the floor.
 
 - [ ] Confirm 12 V at the motor terminals, and whether the two drive motors are 12 V in
       parallel — §3.2's warning matters more here, not less.
-- [ ] Paralleled stall current (§3.1). Lower than the 24 V case, but still measure it.
+- [ ] Paralleled stall current (§3.1). RS-390 confirmed 2026-09-30, so expected well inside the 30 A channel — **still measure it**.
 - [ ] Steering column travel lock-to-lock — gates the
       [angle-sensor choice](dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer).
 - [ ] Whether the laptop still fits once the seat is removed, or whether an SBC is warranted.

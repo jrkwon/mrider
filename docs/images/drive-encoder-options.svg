@@ -17,7 +17,7 @@
     Drive encoder (#6) — which part to buy depends on the motor you actually receive
   </text>
   <text x="24" y="56" font-size="13" fill="#475569">
-    The motor class is unknown until teardown. Measure first; the branch follows from what is there.
+    2026 vehicle: RS-390, no motor shaft at all — Branch C taken, mounted at the gearbox output hub.
   </text>
 
   <!-- ===== measure first ===== -->
@@ -35,7 +35,7 @@
   <!-- ===== three branches ===== -->
   <!-- A -->
   <rect x="24" y="208" width="296" height="228" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
-  <text x="44" y="234" font-size="15" font-weight="bold" fill="#1e3a8a">A — rear shaft stub present</text>
+  <text x="44" y="234" font-size="15" font-weight="bold" fill="#1e3a8a">A — rear shaft stub present  ✗ 2026</text>
   <line x1="44" y1="244" x2="300" y2="244" stroke="#93c5fd"/>
   <g stroke="#1e40af" stroke-width="2" fill="none">
     <rect x="52" y="262" width="96" height="54" rx="4" fill="#dbeafe"/>
@@ -53,7 +53,7 @@
 
   <!-- B -->
   <rect x="342" y="208" width="296" height="228" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
-  <text x="362" y="234" font-size="15" font-weight="bold" fill="#14532d">B — output shaft reachable</text>
+  <text x="362" y="234" font-size="15" font-weight="bold" fill="#14532d">B — output shaft reachable  ✗ 2026</text>
   <line x1="362" y1="244" x2="618" y2="244" stroke="#86efac"/>
   <g stroke="#15803d" stroke-width="2" fill="none">
     <rect x="360" y="262" width="80" height="54" rx="4" fill="#dcfce7"/>
@@ -72,7 +72,7 @@
 
   <!-- C -->
   <rect x="660" y="208" width="296" height="228" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
-  <text x="680" y="234" font-size="15" font-weight="bold" fill="#7f1d1d">C — neither is accessible</text>
+  <text x="680" y="234" font-size="15" font-weight="bold" fill="#7f1d1d">C — neither is accessible  ✓ TAKEN</text>
   <line x1="680" y1="244" x2="936" y2="244" stroke="#fca5a5"/>
   <g stroke="#b91c1c" stroke-width="2" fill="none">
     <circle cx="742" cy="296" r="38" fill="#fee2e2"/>
@@ -85,7 +85,7 @@
   <text x="680" y="378" font-size="12.5" fill="#7f1d1d">Measure at the wheel instead.</text>
   <text x="680" y="399" font-size="12.5" fill="#7f1d1d" font-weight="bold">This is ADR C2 — already the</text>
   <text x="680" y="417" font-size="12.5" fill="#7f1d1d" font-weight="bold">pre-registered upgrade path.</text>
-  <text x="680" y="437" font-size="11.5" fill="#64748b">Coarser (~7 mm/count) but still passes</text>
+  <text x="680" y="437" font-size="11.5" fill="#64748b">Mounted on the gearbox output hub: 1:1</text>
 
   <!-- ===== shared electrical spec ===== -->
   <path d="M172,436 L172,466" stroke="#334155" stroke-width="2" marker-end="url(#ar)"/>
@@ -117,6 +117,6 @@
     02-mechanical §2.6 requires it; #13 is the steering coupler and #14 is the sensor mast. Nothing funded it.
   </text>
   <text x="44" y="671" font-size="12.5" fill="#78350f">
-    Without a bracket the encoder body rotates with the shaft and reads zero — which looks exactly like a dead sensor.
+    2026 outcome: RS-390, 2 mm shaft with a pinion straight into a sealed gearbox. A and B were never available.
   </text>
 </svg>

@@ -310,26 +310,58 @@ The [roll-out calibration](../design/calibration.md#2-drive-distance-encoder-tic
 whatever the part turns out to be. **Do not pay for resolution.** Do not inherit a number either —
 see finding **F7**.
 
-The geometry sets a floor rather than a target. At walking pace the wheel turns about **2.5 rev/s**:
+The geometry sets a floor rather than a target. The wheel is 0.09 m radius — **0.566 m per
+revolution** — and turns about **2.5 rev/s** at walking pace.
 
-| Where the encoder sits | Resolution | Distance per count |
-|---|---|---|
-| Motor shaft, behind ~20:1 gearing, 12 PPR | ~2,400 counts/s | **0.6 mm** |
-| Wheel or axle, 20 PPR | ~200 counts/s | **7.1 mm** |
+**As built** (magnets on the gearbox output hub, 1:1 with the wheel, quadrature decode):
 
-Both clear the **≤ 2 % drift over 20 m** acceptance gate
-([dbw.md §12](../design/dbw.md#8-adr-c-drive-distance-encoding)). The difference is velocity
-smoothness at low speed, not whether odometry works.
+| Magnet pairs | Counts / wheel rev | Distance per count | Counts over a 20 m run |
+|---:|---:|---:|---:|
+| 8 | 32 | 17.7 mm | 1,132 |
+| 12 | 48 | 11.8 mm | 1,698 |
+| 16 | 64 | 8.8 mm | 2,264 |
+
+Even the coarsest of these clears the **≤ 2 % drift over 20 m** gate
+([dbw.md §12](../design/dbw.md#8-adr-c-drive-distance-encoding)) with enormous margin — a ±1 count
+error on the 8-magnet ring is **0.09 %**. Resolution is not the binding constraint; it never was.
+Pick the count that fits the hub comfortably rather than the highest that fits at all, because even
+magnet spacing matters more than magnet count.
+
+> [!NOTE]
+> **The motor-shaft figures this table used to carry were wrong twice over**
+>
+> It compared against *"motor shaft, behind ~20:1 gearing"*. The delivered motor is an **RS-390 at
+> 18000 RPM**, which against ~149 wheel RPM at walking pace implies roughly **120:1** — six times
+> the assumed ratio, so the quoted resolution was off by that factor.
+>
+> It is moot regardless: there is no accessible motor shaft on this vehicle, so that row describes
+> a mount that cannot be built. Kept only as the reason the comparison is no longer made.
 
 #### Which one to buy depends on what the vehicle turns out to be
 
 ![Three ways to instrument the drive, keyed on what the teardown finds: a rear shaft stub, an accessible output shaft, or neither](../images/drive-encoder-options.svg)
 
-**Measure first** — the fields are in [M3](../order-log.md#m3-shaft-diameter-sizes-13). The motor
-class on this vehicle is [explicitly unknown](../design/vehicle.md), and the `3.15 mm` in the BOM is
-**B-MROVER's** motor, inherited with the method and then orphaned when
-[ADR D-R](../design/vehicle.md) changed the vehicle class entirely. Treat it as a hint that the shaft
-is probably **3.175 mm (1/8")**, which is the RS-550 family standard — not as a specification.
+**Measure first** — the fields are in [M3](../order-log.md#m3-shaft-diameter-sizes-13).
+
+> [!IMPORTANT]
+> **Resolved for the 2026 vehicle: Branch C, mounted at the gearbox output hub.**
+>
+> Teardown found a **`DING LI RS 390-12V RPM 18000`** with a ~2 mm shaft carrying a 12-tooth pinion
+> straight into a sealed gearbox — **no rear stub, no bare output shaft**, which is how the family
+> is built rather than how this one is packaged. Branches A and B are both unavailable.
+>
+> The gearbox drives a **splined plastic hub** that the wheel slides onto, with clearance at the hub
+> once the wheel is fitted. That is the mount: magnets on the hub, sensor bracketed to the gearbox
+> housing. See [ADR C's recorded outcome](../design/dbw.md#8-adr-c-drive-distance-encoding) for why
+> this is better than the original plan rather than a compromise.
+>
+> The `3.15 mm` the BOM inherited from B-MROVER is now doubly dead: it was orphaned when
+> [ADR D-R](../design/vehicle.md) changed the vehicle class, and an earlier revision of this section
+> guessed it was *"probably 3.175 mm, the RS-550 family standard"* — **the wrong family**, and moot
+> now that no shaft is involved at all.
+>
+> **Branches A and B stay documented below.** The next cohort may receive a different chassis, and
+> a tree whose branches have been pruned to the one that happened is no longer a tree.
 
 | | What the teardown finds | What to buy |
 |---|---|---|
