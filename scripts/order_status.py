@@ -337,7 +337,12 @@ def main():
         print(f'\nArrived, NOT yet secured ({len(unverified)}) - '
               f'the check in the Verify column has not been done:')
         for r in unverified:
-            print(f'  #{r["bom"]:<3} {r["item"][:34]:<34} {r["verify"][:38]}')
+            have, need = secured_count(r['secured'])
+            # Show the count, because arrivals are routinely partial: a row can
+            # be part-delivered and part-outstanding at the same time, and
+            # "arrived" alone reads as though every unit is on the shelf.
+            print(f'  #{r["bom"]:<3} {r["item"][:30]:<30} {have}/{need} secured  '
+                  f'{r["verify"][:34]}')
     if not waiting and not unverified:
         print('\nNothing outstanding.')
     return 0
