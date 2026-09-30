@@ -2,7 +2,7 @@
 
 **Goal:** build the power and signal harness, including the authority MUX and E-stop.
 
-Wire the 24V traction rail, the isolated logic rail, the Sabertooth 2x32, the Teensy,
+Wire the traction rail, the isolated logic rail, the motor driver, the Teensy,
 the relay-MUX (STOCK vs. DBW), the hardware RC signal MUX, and the hardware E-stop. Verify
 rail isolation and default-to-stock behavior before energizing anything downstream.
 
@@ -25,7 +25,7 @@ rail isolation and default-to-stock behavior before energizing anything downstre
 >
 > Everything before this was mechanical. From here the vehicle can move under power. Wire
 > the E-stop and the MUX **first**, verify default-to-STOCK **before** energizing the
-> Sabertooth, and keep the vehicle wheels-off until step 7.
+> motor driver, and keep the vehicle wheels-off until step 7.
 
 ---
 
@@ -34,10 +34,10 @@ rail isolation and default-to-stock behavior before energizing anything downstre
 MRider has exactly two power rails, and the split is safety-critical.
 
 ```
-24 V traction pack
+Chassis traction pack
   │
   └──▶ E-stop contactor (cuts TRACTION only) ──▶ Relay MUX ──┬──▶ STOCK: parent-remote receiver + ESC
-                                                             └──▶ DBW:   Sabertooth 2x32 B+
+                                                             └──▶ DBW:   Motor driver B+
                                                                           ├─ M1 → steering gearmotor
                                                                           └─ M2 → paralleled drive motors
 
@@ -46,7 +46,7 @@ MRider has exactly two power rails, and the split is safety-critical.
                                    ├─ absolute angle sensor (3.3 V, I²C)
                                    ├─ RC receiver
                                    ├─ hardware RC signal MUX
-                                   ├─ Sabertooth signal logic
+                                   ├─ motor driver signal logic
                                    └─ MUX coil driver
 
 Laptop ──▶ its own internal battery (NOT wired to traction in v1)
@@ -54,8 +54,8 @@ Laptop ──▶ its own internal battery (NOT wired to traction in v1)
 
 | Rail | Feeds | Dies when |
 |---|---|---|
-| **Traction / motor** | Sabertooth B+, M1 (steering gearmotor), M2 (drive motors) | E-stop pressed, MUX drops, pack disconnected |
-| **Isolated logic** | Teensy, angle sensor, RC receiver, signal MUX, Sabertooth signal logic, MUX coil driver | Logic battery disconnected only |
+| **Traction / motor** | Driver B+, M1 (steering gearmotor), M2 (drive motors) | E-stop pressed, MUX drops, pack disconnected |
+| **Isolated logic** | Teensy, angle sensor, RC receiver, signal MUX, motor driver signal logic, MUX coil driver | Logic battery disconnected only |
 
 > [!CAUTION]
 > **The logic rail is now a separate battery, not a tap off the pack**
@@ -91,9 +91,9 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 | Rail / branch | Nominal | Stall / peak | Fuse | Wire gauge |
 |---|---|---|---|---|
 | Pack → E-stop contactor → MUX | *(measure during bring-up)* | *(measure during bring-up)* | *(size to measured)* | *(size to fuse)* |
-| MUX → Sabertooth B+ | *(measure during bring-up)* | *(measure during bring-up)* | *(size to measured)* | *(size to fuse)* |
-| Sabertooth M2 → paralleled drive motors | *(measure during bring-up)* | **must be < 32 A** ([dbw.md §7](../design/dbw.md#7-throttle-path)) | *(size to measured)* | *(size to fuse)* |
-| Sabertooth M1 → steering gearmotor | *(measure during bring-up)* | *(measure during bring-up)* | *(size to measured)* | *(size to fuse)* |
+| MUX → driver B+ | *(measure during bring-up)* | *(measure during bring-up)* | *(size to measured)* | *(size to fuse)* |
+| Driver M2 → paralleled drive motors | *(measure during bring-up)* | **must be < 32 A** ([dbw.md §7](../design/dbw.md#7-throttle-path)) | *(size to measured)* | *(size to fuse)* |
+| Driver M1 → steering gearmotor | *(measure during bring-up)* | *(measure during bring-up)* | *(size to measured)* | *(size to fuse)* |
 | Logic battery → DC-DC input | < 2 A typical | — | 3–5 A | 18–20 AWG |
 | Logic rail → Teensy / sensor / RC RX / signal MUX | < 1 A typical | — | 1–2 A | 22–24 AWG |
 | MUX coil circuit | per relay coil spec | — | *(size to coil)* | 22 AWG |
@@ -104,7 +104,7 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 > This is [FMEA row 7](../design/safety.md#7-fmea-lightweight) and an explicit cross-check
 > in [dbw.md §13](../design/dbw.md#13-cross-checks-and-open-follow-ups). If the two
 > paralleled rear motors can exceed 32 A stalled, you must either current-limit in the
-> Sabertooth configuration or select lower-draw motors. Measure it — a locked-rotor test
+> driver's configuration or select lower-draw motors. Measure it — a locked-rotor test
 > with a clamp meter and a current-limited supply — do not assume.
 
 ## 3.3 The three taps
@@ -114,9 +114,9 @@ without cutting it ([dbw.md §11.5](../design/dbw.md#115-3-tap-connector-spec-mi
 
 | Tap | Intercepts | MUX side | Notes |
 |---|---|---|---|
-| **Throttle tap** | stock throttle motor leads | NC → stock ECU, NO → Sabertooth M2 | paralleled rear motors |
-| **Steering tap** | stock steering motor leads | NC → stock ECU, NO → Sabertooth M1 | MRider adds the gearmotor if the column had none. **Note the M1/M2 assignment is inverted vs. mrover** — intentional, see [dbw.md §2.1](../design/dbw.md#21-actuator) (finding F6) |
-| **Power tap** | 24 V battery pack | feeds Sabertooth B+ only | fused. The logic rail is a **separate battery** (§3.1), not tapped from here |
+| **Throttle tap** | stock throttle motor leads | NC → stock ECU, NO → driver M2 | paralleled rear motors |
+| **Steering tap** | stock steering motor leads | NC → stock ECU, NO → driver M1 | MRider adds the gearmotor if the column had none. **Note the M1/M2 assignment is inverted vs. mrover** — intentional, see [dbw.md §2.1](../design/dbw.md#21-actuator) (finding F6) |
+| **Power tap** | chassis traction pack | feeds the motor driver's B+ only | fused. The logic rail is a **separate battery** (§3.1), not tapped from here |
 
 Use **keyed** connectors — not generic bullets. During bring-up you will unplug and re-plug
 these many times, and a reversed steering tap means the position loop runs away from its
@@ -137,7 +137,7 @@ two things at once:
 
 - **NC (normally closed) contacts** → stock controller drives the motors. This is the state
   when the coil is de-energized, which is the **default**.
-- **NO (normally open) contacts** → Sabertooth drives the motors. Coil energized = DBW mode.
+- **NO (normally open) contacts** → the motor driver drives the motors. Coil energized = DBW mode.
 - **Flyback diode across every coil**, oriented correctly. A relay coil without a flyback
   diode will eventually kill the transistor driving it, and that failure can leave the MUX
   in an indeterminate state.
@@ -154,12 +154,15 @@ two things at once:
 
 ## 3.5 Signal wiring
 
-The Sabertooth runs in **independent R/C (PWM) mode**. Both signal lines come from the Teensy,
+The motor driver runs in **independent R/C (PWM) mode**. Both signal lines come from the Teensy,
 and **both pass through the hardware RC signal MUX** on the way
 ([dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)).
-Set the DIP switches for R/C mode before wiring — consult the Sabertooth manual for the table.
+Set the DIP switches for R/C mode before wiring. **The switch map differs between boards** —
+the configuration for the board actually purchased is recorded with it in the
+[Order Log](../order-log.md), including which switch enables the signal-loss stop. Set it from
+there and from the board's own manual, not from another board's table.
 
-| Sabertooth input | Normal source | Override source | Motor output |
+| Driver input | Normal source | Override source | Motor output |
 |---|---|---|---|
 | S1 | Teensy PWM (via MUX) | RC receiver (via MUX) | M1 — steering gearmotor |
 | S2 | Teensy PWM (via MUX) | RC receiver (via MUX) | M2 — drive motors, paralleled |
@@ -174,7 +177,7 @@ Set the DIP switches for R/C mode before wiring — consult the Sabertooth manua
 > and the MUX is the condition D3 was adopted on. See
 > [dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters).
 >
-> The consolation: in R/C mode the Sabertooth's **signal-loss timeout is inherent** — motors
+> The consolation: in R/C mode the driver's **signal-loss timeout is inherent** — motors
 > stop when pulses stop, with nothing to configure.
 
 **Signal connections to make:**
@@ -188,7 +191,7 @@ Set the DIP switches for R/C mode before wiring — consult the Sabertooth manua
 | RC receiver **RC serial (i-BUS)** | Teensy hardware serial RX | Layer A override (closed-loop) |
 | RC receiver **MUX channel** | Hardware RC signal MUX select | Layer B override — see below |
 | RC receiver PWM out ×2 | RC signal MUX **slave** inputs | Emergency path |
-| Signal MUX outputs ×2 | Sabertooth **S1** and **S2** | Whichever source the MUX selects |
+| Signal MUX outputs ×2 | Motor driver **S1** and **S2** | Whichever source the MUX selects |
 | Teensy **USB** | Laptop | micro-ROS — carries **command *and* feedback** |
 
 > [!CAUTION]
@@ -212,12 +215,12 @@ Set the DIP switches for R/C mode before wiring — consult the Sabertooth manua
 > A build without this MUX has no independent override and does not match the safety analysis
 > the design was approved against.
 
-The MUX sits **between the Teensy and the Sabertooth**, selecting which source reaches the
+The MUX sits **between the Teensy and the motor driver**, selecting which source reaches the
 motor driver:
 
 ```
 Teensy output ──▶ MUX input A ─┐
-                               ├──▶ MUX output ──▶ Sabertooth
+                               ├──▶ MUX output ──▶ Motor driver
 RC receiver   ──▶ MUX input B ─┘
                      ▲
 RC channel ──────────┘  (select: A = normal, B = emergency)
@@ -231,12 +234,12 @@ RC channel ──────────┘  (select: A = normal, B = emergency
   tested with the component dead is not a safety claim.
 
 > [!CAUTION]
-> **Star-ground at the Sabertooth**
+> **Star-ground at the motor driver**
 >
-> Tie the signal grounds of the Teensy, the RC receiver, the signal MUX, and the Sabertooth to
-> a **single** point at the Sabertooth. This is
+> Tie the signal grounds of the Teensy, the RC receiver, the signal MUX, and the motor driver
+> to a **single** point at the motor driver. This is
 > [FMEA row 5](../design/safety.md#7-fmea-lightweight) — a ground loop between logic and a
-> 24 V power stage produces erratic motor commands that are extremely hard to diagnose later,
+> motor power stage produces erratic motor commands that are extremely hard to diagnose later,
 > because they look like a firmware bug.
 
 ## 3.6 Continuity and isolation checks — before any power
@@ -244,9 +247,9 @@ RC channel ──────────┘  (select: A = normal, B = emergency
 Battery **disconnected**, multimeter in continuity mode.
 
 - [ ] No continuity between traction rail and logic rail anywhere except the intended DC-DC input
-- [ ] No continuity between Sabertooth M1 and M2 outputs
+- [ ] No continuity between driver M1 and M2 outputs
 - [ ] MUX NC contacts connect stock ECU → motors with the coil de-energized
-- [ ] MUX NO contacts connect Sabertooth → motors only with the coil energized
+- [ ] MUX NO contacts connect the motor driver → motors only with the coil energized
 - [ ] E-stop, when latched in, opens the traction path **and** the coil circuit
 - [ ] Every flyback diode is present and correctly oriented (diode-test across each coil)
 - [ ] Signal grounds meet at exactly one point
@@ -301,7 +304,7 @@ Only after §3.6 and §3.7 pass.
 1. Wheels off the ground, vehicle on stands.
 2. Connect the pack. Do **not** energize the MUX coil — the vehicle should be in STOCK mode.
 3. Confirm the stock parent remote still drives the vehicle normally. If it does not, your
-   taps are wrong, and you have learned that before involving the Sabertooth.
+   taps are wrong, and you have learned that before involving the motor driver.
 4. Confirm the logic rail is up and stable, and that the Teensy powers on and enumerates over USB.
 5. Measure the logic rail while someone forces a stock steering stall. **The logic rail must
    not sag.** If it does, your isolation is inadequate — add hold-up capacitance before
@@ -327,12 +330,13 @@ Only after §3.6 and §3.7 pass.
 - [ ] E-stop hardwired in the traction path, latching, drops the MUX coil
 - [ ] MUX defaults to STOCK de-energized; verified 10× without chatter
 - [ ] All flyback diodes present and correctly oriented
-- [ ] Signal grounds star-tied at the Sabertooth
+- [ ] Signal grounds star-tied at the motor driver
 - [ ] Continuity/isolation checklist (§3.6) passes
 - [ ] Stock parent remote still drives the vehicle through the taps
 - [ ] Logic rail does not sag under traction stall
 - [ ] **Logic rail is its own battery**, not tapped from the traction pack (§3.1)
-- [ ] Sabertooth DIP switches set for **independent R/C (PWM) mode**
+- [ ] Motor driver DIP switches set for **independent R/C (PWM) mode**, per the
+      [Order Log](../order-log.md) entry for the board fitted
 - [ ] **Hardware RC signal MUX installed and powered from the logic rail** (§3.5.1) — its
       Stage 2 test with the Teensy halted is the condition D3 was adopted on
 - [ ] RC receiver failsafe values set, and the MUX's failsafe direction known and written down

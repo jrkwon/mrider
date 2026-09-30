@@ -22,8 +22,8 @@ and links to the design document that specifies the details.
 | 1 | [BOM & sourcing](01-bom-sourcing.md) | Every line item received and reconciled |
 | 2 | [Vehicle prep & mechanical](02-mechanical.md) | Actuator and sensors mounted; stock steering still reassemblable |
 | 3 | [Electrical & wiring](03-electrical.md) | Harness continuity-checked; relay defaults to STOCK; E-stop cuts traction only |
-| 4 | [Firmware bring-up](04-firmware.md) | Nano closes a bench steering loop; PX4 emits servo PWM; RC override verified |
-| 5 | [Software install](05-software.md) | ROS 2 ↔ PX4 over XRCE; feedback frames streaming; TF tree populated |
+| 4 | [Firmware bring-up](04-firmware.md) | Teensy closes a bench steering loop and emits servo PWM through the signal MUX; RC override verified |
+| 5 | [Software install](05-software.md) | ROS 2 ↔ Teensy over micro-ROS; feedback frames streaming; TF tree populated |
 | 6 | [Bench test & calibration](06-bench-test.md) | All failsafes pass wheels-off; calibration constants recorded |
 | 7 | [Manual drive](07-manual-drive.md) | Smooth manual control; RC override and E-stop confirmed under motion |
 | 8 | [Autonomous bring-up](08-autonomous.md) | A saved map, successful Nav2 goals, and an autonomous lap |
@@ -44,7 +44,8 @@ stage passes.**
 > [!CAUTION]
 > **Bench before vehicle; wheels-off before wheels-on; walking pace before anything faster.**
 >
-> This is a 24 V two-seater with enough torque to injure someone. The staged protocol is
+> This vehicle is geared roughly 120:1 at the wheel and has enough torque to injure someone —
+> the pack voltage is not what makes it dangerous. The staged protocol is
 > not a suggestion — each stage exists because it catches a class of fault that is
 > dangerous to discover at the next stage.
 
@@ -54,7 +55,7 @@ Three things happen to a stock ride-on vehicle:
 
 1. **A steering servo appears where there was none.** The stock column is turned by hand or
    by a parent-remote gearmotor. MRider adds a gearmotor plus an *absolute* column angle
-   sensor, and the Arduino Nano closes a position loop against it at ≥100 Hz — the
+   sensor, and the Teensy closes a position loop against it at ≥ 200 Hz — the
    "smart-servo" of [dbw.md ADR E](../design/dbw.md#3-adr-e-steering-control-loop-location-the-key-dbw-decision).
 2. **Authority becomes explicit.** A DPDT relay MUX selects STOCK or DBW per motor circuit,
    defaulting (de-energized) to STOCK, and a hardwired E-stop cuts traction power. Nothing

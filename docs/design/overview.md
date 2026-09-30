@@ -1,6 +1,18 @@
-# MRider (Michgian Rider) Project
+# MRider (Michigan Rider) Project
 
-The MRider project is to convert a kids-ride-on remote-controllable electric vehicle to a self-driving ready car with a Drive-By-Wire (DBW) system. The vehicle's nick name is MITT (Michigan Intelligent Transportation Tech) inspired by KITT from Knight Rider.
+The MRider project is to convert a kids-ride-on remote-controllable electric vehicle to a self-driving-ready car with a Drive-By-Wire (DBW) system. The vehicle's nickname is MITT (Michigan Intelligent Transportation Tech) inspired by KITT from Knight Rider.
+
+> [!NOTE]
+> **Which half of this page is which**
+>
+> **`## Plan`** and **`## Requirements`** preserve the project's original framing, with each
+> superseded option corrected by an appended **Resolved:** or **Amended:** note rather than
+> rewritten — so the reasoning behind a change stays visible.
+> **[`## Design Decisions (resolved)`](#design-decisions-resolved)** is the live register: it
+> always states the current decision.
+>
+> **When the two disagree, the register is what holds.** The same convention governs the
+> procurement pair, where it is stated in the [Order Log](../order-log.md).
 
 ## Plan
 
@@ -17,22 +29,25 @@ The MRider project is to convert a kids-ride-on remote-controllable electric veh
 
 ### Vehicle choices for Chassis
 
-- 12V or 24V  kids electic vehicle ride on car with parent remote control.
+- 12 V or 24 V kids electric vehicle ride-on car with parent remote control.
 - These vehicles do not have servo motors for steering.
 
-> **Resolved: 24 V two-seater.** Payload and torque margin, and it is the chassis class
-> B-MROVER is validated on. Steering is motorized with a DC gearmotor on the column, with an
-> absolute angle sensor mounted **load-side** so gearbox backlash appears as measured error
-> rather than invisible bias. → [vehicle.md](vehicle.md), [dbw.md](dbw.md)
+> **Resolved: 12 V single-seat.** ADR D first chose a **24 V two-seater** for payload and
+> torque margin, and because that is the chassis class B-MROVER is validated on.
+> **[ADR D-R reversed it on 2026-08-08](vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08)**, trading that margin for cost and
+> storage footprint: a 12 V single-seat Land Rover Defender. Finding F1 — B-MROVER's validation
+> of the class — was knowingly given up. Steering is motorized with a DC gearmotor on the column,
+> with an absolute angle sensor mounted **load-side** so gearbox backlash appears as measured
+> error rather than invisible bias. → [vehicle.md](vehicle.md), [dbw.md](dbw.md)
 
 ## Requirements
 
-- Needs to know and control the steering angle and driving distance for mapping and navigation. 
-  - Find a way to add sensors to measure the angle and distance with a minimally invasive way.
+- Needs to know and control the steering angle and driving distance for mapping and navigation.
+  - Find a way to add sensors to measure the angle and distance in a minimally invasive way.
 - A laptop will be an on-board computer to which most sensors are connected.
 - IMU for pose estimation if necessary.
 - Minimum sensor packages: one front camera and one LiDAR.
-- GNSS is an optional.
+- GNSS is optional.
   - **Amended:** optional for the semester-1 indoor target; **required** for the phase-2
     outdoor waypoint-following target, where dead reckoning from wheel odometry + IMU alone
     drifts out of a lane-width corridor within tens of meters. RTK-class if lane-level
@@ -46,7 +61,7 @@ The MRider project is to convert a kids-ride-on remote-controllable electric veh
 - DBW
   - Steering and driving encoding method
 - Sensors: camera, LiDAR, IMU, etc.
-  
+
 ### Design documents
 
 - Something similar to [RoboRacer](https://roboracer.ai/).
@@ -71,8 +86,9 @@ ADR in the linked document below.
 - **Drive odometry — drive-motor shaft encoder** with wheel-diameter calibration, fused with
   IMU via EKF to bound gearbox/slip error. **PPR is verified on the part fitted, not
   inherited** — the source project conflicts with itself. → [dbw.md](dbw.md), [calibration.md](calibration.md)
-- **Chassis — 24V two-seater ride-on** (UTV/Jeep style) for payload and voltage headroom.
-  Reconsidered against a cheaper 12 V single-seater and kept. → [vehicle.md](vehicle.md)
+- **Chassis — 12 V single-seat ride-on** (Land Rover Defender class, 98 × 56 × 47 cm, 10 kg).
+  ADR D chose a 24 V two-seater for payload and torque margin; **[ADR D-R reversed it](vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08)**
+  on cost and storage footprint. → [vehicle.md](vehicle.md)
 - **Sensors — camera + 2D LiDAR minimum**, discrete BNO085-class IMU, GNSS(+RTK) as the
   phase-2 outdoor path. → [sensors.md](sensors.md)
 - **Software — ROS 2 Humble on Ubuntu 22.04**, reusing `jrkwon/mrover` autonomy packages
@@ -95,7 +111,7 @@ ADR in the linked document below.
 ### Design
 
 - [architecture.md](architecture.md) — system architecture, command/feedback flow, power tree, timing/heartbeat contract.
-- [vehicle.md](vehicle.md) — chassis selection criteria and the 24V two-seater decision.
+- [vehicle.md](vehicle.md) — chassis selection criteria, the chassis decision, and its reversal.
 - [dbw.md](dbw.md) — the core drive-by-wire design: steering smart-servo, throttle, encoding, interface contract.
 - [safety.md](safety.md) — failsafe matrix, authority arbitration, E-stop semantics, FMEA, bring-up protocol.
 - [sensors.md](sensors.md) — camera, 2D LiDAR, IMU, optional GNSS/RTK, mounting and laptop criteria.

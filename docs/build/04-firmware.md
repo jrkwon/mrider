@@ -3,7 +3,8 @@
 **Goal:** flash and validate the single controller that closes every DBW loop, in stages, with
 the motor disconnected until the software is trustworthy.
 
-- **Prerequisites:** Section 3 complete; Sabertooth DIP switches set for independent R/C (PWM) mode;
+- **Prerequisites:** Section 3 complete; motor driver DIP switches set for independent R/C (PWM)
+  mode, per the [Order Log](../order-log.md) entry for the board fitted;
   isolated logic rail built and verified.
 - **Specification:** [design/dbw.md](../design/dbw.md) · [design/safety.md](../design/safety.md)
 - **Expected outcome:** the Teensy holds a commanded steering angle against a hand

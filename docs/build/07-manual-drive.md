@@ -23,7 +23,7 @@ behave as specified while the vehicle is moving at walking speed.
 > **The vehicle is on the ground and moving from this point**
 >
 > Everything the bench could tell you, it already told you. What remains is what only the
-> ground can teach — and it teaches at 24 V with real momentum. **≤ walking speed, operator
+> ground can teach — and it teaches with real momentum behind a ~120:1 reduction. **≤ walking speed, operator
 > alongside, spotter on the E-stop, every time.**
 
 This step is **Stage 5** of the bring-up protocol. Autonomy (step 8) does not begin until it

@@ -27,8 +27,9 @@ until it has earned the right to be on the floor.
 > [!CAUTION]
 > **Every powered test before *Manual drive* is performed wheels-off, on a stand.**
 >
-> This is not a formality. The vehicle is a 24 V two-seater with enough torque to injure
-> someone. Read [Safety](design/safety.md) before applying power.
+> This is not a formality. The vehicle is geared roughly 120:1 at the wheel and has enough
+> torque to injure someone — the pack voltage is not what makes it dangerous. Read
+> [Safety](design/safety.md) before applying power.
 
 ## What state is this project in?
 

@@ -10,7 +10,7 @@
 # The name is now narrower than the job - checks 5 and 7 are not documentation -
 # but it is what everyone types, so it stays.
 #
-# Eleven checks. Each one exists because this repository has already shipped the
+# Twelve checks. Each one exists because this repository has already shipped the
 # defect it catches, or is one cohort away from it:
 #
 #   1. mkdocs build --strict   - broken file links, bad nav entries, config errors
@@ -36,6 +36,14 @@
 #                                script that totals them
 # 11. purchase request adds up - an approved total edited after the fact, which
 #                                would move the bar silently
+#  12. traction pack voltage   - a build page naming the pack voltage. ADR D-R
+#                                changed the class on 2026-08-08 and twelve files
+#                                kept the old number for seven weeks; one was a
+#                                bring-up check that would have failed the
+#                                correct vehicle. Build pages name the role
+#                                ("the traction pack"), exactly as
+#                                architecture.md already does; the number lives
+#                                in vehicle.md, bom.md and the order log.
 #
 # CI runs the same checks (.github/workflows/docs.yml), and because the
 # deploy job has `needs: build`, a failure here stops the publish rather than
@@ -235,6 +243,41 @@ printf "%s11. purchase request still adds up%s\n" "$B" "$N"
 if python3 scripts/order_status.py 2>&1 | grep -q "does not add up"; then
     python3 scripts/order_status.py 2>&1 | grep -A1 "does not add up" >&2
     fail "the purchase request's own arithmetic is inconsistent"
+fi
+printf "   %sok%s\n\n" "$G" "$N"
+
+printf "%s12. build pages do not name the traction voltage%s\n" "$B" "$N"
+# The durable half of the ADR D-R cleanup. A build page that states the pack
+# voltage has to be found and edited every time the chassis class changes, and
+# in 2026-08 it was not: four pages still said 24 V seven weeks later, one of
+# them a bring-up check reading "Battery is genuinely 24 V - the whole power
+# tree assumes it", which would have failed the vehicle that was actually
+# bought.
+#
+# The convention instead: build pages name the ROLE ("the traction pack", "the
+# traction rail"), which architecture.md already does throughout - it contains
+# no voltage at all. The number is stated once, where a part is selected or a
+# check is performed: vehicle.md, bom.md, the order log, and 01-bom-sourcing.md.
+#
+# 01-bom-sourcing.md is exempt because it is the sourcing page: it quotes
+# component ratings (a 6-24 V driver input window, a 12 V contactor coil, DC
+# derating) where the number IS the content.
+VOLTS=""
+for f in $(find docs/build -name '*.md' ! -name '01-bom-sourcing.md' | sort); do
+    # 24 V under docs/build/ is always wrong now - the class is 12 V.
+    HIT="$(grep -nE '\b24 ?V\b' "$f" || true)"
+    [ -n "$HIT" ] && VOLTS="${VOLTS}  ${f}: superseded 24 V\n$(echo "$HIT" | sed 's/^/    /')\n"
+    # And no voltage literal on the same line as the traction pack or rail,
+    # whichever number it happens to be - that is the line that goes stale.
+    HIT="$(grep -nEi '(traction (pack|rail)|pack|battery pack)[^|]*\b[0-9]+ ?V\b|\b[0-9]+ ?V\b[^|]*traction (pack|rail)' "$f" || true)"
+    [ -n "$HIT" ] && VOLTS="${VOLTS}  ${f}: traction voltage named\n$(echo "$HIT" | sed 's/^/    /')\n"
+done
+if [ -n "$VOLTS" ]; then
+    printf "   build pages naming a traction-pack voltage:\n" >&2
+    printf "%b" "$VOLTS" >&2
+    printf "   Name the role - \"the traction pack\" - as architecture.md does.\n" >&2
+    printf "   The voltage belongs in vehicle.md, bom.md, and the order log.\n" >&2
+    fail "traction voltage named on a build page"
 fi
 printf "   %sok%s\n\n" "$G" "$N"
 
