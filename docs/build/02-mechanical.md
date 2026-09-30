@@ -33,7 +33,7 @@ in person. Specifically confirm:
 
 | Check | Why it matters | Result |
 |---|---|---|
-| Battery is genuinely 24 V | The whole power tree assumes it | *(measure during bring-up)* |
+| Battery is genuinely 12 V | The whole power tree assumes it, and [ADR D-R](../design/vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08) pinned the class | *(measure during bring-up)* |
 | Two independent rear drive motors | [Throttle path](../design/dbw.md#7-throttle-path) parallels them onto Sabertooth M2 | *(measure during bring-up)* |
 | Steering column is accessible without cutting | Reversibility principle | *(measure during bring-up)* |
 | Column has a stock steering motor, or is hand-turned only | Determines whether the steering tap intercepts an existing motor or adds one | *(measure during bring-up)* |
@@ -57,7 +57,7 @@ Work in this order and bag-and-tag fasteners by panel.
    you want to see them before anything is cut or unplugged:
     - the **throttle** leads to the rear motors,
     - the **steering** leads (if a stock steering motor exists),
-    - the **24 V pack** output.
+    - the **12 V pack** output.
 3. **Expose the steering column** from the wheel down to the linkage. Note the column
    diameter, its total lock-to-lock rotation, and whether there is a usable flat or
    D-profile for a coupler set screw.
@@ -174,7 +174,7 @@ shaft, with the encoder body bracketed to the motor mount
   mrover's motor, not necessarily yours.
 - Concentricity matters more than it looks: a wobbling encoder disc produces periodic tick
   errors that alias into odometry.
-- Route the encoder cable away from the motor leads. Encoder lines next to a PWM'd 24 V
+- Route the encoder cable away from the motor leads. Encoder lines next to a PWM'd 12 V
   motor pick up noise that reads as phantom ticks.
 
 > [!NOTE]
@@ -198,7 +198,7 @@ matter at this stage:
 - **Reachability.** You will re-seat USB connectors more often than you expect during
   bring-up. Do not bury them.
 
-The laptop rides on its own battery and is not wired into the 24 V system in v1
+The laptop rides on its own battery and is not wired into the 12 V system in v1
 ([safety.md §5](../design/safety.md#5-power-rail-isolation-and-brownout-protection)) —
 mechanically, it just needs a secure, ventilated place to sit.
 
