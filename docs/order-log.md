@@ -133,13 +133,13 @@ Prices are the verified figures from
 | 1 | Vehicle — 12 V single-seat ride-on | 3 | 쿠팡 | 229,000 | 2026-09-29 | 2026-09-30 | 3/3 | 687,000 | Record model + serial per unit. **Stock steering gearmotor present** — see V1 |
 | 2 | Teensy 4.1 **[이더넷] DEV-16771** | 3 | 디바이스마트 | 74,250 | 2026-09-29 | . | 0/3 | 222,750 | ₩67,500 ex-VAT → **₩74,250 incl**. **4.1, not 4.0** — count the pins |
 | 3 | **Cytron SmartDriveDuo-30 (MDDS30)** — M1 steering, M2 drive *(replaces Sabertooth 2x32)* | **4** | [디바이스마트 13186549](https://www.devicemart.co.kr/goods/view?no=13186549) 해외구매 | 143,440 | 2026-09-29 | . | 0/4 | 573,760 | ₩130,400 ex-VAT → **₩143,440 incl**. **4 units — 3 + 1 spare.** **`SW1:SW2=00` RC · `SW3:SW4=11` independent · `SW6=0` timeout ON** — verify SW6 on every board; `SW6=1` disables the stop |
-| 7 | Relay MUX — 2× DPDT + sockets, diodes, drivers | 3 | 디바이스마트 | 34,000 | . | . | 0/3 | | Contact rating ≥ traction current |
-| 8 | E-stop + DC contactor | 3 | 한국미스미 | 35,000 | . | . | 0/3 | | **DC rating, not AC.** Contactor first — it sets the button's rating |
+| 7 | Relay MUX — 4× SPDT relay + sockets, diodes, coil driver | 3 | 디바이스마트 | 34,000 | . | . | 0/3 | | Contact rating ≥ traction current. **Spec:** [§1.2.4](build/01-bom-sourcing.md#7-8-11-12-14-what-to-actually-buy) — **4× SPDT 40 A automotive relay** (not 2× DPDT — sourcing), logic-level MOSFET, **10 kΩ gate pulldown** |
+| 8 | E-stop + DC contactor | 3 | 한국미스미 | 35,000 | . | . | 0/3 | | **DC rating, not AC.** Contactor first — it sets the button's rating. **Spec:** [§1.2.4](build/01-bom-sourcing.md#7-8-11-12-14-what-to-actually-buy) — **2× NC contact blocks** — one drops the contactor coil, one drops the MUX coil. Contactor **50–60 A DC-rated** |
 | 9 | Pololu #2806 RC servo MUX | 3 | 디바이스마트 | 31,680 | 2026-09-29 | . | 0/3 | 95,040 | ₩28,800 ex-VAT → **₩31,680 incl**. `FAILMODE` jumper present |
 | 10 | RC TX/RX — FS-i6 transmitter + **FS-iA6B** receiver | 3 | [팰콘샵 100004832](https://www.falconshop.co.kr/shop/goods/goods_view.php?goodsno=100004832) KC인증 | 139,160 | 2026-09-29 | 2026-10-01 | 3/3 | 417,480 | ₩142,000 list, **₩417,480 paid for 3** (≈2% off). **Receiver confirmed iA6B on 2026-10-01** — i-BUS port present on the board, all 3 sets. **Mode 2** — see the note below |
-| 11 | Isolated logic rail — SLA + charger + 2× DC-DC | 3 | 11번가 / 디바이스마트 | 60,000 | . | . | 0/3 | | Record capacity + both rail voltages |
-| 12 | Wiring / connectors / fuses | 3 | 디바이스마트 | 55,000 | . | . | 0/3 | | Wire gauge sized for stall, not nominal |
-| 14 | Mounts / 3D-print material | 3 | 로컬 | 41,000 | . | . | 0/3 | | |
+| 11 | Isolated logic rail — SLA + charger + 2× DC-DC | 3 | 11번가 / 디바이스마트 | 60,000 | . | . | 0/3 | | Record capacity + both rail voltages. **Spec:** [§1.2.4](build/01-bom-sourcing.md#7-8-11-12-14-what-to-actually-buy) — SLA + charger + 2× 12→5 V buck + hold-up caps + undervoltage divider |
+| 12 | Wiring / connectors / fuses | 3 | 디바이스마트 | 55,000 | . | . | 0/3 | | Wire gauge sized for stall, not nominal. **Spec:** [§1.2.4](build/01-bom-sourcing.md#7-8-11-12-14-what-to-actually-buy) — **1.5 mm² silicone** traction / 0.5–0.75 logic. Fuses **40 A / 10 A / 5 A**. Three *different* connector families for the three taps |
+| 14 | Mounts / 3D-print material | 3 | 로컬 | 41,000 | . | . | 0/3 | | **Spec:** [§1.2.4](build/01-bom-sourcing.md#7-8-11-12-14-what-to-actually-buy) — **PETG, not PLA** — PLA softens at ~60 °C and mast rigidity is a calibration requirement |
 | 15 | USB gamepad — Logitech F710 class | 3 | [옥션](https://itempage3.auction.co.kr/DetailView.aspx?ItemNo=E428299758) | 66,680 | 2026-09-29 | . | 0/3 | 200,040 | ₩64,000 est → **₩66,680 actual**. Xbox layout; record the map if not |
 | | **Batch 1** | | | **973,930** | | | | | **× 3 = 2,921,790** |
 

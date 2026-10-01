@@ -540,6 +540,93 @@ things that decide whether the camera is usable are the format and the frame rat
 
 ---
 
+### #7, #8, #11, #12, #14 — what to actually buy
+
+The five remaining Batch 1 items, specified to the level a vendor can fill. Sized against the
+vehicle actually delivered: **stock ECU rated 20 A, a 10 A device in its supply, motor driver
+limiting at 30 A.** Prices are rough Korean street estimates (**basis E**) — the budget is
+₩225,000/set against these five, and the list below comes to roughly ₩200,000.
+
+#### #7 — Relay MUX (~₩34,000)
+
+Switches both motor circuits between the stock ECU and the motor driver. **De-energized = STOCK**
+([safety.md §1](../design/safety.md#1-authority-arbitration-who-is-allowed-to-drive-the-motors)).
+
+**Both conductors of each motor circuit must break.** Switching only the positive side leaves the
+stock ECU's output tied to the driver's output through the motor winding. That is four poles:
+two for throttle, two for steering.
+
+| Qty | Part | Note |
+|---:|---|---|
+| 4 | **Automotive relay, SPDT, 12 V coil, 40 A** (Bosch-style 5-pin) + socket | The design says "2× DPDT". **Use 4× SPDT instead** — a 30 A DPDT is hard to source in Korea, while 40 A automotive SPDT with sockets is a ₩2,500 commodity part. Four poles either way, and each is separately replaceable |
+| 1 | **Logic-level N-MOSFET**, Vgs(th) ≤ 2 V, ≥ 1 A (IRLZ44N class) | Four coils ≈ **600 mA total**. The Teensy drives at **3.3 V**, so a standard IRF-series part will not turn on — it must be logic-level |
+| 1 | **10 kΩ gate pulldown** | **Safety-critical.** It guarantees the gate is low — relays de-energized, STOCK — while the Teensy is unpowered or in reset. A floating gate can partially enhance |
+| 1 | 100 Ω gate series resistor | |
+| 4 | **1N4007** flyback diode, one across each coil | |
+| 1 | Perfboard + small enclosure | |
+
+**Feed the coils from the logic rail**, so a logic brownout drops them to STOCK (failsafe row 4).
+
+#### #8 — E-stop + contactor (~₩40,000)
+
+| Qty | Part | Note |
+|---:|---|---|
+| 1 | **22 mm mushroom, latching, with 2× NC contact blocks** | **Two, not one.** [safety.md §4.2](../design/safety.md) requires the E-stop to do two separate things: cut traction *and* drop the MUX coil. One block breaks the contactor coil; the other breaks the MUX coil supply on the logic rail |
+| 1 | **DC-rated contactor / battery isolator, 12 V coil, 50–60 A continuous** | **DC-rated is the requirement; the amp figure is margin.** An AC-rated switch breaking DC can weld closed, and that failure is silent until the button is pressed |
+
+> [!IMPORTANT]
+> **Why the second NC block is not optional**
+>
+> The MUX coil driver's credible failure is a **MOSFET shorted on** — relays stuck energized, stuck
+> in DBW. Nothing in firmware can fix that, because firmware is upstream of the short. Breaking the
+> **coil supply** with its own E-stop contact overrides it in hardware.
+>
+> Buy the button only after the contactor: the contactor's coil current sets the block rating.
+
+#### #11 — Isolated logic rail (~₩47,000)
+
+| Qty | Part | Note |
+|---:|---|---|
+| 1 | **12 V 7 Ah SLA** (로케트 ES7-12 class) | ~₩19,500 |
+| 1 | SLA charger, 12 V ~1 A | |
+| 2 | **DC-DC buck, 12 V → 5 V, ≥ 2 A** | One for Teensy + sensors, one for RC receiver + signal MUX. Separating them keeps servo-side transients off the rail holding the safety supervisor |
+| 2 | 1000 µF+ electrolytic, 16 V | The hold-up [safety.md §5](../design/safety.md#5-power-rail-isolation-and-brownout-protection) asks for |
+| 2 | Resistors for a divider into a Teensy analog pin | The logic-rail **undervoltage monitor** of failsafe row 4. Two resistors, not a module |
+| 1 | Blade fuse holder + **5 A** fuse | |
+
+**A non-isolated buck is adequate.** The isolation that matters — traction from logic — is provided
+by the separate battery. Galvanic isolation downstream of it buys nothing here.
+
+#### #12 — Wiring, connectors, fuses (~₩55,000)
+
+| Item | Spec |
+|---|---|
+| **Traction wire** | **1.5 mm² silicone** throughout. Covers a driver channel at its 30 A limit with the drop under 6 % over the ~1 m runs here. 2.5 mm² for the main B+ run if you want margin |
+| **Logic/signal wire** | 0.5–0.75 mm² silicone |
+| **Fuses** | **40 A** main traction (above the 30 A driver limit), **10 A** steering branch, **5 A** logic rail. Blade type, inline holders |
+| **Battery tap** | XT60 |
+| **Three taps** | Keyed inline connectors — **and deliberately three *different* connector families**, so throttle, steering, and power physically cannot be cross-plugged. A reversed steering tap makes the position loop run away from its setpoint instead of toward it |
+| Terminals | Ring/spade for the driver's screw terminals |
+| Signal | Dupont / JST-XH pigtails; 6× servo-style 3-wire leads; one good USB A–micro/C cable |
+| Heatshrink | At least two sizes |
+
+#### #14 — Mounts and print material (~₩38,000)
+
+| Item | Spec |
+|---|---|
+| **Filament** | **PETG, 1 kg. Not PLA.** PLA softens around 60 °C — reached in a parked car or direct sun — and [sensors.md](../design/sensors.md) makes mast rigidity a calibration requirement: a mast that moves invalidates the camera↔LiDAR extrinsics |
+| Inserts | M3 heat-set threaded inserts for the enclosures |
+| Fasteners | M3/M4 bolts, nylon standoffs |
+
+> [!NOTE]
+> **Consider aluminium profile for the mast itself**
+>
+> Printed brackets are right for the LiDAR and camera mounts. The **mast** carries them at height
+> and is the part whose flex shows up directly in the extrinsics. A short length of 2020 extrusion
+> is stiffer than any print of the same mass, and it is cheap.
+
+---
+
 ## 1.3 Two parts you must not order blind
 
 Two line items depend on measurements taken on the vehicle you actually bought. Ordering
