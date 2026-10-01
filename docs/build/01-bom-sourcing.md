@@ -863,11 +863,30 @@ floating gate can partially enhance.
 > contactor does not reach the button, because the button was kept out of the traction path** —
 > which is the entire reason for the contactor pattern.
 >
-> **Why two.**
+> **Why two.** The button has to do **two things**, and they sit on **two different power rails**,
+> so no single contact can reach both.
 >
-> The MUX coil driver's credible failure is a **MOSFET shorted on** — relays stuck energized, stuck
-> in DBW. Nothing in firmware can fix that, because firmware is upstream of the short. Breaking the
-> **coil supply** with its own E-stop contact overrides it in hardware.
+> ```
+>  traction pack ──[ NC #1 ]── contactor coil ───▶  traction power cut
+>  logic rail ────[ NC #2 ]── MOSFET ── 4× MUX coil ──▶  authority reverts to STOCK
+> ```
+>
+> **The first reason is that the E-stop does not cut the logic rail — deliberately.**
+> [safety.md §4](../design/safety.md) pins it: *"E-stop cuts traction power **only**."* The Teensy
+> stays alive so it keeps reporting state and the operator can still see what the vehicle thinks.
+> But the MUX coils are fed from that same surviving rail, so **they stay energized through an
+> E-stop** unless something breaks them separately. Cutting traction alone would stop the vehicle
+> and leave it latched in DBW — and on reset it would come back in DBW rather than STOCK.
+>
+> **The second reason is a failure the first does not cover.** The coil driver's credible failure
+> is a **MOSFET shorted on**: relays stuck energized, stuck in DBW. No firmware can fix that,
+> because firmware is upstream of the short. Breaking the **coil supply** with its own contact
+> overrides it in hardware.
+>
+> A `2a2b` block set gives the two **b접점** this needs; the two **a접점** are spare. One optional
+> use for them: feed an E-stop-pressed signal to a Teensy input, so `DbwStatus` can report the
+> button's state rather than the operator inferring it. That is a convenience, not a safety layer —
+> the safety is entirely in the two NC contacts.
 >
 > Buy the button only after the contactor: the contactor's coil current sets the block rating.
 
