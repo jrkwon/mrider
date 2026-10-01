@@ -829,6 +829,18 @@ floating gate can partially enhance.
 > [Stage 3](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first), which is two stages
 > after anything is first powered — so a two-week ship date costs nothing here.
 >
+> **Decided 2026-10-01 — `MRE-RR2R`, 한국미스미.** Three candidates were evaluated and the two
+> faster ones each failed on a different attribute, which is why all three are recorded:
+>
+> | part | ships | verdict |
+> |---|---|---|
+> | **`MRE-RR2R`** 한영넉스 | 10/16 | **chosen** — Ø22, push-lock turn-reset, 2a2b, red, IP65, snap-action |
+> | `MRF-AA2R` 한영넉스 | next day | rejected — **pushbutton, not E-stop**: flush Ø30 cap, and `Alternate` releases on a second press |
+> | `KGE-H4R2G` KGE Auto | next day | rejected — correct device, **green**. Its red variant ships 10/23, later than the choice |
+>
+> The fastest option was wrong, and the correct-but-green option's red variant was slower than
+> simply ordering the right part first.
+>
 > **Why NC (b접점).** An emergency stop must **open** a circuit that is closed in normal operation,
 > so that a cut wire, a loose terminal, or a corroded contact **stops the vehicle** rather than
 > silently disabling the stop. Wired through an **NO** contact, the E-stop does nothing at all
