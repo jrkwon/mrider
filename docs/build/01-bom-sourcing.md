@@ -559,7 +559,7 @@ two for throttle, two for steering.
 | Qty | Part | Note |
 |---:|---|---|
 | 2 | **Automotive power relay, SPDT (1C), 12 V coil, 80 A** + socket — **throttle poles** | See the derating box below: 40 A is **not** enough here |
-| 2 | **Automotive relay, SPDT, 12 V coil, 40 A** + socket — **steering poles** | The steering branch is a few amps; 40 A is ample |
+| 2 | **Automotive relay, SPDT (1C), 12 V coil, 40 A** + socket — **steering poles** — e.g. **`JD1914`**, sold with a pigtail socket | **Verified 2026-10-01.** The steering branch is a few amps, so 40 A is ample here *(and only here)* |
 
 The design says "2× DPDT". **Use 4× SPDT instead** — a 30 A DPDT is hard to source in Korea, while
 automotive SPDT relays with sockets are commodity parts. Four poles either way, and each is
@@ -585,10 +585,38 @@ separately replaceable.
 | 1 | **Logic-level N-MOSFET**, Vgs(th) ≤ 2 V, ≥ 1 A (IRLZ44N class) | Four coils ≈ **600 mA total**. The Teensy drives at **3.3 V**, so a standard IRF-series part will not turn on — it must be logic-level |
 | 1 | **10 kΩ gate pulldown** | **Safety-critical.** It guarantees the gate is low — relays de-energized, STOCK — while the Teensy is unpowered or in reset. A floating gate can partially enhance |
 | 1 | 100 Ω gate series resistor | |
-| 4 | **1N4007** flyback diode, one across each coil | |
+| 4 | **1N4007** flyback diode, one across each coil | **Required even on coils that already carry a parallel resistor** — see below |
 | 1 | Perfboard + small enclosure | |
 
 **Feed the coils from the logic rail**, so a logic brownout drops them to STOCK (failsafe row 4).
+
+> [!WARNING]
+> **A parallel resistor across the coil is not a flyback diode. Fit the 1N4007 anyway.**
+>
+> Relays in this family ship with a **680 Ω resistor** across the coil, and it is tempting to read
+> that as the clamp already being there. It is not. When the MOSFET turns off, the coil's 150 mA
+> has to keep flowing, and the resistor is the only path:
+>
+> | clamp | voltage the MOSFET sees |
+> |---|---:|
+> | 680 Ω resistor alone | **0.150 A × 680 Ω = 102 V** |
+> | 1N4007 flyback | 12 + 0.7 ≈ **12.7 V** |
+>
+> A logic-level MOSFET in this class is rated **55 V** drain-source. 102 V is **nearly twice
+> that.** The resistor damps ringing; it does not clamp. **One ₩100 diode per coil.**
+>
+> *(If a variant ships with a built-in **diode** rather than a resistor, then the clamp is real —
+> but coil polarity on 85/86 becomes mandatory, and reversing it shorts the drive.)*
+
+> [!CAUTION]
+> **A 40 A socket may not fit an 80 A relay**
+>
+> Relays at 80 A commonly use **wider power blades** on 30/87 — 9.5 mm against the standard
+> 6.3 mm — because 80 A through a quarter-inch blade is a lot. The coil terminals stay 6.3 mm, so
+> a 40 A pigtail socket will take the coil pins and **not** the power pins.
+>
+> **Buy the socket that matches each relay**, not one socket type for all four poles. Check the
+> blade width on the 80 A part before ordering its socket.
 
 #### #8 — E-stop + contactor (~₩40,000)
 
