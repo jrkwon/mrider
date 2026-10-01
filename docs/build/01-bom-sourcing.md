@@ -595,7 +595,7 @@ separately replaceable.
 > load by design ([failsafe rows 4 and 5](../design/safety.md#2-failsafe-matrix)).
 >
 > *Corrected 2026-10-01: this table previously specified 40 A for all four poles.*
-| 1 | **Logic-level N-MOSFET**, Vgs(th) ≤ 2 V, ≥ 1 A — **`IRLZ44N`** or **`IRL520`** | Four coils ≈ **600 mA total**. See the warning below: the part number differs by one letter from a part that does not work |
+| 1 | **`IRLZ44NPBF`** (Infineon, TO-220AB) — logic-level N-MOSFET | **Verified 2026-10-01.** Vgs(th) 1.0–2.0 V, Vds 55 V, Id 47 A. Four coils ≈ 600 mA total, so it dissipates under 0.1 W and needs no heatsink. **The TO-220 tab is the DRAIN** — do not bolt it to a grounded plate without an insulator. Buy spares; they cost little and are static-sensitive |
 | 1 | 10 kΩ resistor, ¼ W — **gate to GND** | The pulldown |
 | 1 | 100 Ω resistor, ¼ W — **Teensy pin to gate, in series** | Limits the current into the gate capacitance on each switching edge, protecting the Teensy pin |
 | 4 | **1N4007** flyback diode, one across each coil | **Required even on coils that already carry a parallel resistor** — see below |
@@ -652,7 +652,7 @@ floating gate can partially enhance.
 | Qty | Part | Note |
 |---:|---|---|
 | 1 | **22 mm mushroom head, latching (twist-to-release)** | The actuator only. 22 mm industrial buttons are modular — head, collar, and contact blocks bought and stacked separately |
-| 2 | **NC contact block (b접점)** — or one `2b` block | **NC, and two of them.** See below: both halves of this row are load-bearing |
+| 2 | **NC contact block (b접점)** — or one `2b` block | **NC, and two of them.** See below: both halves of this row are load-bearing. A `2a2b` unit also serves — the two NO contacts simply go unused |
 | 1 | **The same 80 A SPDT relay as [#7](#7-8-11-12-14-what-to-actually-buy)**, wired `30→87`, `87a` unused | A dedicated SPST-NO part (e.g. Foocle `FLS820-012-1A`) also works, but standardising on one relay across the build is worth more than the saving |
 | 1 | **1N4007 across the contactor coil** | Arc suppression, so the E-stop contact is not eroded by breaking an inductive DC load. It delays drop-out by tens of ms, which is centimetres at walking pace |
 
@@ -758,11 +758,21 @@ floating gate can partially enhance.
 > | position | part | why |
 > |---|---|---|
 > | 4× MUX poles | **5-pin SPDT** | The MUX needs a changeover: NC → stock ECU, NO → driver. A 4-pin SPST cannot make the NC path |
-> | 1× E-stop contactor | **4-pin SPST-NO**, bracket + socket included | Only ever uses `30→87`. Cheaper, and it comes with a steel bracket |
+> | 1× E-stop contactor | **4-pin SPST-NO, 40 A** — `TYE-RL076` (12 V 40 A 4핀) | Only ever uses `30→87`, and **the inductive derate does not apply here** — see below |
 >
-> This reverses an earlier preference for a single part number. The reason is better than price: a
-> **4-pin relay physically will not seat in a 5-pin MUX position**, so the one relay with a
+> This reverses an earlier preference for a single part number, and there are two reasons, both
+> better than price.
+>
+> **A 4-pin relay physically will not seat in a 5-pin MUX position**, so the one relay with a
 > different job cannot be swapped into the wrong place by a student rebuilding a harness.
+>
+> **And the two positions break different kinds of current.** The MUX poles sit **in series with
+> the motor leads**, so they break an inductive load and take the 50–60 % derate — which is why
+> they need the 80 A part. The E-stop contactor sits in the **B+ supply to the driver**, upstream
+> of the H-bridge: the motor's stored magnetic energy is on the *other* side of the bridge and
+> never reaches this contact, while the driver's input capacitance works against the arc rather
+> than feeding it. That break is essentially resistive, so a **40 A contact against a 20 A limit
+> is a straight 2×**, not a marginal one.
 
 > **If the seller ships "one of two models at random"** — which this listing does, at 26×26×38 or
 > 28×28×42 mm — **mount to the socket, not to the relay body.** The pin pattern is the ISO
@@ -784,6 +794,12 @@ floating gate can partially enhance.
 > until pressed — and nothing when its wiring fails, with no indication. This is why every
 > industrial E-stop uses NC contacts, and it rules out the hobby "mushroom switch" parts sold with
 > a single NO contact for signalling a microcontroller input.
+>
+> **The contact rating is a non-issue here, and that is the whole point of the pattern.** These
+> contacts only ever break **coil** current: ~150 mA for the contactor coil and ~600 mA for the
+> four MUX coils, both at 12 V. Any industrial 22 mm block handles that with room to spare. The
+> AC-vs-DC derating that governs the *contactor* does not bite the *button*, precisely because the
+> button was kept out of the traction path.
 >
 > **Why two.**
 >
