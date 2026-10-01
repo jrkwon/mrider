@@ -595,13 +595,29 @@ separately replaceable.
 > load by design ([failsafe rows 4 and 5](../design/safety.md#2-failsafe-matrix)).
 >
 > *Corrected 2026-10-01: this table previously specified 40 A for all four poles.*
-| 1 | **Logic-level N-MOSFET**, Vgs(th) ≤ 2 V, ≥ 1 A (IRLZ44N class) | Four coils ≈ **600 mA total**. The Teensy drives at **3.3 V**, so a standard IRF-series part will not turn on — it must be logic-level |
-| 1 | **10 kΩ gate pulldown** | **Safety-critical.** It guarantees the gate is low — relays de-energized, STOCK — while the Teensy is unpowered or in reset. A floating gate can partially enhance |
-| 1 | 100 Ω gate series resistor | |
+| 1 | **Logic-level N-MOSFET**, Vgs(th) ≤ 2 V, ≥ 1 A — **`IRLZ44N`** or **`IRL520`** | Four coils ≈ **600 mA total**. See the warning below: the part number differs by one letter from a part that does not work |
+| 1 | 10 kΩ resistor, ¼ W — **gate to GND** | The pulldown |
+| 1 | 100 Ω resistor, ¼ W — **Teensy pin to gate, in series** | Limits the current into the gate capacitance on each switching edge, protecting the Teensy pin |
 | 4 | **1N4007** flyback diode, one across each coil | **Required even on coils that already carry a parallel resistor** — see below |
 | 1 | Perfboard + small enclosure | |
 
 **Feed the coils from the logic rail**, so a logic brownout drops them to STOCK (failsafe row 4).
+The **10 kΩ pulldown is safety-critical**: it holds the gate low — relays de-energized, STOCK —
+whenever the Teensy is unpowered, in reset, or has not yet configured the pin as an output. A
+floating gate can partially enhance.
+
+> [!WARNING]
+> **`IRF520` is not `IRL520`, and the Teensy drives at 3.3 V**
+>
+> The common Arduino "MOSFET module" is built around an **`IRF520`**, whose Vgs(th) is **2.0–4.0 V**
+> and whose on-resistance is specified at **Vgs = 10 V**. At 3.3 V a high-threshold sample may not
+> turn on **at all**, and a low-threshold one sits in the linear region making heat instead of
+> switching.
+>
+> The logic-level part is **`IRL520`** — one letter — or **`IRLZ44N`**, Vgs(th) 1.0–2.0 V. A
+> pre-built module is fine *provided* it states **logic-level** or **3.3 V compatible**; most do
+> not, because they were designed for 5 V Arduinos where an IRF part is merely marginal rather
+> than dead.
 
 > [!WARNING]
 > **A parallel resistor across the coil is not a flyback diode. Fit the 1N4007 anyway.**
@@ -635,7 +651,8 @@ separately replaceable.
 
 | Qty | Part | Note |
 |---:|---|---|
-| 1 | **22 mm mushroom, latching, with 2× NC contact blocks** | **Two, not one.** [safety.md §4.2](../design/safety.md) requires the E-stop to do two separate things: cut traction *and* drop the MUX coil. One block breaks the contactor coil; the other breaks the MUX coil supply on the logic rail |
+| 1 | **22 mm mushroom head, latching (twist-to-release)** | The actuator only. 22 mm industrial buttons are modular — head, collar, and contact blocks bought and stacked separately |
+| 2 | **NC contact block (b접점)** — or one `2b` block | **NC, and two of them.** See below: both halves of this row are load-bearing |
 | 1 | **The same 80 A SPDT relay as [#7](#7-8-11-12-14-what-to-actually-buy)**, wired `30→87`, `87a` unused | A dedicated SPST-NO part (e.g. Foocle `FLS820-012-1A`) also works, but standardising on one relay across the build is worth more than the saving |
 | 1 | **1N4007 across the contactor coil** | Arc suppression, so the E-stop contact is not eroded by breaking an inductive DC load. It delays drop-out by tens of ms, which is centimetres at walking pace |
 
@@ -668,6 +685,10 @@ separately replaceable.
 >
 > **Check three things on any listing in this class:**
 >
+> - **That the coil is 12 V.** This family ships 12 V and 24 V in the same shell, and the Korean
+>   titles carry the voltage — `KKA-B4 릴레이 **24V** 40A 4핀`. The 24 V coil is **320 Ω with a
+>   16 V pick-up**, so on this vehicle's rail it simply will not pull in. The 12 V coil is 80 Ω,
+>   pick-up ≤ 8 V.
 > - **That you are ordering the 12 V / 80 A variant.** These listings routinely carry several in
 >   one title — *"24V 100A 12V … SPDT 80A"* — and the title is not the order. This project has
 >   already been bitten twice by trusting a listing title over its specification table: the
@@ -755,7 +776,16 @@ separately replaceable.
 > logic battery that is already carrying four relay coils.
 
 > [!IMPORTANT]
-> **Why the second NC block is not optional**
+> **NC, never NO — and two of them**
+>
+> **Why NC (b접점).** An emergency stop must **open** a circuit that is closed in normal operation,
+> so that a cut wire, a loose terminal, or a corroded contact **stops the vehicle** rather than
+> silently disabling the stop. Wired through an **NO** contact, the E-stop does nothing at all
+> until pressed — and nothing when its wiring fails, with no indication. This is why every
+> industrial E-stop uses NC contacts, and it rules out the hobby "mushroom switch" parts sold with
+> a single NO contact for signalling a microcontroller input.
+>
+> **Why two.**
 >
 > The MUX coil driver's credible failure is a **MOSFET shorted on** — relays stuck energized, stuck
 > in DBW. Nothing in firmware can fix that, because firmware is upstream of the short. Breaking the
