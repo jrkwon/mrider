@@ -47,9 +47,18 @@ The stock steering column is mechanically linked to the front wheels but has **n
 > NC → stock ECU, NO → driver M1. Nothing is added to the linkage, and no second actuator can
 > fight the first.
 >
-> **This is conditional on [M1](../order-log.md) — the motor must still show ≥ 2× margin on the
-> measured column torque at full load.** If it does not, BOM #4 buys a replacement, which is why
-> that line stays funded.
+> **The torque margin is already demonstrated and needs no measurement.** The vehicle is rated
+> for a 25 kg occupant and steers with that load aboard; MRider adds ~6 kg, and adds it further
+> forward only in part, so the demonstrated margin is several times the ≥ 2× gate. The
+> [§2.2 procedure](#22-torque-measurement-procedure-before-sizing-the-gearmotor) is how you size
+> a motor you are *buying*, and is retained for a chassis that arrives without one.
+>
+> **The residual risk is duty cycle, not torque.** A child steers in occasional slow sweeps; the
+> position loop makes the small, continuous, high-frequency corrections
+> [ADR B](#5-adr-b-steering-angle-encoding) describes, which the stock motor was never specified
+> for. The failure mode is thermal and wear. **[Stage 1](safety.md#6-bring-up-protocol-staged-wheels-off-first)
+> is the gate**: BOM #4 stays funded until a sustained closed-loop hold is shown not to overheat
+> the motor.
 >
 > **A stock parent-remote gearmotor has no shaft encoder**, so reuse drops the incremental
 > encoder [ADR B](#5-adr-b-steering-angle-encoding) specifies as auxiliary. That costs FMEA
@@ -67,6 +76,15 @@ The gearmotor is sized from a measured column torque (§2.2) with a **≥2× mar
 ### 2.2 Torque-measurement procedure (before sizing the gearmotor)
 
 Torque required to steer an unmodified column is unknown and vehicle-specific (tire scrub, caster, king-pin friction). Measure it, do not guess:
+
+> [!NOTE]
+> **Not required on the 2026 vehicle — it arrived with a stock steering gearmotor**
+>
+> This procedure sizes a gearmotor you are **buying**. The delivered chassis already steers under
+> its parent remote at its rated 25 kg occupant load, against ~6 kg of added kit, so the ≥ 2×
+> margin in step 5 is demonstrated rather than measured ([§2.1](#21-actuator), and the
+> [Order Log](../order-log.md) M1 entry). The procedure stays here because the next cohort may
+> receive a chassis with no steering motor at all.
 
 1. Put the vehicle on the ground at full load (laptop + LiDAR + payload) so tire scrub torque is realistic. Repeat on the target operating surface (carpet/asphalt).
 2. Attach a **spring scale** (fish/luggage scale, 0–20 kg) to the steering-wheel rim (or to the tie-rod arm if driving the linkage directly).

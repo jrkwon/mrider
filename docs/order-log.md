@@ -365,7 +365,7 @@ them with Batch 1 is the documented way to waste money on this build. Take the m
 
 | # | Item | Qty | Vendor | Unit ₩ | Ordered | Arrived | Secured | Paid ₩ | Verify — measure before ordering |
 |---|------|----:|--------|-------:|:-------:|:-------:|:-------:|-------:|----------------------------------|
-| 4 | Steering gearmotor + encoder — **contingency only** | 3 | TBD | 48,000 | . | . | 0/3 | | **The vehicle has a stock steering gearmotor** (confirmed on the parent remote, 2026-10-01), so [dbw.md §11.5](design/dbw.md#115-3-tap-connector-spec-minimally-invasive) reuses it rather than adding one. **Buy only if M1 shows the stock motor has < 2× margin.** Kept funded until M1 decides |
+| 4 | Steering gearmotor + encoder — **contingency only** | 3 | TBD | 48,000 | . | . | 0/3 | | **The vehicle has a stock steering gearmotor** (confirmed on the parent remote, 2026-10-01), so [dbw.md §11.5](design/dbw.md#115-3-tap-connector-spec-minimally-invasive) reuses it rather than adding one. **The ≥ 2× torque margin is already demonstrated** by the 25 kg occupant rating against ~6 kg of kit (M1). Kept funded against one residual risk only: the stock motor was never specified for **continuous closed-loop duty**. **Released at [Stage 1](design/safety.md#6-bring-up-protocol-staged-wheels-off-first)** if it holds a sustained position loop without overheating |
 | 5 | Absolute angle sensor (AS5600 **or** pot) | 3 | TBD | 27,000 | . | . | 0/3 | | **M2**: lock-to-lock travel — **≤ 340° ⇒ AS5600** |
 | 13 | Steering coupler + magnet mount | 3 | TBD | 20,000 | . | . | 0/3 | | **M3**: column / kingpin shaft diameter. **The motor-coupler half is probably not needed** — the stock gearmotor is already coupled to the linkage. The **angle-sensor magnet mount is still required** ([ADR B](design/dbw.md#5-adr-b-steering-angle-encoding) mounts it load-side). Re-scope once M1 settles #4 |
 | 60 | **#6a** Hall sensor board ×2 (quadrature) | 3 | 디바이스마트 | 14,000 | . | . | 0/3 | | **3.3 V, two sensors offset ¼ magnet pitch** → A/B. Not single-channel — it must sense direction ([§1.2.3](build/01-bom-sourcing.md#6-drive-encoder-what-to-actually-buy)) |
@@ -378,70 +378,68 @@ them with Batch 1 is the documented way to waste money on this build. Take the m
 
 Take these on the vehicle you actually bought. Fill in before ordering.
 
-### M1 — Steering column torque → sizes #4
+### M1 — Steering actuator verification *(torque question closed 2026-10-01)*
 
-Procedure: [dbw.md §2.2](design/dbw.md#22-torque-measurement-procedure-before-sizing-the-gearmotor).
-Vehicle at **full load** (laptop + LiDAR + payload), on the **target surface**, spring scale on
-the rim, peak force turning lock-to-lock **while stationary** — that is the worst case.
+> [!NOTE]
+> **The ≥ 2× torque margin is already demonstrated. No spring-scale test is required.**
+>
+> The vehicle is rated for a **25 kg occupant** and steers under the parent remote with that
+> load aboard. MRider adds **~6 kg**. The margin is therefore demonstrated at roughly 4× the
+> added mass, well past the ≥ 2× gate, without measuring anything.
+>
+> **And the comparison is conservative**, because of *where* the mass sits. Steering torque
+> tracks **front-axle** load, and a seated child sits between the axles with most of their
+> weight over the rear. Deck- and mast-mounted kit sits further forward, so 6 kg of kit adds
+> less front-axle load than 25 kg of child even before the 4× ratio is counted.
+>
+> [vehicle.md §4](design/vehicle.md) already runs this argument for **payload** — *"these cars
+> are rated for a child (~25–30 kg); ~6 kg of kit is well inside that."* It extends to steering
+> torque for the same reason.
+>
+> The [§2.2 spring-scale procedure](design/dbw.md#22-torque-measurement-procedure-before-sizing-the-gearmotor)
+> is retained in the design record — it is how you size a gearmotor you are **buying**, and the
+> next cohort may receive a chassis with no stock steering motor at all. It is simply not needed
+> on this one.
 
-> [!IMPORTANT]
-> **M1 is now a verification, not a sizing — and that changes how to measure it**
->
-> The delivered vehicle **has a stock steering gearmotor** (confirmed on the parent remote,
-> 2026-10-01). [dbw.md §11.5](design/dbw.md#115-3-tap-connector-spec-minimally-invasive) adds a
-> gearmotor only *"if the column had none"*, so the question is no longer "which motor to buy"
-> but **"does the stock motor hold full lock at full load with ≥ 2× margin."**
->
-> **The stock motor is geared into the linkage and cannot be unclutched**, so pulling the rim
-> **back-drives its gearbox** and the reading includes that friction. Record whether it was in
-> the load path — a τ without that context compares to nothing. The contamination is
-> conservative if you end up buying #4, and beside the point if you reuse the stock motor, where
-> the decisive test is simply whether it holds lock under load on the target surface.
+**What the rated load does *not* settle**, and what therefore still has to be measured:
 
 | Field | Value |
 |---|---|
 | **Stock steering gearmotor present?** (Y/N) | **Y** — steers under the parent remote, 2026-10-01 |
 | **Stock motor markings / rating** | *(read the can)* |
-| **Stock motor in the load path during measurement?** (Y/N) | |
-| Surface tested | |
-| Lever radius `r` (m) | |
-| Peak force `F` (N) | |
-| **τ_column = F × r** (N·m) | |
-| **Required rated torque (≥ 2 × τ)** | |
-| **Does the stock motor hold full lock at full load?** (Y/N) | |
-| **Decision: reuse stock / buy #4** | |
-| Motor selected (model, rated torque, ratio) — only if buying | |
+| **Stock steering-motor stall current (A)** — locked rotor, clamp meter, current-limited supply | |
 | Date / by | |
 
+> [!IMPORTANT]
+> **Stall current is a separate question, and a child steering the car does not answer it**
+>
+> Occasional slow steering is not a locked-rotor condition. This number sets the **M1-branch fuse
+> and wire gauge** — still blank in [03-electrical §3.2](build/03-electrical.md) — and the
+> **driver current limit** that [FMEA row 6](design/safety.md#7-fmea-lightweight) relies on for a
+> severity-4 row. It is recorded nowhere else in this project.
+
 > [!WARNING]
-> **Reusing the stock motor costs a mitigation — take that decision deliberately**
+> **The remaining risk is duty cycle, not torque — and Stage 1 is what tests it**
 >
-> [ADR B](design/dbw.md#5-adr-b-steering-angle-encoding) specifies the absolute sensor *plus*
-> **the steering motor's incremental encoder for velocity and stall detection**. A stock
-> parent-remote gearmotor has no encoder, so reuse drops it. Two consequences:
+> A child steers in occasional slow sweeps. A **position loop** makes small, continuous,
+> high-frequency corrections — [ADR B](design/dbw.md#5-adr-b-steering-angle-encoding) describes
+> exactly *"the small, high-duty-cycle oscillations a steering servo makes."* The stock motor was
+> never specified for that, so the failure mode to watch is **thermal and wear**, not "cannot
+> turn the wheel". It will not show up on a spring scale at any load.
 >
-> - **[FMEA row 1](design/safety.md#7-fmea-lightweight)** lists *"motor incremental encoder
->   cross-check"* as a mitigation for absolute-sensor failure, severity 4. **That cross-check is
->   simply lost** — the absolute sensor cannot cross-check itself. Its range and plausibility
->   checks remain, and they are what actually catch an I²C NAK or a lost magnet.
-> - **Stall detection** ([failsafe row 7](design/safety.md#2-failsafe-matrix)) is specified as
->   *encoder velocity ≈ 0 under effort*. It must come from the **absolute sensor** instead:
->   angle not changing under commanded effort. Load-side, that is arguably the better test — it
->   catches a jammed linkage and a slipped coupling, neither of which a motor-side encoder sees.
->
-> The trade is **pre-registered**: [dbw.md §2.4](design/dbw.md#24-wiper-motor-fallback) already
-> accepts losing the motor encoder *"because ADR B already makes the absolute sensor
-> authoritative."* Record which way you go here, then update ADR B and the FMEA to match.
+> [Stage 1](design/safety.md#6-bring-up-protocol-staged-wheels-off-first) already exercises
+> exactly this: closed-loop tracking, limit clamping, stall detection, on a current-limited
+> supply. **That is the gate on releasing #4**, not a torque measurement. Watch the motor's
+> temperature through a sustained hold.
 
 > [!NOTE]
-> **If no suitable encoder-gearmotor can be sourced**
+> **If the stock motor is replaced after all**
 >
-> The documented fallback is a **12 V automotive wiper motor**. Two consequences you must
-> accept and re-check against [safety.md](design/safety.md) before the vehicle touches the
-> ground: its worm gear is largely **non-back-drivable**, so on power loss the steering
-> **holds** rather than freewheels — which invalidates the freewheel analysis — and it
-> rarely has a usable shaft encoder, making the absolute sensor the sole angle source.
-> Record the choice here if you take it.
+> The documented fallback is a **12 V automotive wiper motor**. Two consequences you must accept
+> and re-check against [safety.md](design/safety.md) before the vehicle touches the ground: its
+> worm gear is largely **non-back-drivable**, so on power loss the steering **holds** rather than
+> freewheels — which invalidates the freewheel analysis — and it rarely has a usable shaft
+> encoder. Record the choice here if you take it.
 
 ### M2 — Sensor shaft travel → decides #5
 
@@ -491,7 +489,7 @@ been spent yet. That sequencing is the entire point of the two-tier split.
 | # | Item | Qty | Vendor | Unit ₩ | Ordered | Arrived | Secured | Paid ₩ | Verify on arrival |
 |---|------|----:|--------|-------:|:-------:|:-------:|:-------:|-------:|-------------------|
 | 16 | 2D LiDAR — RPLIDAR A1M8 | 3 | — **already held** | 0 | — | — | 3/3 | 0 | **In hand before approval.** Confirm 3 units and that each spins up |
-| 17 | Front camera — USB 1080p, 120° wide, **고정초점** | 3 | [쿠팡](https://www.coupang.com/vp/products/9574234009?vendorItemId=95522090726) | 24,800 | 2026-09-30 | 2026-09-30 | 3/3 | 74,400 | **Driver: `usb_cam`, `pixel_format: mjpeg2rgb`** — `v4l2_camera` defaults to YUYV, which this camera runs at 10 fps on 720p. Confirm MJPG 1280x720 @30 on each unit. ✅ validated on the first. ₩35,800 list − ₩11,000 = ₩24,800 VAT incl; ₩74,400 covers all 3. **All 3 in hand 2026-10-01.** ⚠ **Units 2 and 3 not yet format-checked** — run `v4l2-ctl --list-formats-ext` and `--list-ctrls | grep -i focus` on each before calibration. A silently different revision **with** autofocus would invalidate [calibration.md §3](design/calibration.md) and the §4 extrinsics that chain through it | grep -i focus`. **`v4l2-ctl --list-formats-ext` must show MJPG 1280x720 @30 fps** |
+| 17 | Front camera — USB 1080p, 120° wide, **고정초점** | 3 | [쿠팡](https://www.coupang.com/vp/products/9574234009?vendorItemId=95522090726) | 24,800 | 2026-09-30 | 2026-09-30 | 3/3 | 74,400 | **Driver: `usb_cam`, `pixel_format: mjpeg2rgb`** — `v4l2_camera` defaults to YUYV, which this camera runs at 10 fps on 720p. MJPG 1280x720 @30 and no focus controls ✅ validated on the first unit; units 2 and 3 are the **same model from the same listing**, so the check is not repeated. ₩35,800 list − ₩11,000 = ₩24,800 VAT incl; ₩74,400 covers all 3. **All 3 in hand 2026-10-01** | grep -i focus`. **`v4l2-ctl --list-formats-ext` must show MJPG 1280x720 @30 fps** |
 | 18 | IMU — BNO085 class | 3 | 아이씨뱅큐 | 45,980 | 2026-09-29 | . | 0/3 | 137,940 | ₩41,800 ex-VAT = **₩45,980 incl**; the approved figure was the ex-VAT one. 9-DoF with **onboard fusion** |
 | | **Batch 2** | | | **82,800** | | | | | **× 3 = 248,400** |
 

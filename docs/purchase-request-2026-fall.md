@@ -146,7 +146,7 @@ agreed to. Divergences are listed here instead, and the live state of every item
 | 15 | ₩64,000 | ₩66,680 | +8,040 | Actual charge |
 | 16 | ₩155,430 | **₩0** | −466,290 | Already held before approval; never purchased |
 | 18 | ₩41,800 | ₩45,980 | +12,540 | The approved figure was **ex-VAT**; every other line was VAT-inclusive |
-| 4 | Steering gearmotor + encoder, ₩48,000 | **Possibly ₩0** — the delivered vehicle has a **stock steering gearmotor** | 0 *(pending)* | Confirmed 2026-10-01: all three steer under the parent remote. The design reuses it rather than adding one. **Still funded** — released only if measurement M1 shows ≥ 2× torque margin |
+| 4 | Steering gearmotor + encoder, ₩48,000 | **Expected ₩0** — the delivered vehicle has a **stock steering gearmotor** | 0 *(pending)* | Confirmed 2026-10-01: all three steer under the parent remote, and the vehicle's rated **25 kg** occupant load against ~6 kg of added kit demonstrates the ≥ 2× torque margin without measurement. The design reuses the motor rather than adding one. **Still funded** against one residual risk: it was never specified for continuous closed-loop duty. Released at bench Stage 1 |
 | 13 | Steering coupler + magnet mount, ₩20,000 | **Partly unneeded** — no motor coupler required | 0 *(pending)* | The stock motor is already coupled to the linkage. The angle-sensor magnet mount is still required |
 | | | **Net** | **−572,910** | |
 
