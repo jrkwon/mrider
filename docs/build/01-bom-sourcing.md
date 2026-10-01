@@ -651,8 +651,7 @@ floating gate can partially enhance.
 
 | Qty | Part | Note |
 |---:|---|---|
-| 1 | **22 mm mushroom head, latching (twist-to-release)** | The actuator only. 22 mm industrial buttons are modular — head, collar, and contact blocks bought and stacked separately |
-| 2 | **NC contact block (b접점)** — or one `2b` block | **NC, and two of them.** See below: both halves of this row are load-bearing. A `2a2b` unit also serves — the two NO contacts simply go unused |
+| 1 | **22 mm latching mushroom with 2a2b contacts** — 한국미스미 **`MRE-RR2R`** | **Verified 2026-10-01.** Decodes as `R` protruding Ø22 / `R` push-lock turn-reset / **`2` = 2a2b** / `R` red. The two **b접점 (NC)** are the ones that matter; the two a접점 go unused. Snap-action, IP65 |
 | 1 | **The same 80 A SPDT relay as [#7](#7-8-11-12-14-what-to-actually-buy)**, wired `30→87`, `87a` unused | A dedicated SPST-NO part (e.g. Foocle `FLS820-012-1A`) also works, but standardising on one relay across the build is worth more than the saving |
 | 1 | **1N4007 across the contactor coil** | Arc suppression, so the E-stop contact is not eroded by breaking an inductive DC load. It delays drop-out by tens of ms, which is centimetres at walking pace |
 
@@ -787,6 +786,9 @@ floating gate can partially enhance.
 
 > [!IMPORTANT]
 > **NC, never NO — and two of them**
+>
+> **Do not order the `1` contact option** (`1a1b`) — it carries only **one** NC, and this design
+> needs two independent ones. In the `MRE` series that is the third character: `MRE-RR**2**R`.
 >
 > **Why NC (b접점).** An emergency stop must **open** a circuit that is closed in normal operation,
 > so that a cut wire, a loose terminal, or a corroded contact **stops the vehicle** rather than
