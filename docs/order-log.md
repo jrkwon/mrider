@@ -130,7 +130,7 @@ Prices are the verified figures from
 
 | # | Item | Qty | Vendor | Unit ₩ | Ordered | Arrived | Secured | Paid ₩ | Verify on arrival |
 |---|------|----:|--------|-------:|:-------:|:-------:|:-------:|-------:|-------------------|
-| 1 | Vehicle — 12 V single-seat ride-on | 3 | 쿠팡 | 229,000 | 2026-09-29 | 2026-09-30 | 3/3 | 687,000 | Record model + serial per unit. **Stock steering gearmotor present** — see M1 |
+| 1 | Vehicle — 12 V single-seat ride-on | 3 | 쿠팡 | 229,000 | 2026-09-29 | 2026-09-30 | 3/3 | 687,000 | Record model + serial per unit. **Stock steering gearmotor present** — see V1 |
 | 2 | Teensy 4.1 **[이더넷] DEV-16771** | 3 | 디바이스마트 | 74,250 | 2026-09-29 | . | 0/3 | 222,750 | ₩67,500 ex-VAT → **₩74,250 incl**. **4.1, not 4.0** — count the pins |
 | 3 | **Cytron SmartDriveDuo-30 (MDDS30)** — M1 steering, M2 drive *(replaces Sabertooth 2x32)* | **4** | [디바이스마트 13186549](https://www.devicemart.co.kr/goods/view?no=13186549) 해외구매 | 143,440 | 2026-09-29 | . | 0/4 | 573,760 | ₩130,400 ex-VAT → **₩143,440 incl**. **4 units — 3 + 1 spare.** **`SW1:SW2=00` RC · `SW3:SW4=11` independent · `SW6=0` timeout ON** — verify SW6 on every board; `SW6=1` disables the stop |
 | 7 | Relay MUX — 2× DPDT + sockets, diodes, drivers | 3 | 디바이스마트 | 34,000 | . | . | 0/3 | | Contact rating ≥ traction current |
@@ -365,9 +365,9 @@ them with Batch 1 is the documented way to waste money on this build. Take the m
 
 | # | Item | Qty | Vendor | Unit ₩ | Ordered | Arrived | Secured | Paid ₩ | Verify — measure before ordering |
 |---|------|----:|--------|-------:|:-------:|:-------:|:-------:|-------:|----------------------------------|
-| 4 | Steering gearmotor + encoder — **contingency only** | 3 | TBD | 48,000 | . | . | 0/3 | | **The vehicle has a stock steering gearmotor** (confirmed on the parent remote, 2026-10-01), so [dbw.md §11.5](design/dbw.md#115-3-tap-connector-spec-minimally-invasive) reuses it rather than adding one. **The ≥ 2× torque margin is already demonstrated** by the 25 kg occupant rating against ~6 kg of kit (M1). Kept funded against one residual risk only: the stock motor was never specified for **continuous closed-loop duty**. **Released at [Stage 1](design/safety.md#6-bring-up-protocol-staged-wheels-off-first)** if it holds a sustained position loop without overheating |
-| 5 | Absolute angle sensor (AS5600 **or** pot) | 3 | TBD | 27,000 | . | . | 0/3 | | **M2**: lock-to-lock travel — **≤ 340° ⇒ AS5600** |
-| 13 | Steering coupler + magnet mount | 3 | TBD | 20,000 | . | . | 0/3 | | **M3**: column / kingpin shaft diameter. **The motor-coupler half is probably not needed** — the stock gearmotor is already coupled to the linkage. The **angle-sensor magnet mount is still required** ([ADR B](design/dbw.md#5-adr-b-steering-angle-encoding) mounts it load-side). Re-scope once M1 settles #4 |
+| 4 | Steering gearmotor + encoder — **contingency only** | 3 | TBD | 48,000 | . | . | 0/3 | | **The vehicle has a stock steering gearmotor** (confirmed on the parent remote, 2026-10-01), so [dbw.md §11.5](design/dbw.md#115-3-tap-connector-spec-minimally-invasive) reuses it rather than adding one. **The ≥ 2× torque margin is already demonstrated** by the 25 kg occupant rating against ~6 kg of kit (V1). Kept funded against one residual risk only: the stock motor was never specified for **continuous closed-loop duty**. **Released at [Stage 1](design/safety.md#6-bring-up-protocol-staged-wheels-off-first)** if it holds a sustained position loop without overheating |
+| 5 | Absolute angle sensor (AS5600 **or** pot) | 3 | TBD | 27,000 | . | . | 0/3 | | **V2**: lock-to-lock travel — **≤ 340° ⇒ AS5600** |
+| 13 | Steering coupler + magnet mount | 3 | TBD | 20,000 | . | . | 0/3 | | **V3**: column / kingpin shaft diameter. **The motor-coupler half is probably not needed** — the stock gearmotor is already coupled to the linkage. The **angle-sensor magnet mount is still required** ([ADR B](design/dbw.md#5-adr-b-steering-angle-encoding) mounts it load-side). Re-scope once M1 settles #4 |
 | 60 | **#6a** Hall sensor board ×2 (quadrature) | 3 | 디바이스마트 | 14,000 | . | . | 0/3 | | **3.3 V, two sensors offset ¼ magnet pitch** → A/B. Not single-channel — it must sense direction ([§1.2.3](build/01-bom-sourcing.md#6-drive-encoder-what-to-actually-buy)) |
 | 61 | **#6b** Magnets for the carrier ring | 3 | TBD | 4,000 | . | . | 0/3 | | *(was: shaft adapter — **no longer needed**, there is no shaft.)* Sized to the printed pocket; 8–16 pairs, spacing matters more than count |
 | 62 | **#6c** Printed carrier ring + sensor bracket | 3 | 로컬 / 3D print | 6,000 | . | . | 0/3 | | Ring clips over the **gearbox output hub**; bracket to the gearbox screw bosses. **Print the ring — do not glue magnets by hand**, uneven spacing aliases into odometry |
@@ -378,7 +378,17 @@ them with Batch 1 is the documented way to waste money on this build. Take the m
 
 Take these on the vehicle you actually bought. Fill in before ordering.
 
-### M1 — Steering actuator verification *(torque question closed 2026-10-01)*
+> [!NOTE]
+> **`V` for Verification — and why these are not called `M`**
+>
+> These used to be `M1`/`M2`/`M3`, which collided with two other things in this project: the
+> **motor driver's output channels** `M1`/`M2` (printed on the board — `M1` steering, `M2` drive) and the **Learn modules** `M1`–`M8`. All three appeared in bold
+> in this one file, forty lines apart, meaning different things. The driver channels cannot be
+> renamed and the Learn modules are referenced from seventeen files, so the measurements moved.
+
+
+
+### V1 — Steering actuator verification *(torque question closed 2026-10-01)*
 
 > [!NOTE]
 > **The ≥ 2× torque margin is already demonstrated. No spring-scale test is required.**
@@ -441,7 +451,7 @@ Take these on the vehicle you actually bought. Fill in before ordering.
 > freewheels — which invalidates the freewheel analysis — and it rarely has a usable shaft
 > encoder. Record the choice here if you take it.
 
-### M2 — Sensor shaft travel → decides #5
+### V2 — Sensor shaft travel → decides #5
 
 **This is a hard gate, not a preference.** The AS5600 is single-turn absolute (0–360°). If the
 shaft it sits on rotates past one turn, it **wraps and silently loses absolute meaning** — a
@@ -461,7 +471,7 @@ Measure **every** candidate mounting shaft, not just the intended one.
 | **Because** (the number that decided it) | |
 | Date / by | |
 
-### M3 — Shaft diameter → sizes #13
+### V3 — Shaft diameter → sizes #13
 
 | Field | Value |
 |---|---|

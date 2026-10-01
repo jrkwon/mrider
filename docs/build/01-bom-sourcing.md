@@ -341,7 +341,7 @@ magnet spacing matters more than magnet count.
 
 ![Three ways to instrument the drive, keyed on what the teardown finds: a rear shaft stub, an accessible output shaft, or neither](../images/drive-encoder-options.svg)
 
-**Measure first** — the fields are in [M3](../order-log.md#m3-shaft-diameter-sizes-13).
+**Measure first** — the fields are in [V3](../order-log.md#v3-shaft-diameter-sizes-13).
 
 > [!IMPORTANT]
 > **Resolved for the 2026 vehicle: Branch C, mounted at the gearbox output hub.**

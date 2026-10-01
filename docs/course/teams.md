@@ -80,7 +80,7 @@ And — this is the part that matters most — **the numbers.**
 | Deliverable | Today |
 |---|---|
 | A **measured** `mitt_dimensions.yaml` | Every value in it is `TODO measure`. The file's own header says: *"NOTHING IN THIS FILE HAS BEEN MEASURED"* |
-| Measurement gates M1, M2, M3 | Steering torque, sensor shaft travel, shaft diameter — all blocking |
+| Verification gates V1, V2, V3 | Steering-motor stall current, sensor shaft travel, shaft diameter — all blocking. *(V1's torque question closed 2026-10-01: the vehicle's rated 25 kg occupant load already demonstrates the margin.)* |
 | [Build step 2](../build/02-mechanical.md) validated | Draft, never run |
 | Calibration constants recorded | [calibration.md](../design/calibration.md) specifies the procedure |
 

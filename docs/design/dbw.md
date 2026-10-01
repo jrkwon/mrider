@@ -64,7 +64,7 @@ The stock steering column is mechanically linked to the front wheels but has **n
 > encoder [ADR B](#5-adr-b-steering-angle-encoding) specifies as auxiliary. That costs FMEA
 > row 1's motor-encoder cross-check outright, and moves stall detection onto the absolute
 > sensor — a trade [§2.4](#24-wiper-motor-fallback) already pre-registers for the wiper fallback.
-> **ADR B and the FMEA are updated when M1 decides**, not now: buying #4 keeps them as written.
+> **ADR B and the FMEA are updated when V1 decides**, not now: buying #4 keeps them as written.
 
 > [!NOTE]
 > **M1/M2 assignment — intentional departure (resolves finding F6)**
@@ -83,7 +83,7 @@ Torque required to steer an unmodified column is unknown and vehicle-specific (t
 > This procedure sizes a gearmotor you are **buying**. The delivered chassis already steers under
 > its parent remote at its rated 25 kg occupant load, against ~6 kg of added kit, so the ≥ 2×
 > margin in step 5 is demonstrated rather than measured ([§2.1](#21-actuator), and the
-> [Order Log](../order-log.md) M1 entry). The procedure stays here because the next cohort may
+> [Order Log](../order-log.md) V1 entry). The procedure stays here because the next cohort may
 > receive a chassis with no steering motor at all.
 
 1. Put the vehicle on the ground at full load (laptop + LiDAR + payload) so tire scrub torque is realistic. Repeat on the target operating surface (carpet/asphalt).
