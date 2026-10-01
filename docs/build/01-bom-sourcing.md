@@ -572,7 +572,35 @@ two for throttle, two for steering.
 | Qty | Part | Note |
 |---:|---|---|
 | 1 | **22 mm mushroom, latching, with 2× NC contact blocks** | **Two, not one.** [safety.md §4.2](../design/safety.md) requires the E-stop to do two separate things: cut traction *and* drop the MUX coil. One block breaks the contactor coil; the other breaks the MUX coil supply on the logic rail |
-| 1 | **DC-rated contactor / battery isolator, 12 V coil, 50–60 A continuous** | **DC-rated is the requirement; the amp figure is margin.** An AC-rated switch breaking DC can weld closed, and that failure is silent until the button is pressed |
+| 1 | **Continuous-duty solenoid / DC power contactor, 12 V coil, SPST-NO, 80 A** | See the sourcing note below — **the market quantizes at 80 A**, and the word that matters is *continuous duty* |
+| 1 | **1N4007 across the contactor coil** | Arc suppression, so the E-stop contact is not eroded by breaking an inductive DC load. It delays drop-out by tens of ms, which is centimetres at walking pace |
+
+> [!IMPORTANT]
+> **Three things decide this part, and the amp figure is the least of them**
+>
+> **1 — "연속정격 / continuous duty", not "단속정격 / intermittent".** A starter solenoid looks
+> identical, costs half, and is rated for *seconds* of conduction. MRider energizes this coil for
+> the whole session. An intermittent part will cook. This single keyword matters more than the
+> current rating.
+>
+> **2 — DC-rated.** An AC-rated switch breaking DC can weld its contacts closed, and the failure
+> is **silent until the button is pressed.** Continuous-duty automotive solenoids are inherently
+> DC parts, which is why this class is the right one.
+>
+> **3 — coil current, because it cascades.** Reference parts (White-Rodgers, Trombetta class) draw
+> **~500 mA** at 12 V. That is the figure the E-stop's NC block has to break — **check the block's
+> DC rating, not its AC rating**, which is the same trap one level down.
+>
+> **On 80 A versus the 50–60 A this page asks for:** the requirement stands, but continuous-duty
+> solenoids are manufactured at 80 A and up, with little below. Take the 80 A — the point of
+> coming down from "100 A+" was the coil-current cascade, and an 80 A part at 500 mA already
+> delivers it. Do not pay for 200 A.
+>
+> **Feed the contactor coil from the traction pack, not the logic rail.** The designed safe state
+> on a logic brownout is *the factory-controlled vehicle*, not a dead one
+> ([failsafe row 4](../design/safety.md#2-failsafe-matrix) reverts to STOCK, with traction still
+> available to the stock ECU). Coil from the pack gives exactly that, and keeps 500 mA off a 7 Ah
+> logic battery that is already carrying four relay coils.
 
 > [!IMPORTANT]
 > **Why the second NC block is not optional**
