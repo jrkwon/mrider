@@ -898,13 +898,36 @@ floating gate can partially enhance.
 |---:|---|---|
 | 1 | **Battery, 9.5–14 V, 2–3 Ah** — see the sizing box below | **Not the 7 Ah SLA this BOM originally named.** Chemistry matters here; read the box |
 | 1 | Charger matched to that chemistry | A LiFePO4 pack charged on an SLA charger is a fire, and vice versa |
-| 2 | **DC-DC buck, 12 V → 5 V, ≥ 2 A** | One for Teensy + sensors, one for RC receiver + signal MUX. Separating them keeps servo-side transients off the rail holding the safety supervisor |
+| 2 | **DC-DC buck, 12 V → 5 V, fixed output, 1–2 A** | One for Teensy + sensors, one for RC receiver + signal MUX. Separating them keeps servo-side transients off the rail holding the safety supervisor. **Fixed, not adjustable** — see below |
 | 2 | 1000 µF+ electrolytic, 16 V | The hold-up [safety.md §5](../design/safety.md#5-power-rail-isolation-and-brownout-protection) asks for |
-| 2 | Resistors for a divider into a Teensy analog pin | The logic-rail **undervoltage monitor** of failsafe row 4. Two resistors, not a module |
+| 2 | Resistors for a divider into a Teensy analog pin | The logic-rail **undervoltage monitor** of failsafe row 4. **Required** — "two resistors, not a module" means skip the *module*, not the monitor |
 | 1 | Blade fuse holder + **5 A** fuse | |
 
 **A non-isolated buck is adequate.** The isolation that matters — traction from logic — is provided
 by the separate battery. Galvanic isolation downstream of it buys nothing here.
+
+**Current capability is not the spec to shop on.** Each 5 V rail carries roughly **120 mA**, so a
+1 A module is already eight times the load. What matters is that the output is **fixed at 5 V**:
+an adjustable module has a trimmer that can be knocked, drift, or simply be set wrong, and this
+rail feeds the Teensy's 3.6–5.5 V input and the board that holds the entire safety supervisor. If
+only adjustable modules are available, set the output, **seal the trimmer**, and record the
+measured voltage.
+
+> [!CAUTION]
+> **Cut the Teensy's `VUSB`–`VIN` pads before powering it from this rail**
+>
+> On a Teensy 4.1, `VUSB` and `VIN` are **joined by default**, so external power on `VIN` with a
+> USB cable attached shorts two supplies together and **back-feeds the laptop's USB port**. PJRC
+> provides a pair of pads on the underside to be cut apart for exactly this case.
+>
+> This is not optional on MRider: the Teensy sits on the logic rail *and* keeps a permanent USB
+> link to the laptop, because that link carries both command and feedback
+> ([failsafe row 2](../design/safety.md#2-failsafe-matrix)). **Every one of the three boards needs
+> the cut**, and it has to happen before the first time external power and USB are present
+> together — which is [Stage 0](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first).
+>
+> The damage lands on a **student's own laptop**, which is the kind of mistake this project cannot
+> make thirteen times.
 
 > [!WARNING]
 > **The 12 V 7 Ah SLA is the wrong part — oversized by 3× and heavy enough to matter**

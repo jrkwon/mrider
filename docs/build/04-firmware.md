@@ -4,9 +4,22 @@
 the motor disconnected until the software is trustworthy.
 
 - **Prerequisites:** Section 3 complete; motor driver DIP switches set for independent R/C (PWM)
-  mode, per the [Order Log](../order-log.md) entry for the board fitted;
+  mode, per the [Order Log](../order-log.md) entry for the board fitted; **the Teensy's
+  `VUSB`–`VIN` pads cut** (below);
   isolated logic rail built and verified.
 - **Specification:** [design/dbw.md](../design/dbw.md) · [design/safety.md](../design/safety.md)
+
+> [!CAUTION]
+> **Cut `VUSB`–`VIN` on every Teensy before it ever sees external power with USB attached**
+>
+> The two pads are **joined from the factory**, so powering `VIN` from the logic rail while the
+> laptop USB is plugged in shorts two supplies together and **back-feeds the laptop's USB port**.
+> PJRC puts a cut-apart pad pair on the underside for this.
+>
+> MRider needs the cut on all three boards: the Teensy is on the logic rail *and* holds a
+> permanent USB link, because that link carries command **and** feedback
+> ([failsafe row 2](../design/safety.md#2-failsafe-matrix)). Do it before Stage 0 — the first
+> moment both supplies are present — and the laptop at risk is a student's own.
 - **Expected outcome:** the Teensy holds a commanded steering angle against a hand
   disturbance, publishes `DbwStatus` at ≥ 50 Hz with zero USB dropouts over 30 minutes, and
   both override layers are demonstrated.
