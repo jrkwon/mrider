@@ -136,7 +136,7 @@ Prices are the verified figures from
 | 7 | Relay MUX — 2× DPDT + sockets, diodes, drivers | 3 | 디바이스마트 | 34,000 | . | . | 0/3 | | Contact rating ≥ traction current |
 | 8 | E-stop + DC contactor | 3 | 한국미스미 | 35,000 | . | . | 0/3 | | **DC rating, not AC.** Contactor first — it sets the button's rating |
 | 9 | Pololu #2806 RC servo MUX | 3 | 디바이스마트 | 31,680 | 2026-09-29 | . | 0/3 | 95,040 | ₩28,800 ex-VAT → **₩31,680 incl**. `FAILMODE` jumper present |
-| 10 | RC TX/RX — FS-i6 transmitter + **FS-iA6B** receiver | 3 | [팰콘샵 100004832](https://www.falconshop.co.kr/shop/goods/goods_view.php?goodsno=100004832) KC인증 | 139,160 | 2026-09-29 | . | 0/3 | 417,480 | ₩142,000 list, **₩417,480 paid for 3** (≈2% off). **Receiver must be iA6B** — confirm the i-BUS port on the board, not the box. **Mode 2** — see the note below |
+| 10 | RC TX/RX — FS-i6 transmitter + **FS-iA6B** receiver | 3 | [팰콘샵 100004832](https://www.falconshop.co.kr/shop/goods/goods_view.php?goodsno=100004832) KC인증 | 139,160 | 2026-09-29 | 2026-10-01 | 0/3 | 417,480 | ₩142,000 list, **₩417,480 paid for 3** (≈2% off). **Receiver must be iA6B** — confirm the i-BUS port on the board, not the box. **Mode 2** — see the note below |
 | 11 | Isolated logic rail — SLA + charger + 2× DC-DC | 3 | 11번가 / 디바이스마트 | 60,000 | . | . | 0/3 | | Record capacity + both rail voltages |
 | 12 | Wiring / connectors / fuses | 3 | 디바이스마트 | 55,000 | . | . | 0/3 | | Wire gauge sized for stall, not nominal |
 | 14 | Mounts / 3D-print material | 3 | 로컬 | 41,000 | . | . | 0/3 | | |

@@ -135,10 +135,44 @@ without cutting it ([dbw.md §11.5](../design/dbw.md#115-3-tap-connector-spec-mi
 ### Wire gauge — match the stock harness for the taps, size the new runs yourself
 
 The throttle and steering taps carry **the stock currents through the stock motors**. The loads do
-not change, so **matching the gauge printed on the stock harness is correct by construction** — the
-manufacturer sized it for these motors, this pack, and this duty, and had it certified. Read the
-**whole** printed string, not one number: Chinese harnesses mark either `UL1007 AWG16` style or
-`RVB 2×0.75mm²` style, and in the second case a stray `15` is not a gauge.
+not change, so **matching the conductor area of the stock harness is correct by construction** —
+the manufacturer sized it for these motors, this pack, and this duty, and had it certified.
+
+> [!WARNING]
+> **The 2026 harness does not print its conductor size at all — you have to measure it**
+>
+> The marking reads **`ZR-RVV-300/300V-XF3061-2007`**: `ZR` flame-retardant, `RVV` flexible
+> copper with PVC insulation and a PVC sheath, rated `300/300 V`, against a Chinese spec and its
+> year. **Type and voltage class, and no cross-section anywhere.** Reading the printed string is
+> not enough on this vehicle.
+>
+> Measure it instead — strip ~10 mm, then:
+>
+> 1. **Count the strands** (`n`).
+> 2. **Measure one strand's diameter** `d` in mm, with a caliper or micrometer. RVV strands are
+>    typically 0.15–0.21 mm.
+> 3. `A = n × π × d² / 4`, then **snap to the nearest standard size**: 0.5 / 0.75 / 1.0 / 1.5 /
+>    2.5 mm². *(e.g. 32 strands × 0.20 mm → 1.0 mm².)*
+>
+> | mm² | ≈ AWG |
+> |---:|---:|
+> | 0.5 | 20 |
+> | 0.75 | 18 |
+> | 1.0 | 17–18 |
+> | 1.5 | 15–16 |
+> | 2.5 | 13–14 |
+>
+> **Measure the branch you are actually tapping.** Different branches of this harness are not
+> necessarily the same size, and the 300/300 V rating is irrelevant here — voltage is nowhere near
+> the constraint on this vehicle. Current and temperature are.
+>
+> Sanity check: the main `+` line sits behind a 10 A device, so it must carry at least that —
+> which puts it around 1.0–1.5 mm². If your measurement lands far from that, re-measure.
+>
+> **Match the area, not the type.** Buy the **silicone-insulated** wire the BOM already specifies
+> ([§1.5](01-bom-sourcing.md)) at equal or larger mm²: finer strands make it far more flexible
+> where the harness moves, and its 180–200 °C rating beats PVC's 70 °C on the runs that carry
+> stall current.
 
 **This does not transfer to the runs MRider adds**, because the stock vehicle has no equivalent:
 
