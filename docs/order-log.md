@@ -130,7 +130,7 @@ Prices are the verified figures from
 
 | # | Item | Qty | Vendor | Unit ₩ | Ordered | Arrived | Secured | Paid ₩ | Verify on arrival |
 |---|------|----:|--------|-------:|:-------:|:-------:|:-------:|-------:|-------------------|
-| 1 | Vehicle — 12 V single-seat ride-on | 3 | 쿠팡 | 229,000 | 2026-09-29 | . | 0/3 | 687,000 | Record model + serial per unit |
+| 1 | Vehicle — 12 V single-seat ride-on | 3 | 쿠팡 | 229,000 | 2026-09-29 | 2026-09-30 | 3/3 | 687,000 | Record model + serial per unit. **Stock steering gearmotor present** — see M1 |
 | 2 | Teensy 4.1 **[이더넷] DEV-16771** | 3 | 디바이스마트 | 74,250 | 2026-09-29 | . | 0/3 | 222,750 | ₩67,500 ex-VAT → **₩74,250 incl**. **4.1, not 4.0** — count the pins |
 | 3 | **Cytron SmartDriveDuo-30 (MDDS30)** — M1 steering, M2 drive *(replaces Sabertooth 2x32)* | **4** | [디바이스마트 13186549](https://www.devicemart.co.kr/goods/view?no=13186549) 해외구매 | 143,440 | 2026-09-29 | . | 0/4 | 573,760 | ₩130,400 ex-VAT → **₩143,440 incl**. **4 units — 3 + 1 spare.** **`SW1:SW2=00` RC · `SW3:SW4=11` independent · `SW6=0` timeout ON** — verify SW6 on every board; `SW6=1` disables the stop |
 | 7 | Relay MUX — 2× DPDT + sockets, diodes, drivers | 3 | 디바이스마트 | 34,000 | . | . | 0/3 | | Contact rating ≥ traction current |
@@ -365,9 +365,9 @@ them with Batch 1 is the documented way to waste money on this build. Take the m
 
 | # | Item | Qty | Vendor | Unit ₩ | Ordered | Arrived | Secured | Paid ₩ | Verify — measure before ordering |
 |---|------|----:|--------|-------:|:-------:|:-------:|:-------:|-------:|----------------------------------|
-| 4 | Steering gearmotor + encoder | 3 | TBD | 48,000 | . | . | 0/3 | | **M1**: column torque τ, size at **≥ 2×** rated |
+| 4 | Steering gearmotor + encoder — **contingency only** | 3 | TBD | 48,000 | . | . | 0/3 | | **The vehicle has a stock steering gearmotor** (confirmed on the parent remote, 2026-10-01), so [dbw.md §11.5](design/dbw.md#115-3-tap-connector-spec-minimally-invasive) reuses it rather than adding one. **Buy only if M1 shows the stock motor has < 2× margin.** Kept funded until M1 decides |
 | 5 | Absolute angle sensor (AS5600 **or** pot) | 3 | TBD | 27,000 | . | . | 0/3 | | **M2**: lock-to-lock travel — **≤ 340° ⇒ AS5600** |
-| 13 | Steering coupler + magnet mount | 3 | TBD | 20,000 | . | . | 0/3 | | **M3**: column / kingpin shaft diameter |
+| 13 | Steering coupler + magnet mount | 3 | TBD | 20,000 | . | . | 0/3 | | **M3**: column / kingpin shaft diameter. **The motor-coupler half is probably not needed** — the stock gearmotor is already coupled to the linkage. The **angle-sensor magnet mount is still required** ([ADR B](design/dbw.md#5-adr-b-steering-angle-encoding) mounts it load-side). Re-scope once M1 settles #4 |
 | 60 | **#6a** Hall sensor board ×2 (quadrature) | 3 | 디바이스마트 | 14,000 | . | . | 0/3 | | **3.3 V, two sensors offset ¼ magnet pitch** → A/B. Not single-channel — it must sense direction ([§1.2.3](build/01-bom-sourcing.md#6-drive-encoder-what-to-actually-buy)) |
 | 61 | **#6b** Magnets for the carrier ring | 3 | TBD | 4,000 | . | . | 0/3 | | *(was: shaft adapter — **no longer needed**, there is no shaft.)* Sized to the printed pocket; 8–16 pairs, spacing matters more than count |
 | 62 | **#6c** Printed carrier ring + sensor bracket | 3 | 로컬 / 3D print | 6,000 | . | . | 0/3 | | Ring clips over the **gearbox output hub**; bracket to the gearbox screw bosses. **Print the ring — do not glue magnets by hand**, uneven spacing aliases into odometry |
@@ -384,15 +384,54 @@ Procedure: [dbw.md §2.2](design/dbw.md#22-torque-measurement-procedure-before-s
 Vehicle at **full load** (laptop + LiDAR + payload), on the **target surface**, spring scale on
 the rim, peak force turning lock-to-lock **while stationary** — that is the worst case.
 
+> [!IMPORTANT]
+> **M1 is now a verification, not a sizing — and that changes how to measure it**
+>
+> The delivered vehicle **has a stock steering gearmotor** (confirmed on the parent remote,
+> 2026-10-01). [dbw.md §11.5](design/dbw.md#115-3-tap-connector-spec-minimally-invasive) adds a
+> gearmotor only *"if the column had none"*, so the question is no longer "which motor to buy"
+> but **"does the stock motor hold full lock at full load with ≥ 2× margin."**
+>
+> **The stock motor is geared into the linkage and cannot be unclutched**, so pulling the rim
+> **back-drives its gearbox** and the reading includes that friction. Record whether it was in
+> the load path — a τ without that context compares to nothing. The contamination is
+> conservative if you end up buying #4, and beside the point if you reuse the stock motor, where
+> the decisive test is simply whether it holds lock under load on the target surface.
+
 | Field | Value |
 |---|---|
+| **Stock steering gearmotor present?** (Y/N) | **Y** — steers under the parent remote, 2026-10-01 |
+| **Stock motor markings / rating** | *(read the can)* |
+| **Stock motor in the load path during measurement?** (Y/N) | |
 | Surface tested | |
 | Lever radius `r` (m) | |
 | Peak force `F` (N) | |
 | **τ_column = F × r** (N·m) | |
 | **Required rated torque (≥ 2 × τ)** | |
-| Motor selected (model, rated torque, ratio) | |
+| **Does the stock motor hold full lock at full load?** (Y/N) | |
+| **Decision: reuse stock / buy #4** | |
+| Motor selected (model, rated torque, ratio) — only if buying | |
 | Date / by | |
+
+> [!WARNING]
+> **Reusing the stock motor costs a mitigation — take that decision deliberately**
+>
+> [ADR B](design/dbw.md#5-adr-b-steering-angle-encoding) specifies the absolute sensor *plus*
+> **the steering motor's incremental encoder for velocity and stall detection**. A stock
+> parent-remote gearmotor has no encoder, so reuse drops it. Two consequences:
+>
+> - **[FMEA row 1](design/safety.md#7-fmea-lightweight)** lists *"motor incremental encoder
+>   cross-check"* as a mitigation for absolute-sensor failure, severity 4. **That cross-check is
+>   simply lost** — the absolute sensor cannot cross-check itself. Its range and plausibility
+>   checks remain, and they are what actually catch an I²C NAK or a lost magnet.
+> - **Stall detection** ([failsafe row 7](design/safety.md#2-failsafe-matrix)) is specified as
+>   *encoder velocity ≈ 0 under effort*. It must come from the **absolute sensor** instead:
+>   angle not changing under commanded effort. Load-side, that is arguably the better test — it
+>   catches a jammed linkage and a slipped coupling, neither of which a motor-side encoder sees.
+>
+> The trade is **pre-registered**: [dbw.md §2.4](design/dbw.md#24-wiper-motor-fallback) already
+> accepts losing the motor encoder *"because ADR B already makes the absolute sensor
+> authoritative."* Record which way you go here, then update ADR B and the FMEA to match.
 
 > [!NOTE]
 > **If no suitable encoder-gearmotor can be sourced**
@@ -452,7 +491,7 @@ been spent yet. That sequencing is the entire point of the two-tier split.
 | # | Item | Qty | Vendor | Unit ₩ | Ordered | Arrived | Secured | Paid ₩ | Verify on arrival |
 |---|------|----:|--------|-------:|:-------:|:-------:|:-------:|-------:|-------------------|
 | 16 | 2D LiDAR — RPLIDAR A1M8 | 3 | — **already held** | 0 | — | — | 3/3 | 0 | **In hand before approval.** Confirm 3 units and that each spins up |
-| 17 | Front camera — USB 1080p, 120° wide, **고정초점** | 3 | [쿠팡](https://www.coupang.com/vp/products/9574234009?vendorItemId=95522090726) | 24,800 | 2026-09-30 | 2026-09-30 | 1/3 | 74,400 | **Driver: `usb_cam`, `pixel_format: mjpeg2rgb`** — `v4l2_camera` defaults to YUYV, which this camera runs at 10 fps on 720p. Confirm MJPG 1280x720 @30 on each unit. ✅ validated on the first. ₩35,800 list − ₩11,000 = ₩24,800 VAT incl; ₩74,400 covers all 3. **1 in hand, 2 ordered 2026-09-30 and not yet arrived** | grep -i focus`. **`v4l2-ctl --list-formats-ext` must show MJPG 1280x720 @30 fps** |
+| 17 | Front camera — USB 1080p, 120° wide, **고정초점** | 3 | [쿠팡](https://www.coupang.com/vp/products/9574234009?vendorItemId=95522090726) | 24,800 | 2026-09-30 | 2026-09-30 | 3/3 | 74,400 | **Driver: `usb_cam`, `pixel_format: mjpeg2rgb`** — `v4l2_camera` defaults to YUYV, which this camera runs at 10 fps on 720p. Confirm MJPG 1280x720 @30 on each unit. ✅ validated on the first. ₩35,800 list − ₩11,000 = ₩24,800 VAT incl; ₩74,400 covers all 3. **All 3 in hand 2026-10-01.** ⚠ **Units 2 and 3 not yet format-checked** — run `v4l2-ctl --list-formats-ext` and `--list-ctrls | grep -i focus` on each before calibration. A silently different revision **with** autofocus would invalidate [calibration.md §3](design/calibration.md) and the §4 extrinsics that chain through it | grep -i focus`. **`v4l2-ctl --list-formats-ext` must show MJPG 1280x720 @30 fps** |
 | 18 | IMU — BNO085 class | 3 | 아이씨뱅큐 | 45,980 | 2026-09-29 | . | 0/3 | 137,940 | ₩41,800 ex-VAT = **₩45,980 incl**; the approved figure was the ex-VAT one. 9-DoF with **onboard fusion** |
 | | **Batch 2** | | | **82,800** | | | | | **× 3 = 248,400** |
 

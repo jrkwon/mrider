@@ -36,7 +36,26 @@ The **NEW** row is the one genuinely new control problem. mrover has no steering
 
 ### 2.1 Actuator
 
-The stock steering column is mechanically linked to the front wheels but has **no servo** — it is turned by hand (or, on RC models, by a stock DC gearmotor driven by the parent remote). MRider drives the column with a **DC gearmotor equipped with an incremental encoder**, coupled to the existing steering linkage, and driven by the **motor driver's channel 1 (M1 output)**.
+The stock steering column is mechanically linked to the front wheels but has **no servo** — it is turned by hand (or, on RC models, by a stock DC gearmotor driven by the parent remote). MRider drives the column with a **DC gearmotor**, coupled to the existing steering linkage, and driven by the **motor driver's channel 1 (M1 output)**.
+
+> [!NOTE]
+> **Resolved on the delivered vehicle, 2026-10-01: it is the second case — a stock gearmotor is fitted.**
+>
+> All three vehicles steer under the parent remote, so the column already carries a DC gearmotor
+> driven by the factory ECU. [§11.5](#115-3-tap-connector-spec-minimally-invasive) adds a
+> gearmotor only *"if the column had none"*, so the steering tap **reuses the stock motor**:
+> NC → stock ECU, NO → driver M1. Nothing is added to the linkage, and no second actuator can
+> fight the first.
+>
+> **This is conditional on [M1](../order-log.md) — the motor must still show ≥ 2× margin on the
+> measured column torque at full load.** If it does not, BOM #4 buys a replacement, which is why
+> that line stays funded.
+>
+> **A stock parent-remote gearmotor has no shaft encoder**, so reuse drops the incremental
+> encoder [ADR B](#5-adr-b-steering-angle-encoding) specifies as auxiliary. That costs FMEA
+> row 1's motor-encoder cross-check outright, and moves stall detection onto the absolute
+> sensor — a trade [§2.4](#24-wiper-motor-fallback) already pre-registers for the wiper fallback.
+> **ADR B and the FMEA are updated when M1 decides**, not now: buying #4 keeps them as written.
 
 > [!NOTE]
 > **M1/M2 assignment — intentional departure (resolves finding F6)**
