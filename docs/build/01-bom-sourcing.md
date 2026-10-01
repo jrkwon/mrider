@@ -795,11 +795,20 @@ floating gate can partially enhance.
 > industrial E-stop uses NC contacts, and it rules out the hobby "mushroom switch" parts sold with
 > a single NO contact for signalling a microcontroller input.
 >
-> **The contact rating is a non-issue here, and that is the whole point of the pattern.** These
-> contacts only ever break **coil** current: ~150 mA for the contactor coil and ~600 mA for the
-> four MUX coils, both at 12 V. Any industrial 22 mm block handles that with room to spare. The
-> AC-vs-DC derating that governs the *contactor* does not bite the *button*, precisely because the
-> button was kept out of the traction path.
+> **An AC-only contact rating is acceptable on this button — and the reason is not "the current is
+> small".** Blocks in this class are rated e.g. *6 A 250 V a.c.* with no DC figure at all, which
+> elsewhere in this document is a red flag. Here it is not, for two specific reasons:
+>
+> - **A sustained DC arc needs roughly 12–14 V across silver contacts.** The AC/DC derating that
+>   wrecks switches is driven by *voltage*, not current — it is why a 250 V AC block collapses to
+>   a fraction of an amp at 30 V DC and to almost nothing at 110 V DC. At **12 V** the supply is
+>   at or below the threshold that keeps an arc alive, so the arc self-extinguishes.
+> - **Both loads are diode-clamped.** The contactor coil carries its own 1N4007 and each MUX relay
+>   coil carries one, so neither circuit can push the contact voltage above the rail during break.
+>
+> Combined with ~150 mA and ~600 mA, this is a benign duty. **The derating that governs the
+> contactor does not reach the button, because the button was kept out of the traction path** —
+> which is the entire reason for the contactor pattern.
 >
 > **Why two.**
 >
