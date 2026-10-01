@@ -651,7 +651,9 @@ floating gate can partially enhance.
 
 | Qty | Part | Note |
 |---:|---|---|
-| 1 | **22 mm latching mushroom with 2a2b contacts** — 한국미스미 **`MRE-RR2R`** | **Verified 2026-10-01.** Decodes as `R` protruding Ø22 / `R` push-lock turn-reset / **`2` = 2a2b** / `R` red. The two **b접점 (NC)** are the ones that matter; the two a접점 go unused. Snap-action, IP65 |
+| 1 | **22 mm latching mushroom with 2a2b contacts** — 한국미스미 **`MRE-RR2R`** | **Verified 2026-10-01.** Decodes as `R` protruding Ø22 / `R` push-lock turn-reset / **`2` = 2a2b** / `R` red. The two **b접점 (NC)** are the ones that matter; the two a접점 go unused. Snap-action, IP65, screw terminals.
+
+> `2a2b` arrives as **two stacked `1a1b` blocks**, not one block with four contacts — so the two NC you need sit on **different blocks**, one each. Identify them by the terminal marking before wiring; taking both circuits off one block gets you one NC and one NO, and the NO half of the E-stop would then do nothing until pressed and nothing at all if its wiring failed. |
 | 1 | **The same 80 A SPDT relay as [#7](#7-8-11-12-14-what-to-actually-buy)**, wired `30→87`, `87a` unused | A dedicated SPST-NO part (e.g. Foocle `FLS820-012-1A`) also works, but standardising on one relay across the build is worth more than the saving |
 | 1 | **1N4007 across the contactor coil** | Arc suppression, so the E-stop contact is not eroded by breaking an inductive DC load. It delays drop-out by tens of ms, which is centimetres at walking pace |
 
