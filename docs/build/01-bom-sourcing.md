@@ -558,12 +558,25 @@ two for throttle, two for steering.
 
 | Qty | Part | Note |
 |---:|---|---|
-| 2 | **Automotive power relay, SPDT (1C), 12 V coil, 80 A** + socket — **throttle poles** | See the derating box below: 40 A is **not** enough here |
-| 2 | **Automotive relay, SPDT (1C), 12 V coil, 40 A** + socket — **steering poles** — e.g. **`JD1914`**, sold with a pigtail socket | **Verified 2026-10-01.** The steering branch is a few amps, so 40 A is ample here *(and only here)* |
+| 4 | **Automotive power relay, SPDT (1C), 12 V coil, 80 A, 5-pin** + matching socket | **One part for all four poles.** Sold as relay-plus-socket sets, often waterproof |
 
 The design says "2× DPDT". **Use 4× SPDT instead** — a 30 A DPDT is hard to source in Korea, while
 automotive SPDT relays with sockets are commodity parts. Four poles either way, and each is
 separately replaceable.
+
+> [!TIP]
+> **Use the same 80 A relay for all four poles — and for the [#8](#7-8-11-12-14-what-to-actually-buy) E-stop as well**
+>
+> An earlier revision split this: 80 A for the throttle poles, 40 A for the steering poles, and a
+> separate SPST-NO part for the E-stop. **Three part numbers, three sockets, three spares.**
+>
+> The steering poles only need a few amps, so 80 A there is over-specified — but a 5-pin SPDT
+> wired `30→87` behaves exactly as SPST-NO, so **one part covers all five positions in the
+> build**: four MUX poles plus the E-stop contactor. One socket type, one spare, one bracket
+> footprint, one thing for a student to identify. In a three-vehicle build that is worth more than
+> the few thousand won saved by under-specifying two of the poles.
+>
+> Leave `87a` unconnected on the E-stop relay.
 
 > [!WARNING]
 > **Relay current ratings are for RESISTIVE loads. Motors are inductive.**
@@ -623,7 +636,7 @@ separately replaceable.
 | Qty | Part | Note |
 |---:|---|---|
 | 1 | **22 mm mushroom, latching, with 2× NC contact blocks** | **Two, not one.** [safety.md §4.2](../design/safety.md) requires the E-stop to do two separate things: cut traction *and* drop the MUX coil. One block breaks the contactor coil; the other breaks the MUX coil supply on the logic rail |
-| 1 | **Automotive power relay, SPST-NO (1A), 12 V coil, 80 A** — e.g. **Foocle `FLS820-012-1A`** | **Verified 2026-10-01**, see below. Preferred over the continuous-duty solenoid class |
+| 1 | **The same 80 A SPDT relay as [#7](#7-8-11-12-14-what-to-actually-buy)**, wired `30→87`, `87a` unused | A dedicated SPST-NO part (e.g. Foocle `FLS820-012-1A`) also works, but standardising on one relay across the build is worth more than the saving |
 | 1 | **1N4007 across the contactor coil** | Arc suppression, so the E-stop contact is not eroded by breaking an inductive DC load. It delays drop-out by tens of ms, which is centimetres at walking pace |
 
 > [!IMPORTANT]
@@ -653,7 +666,21 @@ separately replaceable.
 > because their pull-in coils dissipate tens of watts. A 1.8 W coil can hold indefinitely, which
 > is what MRider asks of it.
 >
-> **Check two things on any listing in this class:**
+> **Check three things on any listing in this class:**
+>
+> - **That you are ordering the 12 V / 80 A variant.** These listings routinely carry several in
+>   one title — *"24V 100A 12V … SPDT 80A"* — and the title is not the order. This project has
+>   already been bitten twice by trusting a listing title over its specification table: the
+>   Sabertooth 2x25/2x32 SKU and the FS-iA6/iA6B bundle. **Read the option you select, not the
+>   headline.**
+> - **Whether `87a` (NC) carries the same rating as `87` (NO).** SPDT automotive relays are often
+>   rated asymmetrically, e.g. 80 A NO against 40 A NC. In the MUX the **NC path is the stock
+>   branch**, which this vehicle already caps at 10 A with its own inline device — so a derated NC
+>   is acceptable here. Know which you have rather than assume.
+> - **Coil current.** Four coils run off one MOSFET and off the logic battery. 150 mA each is
+>   600 mA; 250 mA each is 1 A, which starts to matter on a 7 Ah rail that must outlast a session.
+>
+> **Also check:**
 >
 > - **Contact form.** `-1A` is SPST-NO — correct for the E-stop, where de-energized must mean
 >   open. `-1C` is SPDT, which is what [#7](#7-8-11-12-14-what-to-actually-buy) wants instead.
