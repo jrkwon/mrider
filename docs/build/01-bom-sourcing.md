@@ -118,7 +118,7 @@ not a quote.
 | 9 | Pololu RC servo MUX #2806 | [DeviceMart 1179242](https://www.devicemart.co.kr/goods/view?no=1179242) | **₩31,680** VAT incl. | verified — ships ~1 week |
 | 2 | Teensy 4.1 | [DeviceMart 14276922](https://www.devicemart.co.kr/goods/view?no=14276922) | **₩74,250** VAT incl. | verified |
 | 16 | RPLIDAR A1M8-R6 (DFR0315) | [ICBanQ](https://www.icbanq.com/P013130745) | ₩141,300 + VAT = **₩155,430** | verified, ships ≤1 week |
-| 10 | FlySky FS-i6 + FS-iA6B | 알씨뱅크, 팰콘샵, 다나와 | — | **unverified** — and see the receiver warning below |
+| 10 | FlySky FS-i6 + FS-iA6B | [팰콘샵 100004832](https://www.falconshop.co.kr/shop/goods/goods_view.php?goodsno=100004832) | ₩139,160 VAT incl. | **verified in hand 2026-10-01** — iA6B with i-BUS port, ×3. Read the receiver warning below before buying elsewhere: the title said iA6 |
 
 **Everything in Tier 1 that was thought to need importing is available domestically.** The
 Sabertooth is on Coupang and at one-stop; the Pololu MUX is at DeviceMart. The "no Korean source"
