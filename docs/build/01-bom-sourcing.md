@@ -673,10 +673,9 @@ separately replaceable.
 >   already been bitten twice by trusting a listing title over its specification table: the
 >   Sabertooth 2x25/2x32 SKU and the FS-iA6/iA6B bundle. **Read the option you select, not the
 >   headline.**
-> - **Whether `87a` (NC) carries the same rating as `87` (NO).** SPDT automotive relays are often
->   rated asymmetrically, e.g. 80 A NO against 40 A NC. In the MUX the **NC path is the stock
->   branch**, which this vehicle already caps at 10 A with its own inline device — so a derated NC
->   is acceptable here. Know which you have rather than assume.
+> - **Do not expect the listing to tell you the contact rating.** See the box below: on the part
+>   actually evaluated, neither the title nor the description was trustworthy. Design so it does
+>   not matter.
 > - **Coil current.** Four coils run off one MOSFET and off the logic battery. 150 mA each is
 >   600 mA; 250 mA each is 1 A, which starts to matter on a 7 Ah rail that must outlast a session.
 >
@@ -689,6 +688,36 @@ separately replaceable.
 >   matters and reversing it shorts the drive. A built-in diode also means the separate 1N4007
 >   is redundant.
 >
+> [!CAUTION]
+> **On the parts evaluated here, the contact rating could not be established from the listing — so stop needing it**
+>
+> `KKA-B4 / TYE-RL082` (디바이스마트, ₩12,100 incl. socket) is **titled 80 A** and **described as
+> "NO : 40A 14V / NC : 30A 14V / 1a1b1c"**. Those disagree, and the description is not
+> per-variant: the **4-pin** listing in the same family carries that line **verbatim**, including
+> an NC rating and a `1c` form on a part that physically has **no NC contact**. It is family
+> boilerplate. Neither number can be attributed to the part in the box.
+>
+> Chasing it is the wrong move. **Constrain the system instead**, so any rating in this class is
+> sufficient:
+>
+> | | |
+> |---|---|
+> | **Drive-channel current limit** | **20 A** |
+> | Main traction fuse | **25 A** |
+> | Worst case the contacts break | even the pessimistic 40 A NO reading gives 20–24 A inductive |
+>
+> **20 A is already twice what the whole stock vehicle runs on** — its own inline device is 10 A,
+> for the same motors doing the same job. And the current these contacts actually break in service
+> is the **driving** current, 5–15 A at walking pace: a failsafe revert happens while moving, not
+> while stalled.
+>
+> Where the limit is set depends on what the board exposes — a driver-side setting if it has one,
+> otherwise firmware throttle shaping plus the fuse. **Check this when the boards arrive**; it is
+> not yet known whether the selected driver offers an adjustable limit.
+>
+> With that in place, **one 5-pin SPDT part covers all five positions**, E-stop included, and the
+> 80 A question never has to be answered.
+
 > **If the seller ships "one of two models at random"** — which this listing does, at 26×26×38 or
 > 28×28×42 mm — **mount to the socket, not to the relay body.** The pin pattern is the ISO
 > automotive standard and is common to both; only the shell differs. Buying the matching socket
@@ -729,7 +758,7 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 |---|---|
 | **Traction wire** | **1.5 mm² silicone** throughout. Covers a driver channel at its 30 A limit with the drop under 6 % over the ~1 m runs here. 2.5 mm² for the main B+ run if you want margin |
 | **Logic/signal wire** | 0.5–0.75 mm² silicone |
-| **Fuses** | **40 A** main traction (above the 30 A driver limit), **10 A** steering branch, **5 A** logic rail. Blade type, inline holders |
+| **Fuses** | **25 A** main traction (above the **20 A** drive-channel limit set above, below the relay contacts), **10 A** steering branch, **5 A** logic rail. Blade type, inline holders |
 | **Battery tap** | XT60 |
 | **Three taps** | Keyed inline connectors — **and deliberately three *different* connector families**, so throttle, steering, and power physically cannot be cross-plugged. A reversed steering tap makes the position loop run away from its setpoint instead of toward it |
 | Terminals | Ring/spade for the driver's screw terminals |
