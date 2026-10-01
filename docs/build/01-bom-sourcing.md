@@ -810,6 +810,21 @@ floating gate can partially enhance.
 >   class as the vehicle's auto-resetting thermal breaker, which this design already refuses to
 >   inherit. Turn-reset requires a different motion on purpose.
 >
+> [!CAUTION]
+> **The actuator must be RED, on a YELLOW background. This is not cosmetic.**
+>
+> `ISO 13850` requires the emergency-stop actuator to be **red**, with the surface immediately
+> around it **yellow**. Catalogue codes carry the colour as a trailing letter and the correct type
+> is available in the wrong colour — e.g. `KGE-H4R2**G**` is a conforming Ø22 push-lock turn-reset
+> with 2a2b contacts, and **green**.
+>
+> **Green means start.** Thirteen students will operate three vehicles, and under stress a person
+> reaches for the colour, not the shape. A green mushroom is the one control that could be pressed
+> *expecting* motion. Order the `…R` variant.
+>
+> The yellow half costs nothing here: **print the E-stop's mounting plate in yellow PETG** off
+> [#14](#7-8-11-12-14-what-to-actually-buy), which is already in the BOM for the enclosures.
+
 > **Do not trade this part's correctness for lead time.** The E-stop is not needed until
 > [Stage 3](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first), which is two stages
 > after anything is first powered — so a two-week ship date costs nothing here.
