@@ -196,6 +196,11 @@ motor leads are tapped:
   ([ADR D-R](#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08)) — plus connector type and charger.
 - Confirm the parent remote's receiver board is a **separable module** whose
   motor-drive lines can be routed through the [relay MUX](safety.md).
+  **Answered 2026-10-01: `JR1630RX-12V`**, a combined 2.4 GHz receiver and motor controller on a
+  connector harness — separable, and its motor outputs are what the three taps intercept. Rated
+  **DC 12 V, 20 A max**, behind a **10 A** inline device in the battery `+` line. Both figures
+  bound the stock system's current draw; neither is a stall measurement. See the
+  [Order Log](../order-log.md) V1 entry.
 
 ---
 

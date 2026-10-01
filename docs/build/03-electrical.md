@@ -116,7 +116,40 @@ without cutting it ([dbw.md §11.5](../design/dbw.md#115-3-tap-connector-spec-mi
 |---|---|---|---|
 | **Throttle tap** | stock throttle motor leads | NC → stock ECU, NO → driver M2 | paralleled rear motors |
 | **Steering tap** | stock steering motor leads | NC → stock ECU, NO → driver M1 | MRider adds the gearmotor if the column had none. **Note the M1/M2 assignment is inverted vs. mrover** — intentional, see [dbw.md §2.1](../design/dbw.md#21-actuator) (finding F6) |
-| **Power tap** | chassis traction pack | feeds the motor driver's B+ only | fused. The logic rail is a **separate battery** (§3.1), not tapped from here |
+| **Power tap** | chassis traction pack | feeds the motor driver's B+ only | fused. The logic rail is a **separate battery** (§3.1), not tapped from here. **Tap at the battery, upstream of the stock inline protector** — see the caution below |
+
+> [!CAUTION]
+> **Take the power tap upstream of the stock inline device, not downstream**
+>
+> The 2026 vehicle carries a **10 A** protector in the battery `+` line to the stock ECU, with
+> **no manual reset** — an auto-resetting thermal breaker. Tapping downstream of it would put a
+> device that **re-closes by itself** inside the DBW traction path: traction could return
+> unannounced, minutes after a thermal trip, with no operator action. Nothing else in this design
+> re-energizes itself, and the [failsafe matrix](../design/safety.md#2-failsafe-matrix) has no row
+> for it.
+>
+> Tapping at the battery leaves that device in the **stock** branch, where it is the factory
+> protection and where a parent is watching. MRider's own fusing (§3.2) then protects the DBW
+> branch, sized to measured stall current — which is what that table is for.
+
+### Wire gauge — match the stock harness for the taps, size the new runs yourself
+
+The throttle and steering taps carry **the stock currents through the stock motors**. The loads do
+not change, so **matching the gauge printed on the stock harness is correct by construction** — the
+manufacturer sized it for these motors, this pack, and this duty, and had it certified. Read the
+**whole** printed string, not one number: Chinese harnesses mark either `UL1007 AWG16` style or
+`RVB 2×0.75mm²` style, and in the second case a stray `15` is not a gauge.
+
+**This does not transfer to the runs MRider adds**, because the stock vehicle has no equivalent:
+
+```
+pack ──▶ power tap ──▶ E-stop contactor ──▶ relay MUX ──▶ driver B+
+```
+
+That path is longer than anything in the stock harness and carries more connections, and on a
+low-voltage pack a given millivolt drop eats a larger fraction of the volts you have than it would
+on a higher-voltage one. Size it from the measured stall current per §3.2, independently — it will
+usually come out heavier than stock.
 
 Use **keyed** connectors — not generic bullets. During bring-up you will unplug and re-plug
 these many times, and a reversed steering tap means the position loop runs away from its

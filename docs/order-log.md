@@ -416,9 +416,54 @@ Take these on the vehicle you actually bought. Fill in before ordering.
 | Field | Value |
 |---|---|
 | **Stock steering gearmotor present?** (Y/N) | **Y** — steers under the parent remote, 2026-10-01 |
+| **Stock ECU** | **`JR1630RX-12V`** — 2.4 GHz receiver + motor controller, one module. **DC 12 V, load current max 20 A.** Separable, with a connector harness (2026-10-01) |
+| **Inline protective device, battery → ECU** | **10 A**, in the main `+` line, **no manual reset** (2026-10-01). See the caution below |
 | **Stock motor markings / rating** | *(read the can)* |
-| **Stock steering-motor stall current (A)** — locked rotor, clamp meter, current-limited supply | |
+| **Steering-motor winding resistance `R` (Ω)** — minimum over several rotor positions, lead resistance subtracted | |
+| **Implied stall current `12 / R` (A)** | |
 | Date / by | |
+
+**Where to put the probes.** On the **steering motor's own two leads, with the motor unplugged
+from the ECU.** Not at the controller end, not on the connector's controller side. Left connected,
+you measure the winding in parallel with the output stage — MOSFET body diodes and snubbers — and
+get a reading that is wrong and usually low.
+
+1. Identify the steering motor: it is at the **front**, on the steering linkage. Steer with the
+   parent remote and watch which motor turns. The two at the rear are the `RS 390-12V` drive
+   motors.
+2. **Unplug its 2-pin connector** and probe the **motor-side** pins.
+3. Multimeter on the lowest Ω range. Take several readings, **rotating the output slightly
+   between them** — brush-to-commutator position changes the value. Use the **minimum**, which
+   gives the highest current and is therefore the conservative one.
+4. **Subtract the lead resistance.** Touch the probes together, note the reading, subtract it. At
+   1–3 Ω a 0.3 Ω test lead is a 10–30 % error, which is the whole answer.
+5. `I_stall ≈ 12 V / R`.
+
+Measure one vehicle, then spot-check the other two. A large disagreement is itself information.
+
+> [!CAUTION]
+> **The 10 A device is not a fuse, and MRider must not inherit it**
+>
+> It sits in the battery `+` line to the ECU, is marked **10 A**, and has **no manual reset** —
+> so it is almost certainly an **auto-resetting thermal breaker**. Two consequences:
+>
+> - It trips on **heat**, which is slow. It is not short-circuit protection, and
+>   [03-electrical §3.2](build/03-electrical.md) still requires MRider's own fusing, sized to
+>   measured stall current.
+> - **It re-closes by itself once it cools.** On a toy with a parent watching, that is a feature.
+>   On a vehicle that drives itself it means traction can return **unannounced**, minutes after a
+>   trip, with no operator action — a state the [failsafe matrix](design/safety.md#2-failsafe-matrix)
+>   has no row for, because nothing in MRider's design re-energizes itself.
+>
+> **Therefore take the power tap at the battery, upstream of this device**, leaving it in the
+> stock branch where it belongs. That keeps the stock path factory-protected and reversible, and
+> keeps a self-resetting device out of the DBW traction path. *(To tell the two apart: an
+> auto-reset breaker restores after a minute or two of cooling; a one-shot thermal fuse never
+> does.)*
+>
+> **And do not reuse this class of part for the E-stop.** Its `10A` is an **AC** rating —
+> the label reads `125/250VAC` with `50VDC` listed separately. That is exactly the trap
+> [§1.2.2](build/01-bom-sourcing.md) documents: DC has no zero crossing to extinguish the arc.
 
 > [!IMPORTANT]
 > **Stall current is a separate question, and a child steering the car does not answer it**
