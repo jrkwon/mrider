@@ -446,6 +446,15 @@ get a reading that is wrong and usually low.
 
 Measure one vehicle, then spot-check the other two. A large disagreement is itself information.
 
+> [!NOTE]
+> **This is five minutes, not a gate. Fitting a fuse and watching it is also a valid answer.**
+>
+> The number sets the M1-branch fuse and the driver's current limit. Both have defensible
+> defaults — a 10 A fuse on the steering branch is consistent with what the stock vehicle already
+> runs the whole car behind — and at these power levels the cost of guessing wrong is a blown
+> ₩500 fuse, not damage. Measure it if the multimeter is already out; fit a fuse and see if it
+> holds if it is not.
+
 > [!CAUTION]
 > **The 10 A device is not a fuse, and MRider must not inherit it**
 >

@@ -138,52 +138,39 @@ The throttle and steering taps carry **the stock currents through the stock moto
 not change, so **matching the conductor area of the stock harness is correct by construction** —
 the manufacturer sized it for these motors, this pack, and this duty, and had it certified.
 
-> [!WARNING]
-> **The 2026 harness does not print its conductor size at all — you have to measure it**
+> [!NOTE]
+> **Do not measure the stock harness. Use 1.5 mm² and move on.**
 >
-> The marking reads **`ZR-RVV-300/300V-XF3061-2007`**: `ZR` flame-retardant, `RVV` flexible
-> copper with PVC insulation and a PVC sheath, rated `300/300 V`, against a Chinese spec and its
-> year. **Type and voltage class, and no cross-section anywhere.** Reading the printed string is
-> not enough on this vehicle.
+> An earlier revision of this page had you strip the insulation, count strands, measure strand
+> diameter, and compute the area — because the 2026 harness marking
+> (`ZR-RVV-300/300V-XF3061-2007`) gives type and voltage class but **no cross-section**.
 >
-> Measure it instead — strip ~10 mm, then:
+> That procedure was disproportionate to the currents involved. The stock ECU is rated **20 A
+> max** and sits behind a **10 A** device, and the motor driver's channel limit is **30 A**. At
+> those currents over the ~1 m runs on this vehicle:
 >
-> 1. **Count the strands** (`n`).
-> 2. **Measure one strand's diameter** `d` in mm, with a caliper or micrometer. RVV strands are
->    typically 0.15–0.21 mm.
-> 3. `A = n × π × d² / 4`, then **snap to the nearest standard size**: 0.5 / 0.75 / 1.0 / 1.5 /
->    2.5 mm². *(e.g. 32 strands × 0.20 mm → 1.0 mm².)*
+> | Conductor | drop at 10 A | drop at 30 A |
+> |---|---:|---:|
+> | 1.0 mm² | 0.35 V (2.9 %) | 1.05 V (8.8 %) |
+> | **1.5 mm²** | **0.23 V (1.9 %)** | **0.70 V (5.8 %)** |
 >
-> | mm² | ≈ AWG |
-> |---:|---:|
-> | 0.5 | 20 |
-> | 0.75 | 18 |
-> | 1.0 | 17–18 |
-> | 1.5 | 15–16 |
-> | 2.5 | 13–14 |
+> **1.5 mm² (≈ AWG 15–16) silicone covers every traction-side run on this vehicle**, including a
+> driver channel at its limit, with the drop under 6 %. Use **0.5–0.75 mm²** for logic and signal.
+> Two numbers, no measurement.
 >
-> **Measure the branch you are actually tapping.** Different branches of this harness are not
-> necessarily the same size, and the 300/300 V rating is irrelevant here — voltage is nowhere near
-> the constraint on this vehicle. Current and temperature are.
->
-> Sanity check: the main `+` line sits behind a 10 A device, so it must carry at least that —
-> which puts it around 1.0–1.5 mm². If your measurement lands far from that, re-measure.
->
-> **Match the area, not the type.** Buy the **silicone-insulated** wire the BOM already specifies
-> ([§1.5](01-bom-sourcing.md)) at equal or larger mm²: finer strands make it far more flexible
-> where the harness moves, and its 180–200 °C rating beats PVC's 70 °C on the runs that carry
-> stall current.
+> Silicone rather than PVC for the reason the BOM already gives ([§1.5](01-bom-sourcing.md)):
+> finer strands where the harness moves, and 180–200 °C against PVC's 70 °C.
 
-**This does not transfer to the runs MRider adds**, because the stock vehicle has no equivalent:
+**One place does differ from stock**, and it is worth a sentence rather than a procedure:
 
 ```
 pack ──▶ power tap ──▶ E-stop contactor ──▶ relay MUX ──▶ driver B+
 ```
 
-That path is longer than anything in the stock harness and carries more connections, and on a
-low-voltage pack a given millivolt drop eats a larger fraction of the volts you have than it would
-on a higher-voltage one. Size it from the measured stall current per §3.2, independently — it will
-usually come out heavier than stock.
+The stock ECU is capped at 20 A and sits behind a 10 A device; the motor driver will deliver **30 A
+continuous** into a stalled pair if you let it. So this branch can carry more than the stock harness
+ever did — which is an argument for setting the **driver's current limit** deliberately and fusing
+this branch, not for a thicker wire than 1.5 mm².
 
 Use **keyed** connectors — not generic bullets. During bring-up you will unplug and re-plug
 these many times, and a reversed steering tap means the position loop runs away from its
