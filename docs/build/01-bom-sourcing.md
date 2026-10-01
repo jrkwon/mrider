@@ -558,7 +558,30 @@ two for throttle, two for steering.
 
 | Qty | Part | Note |
 |---:|---|---|
-| 4 | **Automotive relay, SPDT, 12 V coil, 40 A** (Bosch-style 5-pin) + socket | The design says "2× DPDT". **Use 4× SPDT instead** — a 30 A DPDT is hard to source in Korea, while 40 A automotive SPDT with sockets is a ₩2,500 commodity part. Four poles either way, and each is separately replaceable |
+| 2 | **Automotive power relay, SPDT (1C), 12 V coil, 80 A** + socket — **throttle poles** | See the derating box below: 40 A is **not** enough here |
+| 2 | **Automotive relay, SPDT, 12 V coil, 40 A** + socket — **steering poles** | The steering branch is a few amps; 40 A is ample |
+
+The design says "2× DPDT". **Use 4× SPDT instead** — a 30 A DPDT is hard to source in Korea, while
+automotive SPDT relays with sockets are commodity parts. Four poles either way, and each is
+separately replaceable.
+
+> [!WARNING]
+> **Relay current ratings are for RESISTIVE loads. Motors are inductive.**
+>
+> Datasheets in this class state e.g. *"Rated Load (Resistive Load): 13.5 VDC 80 A."* A DC motor
+> is inductive and sustains the arc on break, so the usable figure is roughly **50–60 % of the
+> resistive rating**:
+>
+> | Relay | resistive | usable, inductive | vs the 30 A drive branch |
+> |---|---:|---:|---|
+> | 40 A | 40 A | **20–24 A** | **insufficient** |
+> | 80 A | 80 A | 40–48 A | 1.3–1.6× — adequate |
+>
+> This matters because the MUX does **not** only switch a parked vehicle. A brownout or an E-stop
+> drops the coils **while the motors are running**, so these contacts break motor current under
+> load by design ([failsafe rows 4 and 5](../design/safety.md#2-failsafe-matrix)).
+>
+> *Corrected 2026-10-01: this table previously specified 40 A for all four poles.*
 | 1 | **Logic-level N-MOSFET**, Vgs(th) ≤ 2 V, ≥ 1 A (IRLZ44N class) | Four coils ≈ **600 mA total**. The Teensy drives at **3.3 V**, so a standard IRF-series part will not turn on — it must be logic-level |
 | 1 | **10 kΩ gate pulldown** | **Safety-critical.** It guarantees the gate is low — relays de-energized, STOCK — while the Teensy is unpowered or in reset. A floating gate can partially enhance |
 | 1 | 100 Ω gate series resistor | |
@@ -572,7 +595,7 @@ two for throttle, two for steering.
 | Qty | Part | Note |
 |---:|---|---|
 | 1 | **22 mm mushroom, latching, with 2× NC contact blocks** | **Two, not one.** [safety.md §4.2](../design/safety.md) requires the E-stop to do two separate things: cut traction *and* drop the MUX coil. One block breaks the contactor coil; the other breaks the MUX coil supply on the logic rail |
-| 1 | **Continuous-duty solenoid / DC power contactor, 12 V coil, SPST-NO, 80 A** | See the sourcing note below — **the market quantizes at 80 A**, and the word that matters is *continuous duty* |
+| 1 | **Automotive power relay, SPST-NO (1A), 12 V coil, 80 A** — e.g. **Foocle `FLS820-012-1A`** | **Verified 2026-10-01**, see below. Preferred over the continuous-duty solenoid class |
 | 1 | **1N4007 across the contactor coil** | Arc suppression, so the E-stop contact is not eroded by breaking an inductive DC load. It delays drop-out by tens of ms, which is centimetres at walking pace |
 
 > [!IMPORTANT]
@@ -591,10 +614,30 @@ two for throttle, two for steering.
 > **~500 mA** at 12 V. That is the figure the E-stop's NC block has to break — **check the block's
 > DC rating, not its AC rating**, which is the same trap one level down.
 >
-> **On 80 A versus the 50–60 A this page asks for:** the requirement stands, but continuous-duty
-> solenoids are manufactured at 80 A and up, with little below. Take the 80 A — the point of
-> coming down from "100 A+" was the coil-current cascade, and an 80 A part at 500 mA already
-> delivers it. Do not pay for 200 A.
+> **A power relay beats the solenoid class here, on the one spec that cascades.** `FLS820-012-1A`
+> (80 A, 12 V) has an **80 Ω coil → 150 mA at 1.8 W**, against roughly **500 mA** for a
+> continuous-duty solenoid of the same contact rating. That is the figure the E-stop's NC block
+> has to break and the figure the logic battery carries, so a third of it is a real win. Release
+> time **≤ 5 ms**, and **AgSnO₂In** contacts, which is the material used precisely because it
+> resists DC arc welding.
+>
+> **1.8 W is also what settles the duty question.** Starter solenoids are intermittent-rated
+> because their pull-in coils dissipate tens of watts. A 1.8 W coil can hold indefinitely, which
+> is what MRider asks of it.
+>
+> **Check two things on any listing in this class:**
+>
+> - **Contact form.** `-1A` is SPST-NO — correct for the E-stop, where de-energized must mean
+>   open. `-1C` is SPDT, which is what [#7](#7-8-11-12-14-what-to-actually-buy) wants instead.
+> - **Whether the coil has a built-in diode or resistor across it.** Some variants in this family
+>   ship with a 680 Ω parallel resistor; if yours has a **diode**, coil polarity on pins 85/86
+>   matters and reversing it shorts the drive. A built-in diode also means the separate 1N4007
+>   is redundant.
+>
+> **If the seller ships "one of two models at random"** — which this listing does, at 26×26×38 or
+> 28×28×42 mm — **mount to the socket, not to the relay body.** The pin pattern is the ISO
+> automotive standard and is common to both; only the shell differs. Buying the matching socket
+> makes the random dimension irrelevant, which matters when three vehicles must end up alike.
 >
 > **Feed the contactor coil from the traction pack, not the logic rail.** The designed safe state
 > on a logic brownout is *the factory-controlled vehicle*, not a dead one
