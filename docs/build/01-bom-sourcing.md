@@ -792,6 +792,28 @@ floating gate can partially enhance.
 > **Do not order the `1` contact option** (`1a1b`) — it carries only **one** NC, and this design
 > needs two independent ones. In the `MRE` series that is the third character: `MRE-RR**2**R`.
 >
+> **And `MRF` is not `MRE`.** Same manufacturer, adjacent catalogue pages, one letter apart:
+>
+> | | series | latching option |
+> |---|---|---|
+> | **`MRE`** | **비상정지 스위치** — mushroom | **`R` 푸시 록 턴 리셋** |
+> | `MRF` | 푸시버튼 스위치 — flush/extended cap | `A` 유지동작 (Alternate) |
+>
+> An `MRF` part can be ordered with the right `2a2b` contacts and still be unusable here, because
+> the other two attributes are both safety-relevant:
+>
+> - **The actuator is not a mushroom.** An E-stop must be strikeable with a palm, without aiming,
+>   by someone who is not looking at it. A flush cap needs a fingertip placed on it.
+> - **`Alternate` is not `push-lock turn-reset`.** Alternate releases on a *second press* — the
+>   same careless motion that triggered it. The contactor coil runs straight through this contact,
+>   so a second bump **re-energizes traction with no deliberate act**. That is the same hazard
+>   class as the vehicle's auto-resetting thermal breaker, which this design already refuses to
+>   inherit. Turn-reset requires a different motion on purpose.
+>
+> **Do not trade this part's correctness for lead time.** The E-stop is not needed until
+> [Stage 3](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first), which is two stages
+> after anything is first powered — so a two-week ship date costs nothing here.
+>
 > **Why NC (b접점).** An emergency stop must **open** a circuit that is closed in normal operation,
 > so that a cut wire, a loose terminal, or a corroded contact **stops the vehicle** rather than
 > silently disabling the stop. Wired through an **NO** contact, the E-stop does nothing at all
