@@ -146,11 +146,15 @@ agreed to. Divergences are listed here instead, and the live state of every item
 | 15 | ₩64,000 | ₩66,680 | +8,040 | Actual charge |
 | 16 | ₩155,430 | **₩0** | −466,290 | Already held before approval; never purchased |
 | 18 | ₩41,800 | ₩45,980 | +12,540 | The approved figure was **ex-VAT**; every other line was VAT-inclusive |
+| 3 | *(same line, 4th unit)* | **4 units ordered, 3 + 1 spare** | **+143,440** | The Δ column is ×3 by construction and cannot express a spare. Recorded here so this request and the [Order Log](order-log.md) reconcile |
+| 7 | Relay MUX, ₩34,000 | **₩57,300** — 4× 80 A SPDT @₩12,100 plus shared passives | **+69,900** | The estimate assumed generic 40 A relays. Both motor conductors must break, and the throttle poles carry an inductive load that derates a 40 A contact to 20–24 A — under the branch. 80 A is the smallest part that clears it |
+| 17 | Camera, ₩41,000 | **₩24,800** | **−48,600** | ₩35,800 list less an ₩11,000 discount |
 | 4 | Steering gearmotor + encoder, ₩48,000 | **Expected ₩0** — the delivered vehicle has a **stock steering gearmotor** | 0 *(pending)* | Confirmed 2026-10-01: all three steer under the parent remote, and the vehicle's rated **25 kg** occupant load against ~6 kg of added kit demonstrates the ≥ 2× torque margin without measurement. The design reuses the motor rather than adding one. **Still funded** against one residual risk: it was never specified for continuous closed-loop duty. Released at bench Stage 1 |
 | 13 | Steering coupler + magnet mount, ₩20,000 | **Partly unneeded** — no motor coupler required | 0 *(pending)* | The stock motor is already coupled to the linkage. The angle-sensor magnet mount is still required |
-| | | **Net** | **−572,910** | |
+| 8 | E-stop + contactor, ₩35,000 | Split into **8a** contactor ₩11,000 · **8b** button ₩24,000 | 0 | The line hid two parts bought from two vendors on different dates. The contactor shipped first; the button is a 10/16 item. Per-set total unchanged |
+| | | **Net** | **−408,170** | |
 
-**Projected total ₩3,348,570 against ₩3,921,480 approved.** No amendment increases the total, and
+**Projected total ₩3,513,310 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows. No amendment increases the total, and
 none requires re-approval.
 
 > [!NOTE]

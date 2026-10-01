@@ -10,7 +10,7 @@
 # The name is now narrower than the job - checks 5 and 7 are not documentation -
 # but it is what everyone types, so it stays.
 #
-# Twelve checks. Each one exists because this repository has already shipped the
+# Thirteen checks. Each one exists because this repository has already shipped the
 # defect it catches, or is one cohort away from it:
 #
 #   1. mkdocs build --strict   - broken file links, bad nav entries, config errors
@@ -44,6 +44,12 @@
 #                                ("the traction pack"), exactly as
 #                                architecture.md already does; the number lives
 #                                in vehicle.md, bom.md and the order log.
+#  13. request reconciles      - the purchase request's Amendments net
+#                                drifting away from what the order log
+#                                actually records. Check 11 only verifies
+#                                the request against itself, so on
+#                                2026-10-01 the two documents disagreed by
+#                                143,440 and nothing noticed.
 #
 # CI runs the same checks (.github/workflows/docs.yml), and because the
 # deploy job has `needs: build`, a failure here stops the publish rather than
@@ -280,5 +286,34 @@ if [ -n "$VOLTS" ]; then
     fail "traction voltage named on a build page"
 fi
 printf "   %sok%s\n\n" "$G" "$N"
+
+printf "%s13. purchase request reconciles with the order log%s\n" "$B" "$N"
+# Check 11 verifies the request against ITSELF - subtotals x 3 equal the
+# stated total. It cannot see the order log, so the Amendments section can
+# drift away from what was actually bought and still "add up".
+#
+# It did. On 2026-10-01 the request projected 3,348,570 and the log
+# projected 3,513,310: three divergences had never been written down (an
+# item bought cheaper, an item bought dearer, and a 4th spare unit that the
+# "delta x 3" column cannot express). Every one of them was a real purchase.
+#
+# The two documents are allowed to be structured differently. They are not
+# allowed to project different totals.
+LOG_PROJ="$(python3 scripts/order_status.py 2>/dev/null | awk '/projected total/{print $NF}')"
+REQ_PROJ="$(grep -oE 'Projected total ₩[0-9,]+' docs/purchase-request-2026-fall.md | head -1 | grep -oE '[0-9,]+')"
+if [ -z "$LOG_PROJ" ] || [ -z "$REQ_PROJ" ]; then
+    printf "   could not read one of the two projections\n" >&2
+    printf "     order log: '%s'   request: '%s'\n" "$LOG_PROJ" "$REQ_PROJ" >&2
+    fail "cannot reconcile the purchase request with the order log"
+fi
+if [ "$LOG_PROJ" != "$REQ_PROJ" ]; then
+    printf "   the two documents project different totals:\n" >&2
+    printf "     docs/order-log.md            %s  (computed from actual rows)\n" "$LOG_PROJ" >&2
+    printf "     purchase-request-2026-fall   %s  (approved + Amendments net)\n" "$REQ_PROJ" >&2
+    printf "   A divergence was bought and never written into Amendments.\n" >&2
+    printf "   Find it, add the row, and update the net AND both languages.\n" >&2
+    fail "purchase request does not reconcile with the order log"
+fi
+printf "   %sok%s  (both project ₩%s)\n\n" "$G" "$N" "$LOG_PROJ"
 
 printf "%sDocs are publishable.%s\n" "$G" "$N"
