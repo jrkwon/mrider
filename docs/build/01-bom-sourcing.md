@@ -151,8 +151,10 @@ ordering.**
 | 10 | FlySky FS-i6 + **FS-iA6B** | 알씨뱅크, 팰콘샵, 다나와 | — | $55 ≈ ₩74,900 |
 | 15 | Logitech F710 gamepad | 다나와, 컴퓨존, 11번가 | ₩58,000–69,900 | $40 ≈ ₩54,500 |
 | 18 | BNO085 (Adafruit breakout) | ICBanQ · [DeviceMart 12507416](https://www.devicemart.co.kr/goods/view?no=12507416) · VCTec | ~₩41,800 | $28 ≈ ₩38,100 |
-| 11 | 12 V 7 Ah SLA (로케트 ES7-12) | 11번가, 쿠팡, 판테크 | ~₩19,500 | part of $45 |
-| 11 | Isolated DC-DC (e.g. SPS3-12-5) | DeviceMart 전원/파워 → DC-DC 컨버터 | — | part of $45 |
+| 11 | ~~12 V 7 Ah SLA (로케트 ES7-12)~~ → **2–3 Ah, 9.5–14 V, LiFePO₄ preferred** | 11번가, 쿠팡, 알리 | — | **Re-specified 2026-10-01** — the 7 Ah SLA is 3× oversized and 2.5 kg. See §1.2.4 |
+| 11 | **Charger matched to the pack chemistry** | same vendors as the pack | — | Buy it *with* the pack, not separately — a mismatched charger is a fire |
+| 11 | **DC-DC buck 12→5 V, ≥ 2 A, ×2** | DeviceMart 전원/파워 → DC-DC 컨버터 | — | Non-isolated is fine (§1.2.4). One for Teensy + sensors, one for RC + signal MUX |
+| 11 | Electrolytic 1000 µF 16 V ×2, divider resistors, 5 A blade fuse + holder | DeviceMart, 엘레파츠 | — | Hold-up and the undervoltage monitor — passive parts, no module needed |
 | 8 | 22 mm mushroom E-stop | 한국미스미, 레고전자부품, 다아라몰 (IDEC) | — | $15 — **but read the warning** |
 
 > [!IMPORTANT]
@@ -894,8 +896,8 @@ floating gate can partially enhance.
 
 | Qty | Part | Note |
 |---:|---|---|
-| 1 | **12 V 7 Ah SLA** (로케트 ES7-12 class) | ~₩19,500 |
-| 1 | SLA charger, 12 V ~1 A | |
+| 1 | **Battery, 9.5–14 V, 2–3 Ah** — see the sizing box below | **Not the 7 Ah SLA this BOM originally named.** Chemistry matters here; read the box |
+| 1 | Charger matched to that chemistry | A LiFePO4 pack charged on an SLA charger is a fire, and vice versa |
 | 2 | **DC-DC buck, 12 V → 5 V, ≥ 2 A** | One for Teensy + sensors, one for RC receiver + signal MUX. Separating them keeps servo-side transients off the rail holding the safety supervisor |
 | 2 | 1000 µF+ electrolytic, 16 V | The hold-up [safety.md §5](../design/safety.md#5-power-rail-isolation-and-brownout-protection) asks for |
 | 2 | Resistors for a divider into a Teensy analog pin | The logic-rail **undervoltage monitor** of failsafe row 4. Two resistors, not a module |
@@ -903,6 +905,49 @@ floating gate can partially enhance.
 
 **A non-isolated buck is adequate.** The isolation that matters — traction from logic — is provided
 by the separate battery. Galvanic isolation downstream of it buys nothing here.
+
+> [!WARNING]
+> **The 12 V 7 Ah SLA is the wrong part — oversized by 3× and heavy enough to matter**
+>
+> Measured against the actual load rather than a guess:
+>
+> | | |
+> |---|---:|
+> | 4× MUX relay coils (150 mA each) | **600 mA** |
+> | Teensy, angle sensor, RC receiver, signal MUX, driver logic — 240 mA at 5 V through an 85 % buck | 118 mA |
+> | **Total at 12 V** | **≈ 720 mA, 8.6 W** |
+>
+> The relay coils are **84 %** of it, and they are irreducible: a latching relay would cut the
+> draw and is forbidden here, because de-energize-to-safe requires a relay that drops out when
+> its coil loses power.
+>
+> | Pack | usable | runtime | mass |
+> |---|---:|---:|---:|
+> | 12 V 7 Ah SLA (50 % DoD) | 3.5 Ah | 4.9 h | **2500 g** |
+> | 4S LiFePO₄ 2.5 Ah (80 %) | 2.0 Ah | 2.8 h | 300 g |
+> | 3S Li-ion 2.6 Ah (80 %) | 2.1 Ah | 2.9 h | 180 g |
+>
+> **2–3 Ah covers a session.** The SLA buys runtime nobody needs and spends **2.5 kg** doing it —
+> against a [C1 kit budget](../design/vehicle.md) of ~6 kg total, of which the control box,
+> battery and wiring share 3–4 kg. The logic battery alone would take most of that bucket, and
+> `vehicle.md` names **centre of mass** rather than mass as the real tip-over risk: a 2.5 kg brick
+> on the deck is the worst single item to place.
+>
+> **The rail tolerates a wide window**, so chemistry is a free choice: the bucks accept a range and
+> the relays pick up at **≤ 8 V**. Anything delivering roughly **9.5–14 V** works.
+>
+> **Prefer LiFePO₄ over LiPo, and the reason is the course, not the physics.** A 4S LiFePO₄ pack
+> is **12.8 V nominal** — a near-exact 12 V replacement with a flat discharge curve, which is what
+> you want under a rail feeding the safety supervisor — and its chemistry does not enter thermal
+> runaway the way LiPo does. Thirteen students will charge, store, knock and eventually puncture
+> these over a semester. A 3S Li-ion pack **with an integrated BMS** is the acceptable second
+> choice. **Bare LiPo is not**, whatever the drone hobby does with it.
+>
+> **Changing chemistry moves one firmware constant**: the logic-rail undervoltage threshold of
+> [failsafe row 4](../design/safety.md#2-failsafe-matrix). SLA trips near 11 V; 4S LiFePO₄ sits
+> flat at 13.2 V and falls off a cliff, so it trips near 12 V; 3S Li-ion near 10 V. **Record the
+> threshold with the pack**, because the monitor is worthless if it is set for a chemistry that
+> is not fitted.
 
 #### #12 — Wiring, connectors, fuses (~₩55,000)
 
