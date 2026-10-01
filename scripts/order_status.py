@@ -24,8 +24,11 @@ The tables in docs/order-log.md are the record; a human edits them. But three
 questions cannot be answered by looking at them, and all three are expensive to
 get wrong:
 
-  1. Has the approved amount been exceeded? 17 line items over 3 sets, paid on
-     two cards, against a ceiling with 2.0% headroom.
+  1. Has the CEILING been exceeded? 17 line items over 3 sets, paid on two
+     cards, against a 4,000,000 ceiling. The university approved a total,
+     not a line-item schedule: individual prices may move without further
+     approval, and only the total is binding. The request's own 3,921,480
+     is therefore a plan to compare against, not the bar.
   2. What was ordered and has not arrived? A part ordered and forgotten is
      indistinguishable from a part not yet needed.
   3. What arrived but is not CONFIRMED? Arrival is not acquisition. The
@@ -310,13 +313,22 @@ def main():
     if app is None:
         print('  approved             (could not read the purchase request)')
     else:
-        print(f'  approved             {app:>12,}')
-        delta = paid_total + committed - app
-        verdict = 'under' if delta <= 0 else 'OVER'
-        print(f'  vs approved          {abs(delta):>12,}   {verdict}')
-    if paid_total + committed > CEILING:
-        print(f'  vs ceiling           {paid_total + committed - CEILING:>12,}   '
-              f'OVER THE {CEILING:,} CEILING')
+        # The CEILING is the real constraint. The university approved a total
+        # of 4,000,000 and does NOT require separate approval for individual
+        # line items moving, so the request's own 3,921,480 is a plan, not a
+        # bar - printing it with an under/OVER verdict made the wrong number
+        # look binding.
+        proj = paid_total + committed
+        head = CEILING - proj
+        print(f'  ceiling              {CEILING:>12,}')
+        if head >= 0:
+            print(f'  headroom             {head:>12,}')
+        else:
+            print(f'  OVER THE CEILING BY  {-head:>12,}   <<<')
+        delta = proj - app
+        print(f'  (vs {app:,} requested: {abs(delta):,} '
+              f'{"under" if delta <= 0 else "over"} - informational;')
+        print('   per-item variation needs no re-approval)')
     if mismatch:
         print(f'  CHECK: {len(mismatch)} row(s) where paid does not equal unit x qty:')
         for r, want, why in mismatch:

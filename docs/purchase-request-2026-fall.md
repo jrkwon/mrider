@@ -154,8 +154,19 @@ agreed to. Divergences are listed here instead, and the live state of every item
 | 8 | E-stop + contactor, ₩35,000 | Split into **8a** contactor ₩11,000 · **8b** button ₩24,000 | 0 | The line hid two parts bought from two vendors on different dates. The contactor shipped first; the button is a 10/16 item. Per-set total unchanged |
 | | | **Net** | **−408,170** | |
 
-**Projected total ₩3,513,310 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows. No amendment increases the total, and
-none requires re-approval.
+**Projected total ₩3,513,310 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows.
+
+> [!IMPORTANT]
+> **What was actually approved: a ceiling of ₩4,000,000, not this line-item schedule**
+>
+> The university approved a **total**. Individual items may move in price, be substituted, split,
+> or dropped **without further approval**. Only the total binds, and the live figure against it is
+> **₩3,513,310 projected, ₩486,690 of headroom**.
+>
+> So the amendments above are **not an approval trail** — nothing in them needed permission. They
+> exist for the reason this document already states: *"the estimates above will not match, and the
+> next cohort needs the real numbers."* A divergence is recorded because it is **information**, not
+> because it required consent.
 
 > [!NOTE]
 > **Which document to trust for what**
