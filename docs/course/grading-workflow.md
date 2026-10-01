@@ -157,8 +157,13 @@ delivers it by email and on the notifications page.
 > Fixed in `provision_labs.sh`, but the habit is worth keeping: after editing the roster, check the
 > count.
 >
+> **Count it with a pipe, not with `grep -c`.** `grep -c` **undercounts by one** when the file
+> lacks a trailing newline — the very condition this box exists to catch. On 2026-10-01 a complete
+> 13-student roster counted as 12 this way. Piping through `wc -l` is correct, because grep
+> terminates every line it emits.
+>
 > ```bash
-> grep -cvE '^\s*#|^\s*$' course/roster-2026-fall.txt
+> grep -vE '^\s*#|^\s*$' course/roster-2026-fall.txt | wc -l
 > ```
 
 ---

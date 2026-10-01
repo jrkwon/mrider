@@ -19,7 +19,7 @@
 # This script is the thirty lines that were underneath it.
 #
 # The alternative - each student creates their own private repository and adds
-# the instructor - is 24 chances a week-one mistake goes unnoticed:
+# the instructor - is 13 chances a week-one mistake goes unnoticed:
 #
 #   left public          -> publishes this course's lab solutions to next year
 #   collaborator typo    -> discovered when the work is already due
@@ -35,8 +35,8 @@
 #      cannot create organisations for personal accounts).
 #
 #      It must be FREE, not Team. On a paid plan every outside collaborator on a
-#      private repository consumes a seat regardless of permission level, so 24
-#      students would be ~24 seats. GitHub Free for organisations gives
+#      private repository consumes a seat regardless of permission level, so 13
+#      students would be ~13 seats. GitHub Free for organisations gives
 #      unlimited private repositories and unlimited collaborators.
 #
 #   2. Set COURSE_ORG in scripts/lab_report.py to its name.

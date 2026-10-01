@@ -1,7 +1,7 @@
 # 자율주행미들웨어응용 — Autonomous Driving Middleware Applications
 
 Graduate course · Fall 2026 · University of Michigan-Dearborn, BIMI Lab
-Mondays, 3 hours · 24 students · taught in English
+Mondays, 3 hours · 13 students · taught in English
 
 ---
 

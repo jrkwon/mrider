@@ -25,8 +25,8 @@ Driven through ``scripts/lab.sh``; run that rather than this file directly.
 
 WHY ONE REPORT FILE RATHER THAN A FOLDER OF .txt
 ------------------------------------------------
-The earlier deliverable lists asked for four to six loose files per lab. At 24
-students x 5 labs that is roughly 600 files, in 24 different layouts, with
+The earlier deliverable lists asked for four to six loose files per lab. At 13
+students x 5 labs that is over 300 files, in 13 different layouts, with
 colliding names once unpacked, and with every objective fact - `FAIL: 0`, both
 controllers `active`, 2 topics versus 21 - checked by eye.
 
@@ -79,15 +79,15 @@ FORMAT_VERSION = 1
 #
 # WHY THE INSTRUCTOR CREATES THEM, AND NOT THE STUDENTS
 # GitHub Classroom did exactly this underneath, and was retired on 2026-08-28.
-# Doing it by hand is thirty lines of `gh api`, and it removes 24 chances for a
+# Doing it by hand is thirty lines of `gh api`, and it removes 13 chances for a
 # repository to end up public - which would publish this course's lab solutions
 # to the next cohort - or to be created without the instructor on it, which
 # makes the work ungradeable at the moment it is due.
 #
 # WHY NOT THE `bimilab` ORG
 # bimilab is on the Team plan, where every outside collaborator on a private
-# repository consumes a paid seat regardless of permission level. 24 students
-# there is ~24 seats. GitHub Free for organizations gives unlimited private
+# repository consumes a paid seat regardless of permission level. 13 students
+# there is ~13 seats. GitHub Free for organizations gives unlimited private
 # repositories and unlimited collaborators, which is all this needs.
 COURSE_ORG = 'bimi-courses'     # change to move orgs
 COURSE_TERM = '2026-fall'       # change once a year

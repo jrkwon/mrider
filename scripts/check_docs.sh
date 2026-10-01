@@ -5,7 +5,7 @@
 #     bash scripts/check_docs.sh
 #
 # Push is publish: the site deploys to jrkwon.github.io/mrider automatically on
-# push to main, and during term 24 students are reading it. Run this first.
+# push to main, and during term 13 students are reading it. Run this first.
 #
 # The name is now narrower than the job - checks 5 and 7 are not documentation -
 # but it is what everyone types, so it stays.

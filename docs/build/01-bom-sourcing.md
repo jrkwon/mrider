@@ -174,8 +174,14 @@ ordering.**
 > both rear motors share one channel.
 >
 > Use the pattern the BOM already permits: the **mushroom button switches a contactor coil**, and a
-> **DC-rated contactor** (12 V coil, 100 A+ continuous, sold for winches and battery isolators)
-> carries the traction current. The button then only ever sees coil current, which is what a 22 mm
+> **DC-rated contactor** (12 V coil, **50–60 A continuous**, sold as a battery isolator)
+> carries the traction current. **DC-rated is the part that matters, not the amp figure** — an
+> AC-rated switch breaking DC can weld its contacts closed, and that failure is silent until the
+> moment you press the button.
+>
+> *Sized down from "100 A+" on 2026-10-01.* The stock ECU is rated 20 A and the motor driver
+> limits at 30 A, so 50–60 A is already ~2× margin. Over-sizing cascades: a bigger contactor draws
+> more coil current, and coil current is what sets the button's rating (below). The button then only ever sees coil current, which is what a 22 mm
 > switch is actually good for.
 >
 > Do not buy the button until the contactor is chosen — its coil current sets the button's rating.
