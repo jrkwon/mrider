@@ -254,7 +254,7 @@ interface contract is pinned in [`dbw.md §12`](dbw.md#12-numeric-interface-cont
 |---------------|-------------|-----------------|
 | Command stream stalls (> 500 ms) | Teensy supervisor | `ESTOP`: throttle zeroed, steering centered |
 | USB link lost entirely | Teensy (no session) + laptop driver | Teensy → `ESTOP`; `/mitt/dbw/status` stale; Nav2 halts |
-| **Teensy firmware hang** | Sabertooth serial timeout | Motors stop. RC MUX still selectable, relay MUX still revertible, E-stop still cuts traction |
+| **Teensy firmware hang** | driver R/C signal-loss timeout | Motors stop. RC MUX still selectable, relay MUX still revertible, E-stop still cuts traction |
 | RC link lost | Teensy supervisor | `ESTOP` per failsafe matrix |
 | DBW logic power lost | Relay MUX (de-energizes) | Reverts to **STOCK** (parent remote) |
 | E-stop pressed | Traction contactor | Traction power cut; steering freewheels/holds per rail assignment |

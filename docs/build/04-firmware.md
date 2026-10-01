@@ -227,7 +227,8 @@ Also verify the interlocks:
 **Stage 1 gate**
 
 - [ ] All six measurements recorded in `docs/build/validation-report.md`
-- [ ] Sabertooth serial timeout verified to stop the motor
+- [ ] Driver **R/C signal-loss timeout** verified to stop the motor — test it by stopping the
+      **pulse train** (halt the Teensy), not by closing a serial port
 - [ ] Limit clamp, stall detect, staleness watchdog, freewheel all demonstrated
 - [ ] E4 decision taken explicitly — adopted or not needed, recorded either way
 
@@ -270,7 +271,7 @@ different control feel and you should not discover that during an incident.
 
 **Stage 2 gate**
 
-- [ ] Both Sabertooth channels driven correctly from the single serial master
+- [ ] Both driver channels driven correctly from the single controller
 - [ ] Layer A: angle-commanding override, ≤ 200 ms, mode visible in `DbwStatus`
 - [ ] **Layer B: demonstrated with the Teensy halted**
 - [ ] Behavior of Layer B recorded in the validation report, including the effort-vs-angle note

@@ -331,7 +331,9 @@ Do not assume ≥ 200 Hz because the code says so. Toggle a spare pin each itera
 it, or count iterations per second and report it in `DbwStatus`.
 
 Then measure the rate that actually matters: **how often an effort command reaches the
-Sabertooth.** Scope the serial line. A fast loop feeding a slow output is a slow system.
+Sabertooth.** Scope the **servo-pulse line** into the signal MUX and measure the frame rate —
+not a serial line; there is no serial link on this side. A fast loop feeding a slow output is a
+slow system.
 
 | Rate | Target | Measured |
 |---|---|---|
@@ -343,7 +345,7 @@ Sabertooth.** Scope the serial line. A fast loop feeding a slow output is a slow
 | Test | Expected behavior | Observed |
 |---|---|---|
 | Stop the setpoint publisher mid-hold | Staleness > 500 ms → `ESTOP`; steering centered, then de-energized | *(record)* |
-| Halt the Teensy mid-hold | Sabertooth **serial timeout** stops the motor | *(record)* |
+| Halt the Teensy mid-hold | the driver's **R/C signal-loss timeout** stops the motor | *(record)* |
 | Unplug the angle sensor mid-hold | Loop refuses to run on a bad angle; fault bit sets | *(record)* |
 | Command past the mechanical stop | Effort clamps **toward center only**; stall bit sets | *(record)* |
 | Block the column by hand under effort | Stall detected (encoder velocity ≈ 0 under effort) | *(record)* |

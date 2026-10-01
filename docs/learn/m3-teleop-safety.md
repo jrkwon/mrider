@@ -191,7 +191,7 @@ not merely commanding the coil.
 
 **Row 9 — Teensy firmware hang.** Severity **5**, and the single most important row in the
 document, because one MCU now holds the loop, throttle, override, and arming. Four independent
-mitigations: the Sabertooth's serial timeout stops the motors, the hardware RC signal MUX hands
+mitigations: the driver's R/C signal-loss timeout stops the motors, the hardware RC signal MUX hands
 steering back, the relay MUX reverts to STOCK, and the E-stop cuts traction. A hardware
 watchdog resets the Teensy to neutral output, with the layers above as
 outer layers.
@@ -208,7 +208,7 @@ before vehicle; wheels-off before wheels-on; walking pace before anything faster
 | Stage | What is connected | What you prove |
 |---|---|---|
 | 0 | Teensy alone, **no motor** | Sensor reads, **no wrap across full travel**, 30 min of USB stability |
-| 1 | + steering motor, bench supply | Closed-loop tracking, limits, stall, freewheel, **Sabertooth serial timeout** |
+| 1 | + steering motor, bench supply | Closed-loop tracking, limits, stall, freewheel, **driver R/C signal-loss timeout** |
 | 2 | + drive motor, RC bound | Both channels from one master; **both override layers, Layer B with the Teensy halted** |
 | 3 | + relay MUX and E-stop | Every failsafe row; default = STOCK on every fault |
 | 4 | Full vehicle, wheels on stands | Repeat matrix; no brownout under steering stall |
@@ -273,7 +273,9 @@ Work all nine rows. Suggested inductions:
 
 # Rows 6 and 8 — halt the Teensy
 #   hold the reset button while a motor is commanded.
-#   The Sabertooth's serial timeout should stop it. If the motor LATCHES
+#   The driver's R/C signal-loss timeout should stop it -- holding reset
+#   stops the pulse train, which is exactly what that timeout watches for.
+#   If the motor LATCHES
 #   at its last command instead, stop the lab and report it -- that is a
 #   failed precondition of the architecture, not a tuning issue.
 

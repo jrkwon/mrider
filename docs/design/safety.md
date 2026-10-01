@@ -47,7 +47,7 @@ Because a single MCU now holds the steering loop, the throttle output, override,
 | 3 | **Hardware RC signal MUX** | selects RC effort directly into the motor driver | **Yes** |
 | 4 | **RC via serial** | Teensy switches to `MANUAL_RC`, closed-loop | No |
 | 5 (lowest) | **Laptop autonomy** | only drives when 1–4 all permit | No |
-| — | *Sabertooth serial timeout* | motors stop when the Teensy stops transmitting | **Yes** (verify, §2 row 6) |
+| — | *Driver R/C signal-loss timeout* | motors stop when the Teensy stops emitting pulses | **Yes** (verify, §2 row 6) |
 
 ---
 
@@ -62,9 +62,9 @@ Behavior on each loss scenario. "Traction" = drive motors; "steering" = the Teen
 | 3 | **RC loss** (TX off or out of range) | Teensy: RC frame timeout; MUX channel goes to failsafe value | Enter `ESTOP`: **throttle → 0** | Centered, then de-energized | TX re-links; explicit re-arm |
 | 4 | **Battery sag / brownout** (pack droops under stall) | logic-rail undervoltage monitor | logic rail dips below threshold → **MUX coil drops → revert to STOCK**; the driver's low-voltage cutoff also stops motors | steering motor de-energizes with the coil → **freewheel** (§4) | recharge/settle; isolation (§5) should prevent the dip |
 | 5 | **E-stop pressed** (operator or bump) | hardwired contactor | **traction power cut**; MUX coil dropped → STOCK | steering motor loses power → **freewheel** (non-self-centering column); acceptable at ≤ walking speed (§4) | manual reset of latch; re-arm sequence |
-| 6 | **Sabertooth command loss** (Teensy stops transmitting) | **Sabertooth serial timeout** | affected channels **stop their motors** | steering motor stops | transmission resumes → motors re-enabled |
+| 6 | **Actuation signal loss** (Teensy stops emitting pulses) | **driver R/C signal-loss timeout** | affected channels **stop their motors** | steering motor stops | pulses resume → motors re-enabled |
 | 7 | **Steering at mechanical limit / linkage jam** | Teensy: stall detected (encoder velocity ≈ 0 under effort) | **clamps effort toward center only**, sets stall bit in `DbwStatus.faults` | holds at limit, no further drive into the stop | command away from limit |
-| 8 | **Teensy firmware hang** | Sabertooth serial timeout (row 6); operator observation | **Motors stop** (row 6). Hardware watchdog resets the Teensy to neutral outputs | freewheel or held per §4 | watchdog reset; if repeated, abort session |
+| 8 | **Teensy firmware hang** | driver R/C signal-loss timeout (row 6); operator observation | **Motors stop** (row 6). Hardware watchdog resets the Teensy to neutral outputs | freewheel or held per §4 | watchdog reset; if repeated, abort session |
 | 9 | **Absolute angle sensor fault** (I²C NAK, out-of-range, magnet lost) | Teensy: plausibility + range check each loop | Enter `ESTOP`; set encoder-fault bit. **Never run the loop on a bad angle** | de-energized (do not drive to a garbage target) | diagnose sensor; re-zero per [calibration.md](calibration.md) |
 
 Rows 1–5 are the required set; 6–9 are additional. Every row is testable on the bench (§6).
@@ -168,7 +168,7 @@ Severity S: 1 = negligible, 5 = hazardous. Detection D: 1 = obvious/monitored, 5
 | 6 | Steering gearmotor stall (jam/limit) | overcurrent, heat, drivetrain stress | 4 | driver current limit; stall detect (encoder velocity ≈ 0 under effort) → clamp effort toward center | stall bit + current limit (2) |
 | 7 | Drive motors overcurrent exceeds 32 A/ch | driver thermal/limit trip; loss of drive | 3 | verify paralleled stall current vs. 32 A ([vehicle.md](vehicle.md)); driver current limiting | thermal/overcurrent (2) |
 | 8 | MUX relay welds closed in DBW mode | cannot revert to STOCK; DBW stuck live | 5 | E-stop still cuts *traction power* independently of the MUX; contact check each bring-up; adequately rated contactor | E-stop remains authoritative (3) |
-| 9 | **Teensy firmware hang** — loses loop, throttle, arming, RC serial override at once | vehicle unresponsive to software | **5** | **This is D3's principal risk.** Four independent layers: Sabertooth serial timeout stops motors; hardware RC signal MUX gives steering back; relay MUX reverts to STOCK; E-stop cuts traction. Hardware watchdog resets to neutral | serial timeout + operator (2) |
+| 9 | **Teensy firmware hang** — loses loop, throttle, arming, RC serial override at once | vehicle unresponsive to software | **5** | **This is D3's principal risk.** Four independent layers: the driver's R/C signal-loss timeout stops motors; hardware RC signal MUX gives steering back; relay MUX reverts to STOCK; E-stop cuts traction. Hardware watchdog resets to neutral | signal-loss timeout + operator (2) |
 | 10 | Hardware RC signal MUX fails or is mis-wired | Layer B override unavailable — D3's condition unmet | **5** | **Demonstrated at Stage 2 with the Teensy deliberately halted**, not assumed; E-stop and relay MUX remain as layers 1–2 | Stage 2 test (2) |
 | 11 | Laptop autonomy commands unsafe steer/throttle | vehicle drives wrong | 4 | RC serial override (Layer A); RC MUX (Layer B); ≤ walking speed; operator alongside; E-stop | operator observation (2) |
 

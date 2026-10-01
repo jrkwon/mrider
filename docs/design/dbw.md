@@ -135,7 +135,7 @@ laptop  /mitt/dbw/command  (DbwCommand, steering_angle in rad)
 
 **Consequences.**
 
-- **The Sabertooth's R/C signal-loss timeout comes back for free** — motors stop when pulses stop, with no configuration. This backs [failsafe matrix row 6](safety.md#2-failsafe-matrix) and is one of the layers independent of Teensy firmware. Under packetized serial it would have been a configured behaviour requiring verification; here it is inherent.
+- **The driver's R/C signal-loss timeout comes back for free** — motors stop when pulses stop. This backs [failsafe matrix row 6](safety.md#2-failsafe-matrix) and is one of the layers independent of Teensy firmware. Under packetized serial it would have been a configured behaviour requiring verification; here it is inherent to the mode. **Inherent to the mode is not the same as unconditional:** some boards gate the stop behind a DIP switch that can also disable it, so confirm it is enabled on the board fitted and then verify the behaviour at Stage 1. Never infer it from the mode alone.
 - Two Teensy PWM outputs are consumed instead of one serial port. The Teensy has 35 PWM-capable pins, so this is free.
 - Signal grounds between Teensy, RC receiver, signal MUX, and the motor driver must be star-tied at the motor driver ([architecture.md](architecture.md) power tree).
 - **The actuation frame-rate ceiling returns as an open question** — see §12 and the warning below. This is the real cost of the reversal, and it is *not* resolved by assertion.
@@ -401,10 +401,10 @@ The stock parent-remote receiver and the motor driver **cannot both drive the mo
 | Relay MUX → STOCK | 2 | **Yes** — de-energize-to-safe |
 | **Hardware RC signal MUX** | 3 | **Yes** — signal-path selection, no firmware |
 | RC serial override into the Teensy | 4 | No — closed-loop, normal manual mode |
-| Sabertooth serial timeout | — | **Yes** — motors stop when the Teensy stops transmitting (§4, verify at bring-up) |
+| Driver R/C signal-loss timeout | — | **Yes** — motors stop when the Teensy stops emitting pulses (§4, verify at bring-up) |
 | Teensy hardware watchdog | — | Internal; resets outputs to neutral |
 
-A total Teensy failure still leaves: motors stopped (serial timeout), authority revertible (relay MUX), traction cuttable (E-stop), and steering under human control (RC MUX).
+A total Teensy failure still leaves: motors stopped (signal-loss timeout), authority revertible (relay MUX), traction cuttable (E-stop), and steering under human control (RC MUX).
 
 ### 11.4 MUX diagram
 
