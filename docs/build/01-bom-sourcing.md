@@ -693,9 +693,24 @@ separately replaceable.
 >
 > `KKA-B4 / TYE-RL082` (디바이스마트, ₩12,100 incl. socket) is **titled 80 A** and **described as
 > "NO : 40A 14V / NC : 30A 14V / 1a1b1c"**. Those disagree, and the description is not
-> per-variant: the **4-pin** listing in the same family carries that line **verbatim**, including
-> an NC rating and a `1c` form on a part that physically has **no NC contact**. It is family
-> boilerplate. Neither number can be attributed to the part in the box.
+> per-variant — the **4-pin** listing in the same family carries that line **verbatim**, including
+> an NC rating and a `1c` form on a part that physically has **no NC contact**.
+>
+> Comparing three listings in the family says where it came from:
+>
+> | listing | title | shared description | agree? |
+> |---|---|---|---|
+> | 80 A, 5-pin | 80 A | NO 40 / NC 30 | no |
+> | 80 A, 4-pin | 80 A | NO 40 / NC 30 | no |
+> | **40 A, 4-pin** | **40 A** | NO 40 / NC 30 | **yes** |
+>
+> The boilerplate matches the **40 A** sibling exactly, so the likeliest reading is that it was
+> written for that part and copied onto the 80 A listings — making the 80 A titles probably
+> correct. The `FLS820` datasheet for the same form factor, from another brand, independently
+> states `MAX Operating Current 80A` and `Rated Load 13.5VDC 80A`.
+>
+> **It still cannot be confirmed per-variant from any listing**, which is the point: design so it
+> does not have to be.
 >
 > Chasing it is the wrong move. **Constrain the system instead**, so any rating in this class is
 > sufficient:
@@ -715,8 +730,18 @@ separately replaceable.
 > otherwise firmware throttle shaping plus the fuse. **Check this when the boards arrive**; it is
 > not yet known whether the selected driver offers an adjustable limit.
 >
-> With that in place, **one 5-pin SPDT part covers all five positions**, E-stop included, and the
-> 80 A question never has to be answered.
+> With that in place the 80 A question never has to be answered.
+>
+> **Buy two part numbers, not one, and let the roles be physically distinct:**
+>
+> | position | part | why |
+> |---|---|---|
+> | 4× MUX poles | **5-pin SPDT** | The MUX needs a changeover: NC → stock ECU, NO → driver. A 4-pin SPST cannot make the NC path |
+> | 1× E-stop contactor | **4-pin SPST-NO**, bracket + socket included | Only ever uses `30→87`. Cheaper, and it comes with a steel bracket |
+>
+> This reverses an earlier preference for a single part number. The reason is better than price: a
+> **4-pin relay physically will not seat in a 5-pin MUX position**, so the one relay with a
+> different job cannot be swapped into the wrong place by a student rebuilding a harness.
 
 > **If the seller ships "one of two models at random"** — which this listing does, at 26×26×38 or
 > 28×28×42 mm — **mount to the socket, not to the relay body.** The pin pattern is the ISO
