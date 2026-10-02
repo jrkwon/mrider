@@ -149,21 +149,21 @@ agreed to. Divergences are listed here instead, and the live state of every item
 | 3 | *(same line, 4th unit)* | **4 units ordered, 3 + 1 spare** | **+143,440** | The Δ column is ×3 by construction and cannot express a spare. Recorded here so this request and the [Order Log](order-log.md) reconcile |
 | 7 | Relay MUX, ₩34,000 | **₩57,300** — 4× 80 A SPDT @₩12,100 plus shared passives | **+69,900** | The estimate assumed generic 40 A relays. Both motor conductors must break, and the throttle poles carry an inductive load that derates a 40 A contact to 20–24 A — under the branch. 80 A is the smallest part that clears it |
 | 17 | Camera, ₩41,000 | **₩24,800** | **−48,600** | ₩35,800 list less an ₩11,000 discount |
-| 11 | Isolated logic rail, ₩60,000 | Split into **11a** battery + charger ₩66,000 · **11b** UBEC ×2 ₩23,518 · **11c** passives ₩3,000 est. = **₩92,518** | **+97,554** | The SLA was replaced by a 740 g LiFePO₄ pack, which costs more and weighs a fifth as much — see [§1.2.4](build/01-bom-sourcing.md#7-8-11-12-14-what-to-actually-buy). Listing prices were **ex-VAT**; the figures here include it |
+| 11 | Isolated logic rail, ₩60,000 | Split into **11a** battery + charger ₩66,000 · **11b** UBEC ×2 ₩23,518 · **11c** passives ₩5,000 est. = **₩94,518** | **+103,554** | The SLA was replaced by a 740 g LiFePO₄ pack, which costs more and weighs a fifth as much — see [§1.2.4](build/01-bom-sourcing.md#7-8-11-12-14-what-to-actually-buy). Listing prices were **ex-VAT**; the figures here include it |
 | — | **Carriage** — not in this request at all | **₩11,400 so far**, and rising | **+11,400** | The request priced goods only. Battery ₩3,500 · charger ₩3,500 · UBEC ₩4,400. Tracked as its own row in the [Order Log](order-log.md) so it cannot distort any item's unit price |
 | 4 | Steering gearmotor + encoder, ₩48,000 | **Expected ₩0** — the delivered vehicle has a **stock steering gearmotor** | 0 *(pending)* | Confirmed 2026-10-01: all three steer under the parent remote, and the vehicle's rated **25 kg** occupant load against ~6 kg of added kit demonstrates the ≥ 2× torque margin without measurement. The design reuses the motor rather than adding one. **Still funded** against one residual risk: it was never specified for continuous closed-loop duty. Released at bench Stage 1 |
 | 13 | Steering coupler + magnet mount, ₩20,000 | **Partly unneeded** — no motor coupler required | 0 *(pending)* | The stock motor is already coupled to the linkage. The angle-sensor magnet mount is still required |
 | 8 | E-stop + contactor, ₩35,000 | Split into **8a** contactor ₩11,000 · **8b** button ₩11,924 = **₩22,924** | **−36,228** | The line hid two parts from two vendors on different dates. Both now ordered; the button came in well under the estimate |
-| | | **Net** | **−335,444** | |
+| | | **Net** | **−329,444** | |
 
-**Projected total ₩3,586,036 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows.
+**Projected total ₩3,592,036 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows.
 
 > [!IMPORTANT]
 > **What was actually approved: a ceiling of ₩4,000,000, not this line-item schedule**
 >
 > The university approved a **total**. Individual items may move in price, be substituted, split,
 > or dropped **without further approval**. Only the total binds, and the live figure against it is
-> **₩3,586,036 projected, ₩413,964 of headroom**.
+> **₩3,592,036 projected, ₩407,964 of headroom**.
 >
 > So the amendments above are **not an approval trail** — nothing in them needed permission. They
 > exist for the reason this document already states: *"the estimates above will not match, and the
