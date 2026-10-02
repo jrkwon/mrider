@@ -940,14 +940,24 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > | **charging** | **14.6 V** | **91 %** | 1.4 V |
 > | BMS cut-off | 15.0 V | 94 % | 1.0 V |
 >
-> Adafruit's `ada-1385` is a confirmed fixed 5 V 3 A buck UBEC, but its recommended input is
-> **6–16 V** and its input capacitor is a 16 V part. That is *inside* spec at every point above —
-> and it spends charging time past the 80 % derating electrolytics are usually given, on hardware
-> three cohorts will share.
+> **Chosen 2026-10-02: the 7–40 V UBEC** ([디바이스마트 1078321](https://www.devicemart.co.kr/goods/view?no=1078321), 5 V 3 A continuous), over
+> Adafruit's `ada-1385`. Both are correct-topology fixed 5 V 3 A buck UBECs; they differ only in
+> input rating, and that is where the pack bites:
 >
-> **Prefer a UBEC rated to 20 V or more.** The generic RC parts are commonly **5–26 V**, which puts
-> the whole question away. If only a 16 V-class part is available it will work; disconnect the rail
-> while charging if you want the margin back.
+> | | `ada-1385` (6–16 V) | 1078321 (7–40 V) |
+> |---|---:|---:|
+> | pack nominal 12.8 V | 80 % of rating | 32 % |
+> | **charging 14.6 V** | **91 %** | 37 % |
+> | BMS cut-off 15.0 V | 94 % | 38 % |
+>
+> The `ada-1385` is inside spec at every point and would work. The 7–40 V part simply deletes the
+> question, costs no more, and needs no "disconnect while charging" caveat. Its 7 V lower bound is
+> never approached either — the BMS cuts at 9.2 V and the firmware reverts at 11.5 V.
+>
+> It also survives a change of chassis class without being re-selected, which is the same reason
+> [§1.2.4 keeps voltages out of the build pages](#7-8-11-12-14-what-to-actually-buy).
+>
+> **Confirm its 5 V output is fixed** — some UBECs carry a 5 V / 6 V jumper.
 >
 > If only an adjustable buck is available, set it, **seal the trimmer**, and record the measured
 > voltage.
