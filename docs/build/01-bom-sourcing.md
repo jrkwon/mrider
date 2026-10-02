@@ -1163,7 +1163,7 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > **Avoid holders that do not state a gauge**, especially at high ratings. Cheap ones are built with
 > thin wire regardless of the fuse they are sold alongside, and then the holder, not the fuse, is
 > what the circuit is really limited by.
-| **Battery tap** | XT60 |
+| **Battery tap** | **XT60, 1 per vehicle.** Traction pack only — see below |
 | **Three taps** | Keyed inline connectors — **and deliberately three *different* connector families**, so throttle, steering, and power physically cannot be cross-plugged. A reversed steering tap makes the position loop run away from its setpoint instead of toward it |
 | Terminals | Ring/spade for the driver's screw terminals |
 | Signal | Dupont / JST-XH pigtails; 6× servo-style 3-wire leads; one good USB A–micro/C cable |
@@ -1265,7 +1265,20 @@ you need all of them before step 3:
 
 **Traction side (12 V, high current)**
 
-- XT60 or equivalent for the battery power tap — sized for peak drive current
+- **XT60 at the traction power tap, one per vehicle.** Not a current-rating choice — it is 60 A
+  against a 25 A fuse. It is there for two jobs:
+    - **Reversibility.** [dbw.md §11.5](../design/dbw.md#115-3-tap-connector-spec-minimally-invasive)
+      promises *"unplug the three taps and the vehicle is factory-stock."* The throttle and
+      steering taps **intercept** stock wiring, so they need connectors by construction. The power
+      tap is different in kind — it is a **take-off**, an added branch — and without a connector
+      the only way to remove it is undoing a ring terminal on the battery post, with a tool,
+      repeatedly, until the post is loose.
+    - **A defined dead point.** The E-stop cuts traction but leaves the run from the pack to the
+      contactor live. Before anyone works on that harness there has to be one obvious place that
+      makes MRider electrically absent. **Unplug the XT60 and it is.**
+  Order: `battery post → 25 A fuse → XT60 → E-stop contactor`. The fuse sits first so everything
+  downstream of it, the connector included, is protected.
+- The **logic** pack needs no equivalent — its F2 spades already unplug by hand.
 - Ring/spade terminals for Sabertooth B+/B− and M1/M2 terminals
 - Inline blade-fuse holders, one per rail (values from the
   [architecture.md power tree](../design/architecture.md#5-power-tree-and-safetyauthority-chain))
