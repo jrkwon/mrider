@@ -896,8 +896,8 @@ floating gate can partially enhance.
 
 | Qty | Part | Note |
 |---:|---|---|
-| 1 | **Battery, 9.5–14 V, 2–3 Ah** — see the sizing box below | **Not the 7 Ah SLA this BOM originally named.** Chemistry matters here; read the box |
-| 1 | Charger matched to that chemistry | A LiFePO4 pack charged on an SLA charger is a fire, and vice versa |
+| 1 | **SantaLi `SLB1206`, 12.8 V 6 Ah LiFePO₄** ([디바이스마트 16071444](https://www.devicemart.co.kr/goods/view?no=16071444)) | **Verified 2026-10-02.** 10.0–14.6 V range, **740 g** against the SLA's 2 500 g, IP54, F2 spades *and* a 5.5-2.1 barrel jack. BMS integral: **OCP 60 A, UVD 9.2 V, charge cut-off 15.0 V** |
+| 1 | **LiFePO₄ charger, 14.6 V, 2–4 A** | **Confirm whether the pack listing includes one.** A LiFePO₄ pack on an SLA charger is a fire, and vice versa. The pack's own recommended charge current is 2–4 A |
 | 2 | **DC-DC buck, 12 V → 5 V, fixed output, 1–2 A** | One for Teensy + sensors, one for RC receiver + signal MUX. Separating them keeps servo-side transients off the rail holding the safety supervisor. **Fixed, not adjustable** — see below |
 | 2 | 1000 µF+ electrolytic, 16 V | The hold-up [safety.md §5](../design/safety.md#5-power-rail-isolation-and-brownout-protection) asks for |
 | 2 | Resistors for a divider into a Teensy analog pin | The logic-rail **undervoltage monitor** of failsafe row 4. **Required** — "two resistors, not a module" means skip the *module*, not the monitor |
@@ -967,10 +967,20 @@ measured voltage.
 > choice. **Bare LiPo is not**, whatever the drone hobby does with it.
 >
 > **Changing chemistry moves one firmware constant**: the logic-rail undervoltage threshold of
-> [failsafe row 4](../design/safety.md#2-failsafe-matrix). SLA trips near 11 V; 4S LiFePO₄ sits
-> flat at 13.2 V and falls off a cliff, so it trips near 12 V; 3S Li-ion near 10 V. **Record the
-> threshold with the pack**, because the monitor is worthless if it is set for a chemistry that
-> is not fitted.
+> [failsafe row 4](../design/safety.md#2-failsafe-matrix).
+>
+> **Set it to 11.5 V for the `SLB1206`.** The reasoning, so it can be re-derived for another pack:
+> a 4S LiFePO₄ sits flat near 13.0 V for most of its discharge and then falls quickly, and this
+> pack's **BMS cuts at 9.2 V**. The firmware threshold has to sit *above* the BMS cut-off, so the
+> Teensy sees the rail failing and reverts to STOCK **deliberately**, rather than having the BMS
+> remove power from the safety supervisor without warning. 11.5 V is below the flat region — no
+> false trips — and leaves enough energy above 9.2 V to execute the revert.
+>
+> **The protections are then ordered correctly**: the 5 A fuse blows first, the firmware monitor
+> trips next, and the BMS's 60 A OCP / 9.2 V UVD is the last resort that should never be reached.
+>
+> **Do not operate the vehicle while charging.** At 14.6 V the rail is inside the relay coils'
+> rating at room temperature (20.2 V) but close to their **15.7 V limit at 85 °C**.
 
 #### #12 — Wiring, connectors, fuses (~₩55,000)
 
