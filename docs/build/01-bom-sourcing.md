@@ -1309,8 +1309,36 @@ you need all of them before step 3:
 
 **Traction side (12 V, high current)**
 
+> [!IMPORTANT]
+> **The 2026 traction pack has no posts — it ends in a keyed 2-pin connector**
+>
+> Photographed 2026-10-02. The pack is sealed with a pigtail terminating in a red keyed 2-pin
+> housing, and the stock inline protector sits just downstream of it. **There is nothing to bolt a
+> ring terminal to**, which changes the power tap from a *take-off* into an *interception* like the
+> other two:
+>
+> ```
+> stock:   pack ─[conn]─ protector ─ stock ECU
+> MRider:  pack ─[conn]─[MRider harness]─[conn]─ protector ─ stock ECU
+>                             └─ 25 A fuse → XT60 → E-stop contactor → MUX
+> ```
+>
+> So **get the mating halves of the stock connector** — harvest from a spare lead or identify the
+> type — and MRider inserts without cutting anything. Unplug it, plug the stock pair back
+> together, and the vehicle is factory-stock exactly.
+>
+> **Open question, and it may bound the whole design:** *what is that connector rated for?* Every
+> amp MRider draws now passes through it, and the stock circuit behind it is protected at **10 A**
+> — so 20 A is twice what the vehicle was built to put through it. These ride-on connectors
+> usually tolerate 20–30 A intermittently, and MRider at walking pace draws far less than a child's
+> car at full throttle, so this is probably fine. **Confirm it by hand: a connector that runs warm
+> at Stage 4 is the real current ceiling of this vehicle**, whatever the driver is set to.
+
 - **XT60 at the traction power tap, one per vehicle.** Not a current-rating choice — it is 60 A
-  against a 25 A fuse. It is there for two jobs:
+  against a 25 A fuse. **With the stock connector doing the reversibility job above**, the XT60's
+  remaining role is narrower but still worth it: it is a **known** 60 A part where the stock
+  connector's rating is not, and it disconnects MRider's branch for servicing without unplugging
+  the pack from the stock ECU. Two jobs it was bought for:
     - **Reversibility.** [dbw.md §11.5](../design/dbw.md#115-3-tap-connector-spec-minimally-invasive)
       promises *"unplug the three taps and the vehicle is factory-stock."* The throttle and
       steering taps **intercept** stock wiring, so they need connectors by construction. The power
