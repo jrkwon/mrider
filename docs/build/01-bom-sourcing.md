@@ -897,7 +897,7 @@ floating gate can partially enhance.
 | Qty | Part | Note |
 |---:|---|---|
 | 1 | **SantaLi `SLB1206`, 12.8 V 6 Ah LiFePO₄** ([디바이스마트 16071444](https://www.devicemart.co.kr/goods/view?no=16071444)) | **Verified 2026-10-02.** 10.0–14.6 V range, **740 g** against the SLA's 2 500 g, IP54, F2 spades *and* a 5.5-2.1 barrel jack. BMS integral: **OCP 60 A, UVD 9.2 V, charge cut-off 15.0 V** |
-| 1 | **LiFePO₄ charger, 14.6 V, 2–4 A** | **Confirm whether the pack listing includes one.** A LiFePO₄ pack on an SLA charger is a fire, and vice versa. The pack's own recommended charge current is 2–4 A |
+| 1 | **SantaLi `SLC 1202`**, 14.6 V 2 A ([디바이스마트 16071454](https://www.devicemart.co.kr/goods/view?no=16071454)) | **Sold separately. Chosen 2026-10-02 over the 4 A `SLC 1204`** — the manufacturer's own matrix pairs `1202` with **SLB 12 V 6–12 Ah** and `1204` with **12–18 Ah**, so the 6 Ah pack sits below the `1204`'s range. Φ5.5-2.1 plugs straight into the pack's jack |
 | 2 | **DC-DC buck, 12 V → 5 V, fixed output, 1–2 A** | One for Teensy + sensors, one for RC receiver + signal MUX. Separating them keeps servo-side transients off the rail holding the safety supervisor. **Fixed, not adjustable** — see below |
 | 2 | 1000 µF+ electrolytic, 16 V | The hold-up [safety.md §5](../design/safety.md#5-power-rail-isolation-and-brownout-protection) asks for |
 | 2 | Resistors for a divider into a Teensy analog pin | The logic-rail **undervoltage monitor** of failsafe row 4. **Required** — "two resistors, not a module" means skip the *module*, not the monitor |
@@ -978,6 +978,13 @@ measured voltage.
 >
 > **The protections are then ordered correctly**: the 5 A fuse blows first, the firmware monitor
 > trips next, and the BMS's 60 A OCP / 9.2 V UVD is the last resort that should never be reached.
+>
+> **Why the 2 A charger and not the 4 A.** Both are inside the pack's recommended 2–4 A, so the
+> decision is not about whether 4 A would work. The manufacturer assigns `1202` to this pack size
+> and `1204` to the next one up, and deviating from a vendor's own pairing needs a reason better
+> than *faster*. There isn't one here: **3 hours against 1.5 is invisible** when the packs charge
+> between weekly sessions and run 6.7 hours on a charge. And **0.33 C is gentler than 0.67 C** on
+> cells that three cohorts will share.
 >
 > **Do not operate the vehicle while charging.** At 14.6 V the rail is inside the relay coils'
 > rating at room temperature (20.2 V) but close to their **15.7 V limit at 85 °C**.
