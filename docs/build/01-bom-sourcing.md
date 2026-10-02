@@ -899,7 +899,7 @@ floating gate can partially enhance.
 | 1 | **SantaLi `SLB1206`, 12.8 V 6 Ah LiFePO₄** ([디바이스마트 16071444](https://www.devicemart.co.kr/goods/view?no=16071444)) | **Verified 2026-10-02.** 10.0–14.6 V range, **740 g** against the SLA's 2 500 g, IP54, F2 spades *and* a 5.5-2.1 barrel jack. BMS integral: **OCP 60 A, UVD 9.2 V, charge cut-off 15.0 V** |
 | 1 | **SantaLi `SLC 1202`**, 14.6 V 2 A ([디바이스마트 16071454](https://www.devicemart.co.kr/goods/view?no=16071454)) | **Sold separately. Chosen 2026-10-02 over the 4 A `SLC 1204`** — the manufacturer's own matrix pairs `1202` with **SLB 12 V 6–12 Ah** and `1204` with **12–18 Ah**, so the 6 Ah pack sits below the `1204`'s range. Φ5.5-2.1 plugs straight into the pack's jack |
 | 2 | **DC-DC buck, 12 V → 5 V, fixed output, 1–2 A** | One for Teensy + sensors, one for RC receiver + signal MUX. Separating them keeps servo-side transients off the rail holding the safety supervisor. **Fixed, not adjustable** — see below |
-| 2 | 1000 µF+ electrolytic, 16 V | The hold-up [safety.md §5](../design/safety.md#5-power-rail-isolation-and-brownout-protection) asks for |
+| 2 | **1000 µF electrolytic, 25 V**, 105 °C | Hold-up, per [safety.md §5](../design/safety.md#5-power-rail-isolation-and-brownout-protection). **25 V, not 16 V** — see below |
 | 2 | Resistors for a divider into a Teensy analog pin | The logic-rail **undervoltage monitor** of failsafe row 4. **Required** — "two resistors, not a module" means skip the *module*, not the monitor |
 | 1 | Blade fuse holder + **5 A** fuse | |
 
@@ -958,6 +958,24 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > [§1.2.4 keeps voltages out of the build pages](#7-8-11-12-14-what-to-actually-buy).
 >
 > **Confirm its 5 V output is fixed** — some UBECs carry a 5 V / 6 V jumper.
+>
+> **The same input-rating question applies to the hold-up capacitors, and this page got it wrong
+> once.** It originally said *"1000 µF 16 V"*, which is the identical **91 % at 14.6 V** figure that
+> disqualified the `ada-1385`.
+>
+> | | 16 V part | 25 V part |
+> |---|---:|---:|
+> | pack nominal 12.8 V | 80 % | 51 % |
+> | charging 14.6 V | **91 %** | 58 % |
+>
+> **Put the hold-up on the 12 V rail, at the UBEC inputs, and use 25 V parts.** The 12 V side is
+> where the capacitance does more: 1000 µF from 12.8 V down to the UBEC's 7 V floor is about
+> **95 ms** of ride-through for the logic load, against roughly 3 ms if the same part sits on the
+> 5 V output.
+>
+> A 16 V part is not *wrong* — at 105 °C rated and room-temperature ambient its life is long, and
+> 14.6 V only appears while charging. But 25 V costs the same, and **16 V would be usable only on
+> the 5 V side**, where it buys far less hold-up.
 >
 > If only an adjustable buck is available, set it, **seal the trimmer**, and record the measured
 > voltage.
