@@ -1192,10 +1192,23 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > So **6 pairs of family A** (throttle) and **6 pairs of family B** (steering) across the three
 > vehicles.
 >
-> **The two families must differ**, and not for tidiness: `03-electrical §3.3` warns that *"a
-> reversed steering tap means the position loop runs away from its setpoint instead of toward
-> it."* If throttle and steering use the same connector, that is a mistake someone can make in a
-> dark garage. If they physically cannot mate, it is one they cannot.
+> **Pin count and rating:**
+>
+> | tap | pins | carries | suggested |
+> |---|---|---:|---|
+> | Power | 2 | 20 A | **XT60** *(already chosen)* |
+> | **Throttle** | **2 if the stock pair is common, 4 if the two drive motors are wired separately** — check the ECU harness | **20 A** | **XT30** |
+> | **Steering** | **2** | ~5 A | small 2-pin, ≥10 A |
+>
+> **Rating is what rules out the obvious parts on the throttle tap.** JST-class 2-pin connectors
+> are 3–5 A, against a branch the driver will push to **20 A**. XT30 is rated 30 A and is the
+> natural fit.
+>
+> **That choice also makes the families self-enforcing.** XT60, XT30 and a small 2-pin cannot mate
+> with each other — different shells, different sizes — so no extra discipline is needed.
+> `03-electrical §3.3` warns that *"a reversed steering tap means the position loop runs away from
+> its setpoint instead of toward it."* With the same connector on throttle and steering that is a
+> mistake someone can make in a dark garage; with these three it is one they cannot.
 | Terminals | Ring/spade for the driver's screw terminals |
 | Signal | Dupont / JST-XH pigtails; 6× servo-style 3-wire leads; one good USB A–micro/C cable |
 | Heatshrink | At least two sizes |
