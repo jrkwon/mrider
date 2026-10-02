@@ -88,6 +88,26 @@ on the **logic** rail.
 
 Fuse for the **stall** current, not the nominal draw, and size wire for the fuse.
 
+> [!IMPORTANT]
+> **Put each fuse at its battery, not at its load — and pick the holder style from that**
+>
+> A fuse protects everything **downstream** of it. The stub **upstream** — between the battery
+> terminal and the fuse — is protected by nothing, so a chafe there shorts a pack capable of
+> hundreds of amps straight to the chassis. Keep that stub as short as the hardware allows:
+> **at the traction pack** for the 25 A, **at the logic pack** for the 5 A.
+>
+> That placement decides the holder style, which is otherwise a coin toss:
+>
+> | | best where | why |
+> |---|---|---|
+> | **Panel/spade holder** | screwed to a plate or enclosure wall at the battery | **Fixed, findable, labelable.** You choose the wire gauge and crimp your own spades, and you can unplug without cutting |
+> | **Inline pigtail** | a run with nothing to mount to, or an exposed location | Waterproof cap, no mounting. But it dangles in the harness, and its wire gauge is whatever the vendor used |
+>
+> **Prefer the panel type.** Thirteen students will debug three vehicles, and **a fuse nobody can
+> find is a fuse nobody checks** — a blown one then reads as a dead controller. Use the inline type
+> only where there is genuinely nothing to screw a holder to, or where the spot is exposed to
+> weather.
+
 | Rail / branch | Nominal | Stall / peak | Fuse | Wire gauge |
 |---|---|---|---|---|
 | Pack → E-stop contactor → MUX | *(measure during bring-up)* | *(measure during bring-up)* | *(size to measured)* | *(size to fuse)* |
