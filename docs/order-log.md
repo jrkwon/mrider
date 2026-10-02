@@ -549,6 +549,7 @@ Measure **every** candidate mounting shaft, not just the intended one.
 | **Rear stub diameter (mm) / length protruding** | n/a |
 | **Output shaft reachable before the gearbox?** (Y/N) | **N** — pinion meshes directly into a sealed gearbox |
 | **Encoder branch chosen** (A / B / C — [§1.2.3](build/01-bom-sourcing.md#6-drive-encoder-what-to-actually-buy)) | **C**, mounted at the **gearbox output hub** (1:1 with the wheel) |
+| **Axial clearance, gearbox rotating part → wheel** | **≥ 8 mm** — **the measurement that decided Branch C.** Taken at teardown, recorded 2026-10-03. The bracket arm *and* the sensor package both fit inside it, so specify **surface-mount** Hall parts: a TO-92 pair plus a 3 mm arm leaves ~1 mm |
 | **Paralleled drive-motor stall current (A)** — §3.1, locked rotor | *(measure — RS-390 expected well inside the 30 A channel, but a class is not a current)* |
 | Coupler type selected | |
 | Magnet mount approach (concentricity + air gap) | |

@@ -476,10 +476,27 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 
 | | |
 |---|---|
-| Rear axle end reachable on the centreline? | *(Y/N — picks the form)* |
-| Gearbox output hub outside diameter | *(mm)* |
-| Clearance between hub and gearbox housing | *(mm — the air gap and bracket live here)* |
+| **Axial clearance, gearbox rotating part → wheel** | **≥ 8 mm** — *measured on the delivered vehicle and **this is what decided Branch C**. It was not written down at the time; recorded 2026-10-03.* |
+| Gearbox output hub outside diameter | *(mm — sizes the ring and the pole pitch)* |
 | Screw bosses available on the housing | *(count and thread)* |
+
+> [!IMPORTANT]
+> **8 mm is the budget the whole sensor assembly fits inside, and it picks the package**
+>
+> Bracket arm and sensor both live in that gap:
+>
+> | | |
+> |---|---:|
+> | printed PETG arm, stiff enough to hold the gap | 2–3 mm |
+> | **TO-92 Hall** (through-hole, the obvious part) | ~4 mm |
+> | **SOT-23 Hall on a small PCB** | ~1.5 mm |
+>
+> A TO-92 pair plus a 3 mm arm leaves about **1 mm** of margin in 8 mm — buildable once, not three
+> times by students. **Specify surface-mount parts**, which halve the stack and leave room to set
+> the air gap rather than consume it.
+>
+> A multipole ring is 3–6 mm wide axially and sits *on* the hub, so it spends no part of this
+> budget.
 
 > ([category 000400040012](https://www.devicemart.co.kr/goods/catalog?code=000400040012)) and filter
 > on the electrical requirements above.
