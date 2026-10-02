@@ -114,15 +114,34 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 > mount was really buying — *findability* — is better bought directly: **label the holder, and
 > record its location** on the per-vehicle calibration sheet.
 
-| Rail / branch | Nominal | Stall / peak | Fuse | Wire gauge |
-|---|---|---|---|---|
-| Pack → E-stop contactor → MUX | *(measure during bring-up)* | *(measure during bring-up)* | *(size to measured)* | *(size to fuse)* |
-| MUX → driver B+ | *(measure during bring-up)* | *(measure during bring-up)* | *(size to measured)* | *(size to fuse)* |
-| Driver M2 → paralleled drive motors | *(measure during bring-up)* | **must be < 32 A** ([dbw.md §7](../design/dbw.md#7-throttle-path)) | *(size to measured)* | *(size to fuse)* |
-| Driver M1 → steering gearmotor | *(measure during bring-up)* | *(measure during bring-up)* | *(size to measured)* | *(size to fuse)* |
-| Logic battery → DC-DC input | < 2 A typical | — | 3–5 A | 18–20 AWG |
-| Logic rail → Teensy / sensor / RC RX / signal MUX | < 1 A typical | — | 1–2 A | 22–24 AWG |
-| MUX coil circuit | per relay coil spec | — | *(size to coil)* | 22 AWG |
+| Rail / branch | What protects it | Wire | Fuse? |
+|---|---|---|:---:|
+| **Traction pack → E-stop → MUX → driver B+** | **25 A blade fuse, at the pack** | 2.5 mm² | **yes — 1** |
+| Driver M2 → paralleled drive motors | the driver's current limit, set to **20 A** | 2.5 mm² | no |
+| Driver M1 → steering gearmotor | same current limit | 2.5 mm² | no |
+| **Logic pack → UBEC inputs + MUX coils** | **5 A blade fuse, at the pack** | 0.75 mm² | **yes — 1** |
+| UBEC → Teensy, sensor, RC RX, signal MUX | the UBEC's own 3 A limit | 0.5 mm² | no |
+
+**Two fuses per vehicle, one at each battery.** Not one per row.
+
+> [!NOTE]
+> **Why the branches are not individually fused**
+>
+> An earlier revision of this table asked for a fuse on every row and sized none of them, because
+> nothing had been measured yet. With the gauges settled, most of those rows do not want one.
+>
+> **A branch needs its own fuse only when its wire is thinner than what the upstream fuse
+> protects.** The traction side is 2.5 mm² end to end, so the 25 A fuse at the pack protects all of
+> it; a second fuse downstream would guard nothing the first does not.
+>
+> **And on the motor branches a fuse would be actively worse.** The driver's current limit is
+> already the mitigation [FMEA row 6](../design/safety.md#7-fmea-lightweight) relies on, and it
+> **clamps and recovers**. A fuse in the same place **blows and stays blown** — a steering stall
+> during a lab would end with dead steering and a field repair, where the current limit ends with
+> the motor sitting there warm.
+>
+> Fuses earn their place at the **batteries**, against the fault the current limit cannot see: a
+> chafed or dropped conductor shorting a pack directly.
 
 > [!CAUTION]
 > **Verify paralleled drive-motor stall current against 32 A/channel**

@@ -1080,8 +1080,8 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 |---|---|
 | **Traction wire** | **2.5 mm² silicone** throughout the traction side. *Corrected 2026-10-02 — see below; 1.5 mm² was sized on voltage drop alone* |
 | **Logic/signal wire** | 0.5–0.75 mm² silicone |
-| **Fuses** | **25 A** main traction, **10 A** steering branch, **5 A** logic rail. Blade (ATC/ATO) |
-| **Fuse holders** | Gauge must be **no thinner than the wire it is spliced into** — see below |
+| **Fuses** | **25 A ×1 and 5 A ×1 per vehicle** — blade (ATC/ATO). Two per vehicle, one at each battery; the branches are not separately fused ([§3.2](03-electrical.md)). Buy an **assorted ATC kit** for spares — fuses are consumables and a blown one with no replacement stops a lab |
+| **Fuse holders** | **2 per vehicle, 6 in total.** 25 A → **12–14 AWG** pigtail · 5 A → **18–20 AWG**. Gauge no thinner than the wire it splices into |
 
 > [!WARNING]
 > **A fuse protects the wire, so the fuse must be smaller than the wire — and 1.5 mm² failed that**
