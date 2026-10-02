@@ -116,11 +116,11 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 
 | Rail / branch | What protects it | Wire | Fuse? |
 |---|---|---|:---:|
-| **Traction pack → E-stop → MUX → driver B+** | **25 A blade fuse, at the pack** | 2.5 mm² | **yes — 1** |
-| Driver M2 → paralleled drive motors | the driver's current limit, set to **20 A** | 2.5 mm² | no |
-| Driver M1 → steering gearmotor | same current limit | 2.5 mm² | no |
-| **Logic pack → UBEC inputs + MUX coils** | **5 A blade fuse, at the pack** | 0.75 mm² | **yes — 1** |
-| UBEC → Teensy, sensor, RC RX, signal MUX | the UBEC's own 3 A limit | 0.5 mm² | no |
+| **Traction pack → E-stop → MUX → driver B+** | **25 A blade fuse, at the pack** | AWG 14 | **yes — 1** |
+| Driver M2 → paralleled drive motors | the driver's current limit, set to **20 A** | AWG 14 | no |
+| Driver M1 → steering gearmotor | same current limit | AWG 14 | no |
+| **Logic pack → UBEC inputs + MUX coils** | **5 A blade fuse, at the pack** | AWG 18 | **yes — 1** |
+| UBEC → Teensy, sensor, RC RX, signal MUX | the UBEC's own 3 A limit | AWG 20 | no |
 
 **Two fuses per vehicle, one at each battery.** Not one per row.
 
@@ -199,8 +199,9 @@ the manufacturer sized it for these motors, this pack, and this duty, and had it
 > | 1.0 mm² | 0.35 V (2.9 %) | 1.05 V (8.8 %) |
 > | **1.5 mm²** | **0.23 V (1.9 %)** | **0.70 V (5.8 %)** |
 >
-> **Use 2.5 mm² silicone on the traction side** and **0.5–0.75 mm²** for logic and signal. Two
-> numbers, no measurement.
+> **Use AWG 14 (≈2.1 mm²) silicone on the traction side** and **AWG 18–20 (≈0.5–0.8 mm²)** for
+> logic and signal. Two numbers, no measurement. Both units are given because the design records
+> mm² and Korean listings sell by AWG — and **AWG counts down as the wire gets thicker**.
 >
 > *Corrected 2026-10-02.* This box previously said 1.5 mm², which the table above justifies on
 > **voltage drop** — and drop was never the binding constraint. **Ampacity is:** 1.5 mm² is ≈16 AWG,

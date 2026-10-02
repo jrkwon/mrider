@@ -1078,8 +1078,9 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 
 | Item | Spec |
 |---|---|
-| **Traction wire** | **2.5 mm² silicone** throughout the traction side. *Corrected 2026-10-02 — see below; 1.5 mm² was sized on voltage drop alone* |
-| **Logic/signal wire** | 0.5–0.75 mm² silicone |
+| **Traction wire** | **AWG 14** (≈2.1 mm²) silicone throughout the traction side. AWG 12 for margin. *Corrected 2026-10-02 — see below; 1.5 mm² was sized on voltage drop alone* |
+| **Logic / signal wire** | **AWG 18–20** (≈0.5–0.8 mm²) silicone |
+| **Board hookup wire** | **AWG 22–24**, two or three colours |
 | **Fuses** | **25 A ×1 and 5 A ×1 per vehicle** — blade (ATC/ATO). Two per vehicle, one at each battery; the branches are not separately fused ([§3.2](03-electrical.md)). Buy an **assorted ATC kit** for spares — fuses are consumables and a blown one with no replacement stops a lab |
 | **Fuse holders** | **2 per vehicle, 6 in total.** 25 A → **12–14 AWG** pigtail · 5 A → **18–20 AWG**. Gauge no thinner than the wire it splices into |
 
@@ -1089,13 +1090,17 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > This page sized the traction wire on **voltage drop** and never checked it against the fuse. Drop
 > was fine; ampacity is not:
 >
-> | | mm² | chassis-wiring ampacity |
-> |---|---:|---:|
-> | 20 AWG | 0.52 | 5–8 A |
-> | 18 AWG | 0.82 | 10–16 A |
-> | **16 AWG** | **1.31** | **18–22 A** |
-> | **14 AWG** | **2.08** | **25–32 A** |
-> | 12 AWG | 3.31 | 35–41 A |
+> Korean listings sell silicone wire by **AWG**, so both units are given here. **AWG counts down as
+> the wire gets thicker.**
+>
+> | AWG | mm² | chassis ampacity | used for |
+> |---:|---:|---:|---|
+> | 12 | 3.31 | 35–41 A | traction, if you want margin |
+> | **14** | **2.08** | **25–32 A** | **traction — behind the 25 A fuse** |
+> | 16 | 1.31 | 18–22 A | *(what this page wrongly specified)* |
+> | **18** | **0.82** | **10–16 A** | **logic — behind the 5 A fuse** |
+> | **20** | **0.52** | **5–8 A** | logic, lighter runs |
+> | 22–24 | 0.33–0.20 | 2–5 A | board wiring only |
 >
 > A **25 A** fuse on **1.5 mm²** (≈16 AWG, ~20 A) is backwards: the wire overheats before the fuse
 > acts, which is the one thing a fuse exists to prevent. **2.5 mm² on the traction side** fixes it
@@ -1107,6 +1112,14 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > not which fuse fits. It is simply over-specified there, and the problem is mechanical rather than
 > electrical: **a butt splice sized for 12 AWG will not grip 0.75 mm² logic wire.** Match roughly —
 > **18–20 AWG** for the 5 A holder, **12–14 AWG** for the 25 A.
+>
+> [!CAUTION]
+> **Check that the silicone wire is copper, not CCA**
+>
+> Cheap silicone wire is often **copper-clad aluminium**, sold at the same AWG number. CCA carries
+> roughly **61 %** of copper's conductivity, so AWG 14 CCA behaves about like AWG 16 copper — which
+> is exactly the gauge this page just rejected for sitting under a 25 A fuse. Listings say
+> **순동 / 무산소동 / OFC** when it is real copper, and often say nothing at all when it is not.
 >
 > **Avoid holders that do not state a gauge**, especially at high ratings. Cheap ones are built with
 > thin wire regardless of the fuse they are sold alongside, and then the holder, not the fuse, is
