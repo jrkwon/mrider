@@ -1192,17 +1192,17 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > So **6 pairs of family A** (throttle) and **6 pairs of family B** (steering) across the three
 > vehicles.
 >
-> **Pin count and rating:**
+> **Superseded 2026-10-02 — buy mating halves, not new families.** The pack and the drive motors
+> both terminate in keyed 2-pin connectors, so two of the three taps are **unplugs**. What to buy
+> is the **mating half of what the vehicle already has**, identified by pin pitch and housing, or
+> harvested from a spare lead. The XT30/small-2-pin scheme below applies only to a tap that turns
+> out to be soldered or spliced — check the steering motor, which has not been photographed yet.
 >
-> | tap | pins | carries | suggested |
-> |---|---|---:|---|
-> | Power | 2 | 20 A | **XT60** *(already chosen)* |
-> | **Throttle** | **2 if the stock pair is common, 4 if the two drive motors are wired separately** — check the ECU harness | **20 A** | **XT30** |
-> | **Steering** | **2** | ~5 A | small 2-pin, ≥10 A |
->
-> **Rating is what rules out the obvious parts on the throttle tap.** JST-class 2-pin connectors
-> are 3–5 A, against a branch the driver will push to **20 A**. XT30 is rated 30 A and is the
-> natural fit.
+> | tap | termination found | what to buy |
+> |---|---|---|
+> | Power | **keyed 2-pin** (2026-10-02) | mating half ×2 per vehicle |
+> | Throttle | **keyed 2-pin** (2026-10-02) | mating half ×2 per vehicle |
+> | Steering | *(not yet checked)* | mating half if connectorised; otherwise a 2-pin ≥10 A family |
 >
 > **That choice also makes the families self-enforcing.** XT60, XT30 and a small 2-pin cannot mate
 > with each other — different shells, different sizes — so no extra discipline is needed.
@@ -1352,10 +1352,37 @@ you need all of them before step 3:
 > **25 kg child on 10 A**. MRider moves **~6 kg of kit at walking pace**. It needs *less* current
 > than stock, not twice as much — the 20 A figure was margin against nothing in particular.
 >
-> **So: identify both stock connectors, set the drive-channel limit below the smaller of the two
-> with margin, and let the fuse follow the limit.** AWG 14 wire stays as it is; it is generous
-> either way and generous wire costs nothing. The decisive check is thermal, not a datasheet:
-> **a connector that runs warm at [Stage 4](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first) is the ceiling**, whatever any number says.
+> **So: rate both stock connectors, set the drive-channel limit below the smaller of the two with
+> margin, and let the fuse follow the limit.** AWG 14 wire stays as it is; it is generous either
+> way and generous wire costs nothing.
+>
+> **How to rate a connector with nothing printed on it** — these carry no marking at all. Three
+> steps, cheapest first:
+>
+> **1 — A floor, for free.** The manufacturer put it on a circuit protected at **10 A**. Nobody
+> fits a 3 A connector to a 10 A circuit, so **≥ 10 A** without measuring anything.
+>
+> **2 — Pin pitch names the family.** Measure centre-to-centre with calipers: `2.5 mm` is
+> JST-SM class, ~3 A · `3.96 mm` is VH class, ~10 A · `4.2 mm` is Mini-Fit class, ~10–13 A ·
+> anything larger is a power family. One measurement, and it either confirms step 1 or contradicts
+> it.
+>
+> **3 — Measure the contact resistance. This is the actual answer.** Mate the pair, pass a known
+> current from the current-limited bench supply, and measure the millivolt drop **across the mated
+> pair**, probing the wire either side as close to the housing as you can:
+>
+> | drop at 5 A test | R | at 10 A | at 15 A | at 20 A |
+> |---:|---:|---:|---:|---:|
+> | 10 mV | 2.0 mΩ | 0.20 W | 0.45 W | 0.80 W |
+> | 25 mV | 5.0 mΩ | 0.50 W | 1.12 W | **2.00 W** |
+> | 50 mV | 10 mΩ | 1.00 W | **2.25 W** | **4.00 W** |
+>
+> `R = V / I`, then `P = I²R` at the current you want. **Above about 1 W in a small plastic housing
+> is too much** — that is where they soften, creep, and go high-resistance, which raises the power
+> again. Pick the limit that keeps every connector under it.
+>
+> **4 — Confirm by hand at [Stage 4](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first).** The arithmetic sets the target; temperature is the verdict. **A connector you
+> cannot hold your finger on is the ceiling**, whatever any number said.
 
 - **XT60 at the traction power tap, one per vehicle.** Not a current-rating choice — it is 60 A
   against a 25 A fuse. **With the stock connector doing the reversibility job above**, the XT60's
