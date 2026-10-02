@@ -1327,12 +1327,35 @@ you need all of them before step 3:
 > type — and MRider inserts without cutting anything. Unplug it, plug the stock pair back
 > together, and the vehicle is factory-stock exactly.
 >
-> **Open question, and it may bound the whole design:** *what is that connector rated for?* Every
-> amp MRider draws now passes through it, and the stock circuit behind it is protected at **10 A**
-> — so 20 A is twice what the vehicle was built to put through it. These ride-on connectors
-> usually tolerate 20–30 A intermittently, and MRider at walking pace draws far less than a child's
-> car at full throttle, so this is probably fine. **Confirm it by hand: a connector that runs warm
-> at Stage 4 is the real current ceiling of this vehicle**, whatever the driver is set to.
+> **The drive motors are connectorised too** (photographed 2026-10-02 — a white 2-pin carrying the
+> red/green motor pair), so **the throttle tap is an unplug as well.** Almost nothing on this
+> vehicle has to be cut.
+>
+> **And that turns a convenience into the design's binding constraint.**
+
+> [!CAUTION]
+> **The stock connectors set this vehicle's current ceiling — not the driver, the fuse, or the wire**
+>
+> | | stock design | as planned here |
+> |---|---|---|
+> | protection | **10 A** inline device | 25 A fuse |
+> | controller | 20 A max | 20 A driver limit |
+> | connectors | sized to the above | **everything above passes through them** |
+>
+> The wire and the fuse were specified larger than the connectors the current flows through, which
+> is the same inversion as fusing above the wire's ampacity, one level further out.
+>
+> **Replacing the connectors is not the fix** — they are what makes the taps unplugs rather than
+> cuts, and the reversibility promise rests on them.
+>
+> **Lower the current to match them instead, and the vehicle argues for it.** The stock car moves a
+> **25 kg child on 10 A**. MRider moves **~6 kg of kit at walking pace**. It needs *less* current
+> than stock, not twice as much — the 20 A figure was margin against nothing in particular.
+>
+> **So: identify both stock connectors, set the drive-channel limit below the smaller of the two
+> with margin, and let the fuse follow the limit.** AWG 14 wire stays as it is; it is generous
+> either way and generous wire costs nothing. The decisive check is thermal, not a datasheet:
+> **a connector that runs warm at [Stage 4](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first) is the ceiling**, whatever any number says.
 
 - **XT60 at the traction power tap, one per vehicle.** Not a current-rating choice — it is 60 A
   against a 25 A fuse. **With the stock connector doing the reversibility job above**, the XT60's

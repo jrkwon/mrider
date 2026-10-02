@@ -428,7 +428,8 @@ Take these on the vehicle you actually bought. Fill in before ordering.
 | **Stock ECU** | **`JR1630RX-12V`** — 2.4 GHz receiver + motor controller, one module. **DC 12 V, load current max 20 A.** Separable, with a connector harness (2026-10-01) |
 | **Inline protective device, battery → ECU** | **10 A**, in the main `+` line, **no manual reset** (2026-10-01). See the caution below |
 | **Traction pack termination** | **Keyed 2-pin connector, no posts** (2026-10-02). The pack is sealed with a pigtail; the power tap plugs in here rather than bolting to a terminal |
-| **That connector's current rating** | *(unknown — every amp MRider draws passes through it, against a stock circuit protected at 10 A. Check it by hand at Stage 4: a warm connector is this vehicle's real current ceiling)* |
+| **Drive-motor termination** | **Keyed 2-pin connector** (2026-10-02, white, red/green pair) — the throttle tap is an unplug too |
+| **Rating of both stock connectors** | *(unknown, and they are the current ceiling: everything MRider draws passes through them, against a stock circuit protected at 10 A. Set the drive-channel limit below the smaller. Decided by hand at Stage 4 — a warm connector is the answer)* |
 | **Stock motor markings / rating** | *(read the can)* |
 | **Steering-motor winding resistance `R` (Ω)** — minimum over several rotor positions, lead resistance subtracted | |
 | **Implied stall current `12 / R` (A)** | |
