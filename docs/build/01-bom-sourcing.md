@@ -1078,9 +1078,29 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 
 | Item | Spec |
 |---|---|
-| **Traction wire** | **AWG 14** (≈2.1 mm²) silicone throughout the traction side. AWG 12 for margin. *Corrected 2026-10-02 — see below; 1.5 mm² was sized on voltage drop alone* |
-| **Logic / signal wire** | **AWG 18–20** (≈0.5–0.8 mm²) silicone |
-| **Board hookup wire** | **AWG 22–24**, two or three colours |
+| **Traction wire** | **AWG 14** (≈2.1 mm²) silicone, **red + black**. AWG 12 for margin. *Corrected 2026-10-02 — see below; 1.5 mm² was sized on voltage drop alone* |
+| **Logic wire** | **AWG 18–20** (≈0.5–0.8 mm²) silicone, **red + black** |
+| **Signal / board wire** | **AWG 22–24**, two or three colours — **anything but red or black** |
+
+> [!NOTE]
+> **Red and black on both power rails — and what they do *not* mean on a motor lead**
+>
+> Both packs get **red = +, black = −**. Keeping one polarity convention everywhere matters more
+> than distinguishing the two rails by colour, because **reversed polarity kills a board while a
+> crossed rail merely loses isolation** — and the two rails are already told apart by gauge, AWG 14
+> against AWG 18–20.
+>
+> **Motor leads are the exception, and the steering one bites.** A driver output is a bidirectional
+> H-bridge: its two conductors are not `+` and `−`, they are **A and B**, and swapping them
+> **reverses the motor**. Red/black is fine as an A/B label, but it carries no polarity meaning
+> there, and [§3.3](03-electrical.md) already warns that *"a reversed steering tap means the
+> position loop runs away from its setpoint instead of toward it."*
+>
+> **Record which conductor went where, per vehicle.** Three cars wired from the same spool can
+> still end up with two turning left and one turning right.
+>
+> Keep red and black off the signal wiring entirely, so nothing that carries 12 V is ever confused
+> with something that carries 3.3 V.
 | **Fuses** | **25 A ×1 and 5 A ×1 per vehicle** — blade (ATC/ATO). Two per vehicle, one at each battery; the branches are not separately fused ([§3.2](03-electrical.md)). Buy an **assorted ATC kit** for spares — fuses are consumables and a blown one with no replacement stops a lab |
 | **Fuse holders** | **2 per vehicle, 6 in total.** 25 A → **12–14 AWG** pigtail · 5 A → **18–20 AWG**. Gauge no thinner than the wire it splices into |
 
