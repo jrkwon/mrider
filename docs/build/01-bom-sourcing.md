@@ -395,7 +395,26 @@ Nothing in **#6a–d is ordered yet**, so the form is still open. Take **one loo
 
 That single answer picks between two builds that differ enormously in how much has to go right.
 
-##### C-abs — AS5600 on the axle centreline *(preferred, if the axle end is reachable)*
+![Where the sensor mounts: a multipole ring on the rotating hub sensed radially from a bracket on the fixed gearbox housing, against an AS5600 which needs a free rotating shaft end this vehicle does not have](../images/drive-encoder-mounting.svg)
+
+**The rule both halves of that picture rest on:** the magnet goes on what turns, the sensor on what
+does not. A rotating **hub** offers a cylindrical **surface** — sense it radially from beside it. An
+AS5600 needs a shaft **end**, with clear space in front that nothing rotates through.
+
+##### C-abs — AS5600 on the axle centreline *(withdrawn — see the figure)*
+
+> [!CAUTION]
+> **Proposed 2026-10-02 and withdrawn the same day. Recorded rather than deleted.**
+>
+> Asked where the sensor would actually bolt, the answer turned out not to exist. The motor side is
+> a 2 mm shaft carrying a pinion into a sealed gearbox — **the reason branches A and B failed**. The
+> wheel side ends at the **outer face of the wheel**, where a bracket must arch around the outside
+> of a turning wheel: long, flexible, and the most exposed part of the vehicle to kerbs.
+>
+> The attraction was real — one magnet and one chip instead of a ring, two sensors, a phase offset
+> and an alternating-polarity assembly, reusing the part #5 already brings. It fails on geometry,
+> not on merit, and on **the same geometry that already closed two branches**. That is why it is
+> left here: an idea that looks good and has already been ruled out is one someone will have again.
 
 | | |
 |---|---|

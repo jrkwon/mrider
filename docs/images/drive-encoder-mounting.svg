@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 640" width="980" height="640"
+     font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+  <title>Where the drive-encoder sensor mounts — radial at the hub, and why axial is unavailable</title>
+  <desc>Two side-view sections through the rear axle. The left shows the buildable arrangement:
+  a multipole ring around the rotating gearbox output hub, with Hall sensors on a bracket fixed to
+  the stationary gearbox housing, sensing radially inward. The right shows what an AS5600 would
+  require — a free rotating shaft end with clear space in front of it for an axially facing sensor —
+  and why this vehicle has none.</desc>
+
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#334155"/>
+    </marker>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#b91c1c"/>
+    </marker>
+    <pattern id="hatch" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#94a3b8" stroke-width="2.5"/>
+    </pattern>
+  </defs>
+
+  <rect width="980" height="640" fill="#ffffff"/>
+
+  <text x="24" y="34" font-size="19" font-weight="bold" fill="#0f172a">
+    Where the sensor mounts — it has to be on something that does not turn
+  </text>
+  <text x="24" y="56" font-size="13" fill="#475569">
+    Side section through the rear axle. Hatched = fixed to the chassis. Blue = rotating.
+  </text>
+
+  <!-- ================= LEFT: radial, buildable ================= -->
+  <rect x="24" y="76" width="470" height="470" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+  <text x="44" y="102" font-size="15" font-weight="bold" fill="#14532d">RADIAL — multipole ring at the hub  ✓ buildable</text>
+
+  <!-- axle centreline -->
+  <line x1="60" y1="330" x2="470" y2="330" stroke="#64748b" stroke-width="1.5" stroke-dasharray="9 5"/>
+  <text x="400" y="324" font-size="11" fill="#64748b">axle centreline</text>
+
+  <!-- gearbox housing : fixed -->
+  <rect x="70" y="250" width="86" height="160" fill="url(#hatch)" stroke="#475569" stroke-width="2"/>
+  <rect x="70" y="250" width="86" height="160" fill="#e2e8f0" fill-opacity="0.55"/>
+  <text x="78" y="432" font-size="11.5" font-weight="bold" fill="#334155">gearbox housing</text>
+  <text x="90" y="448" font-size="11" fill="#64748b">FIXED</text>
+  <!-- screw boss -->
+  <circle cx="113" cy="268" r="5" fill="#ffffff" stroke="#475569" stroke-width="2"/>
+  <text x="124" y="272" font-size="10.5" fill="#334155">screw boss</text>
+
+  <!-- hub : rotating -->
+  <rect x="170" y="282" width="92" height="96" rx="4" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="178" y="398" font-size="11.5" font-weight="bold" fill="#1e3a8a">output hub</text>
+  <text x="196" y="414" font-size="11" fill="#2563eb">ROTATES</text>
+
+  <!-- multipole ring on the hub OD -->
+  <rect x="176" y="268" width="80" height="14" fill="#1e3a8a"/>
+  <rect x="176" y="378" width="80" height="14" fill="#1e3a8a"/>
+  <g font-size="9" fill="#ffffff" text-anchor="middle">
+    <text x="186" y="279">N</text><text x="206" y="279">S</text>
+    <text x="226" y="279">N</text><text x="246" y="279">S</text>
+  </g>
+  <text x="268" y="278" font-size="11.5" font-weight="bold" fill="#1e3a8a">multipole ring</text>
+  <text x="268" y="293" font-size="10.5" fill="#2563eb">rotates with the hub</text>
+
+  <!-- wheel -->
+  <rect x="276" y="214" width="34" height="232" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+  <text x="318" y="330" font-size="11.5" fill="#64748b">wheel</text>
+
+  <!-- bracket from the boss, over, sensor pointing inward -->
+  <path d="M113,260 L113,186 L216,186 L216,244" fill="none" stroke="#15803d" stroke-width="5"
+        stroke-linejoin="round" stroke-linecap="round"/>
+  <rect x="196" y="244" width="40" height="18" rx="3" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+  <text x="246" y="200" font-size="11.5" font-weight="bold" fill="#15803d">printed bracket</text>
+  <text x="246" y="215" font-size="10.5" fill="#15803d">both sensors in ONE part →</text>
+  <text x="246" y="229" font-size="10.5" fill="#15803d">(n + ¼) pitch fixed by construction</text>
+
+  <!-- air gap -->
+  <line x1="216" y1="262" x2="216" y2="268" stroke="#b91c1c" stroke-width="2"/>
+  <text x="140" y="238" font-size="11" font-weight="bold" fill="#b91c1c">air gap 1–3 mm, radial</text>
+  <path d="M196,234 L214,258" stroke="#b91c1c" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <text x="44" y="478" font-size="12.5" fill="#14532d">
+    Everything the sensor needs is already there: a cylindrical surface that
+  </text>
+  <text x="44" y="496" font-size="12.5" fill="#14532d">
+    turns, clearance beside it, and a fixed housing with bosses to bolt to.
+  </text>
+  <text x="44" y="520" font-size="12" fill="#15803d" font-style="italic">
+    The bracket never touches anything that rotates.
+  </text>
+
+  <!-- ================= RIGHT: axial, unavailable ================= -->
+  <rect x="510" y="76" width="446" height="470" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+  <text x="530" y="102" font-size="15" font-weight="bold" fill="#7f1d1d">AXIAL — AS5600 on the centreline  ✗ no place for it</text>
+
+  <text x="530" y="128" font-size="12.5" fill="#7f1d1d">What it would need:</text>
+
+  <!-- the requirement sketch -->
+  <line x1="545" y1="210" x2="700" y2="210" stroke="#64748b" stroke-width="1.5" stroke-dasharray="9 5"/>
+  <rect x="560" y="196" width="110" height="28" rx="3" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="572" y="215" font-size="11" fill="#1e3a8a">rotating shaft</text>
+  <rect x="670" y="192" width="14" height="36" rx="2" fill="#1e3a8a"/>
+  <text x="640" y="180" font-size="10.5" font-weight="bold" fill="#1e3a8a">diametric magnet</text>
+  <text x="652" y="252" font-size="10.5" fill="#1e3a8a">on the END FACE</text>
+
+  <rect x="712" y="188" width="16" height="44" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+  <text x="736" y="206" font-size="10.5" font-weight="bold" fill="#15803d">sensor, facing it</text>
+  <text x="736" y="221" font-size="10.5" fill="#15803d">concentric ±0.25 mm</text>
+  <path d="M686,210 L710,210" stroke="#b91c1c" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="664" y="276" font-size="10.5" fill="#b91c1c">clear space in front — nothing may rotate through it</text>
+
+  <line x1="530" y1="300" x2="936" y2="300" stroke="#fca5a5"/>
+
+  <text x="530" y="328" font-size="12.5" font-weight="bold" fill="#7f1d1d">
+    This vehicle has no free rotating shaft end.
+  </text>
+  <text x="530" y="352" font-size="12.5" fill="#7f1d1d">
+    • Motor side — a 2 mm shaft carrying a pinion straight into a
+  </text>
+  <text x="542" y="369" font-size="12.5" fill="#7f1d1d">
+    sealed gearbox. That is why branches A and B failed.
+  </text>
+  <text x="530" y="393" font-size="12.5" fill="#7f1d1d">
+    • Wheel side — the axle ends at the <tspan font-weight="bold">outer face of the wheel</tspan>.
+  </text>
+  <text x="542" y="410" font-size="12.5" fill="#7f1d1d">
+    A sensor there needs a bracket arching around the outside of a
+  </text>
+  <text x="542" y="427" font-size="12.5" fill="#7f1d1d">
+    turning wheel — long, flexible, and the most exposed part of
+  </text>
+  <text x="542" y="444" font-size="12.5" fill="#7f1d1d">
+    the vehicle to kerbs and debris.
+  </text>
+
+  <rect x="530" y="464" width="406" height="62" rx="6" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="544" y="486" font-size="12" font-weight="bold" fill="#7f1d1d">
+    An AS5600 needs a shaft END. The hub gives a shaft SURFACE.
+  </text>
+  <text x="544" y="505" font-size="12" fill="#7f1d1d">
+    Same reason A and B were unavailable — recorded before it was
+  </text>
+  <text x="544" y="520" font-size="12" fill="#7f1d1d">
+    proposed again, so the next cohort does not re-walk it.
+  </text>
+
+  <!-- footer -->
+  <rect x="24" y="562" width="932" height="60" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="44" y="585" font-size="12.5" font-weight="bold" fill="#92400e">
+    The rule underneath both panels
+  </text>
+  <text x="44" y="606" font-size="12.5" fill="#78350f">
+    The magnet goes on what turns; the sensor goes on what does not. A rotating hub offers a
+    surface, so sense it radially from beside it — not a face to sense axially.
+  </text>
+</svg>
