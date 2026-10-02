@@ -91,10 +91,10 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 > [!IMPORTANT]
 > **Put each fuse at its battery, not at its load — and pick the holder style from that**
 >
-> A fuse protects everything **downstream** of it. The stub **upstream** — between the battery
-> terminal and the fuse — is protected by nothing, so a chafe there shorts a pack capable of
-> hundreds of amps straight to the chassis. Keep that stub as short as the hardware allows:
-> **at the traction pack** for the 25 A, **at the logic pack** for the 5 A.
+> A fuse protects everything **downstream** of it, and nothing upstream. Keep that unprotected stub
+> as short as the hardware allows: **at the traction pack** for the 25 A, **at the logic pack** for
+> the 5 A. On this vehicle the stub is a few centimetres of insulated lead between the stock
+> connector and the fuse, which is what the rule is asking for.
 >
 > That placement decides the holder style, which is otherwise a coin toss:
 >
@@ -140,8 +140,15 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 > during a lab would end with dead steering and a field repair, where the current limit ends with
 > the motor sitting there warm.
 >
-> Fuses earn their place at the **batteries**, against the fault the current limit cannot see: a
-> chafed or dropped conductor shorting a pack directly.
+> Fuses earn their place at the **batteries**, against the fault a current limit cannot see: a short
+> anywhere in the harness **MRider adds**.
+>
+> That is the realistic scenario, and it is duller than it sounds. The vehicle's own terminals are
+> insulated and connectorised, so there is nothing to drop a spanner across. What there *is*, is
+> several metres of new wiring routed by **thirteen students** through a chassis they are drilling,
+> bolting and re-opening across a semester — pinched under a panel, chafed on a bracket edge, or
+> landed on the wrong terminal. A pack of this chemistry will push hundreds of amps into any of
+> those, and the driver's current limit sits downstream and never sees it.
 
 > [!CAUTION]
 > **Verify paralleled drive-motor stall current against 32 A/channel**

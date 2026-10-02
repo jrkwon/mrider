@@ -1380,10 +1380,10 @@ you need all of them before step 3:
   **AWG 14** version so at least the gauges match; AWG 12 pigtail forces a step-down splice.
   Soldering them wants a hot iron — the cups are a thermal mass — so pre-tin both cup and wire.
 - **Decide the orientation by what stays live.** When the tap is unplugged the **battery half is
-  still energised**, so it must be the half whose contacts are recessed rather than exposed.
-  Check the two halves in hand before soldering: exposed metal on a live connector is one dropped
-  spanner away from shorting the pack, which is the fault the 25 A fuse exists for and the one
-  worth not relying on it for.
+  still energised**, so it must be the half whose contacts are recessed rather than exposed. Check
+  the two halves in hand before soldering. This matters for the XT60 specifically **because it is a
+  connector MRider adds** — the vehicle's own terminals are insulated and its connectors keyed, so
+  this is the one place in the traction path where a live contact could be left exposed.
 - Ring/spade terminals for Sabertooth B+/B− and M1/M2 terminals
 - Inline blade-fuse holders, one per rail (values from the
   [architecture.md power tree](../design/architecture.md#5-power-tree-and-safetyauthority-chain))
