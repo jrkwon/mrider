@@ -385,6 +385,83 @@ magnet spacing matters more than magnet count.
 > does not fork into three incompatible shopping lists.
 >
 > Search **디바이스마트 → 센서 → 마그네틱/홀/리드/엔코더**
+
+#### Branch C in detail — and the one measurement that picks the form
+
+Nothing in **#6a–d is ordered yet**, so the form is still open. Take **one look** before buying:
+
+> **Is the rear axle end reachable on the rotation centreline — outboard of the wheel, or through
+> the hub bore — with somewhere to fix a magnet concentric to it?**
+
+That single answer picks between two builds that differ enormously in how much has to go right.
+
+##### C-abs — AS5600 on the axle centreline *(preferred, if the axle end is reachable)*
+
+| | |
+|---|---|
+| Parts | **AS5600 breakout** + **diametrically-magnetised magnet**, typically Ø6 × 2.5 mm |
+| Mount | Magnet bonded to the axle end, **concentric within ~0.25 mm**. Sensor on a bracket, 0.5–3 mm air gap, die centred on the magnet |
+| Output | **12-bit absolute within a turn** — 0.088°, far finer than any magnet ring |
+| Direction | **Inherent.** Angle rises or falls; there is nothing to phase |
+
+**Why this is the better build when it is available:** one magnet and one chip replace a ring, two
+sensors, a phase offset, an alternating-polarity assembly and two cables. And **the project already
+uses the AS5600 for [#5](#7-8-11-12-14-what-to-actually-buy)** — one part, one driver, one set of
+failure modes for students to learn, not two.
+
+**Two things it costs:**
+
+- **The I²C address is fixed at `0x36`**, so it cannot share a bus with #5's AS5600. The Teensy 4.1
+  has **three** I²C peripherals — put steering on `Wire` and drive on `Wire1`. Not a problem, but it
+  must be designed in rather than discovered.
+- **Revolutions are accumulated in firmware**, where Branch C-inc counts in hardware. The margin is
+  large — a wheel at walking pace turns ~2.5 rev/s, so at the pinned ≥200 Hz the angle moves ~4.5°
+  per sample against the 180° that would be ambiguous — and a firmware stall long enough to lose a
+  wrap trips the staleness watchdog into `ESTOP` anyway.
+
+##### C-inc — multipole ring + two Hall latches *(if the axle end is not reachable)*
+
+This is the plan already in the BOM, made specific. Three choices decide whether it is reliable:
+
+**1 — Buy a multipole ring magnet, not loose magnets.** A single ring magnetised with alternating
+poles removes **spacing, polarity and placement all at once**. Loose magnets in printed pockets fix
+spacing only; a student can still fit one backwards, and one reversed magnet is a permanent
+odometry error that calibration will partly absorb and therefore hide.
+
+**2 — Hall *latch* (bipolar), not a Hall *switch*.** A latch toggles on a north pole and back on a
+south, so alternating poles give a clean ~50 % square wave **whose edges do not move with the air
+gap**. A unipolar switch's release threshold drifts with gap and temperature, which turns a
+mechanical tolerance into a counting error.
+
+**3 — Space the two sensors at `(n + ¼)` pole pitches, not ¼.** The quarter-pitch that gives
+quadrature is physically smaller than the sensor packages:
+
+| hub Ø | poles | pole pitch | **¼ pitch** | **1¼ pitch** |
+|---:|---:|---:|---:|---:|
+| 35 mm | 8 | 13.7 mm | 3.4 mm | 17.2 mm |
+| 40 mm | 16 | 7.9 mm | **2.0 mm** | 9.8 mm |
+| 50 mm | 16 | 9.8 mm | 2.5 mm | 12.3 mm |
+
+A Hall package is 4–5 mm wide, so ¼ pitch is often **not buildable**. Adding whole pitches leaves
+the phase identical and makes room. **Print both sensors into one bracket** so the spacing is fixed
+by construction — the same reasoning that printed the magnet ring rather than gluing magnets.
+
+**Also pin:** 3.3 V supply or an open-drain part with a 3.3 V pull-up — [the Teensy is not 5 V
+tolerant](#7-8-11-12-14-what-to-actually-buy) — and feed A/B to **two of the Teensy's four hardware
+quadrature decoder channels**, which is this branch's real advantage: counting continues correctly
+regardless of what firmware is doing.
+
+##### Measurements this needs
+
+Both forms need the hub measured; C-inc needs it to size the ring and the pitch table above.
+
+| | |
+|---|---|
+| Rear axle end reachable on the centreline? | *(Y/N — picks the form)* |
+| Gearbox output hub outside diameter | *(mm)* |
+| Clearance between hub and gearbox housing | *(mm — the air gap and bracket live here)* |
+| Screw bosses available on the housing | *(count and thread)* |
+
 > ([category 000400040012](https://www.devicemart.co.kr/goods/catalog?code=000400040012)) and filter
 > on the electrical requirements above.
 
