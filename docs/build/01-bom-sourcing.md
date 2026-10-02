@@ -1164,7 +1164,38 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > thin wire regardless of the fuse they are sold alongside, and then the holder, not the fuse, is
 > what the circuit is really limited by.
 | **Battery tap** | **XT60 bare pair, 1 per vehicle** — solder your own AWG 14 in. Traction pack only — see below |
-| **Three taps** | Keyed inline connectors — **and deliberately three *different* connector families**, so throttle, steering, and power physically cannot be cross-plugged. A reversed steering tap makes the position loop run away from its setpoint instead of toward it |
+| **Three taps** | **Two more families beyond the XT60** — throttle and steering, physically unable to cross-plug. Count and the cheaper alternative below |
+
+> [!IMPORTANT]
+> **Before buying any of these: look for connectors the vehicle already has**
+>
+> [02-mechanical §2.2](02-mechanical.md) step 2 asks you to photograph the stock harness *"before
+> anything is cut or unplugged"*, and this is what that is for. The stock ECU (`JR1630RX-12V`) is a
+> module on a **connector harness** — if it already plugs into the motors, **the tap is an unplug,
+> not a cut.** Buy or harvest the mating halves, insert MRider between, and reversibility is exact:
+> the vehicle goes back to factory by unplugging two connectors, with no cut wire anywhere.
+>
+> **Only if the stock leads are soldered or spliced** do you cut and fit your own, and then the
+> count is:
+>
+> | | per tap | per vehicle | ×3 |
+> |---|---:|---:|---:|
+> | **Pairs of 2-pin connectors** | **2** | 4 | **12** |
+>
+> Two per tap, because a tap is **four** connector halves, not two:
+>
+> ```
+> vehicle side :  ECU end [M]  ·  [F] motor end      ← plugged together = factory stock
+> MRider side  :          [F]     [M]                ← these run to the relay
+> ```
+>
+> So **6 pairs of family A** (throttle) and **6 pairs of family B** (steering) across the three
+> vehicles.
+>
+> **The two families must differ**, and not for tidiness: `03-electrical §3.3` warns that *"a
+> reversed steering tap means the position loop runs away from its setpoint instead of toward
+> it."* If throttle and steering use the same connector, that is a mistake someone can make in a
+> dark garage. If they physically cannot mate, it is one they cannot.
 | Terminals | Ring/spade for the driver's screw terminals |
 | Signal | Dupont / JST-XH pigtails; 6× servo-style 3-wire leads; one good USB A–micro/C cable |
 | Heatshrink | At least two sizes |
