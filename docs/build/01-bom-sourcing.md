@@ -926,9 +926,28 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > bounded by the battery and the other is not, and the bound is free.
 >
 > **A 5 V RC UBEC is the easiest part that satisfies both.** It is a fixed-output buck built to run
-> receivers off a battery pack — which is literally one of the two loads here — typically 5–26 V in,
-> 5 V out, 3 A. If it carries a 5 V / 6 V jumper, confirm it is on **5 V**: a jumper is far harder
-> to disturb than a trimmer, but it is still a setting.
+> receivers off a battery pack — which is literally one of the two loads here — 5 V out, 3 A. If it
+> carries a 5 V / 6 V jumper, confirm it is on **5 V**: a jumper is far harder to disturb than a
+> trimmer, but it is still a setting.
+>
+> **Check its INPUT rating against the charging voltage, not against the nominal 12.8 V.** This is
+> the one place the LiFePO₄ pack bites: the rail sits at 12.8 V in use but reaches **14.6 V while
+> charging**, and the BMS does not cut until **15.0 V**.
+>
+> | | input | % of a 16 V part | headroom |
+> |---|---:|---:|---:|
+> | pack nominal | 12.8 V | 80 % | 3.2 V |
+> | **charging** | **14.6 V** | **91 %** | 1.4 V |
+> | BMS cut-off | 15.0 V | 94 % | 1.0 V |
+>
+> Adafruit's `ada-1385` is a confirmed fixed 5 V 3 A buck UBEC, but its recommended input is
+> **6–16 V** and its input capacitor is a 16 V part. That is *inside* spec at every point above —
+> and it spends charging time past the 80 % derating electrolytics are usually given, on hardware
+> three cohorts will share.
+>
+> **Prefer a UBEC rated to 20 V or more.** The generic RC parts are commonly **5–26 V**, which puts
+> the whole question away. If only a 16 V-class part is available it will work; disconnect the rail
+> while charging if you want the margin back.
 >
 > If only an adjustable buck is available, set it, **seal the trimmer**, and record the measured
 > voltage.
