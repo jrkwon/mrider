@@ -1163,7 +1163,7 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > **Avoid holders that do not state a gauge**, especially at high ratings. Cheap ones are built with
 > thin wire regardless of the fuse they are sold alongside, and then the holder, not the fuse, is
 > what the circuit is really limited by.
-| **Battery tap** | **XT60, 1 per vehicle.** Traction pack only — see below |
+| **Battery tap** | **XT60 bare pair, 1 per vehicle** — solder your own AWG 14 in. Traction pack only — see below |
 | **Three taps** | Keyed inline connectors — **and deliberately three *different* connector families**, so throttle, steering, and power physically cannot be cross-plugged. A reversed steering tap makes the position loop run away from its setpoint instead of toward it |
 | Terminals | Ring/spade for the driver's screw terminals |
 | Signal | Dupont / JST-XH pigtails; 6× servo-style 3-wire leads; one good USB A–micro/C cable |
@@ -1279,6 +1279,16 @@ you need all of them before step 3:
   Order: `battery post → 25 A fuse → XT60 → E-stop contactor`. The fuse sits first so everything
   downstream of it, the connector included, is protected.
 - The **logic** pack needs no equivalent — its F2 spades already unplug by hand.
+- **Buy bare XT60 halves, not pigtailed ones.** A pigtail means splicing the vendor's wire to the
+  AWG 14 run — **an extra joint on the highest-current connection in the vehicle, for nothing.**
+  XT60 solder cups take AWG 12–14 directly. If only pigtailed stock is available, take the
+  **AWG 14** version so at least the gauges match; AWG 12 pigtail forces a step-down splice.
+  Soldering them wants a hot iron — the cups are a thermal mass — so pre-tin both cup and wire.
+- **Decide the orientation by what stays live.** When the tap is unplugged the **battery half is
+  still energised**, so it must be the half whose contacts are recessed rather than exposed.
+  Check the two halves in hand before soldering: exposed metal on a live connector is one dropped
+  spanner away from shorting the pack, which is the fault the 25 A fuse exists for and the one
+  worth not relying on it for.
 - Ring/spade terminals for Sabertooth B+/B− and M1/M2 terminals
 - Inline blade-fuse holders, one per rail (values from the
   [architecture.md power tree](../design/architecture.md#5-power-tree-and-safetyauthority-chain))
