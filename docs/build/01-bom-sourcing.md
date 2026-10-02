@@ -601,7 +601,25 @@ separately replaceable.
 | 1 | 10 kΩ resistor, ¼ W — **gate to GND** | The pulldown |
 | 1 | 100 Ω resistor, ¼ W — **Teensy pin to gate, in series** | Limits the current into the gate capacitance on each switching edge, protecting the Teensy pin |
 | 4 | **1N4007** flyback diode, one across each coil | **Required even on coils that already carry a parallel resistor** — see below |
-| 1 | Perfboard + small enclosure | |
+| 1 | **Perfboard (만능기판), soldered** | **Not a solderless breadboard** — see the warning below |
+| — | **Hookup wire, 22–24 AWG**, two or three colours | Board-level wiring. The 1.5 mm² silicone of [#12](#7-8-11-12-14-what-to-actually-buy) is power cable and will not route on a board |
+| 2–3 | **Screw terminal block, 2–3 way, 5 mm pitch** | Where the off-board wires land: Teensy gate line, 12 V, GND, four coil pairs. Lets a harness be unplugged without desoldering, and takes wire movement off the solder joints |
+| 1 | Small enclosure | Can be printed off [#14](#7-8-11-12-14-what-to-actually-buy) |
+
+> [!WARNING]
+> **Build this on soldered perfboard. A solderless breadboard is not a prototyping shortcut here — it is a failure mode.**
+>
+> Breadboard contacts are spring clips. **This board goes on a vehicle that vibrates**, and the
+> circuit it carries is part of the authority chain:
+>
+> - **The 10 kΩ pulldown is what makes de-energize-to-safe work.** An intermittent contact on that
+>   leg leaves the MOSFET gate floating, and a floating gate can partially enhance — relays
+>   chattering between STOCK and DBW while the vehicle is moving.
+> - **600 mA through breadboard rails** is at the limit of what those clips are good for, and their
+>   contact resistance is both high and unpredictable.
+>
+> A breadboard is genuinely useful at **[Stage 0](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first)**, on the bench, to prove the driver switches from a
+> 3.3 V pin before anything is soldered. It does not then go on the vehicle.
 
 **Feed the coils from the logic rail**, so a logic brownout drops them to STOCK (failsafe row 4).
 The **10 kΩ pulldown is safety-critical**: it holds the gate low — relays de-energized, STOCK —

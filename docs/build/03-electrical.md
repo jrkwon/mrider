@@ -107,6 +107,12 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 > find is a fuse nobody checks** — a blown one then reads as a dead controller. Use the inline type
 > only where there is genuinely nothing to screw a holder to, or where the spot is exposed to
 > weather.
+>
+> **If the panel type is short of stock, take inline for all three rather than mixing.** Three
+> vehicles that differ from each other cost more than the style does: a lab instruction that is
+> true of one vehicle and false of another is worse than either style. And the thing the panel
+> mount was really buying — *findability* — is better bought directly: **label the holder, and
+> record its location** on the per-vehicle calibration sheet.
 
 | Rail / branch | Nominal | Stall / peak | Fuse | Wire gauge |
 |---|---|---|---|---|
