@@ -907,11 +907,31 @@ floating gate can partially enhance.
 by the separate battery. Galvanic isolation downstream of it buys nothing here.
 
 **Current capability is not the spec to shop on.** Each 5 V rail carries roughly **120 mA**, so a
-1 A module is already eight times the load. What matters is that the output is **fixed at 5 V**:
-an adjustable module has a trimmer that can be knocked, drift, or simply be set wrong, and this
-rail feeds the Teensy's 3.6–5.5 V input and the board that holds the entire safety supervisor. If
-only adjustable modules are available, set the output, **seal the trimmer**, and record the
-measured voltage.
+1 A module is already eight times the load. Two other properties matter far more.
+
+> [!WARNING]
+> **Buy a *buck*, fixed at 5 V. Not a buck-boost, and not adjustable.**
+>
+> Korean listings for these modules are usually **`승압/강하 … 가변`** — boost *and* buck, trimmer
+> adjustable. A common example pairs an `LM2577` boost with an `LM2596` buck. **That is the wrong
+> part twice over.**
+>
+> **Fixed, not adjustable (가변).** A trimmer can be knocked in a harness, drift, or be set wrong
+> once. This rail feeds the Teensy's **3.6–5.5 V** input and the board holding the entire safety
+> supervisor.
+>
+> **Buck only (강압), not buck-boost (승압/강하).** A buck's output is `Vin × duty`, so it is
+> **physically incapable of exceeding its input** — a failed buck tops out at the rail, 12.8–14.6 V.
+> A boost stage has no such bound and can produce 30 V+. Both figures kill a Teensy, but one is
+> bounded by the battery and the other is not, and the bound is free.
+>
+> **A 5 V RC UBEC is the easiest part that satisfies both.** It is a fixed-output buck built to run
+> receivers off a battery pack — which is literally one of the two loads here — typically 5–26 V in,
+> 5 V out, 3 A. If it carries a 5 V / 6 V jumper, confirm it is on **5 V**: a jumper is far harder
+> to disturb than a trimmer, but it is still a setting.
+>
+> If only an adjustable buck is available, set it, **seal the trimmer**, and record the measured
+> voltage.
 
 > [!CAUTION]
 > **Cut the Teensy's `VUSB`–`VIN` pads before powering it from this rail**
