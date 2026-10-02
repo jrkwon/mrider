@@ -1101,7 +1101,7 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 >
 > Keep red and black off the signal wiring entirely, so nothing that carries 12 V is ever confused
 > with something that carries 3.3 V.
-| **Fuses** | **25 A ×1 and 5 A ×1 per vehicle** — blade (ATC/ATO). Six fitted across the three vehicles. Two per vehicle, one at each battery; the branches are not separately fused ([§3.2](03-electrical.md)). Buy an **assorted ATC kit** for spares — fuses are consumables and a blown one with no replacement stops a lab |
+| **Fuses** | **25 A ×1 and 5 A ×1 per vehicle** — blade (ATC/ATO). Six fitted across the three vehicles. Two per vehicle, one at each battery; the branches are not separately fused ([§3.2](03-electrical.md)). Buy an **assorted kit** for spares — fuses are consumables and a blown one with no replacement stops a lab. **Match the size family to the holder**, see below |
 | **Fuse holders** | **2 per vehicle** — *one* 12–14 AWG for the 25 A, *one* 18–20 AWG for the 5 A. **Six for the three vehicles: 3 + 3.** Gauge no thinner than the wire it splices into |
 
 > [!WARNING]
@@ -1133,6 +1133,25 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > electrical: **a butt splice sized for 12 AWG will not grip 0.75 mm² logic wire.** Match roughly —
 > **18–20 AWG** for the 5 A holder, **12–14 AWG** for the 25 A.
 >
+> **`ATO` and `ATC` are the same fuse.** Identical dimensions, fully interchangeable — `ATO` is the
+> original with an open bottom, `ATC` has the element sealed, which is marginally better against
+> moisture. Korean listings use the names loosely.
+>
+> **What must match is the size family, which is not interchangeable:**
+>
+> | family | width | range | |
+> |---|---:|---|---|
+> | Maxi | 29.0 mm | 20–120 A | too big |
+> | **Regular — 대형 / 표준** | **19.1 mm** | **1–40 A** | **this one.** What ordinary inline holders take |
+> | Mini — 소형 | 10.9 mm | 2–30 A | won't fit a regular holder |
+>
+> A listing reading *"대형 ATO 3~40 A 10종 50개"* is the regular family, five of each value — enough
+> to fit all three vehicles and keep spares. **Confirm 5 A and 25 A are among the ten values**, and
+> that the holders bought are the same family.
+>
+> Verify by colour rather than by the printed number, which is small and wears: in the standard
+> code **5 A is tan/beige** and **25 A is clear**.
+
 > [!CAUTION]
 > **Check that the silicone wire is copper, not CCA**
 >
