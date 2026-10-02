@@ -1078,9 +1078,39 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 
 | Item | Spec |
 |---|---|
-| **Traction wire** | **1.5 mm² silicone** throughout. Covers a driver channel at its 30 A limit with the drop under 6 % over the ~1 m runs here. 2.5 mm² for the main B+ run if you want margin |
+| **Traction wire** | **2.5 mm² silicone** throughout the traction side. *Corrected 2026-10-02 — see below; 1.5 mm² was sized on voltage drop alone* |
 | **Logic/signal wire** | 0.5–0.75 mm² silicone |
-| **Fuses** | **25 A** main traction (above the **20 A** drive-channel limit set above, below the relay contacts), **10 A** steering branch, **5 A** logic rail. Blade type, inline holders |
+| **Fuses** | **25 A** main traction, **10 A** steering branch, **5 A** logic rail. Blade (ATC/ATO) |
+| **Fuse holders** | Gauge must be **no thinner than the wire it is spliced into** — see below |
+
+> [!WARNING]
+> **A fuse protects the wire, so the fuse must be smaller than the wire — and 1.5 mm² failed that**
+>
+> This page sized the traction wire on **voltage drop** and never checked it against the fuse. Drop
+> was fine; ampacity is not:
+>
+> | | mm² | chassis-wiring ampacity |
+> |---|---:|---:|
+> | 20 AWG | 0.52 | 5–8 A |
+> | 18 AWG | 0.82 | 10–16 A |
+> | **16 AWG** | **1.31** | **18–22 A** |
+> | **14 AWG** | **2.08** | **25–32 A** |
+> | 12 AWG | 3.31 | 35–41 A |
+>
+> A **25 A** fuse on **1.5 mm²** (≈16 AWG, ~20 A) is backwards: the wire overheats before the fuse
+> acts, which is the one thing a fuse exists to prevent. **2.5 mm² on the traction side** fixes it
+> and keeps the 20 A driver limit and the 25 A fuse as decided. The logic side was already correct
+> — 5 A against 0.5–0.75 mm².
+>
+> **The same rule picks the fuse holder's pigtail gauge.** A `12 AWG ATC/ATO` holder **will** take a
+> 5 A fuse — the blade socket is identical for every ATC fuse, and the gauge limits the *holder*,
+> not which fuse fits. It is simply over-specified there, and the problem is mechanical rather than
+> electrical: **a butt splice sized for 12 AWG will not grip 0.75 mm² logic wire.** Match roughly —
+> **18–20 AWG** for the 5 A holder, **12–14 AWG** for the 25 A.
+>
+> **Avoid holders that do not state a gauge**, especially at high ratings. Cheap ones are built with
+> thin wire regardless of the fuse they are sold alongside, and then the holder, not the fuse, is
+> what the circuit is really limited by.
 | **Battery tap** | XT60 |
 | **Three taps** | Keyed inline connectors — **and deliberately three *different* connector families**, so throttle, steering, and power physically cannot be cross-plugged. A reversed steering tap makes the position loop run away from its setpoint instead of toward it |
 | Terminals | Ring/spade for the driver's screw terminals |

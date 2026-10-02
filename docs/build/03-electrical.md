@@ -180,9 +180,14 @@ the manufacturer sized it for these motors, this pack, and this duty, and had it
 > | 1.0 mm² | 0.35 V (2.9 %) | 1.05 V (8.8 %) |
 > | **1.5 mm²** | **0.23 V (1.9 %)** | **0.70 V (5.8 %)** |
 >
-> **1.5 mm² (≈ AWG 15–16) silicone covers every traction-side run on this vehicle**, including a
-> driver channel at its limit, with the drop under 6 %. Use **0.5–0.75 mm²** for logic and signal.
-> Two numbers, no measurement.
+> **Use 2.5 mm² silicone on the traction side** and **0.5–0.75 mm²** for logic and signal. Two
+> numbers, no measurement.
+>
+> *Corrected 2026-10-02.* This box previously said 1.5 mm², which the table above justifies on
+> **voltage drop** — and drop was never the binding constraint. **Ampacity is:** 1.5 mm² is ≈16 AWG,
+> good for 18–22 A in chassis wiring, and it sits behind a **25 A** fuse. The wire would overheat
+> before the fuse acted, which inverts the thing a fuse is for. 2.5 mm² (≈14 AWG, 25–32 A) puts the
+> fuse back below the wire.
 >
 > Silicone rather than PVC for the reason the BOM already gives ([§1.5](01-bom-sourcing.md)):
 > finer strands where the harness moves, and 180–200 °C against PVC's 70 °C.
