@@ -442,33 +442,60 @@ failure modes for students to learn, not two.
 
 This is the plan already in the BOM, made specific. Three choices decide whether it is reliable:
 
-**1 — Buy a multipole ring magnet, not loose magnets.** A single ring magnetised with alternating
-poles removes **spacing, polarity and placement all at once**. Loose magnets in printed pockets fix
-spacing only; a student can still fit one backwards, and one reversed magnet is a permanent
-odometry error that calibration will partly absorb and therefore hide.
+**The hub measured 63.5 mm across the spline crests (2026-10-03), and that settles the build.**
 
-**2 — Hall *latch* (bipolar), not a Hall *switch*.** A latch toggles on a north pole and back on a
-south, so alternating poles give a clean ~50 % square wave **whose edges do not move with the air
-gap**. A unipolar switch's release threshold drifts with gap and temperature, which turns a
-mechanical tolerance into a counting error.
+| | |
+|---|---:|
+| Hub, spline major Ø | **63.5 mm** |
+| Printed carrier, 3 mm wall | **OD 69.5 mm** |
+| Magnet track circumference | **218 mm** |
 
-**3 — Space the two sensors at `(n + ¼)` pole pitches, not ¼.** The quarter-pitch that gives
-quadrature is physically smaller than the sensor packages:
-
-| hub Ø | poles | pole pitch | **¼ pitch** | **1¼ pitch** |
+| magnets | pole pitch | **quadrature offset** | counts/rev | mm/count |
 |---:|---:|---:|---:|---:|
-| 35 mm | 8 | 13.7 mm | 3.4 mm | 17.2 mm |
-| 40 mm | 16 | 7.9 mm | **2.0 mm** | 9.8 mm |
-| 50 mm | 16 | 9.8 mm | 2.5 mm | 12.3 mm |
+| 12 | 18.2 mm | 9.1 mm | 24 | 23.8 |
+| **16** | **13.6 mm** | **6.8 mm** | **32** | **17.8** |
+| 24 | 9.1 mm | 4.5 mm | 48 | 11.9 |
 
-A Hall package is 4–5 mm wide, so ¼ pitch is often **not buildable**. Adding whole pitches leaves
-the phase identical and makes room. **Print both sensors into one bracket** so the spacing is fixed
-by construction — the same reasoning that printed the magnet ring rather than gluing magnets.
+**Take 16.** A 13.6 mm pitch prints and populates easily, the 6.8 mm sensor offset is buildable with
+surface-mount parts, and 17.8 mm/count clears the **≤ 2 % over 20 m** gate by more than an order of
+magnitude — resolution was never the constraint here.
 
-**Also pin:** 3.3 V supply or an open-drain part with a 3.3 V pull-up — [the Teensy is not 5 V
+**Three things decide whether this is reliable rather than merely specified:**
+
+**1 — A multipole ring was the plan and does not survive the diameter.** A single ring magnetised
+with alternating poles would remove spacing, polarity and placement at once, which is why it was
+specified. At a **69.5 mm bore** those are industrial parts, not commodity ones. So: **discrete
+magnets in a printed carrier**, which is where this started, with the polarity risk handled below
+rather than designed away.
+
+**2 — Hall *latch* (bipolar), not a Hall *switch*.** A latch toggles on north and back on south, so
+alternating poles give a clean ~50 % square wave **whose edges do not move with the air gap**. A
+unipolar switch's release threshold drifts with gap and temperature, turning a mechanical tolerance
+into a counting error.
+
+**3 — The offset is `(n + ½)` pole pitches, not `(n + ¼)`.** *Corrected 2026-10-04 — this page had
+it wrong.* One **electrical cycle** spans **two** magnets, so a 90° electrical offset is **half a
+pole pitch**: 6.8 mm at 16 magnets. Building to a quarter pitch would put the sensors 45° apart
+electrically — still two signals, but not quadrature, and the direction sense would be wrong near
+the transitions. **Print both sensors into one bracket** so the spacing is fixed by construction.
+
+> [!IMPORTANT]
+> **A reversed magnet cannot be prevented. Make it visible instead.**
+>
+> With discrete magnets back in the design, a student can fit one the wrong way round, and a
+> cylindrical magnet gives no clue which way it is in. One reversed magnet is a **permanent**
+> odometry error that roll-out calibration will partly absorb — and therefore hide.
+>
+> **It is trivially detectable, though, and the check costs a minute.** Before the carrier goes on
+> the vehicle: power the sensors, **turn the carrier slowly by hand**, and watch one channel. A
+> correct ring gives an even train of pulses. A reversed magnet shows as **one long gap and one
+> short pulse**, at the same place every revolution.
+>
+> **Do this on all three carriers and record it.** It is the acceptance test for #6c.
+
+**Also pin:** 3.3 V supply, or an open-drain part with a 3.3 V pull-up — [the Teensy is not 5 V
 tolerant](#7-8-11-12-14-what-to-actually-buy) — and feed A/B to **two of the Teensy's four hardware
-quadrature decoder channels**, which is this branch's real advantage: counting continues correctly
-regardless of what firmware is doing.
+quadrature decoder channels**, which counts in hardware regardless of what firmware is doing.
 
 ##### Measurements this needs
 
@@ -482,19 +509,20 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 | Screw bosses available on the housing | *(count and thread)* |
 
 > [!IMPORTANT]
-> **8 mm is the budget the whole sensor assembly fits inside, and it picks the package**
+> **8 mm is an AXIAL budget, and it is more comfortable than it first looked**
 >
-> Bracket arm and sensor both live in that gap:
+> *Corrected 2026-10-04.* An earlier revision treated the 8 mm as a stack of bracket arm **plus**
+> sensor and concluded a TO-92 pair leaves ~1 mm. That assumed the sensors sit **beside** the
+> magnets axially. They do not — they sit **outside** them radially, and the two sensors are spaced
+> **along the circumference**, 6.8 mm apart.
 >
-> | | |
-> |---|---:|
-> | printed PETG arm, stiff enough to hold the gap | 2–3 mm |
-> | **TO-92 Hall** (through-hole, the obvious part) | ~4 mm |
-> | **SOT-23 Hall on a small PCB** | ~1.5 mm |
+> So the 8 mm has to contain the **magnet track's width** (4–6 mm) and the sensor's **axial**
+> extent, side by side radially rather than stacked. Both package types fit.
 >
-> A TO-92 pair plus a 3 mm arm leaves about **1 mm** of margin in 8 mm — buildable once, not three
-> times by students. **Specify surface-mount parts**, which halve the stack and leave room to set
-> the air gap rather than consume it.
+> **Surface-mount is still the better choice** — a SOT-23 on a small PCB is ~3 mm against a TO-92's
+> ~4 mm, and the flat PCB is far easier to locate precisely in a printed bracket than three round
+> legs. But it is a preference now, not a necessity, and the 1 mm figure was an artefact of
+> picturing the geometry wrongly.
 >
 > A multipole ring is 3–6 mm wide axially and sits *on* the hub, so it spends no part of this
 > budget.
