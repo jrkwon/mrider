@@ -477,7 +477,8 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 | | |
 |---|---|
 | **Axial clearance, gearbox rotating part → wheel** | **≥ 8 mm** — *measured on the delivered vehicle and **this is what decided Branch C**. It was not written down at the time; recorded 2026-10-03.* |
-| Gearbox output hub outside diameter | *(mm — sizes the ring and the pole pitch)* |
+| **Is there a plain, unsplined cylindrical section on the hub?** | *(Y/N — decides whether #6c prints a carrier sleeve)* |
+| Diameter of the surface the ring will sit on | *(mm — sizes the ring and sets the pole pitch)* |
 | Screw bosses available on the housing | *(count and thread)* |
 
 > [!IMPORTANT]
@@ -497,6 +498,24 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 >
 > A multipole ring is 3–6 mm wide axially and sits *on* the hub, so it spends no part of this
 > budget.
+
+> [!NOTE]
+> **The hub is splined, and a ring magnet's bore is not**
+>
+> "Hub outside diameter" means the **rotating output of the gearbox that drives the wheel** — the
+> part photographed at teardown as a splined plastic boss with the axle through its bore.
+>
+> A multipole ring has a **plain round bore**, so it cannot grip splines. Two cases:
+>
+> - **A plain cylindrical section exists somewhere on the hub** → the ring sits there directly, and
+>   #6c is only the sensor bracket.
+> - **The whole exposed surface is splined** → #6c also prints a **carrier sleeve**: splined inside
+>   to drive off the hub, plain cylinder outside for the ring.
+>
+> The carrier was dropped when loose magnets were replaced by a ring. **It may come back for an
+> entirely different reason** — not to space magnets, but to give the ring something round to hold.
+> Either way, the diameter to measure is **the surface the ring will actually sit on**, which is
+> the carrier's outside diameter in the second case.
 
 > ([category 000400040012](https://www.devicemart.co.kr/goods/catalog?code=000400040012)) and filter
 > on the electrical requirements above.
