@@ -444,6 +444,8 @@ This is the plan already in the BOM, made specific. Three choices decide whether
 
 **The hub measured 63.5 mm across the spline crests (2026-10-03), and that settles the build.**
 
+![End view and axial section of the carrier: a printed sleeve grips the splined hub and presents a plain cylinder carrying sixteen alternating magnets, with two Hall sensors outside it half a pitch apart](../images/drive-encoder-carrier.svg)
+
 | | |
 |---|---:|
 | Hub, spline major Ø | **63.5 mm** |
