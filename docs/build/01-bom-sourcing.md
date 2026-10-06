@@ -505,6 +505,18 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > students.
 >
 > **Keep PETG, not PLA** — this sits beside a gearbox and a motor, and PLA is soft by 60 °C.
+>
+> **The model is in the repository**: [`cad/drive_encoder_carrier.scad`](https://github.com/jrkwon/mrider/blob/main/cad/drive_encoder_carrier.scad).
+> Parametric OpenSCAD — `HUB_D` at the top is the one measured number, everything else derives from
+> it, and it `assert`s the four ways the parameters can be made impossible (carrier wider than the
+> gap, magnet wider than the carrier, pocket deeper than the wall, magnets too close to each other).
+> Build with `openscad -o carrier.stl cad/drive_encoder_carrier.scad`.
+>
+> At `HUB_D = 63.5` it derives bore Ø63.9, outside **Ø71.9**, track 225.9 mm, pitch **14.12 mm**,
+> **sensor offset 7.06 mm**, 32 counts/rev → **17.8 mm/count**.
+>
+> **It has not been rendered** — OpenSCAD is not installed here, so the geometry is reasoned rather
+> than seen. Open it and look before printing three of them.
 
 > [!IMPORTANT]
 > **A reversed magnet cannot be prevented. Make it visible instead.**

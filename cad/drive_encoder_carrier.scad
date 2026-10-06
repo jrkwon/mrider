@@ -1,0 +1,164 @@
+// MRider — drive encoder magnet carrier
+// ======================================
+// A two-piece clamp that grips the gearbox output hub and presents a plain
+// cylinder carrying the encoder magnets.
+//
+// WHY A CLAMP AND NOT A SPLINED SLEEVE
+//   The carrier transmits no torque — it only has to ride along — so there is
+//   nothing to gain from matching the hub's spline form, and matching it would
+//   mean measuring tooth count, form and undercut and then printing to a
+//   tolerance FDM does not hold. The clamp supplies grip; the spline crests
+//   supply anti-slip. One diameter is all that has to be measured.
+//
+// WHY PRINTED
+//   No load path, three identical copies from one file, and PETG is already in
+//   the BOM for #14. PETG and not PLA: this sits beside a gearbox and a motor,
+//   and PLA is soft by 60 °C.
+//
+//   Build:  openscad -o carrier.stl drive_encoder_carrier.scad
+//   Preview a half:  set PART = "half"
+//
+// Spec: docs/build/01-bom-sourcing.md  §1.2.3
+// Figure: docs/images/drive-encoder-carrier.svg
+
+/* [What to build] */
+// "ring" = both halves in place (for checking), "half" = one half laid flat to print, "pair" = two halves laid out to print
+PART = "pair";              // [ring, half, pair]
+
+/* [Measured on the vehicle] */
+// Spline crest diameter of the gearbox output hub, mm. THE ONE MEASUREMENT THIS NEEDS.
+HUB_D        = 63.5;
+// Axial room between the gearbox rotating face and the wheel, mm. The carrier must be narrower.
+AXIAL_GAP    = 8.0;
+
+/* [Carrier] */
+WALL         = 4.0;         // radial wall thickness, mm
+WIDTH        = 6.0;         // axial width, mm — leaves 1 mm each side inside AXIAL_GAP
+BORE_CLEAR   = 0.4;         // added to HUB_D so the halves close onto the splines rather than bottoming out
+SPLIT_GAP    = 1.2;         // gap at each split line, so clamping actually tightens
+
+/* [Magnets] */
+N_MAG        = 16;          // 8 pole pairs -> 32 counts/rev
+MAG_D        = 5.0;         // disc diameter, mm
+MAG_T        = 2.0;         // disc thickness, mm
+MAG_CLEAR    = -0.1;        // NEGATIVE = press fit. Magnets must not be free to rotate before adhesive cures.
+
+/* [Clamp screws] */
+SCREW_D      = 3.2;         // M3 clearance
+NUT_AF       = 5.5;         // M3 nut across flats
+NUT_T        = 2.6;         // M3 nut thickness
+EAR_W        = 9.0;         // flange width (radial), mm
+EAR_L        = 7.0;         // flange length each side of the split, mm
+
+/* [Hidden] */
+$fn = 160;
+EPS = 0.01;
+
+// ---- derived -------------------------------------------------------------
+BORE_D  = HUB_D + BORE_CLEAR;
+OD      = BORE_D + 2 * WALL;
+CIRC    = PI * OD;
+PITCH   = CIRC / N_MAG;              // magnet pitch along the track
+OFFSET  = PITCH / 2;                 // quadrature offset: HALF a pole pitch,
+                                     // because one electrical cycle spans TWO magnets
+COUNTS  = 2 * N_MAG;                 // with 4x quadrature decoding
+
+echo(str("bore Ø",        BORE_D, " mm"));
+echo(str("outside Ø",     OD,     " mm"));
+echo(str("track circum.", CIRC,   " mm"));
+echo(str("magnet pitch",  PITCH,  " mm"));
+echo(str("SENSOR OFFSET", OFFSET, " mm  <- space the two Hall sensors by this"));
+echo(str("counts / rev",  COUNTS));
+
+assert(WIDTH < AXIAL_GAP,  "carrier is wider than the gap between gearbox and wheel");
+assert(MAG_D < WIDTH,      "magnet will not fit inside the carrier width");
+assert(MAG_T < WALL,       "magnet pocket would break through the back of the wall");
+assert(PITCH > MAG_D + 2,  "magnets too close — reduce N_MAG or increase OD");
+
+// ---- parts ---------------------------------------------------------------
+
+// Pockets are cut radially from the outside, so the magnet face finishes flush
+// with the track and the air gap is set by the bracket alone.
+module magnet_pockets() {
+    for (i = [0 : N_MAG - 1])
+        rotate([0, 0, i * 360 / N_MAG])
+            translate([OD/2 - MAG_T, 0, WIDTH/2])
+                rotate([0, 90, 0])
+                    cylinder(d = MAG_D + MAG_CLEAR, h = MAG_T + EPS);
+}
+
+// A witness notch beside magnet 0. The acceptance test is to turn the carrier
+// by hand and watch one channel — a reversed magnet shows as one long gap and
+// one short pulse, and this marks where in the revolution to look.
+module index_notch() {
+    // placed HALF a pitch round from magnet 0, so it cannot clash with a pocket
+    rotate([0, 0, 180 / N_MAG])
+        translate([OD/2 - 1.0, 0, -EPS])
+            cylinder(d = 2.0, h = WIDTH + 2*EPS);
+}
+
+module ear(sign) {
+    // flange either side of a split line, carrying the clamp screw
+    translate([0, sign * (OD/2 - EPS), 0])
+        difference() {
+            translate([-EAR_L, 0, 0])
+                cube([EAR_L * 2, EAR_W, WIDTH]);
+            // screw runs parallel to the split line, through both halves
+            translate([0, EAR_W/2, WIDTH/2]) rotate([0, 90, 0])
+                translate([0, 0, -EAR_L - EPS])
+                    cylinder(d = SCREW_D, h = EAR_L * 2 + 2*EPS);
+            // captive nut on one side only
+            translate([EAR_L - NUT_T, EAR_W/2, WIDTH/2]) rotate([0, 90, 0])
+                rotate([0, 0, 30])
+                    cylinder(d = NUT_AF / cos(30), h = NUT_T + EPS, $fn = 6);
+        }
+}
+
+module full_ring() {
+    difference() {
+        union() {
+            cylinder(d = OD, h = WIDTH);
+            ear( 1);
+            ear(-1);
+        }
+        translate([0, 0, -EPS]) cylinder(d = BORE_D, h = WIDTH + 2*EPS);
+        magnet_pockets();
+        index_notch();
+    }
+}
+
+// One half: everything on +X, minus half the split gap on each face.
+module carrier_half() {
+    intersection() {
+        full_ring();
+        translate([SPLIT_GAP/2, -OD, -OD]) cube([OD * 2, OD * 2, OD * 2]);
+    }
+}
+
+// ---- output --------------------------------------------------------------
+if (PART == "ring") {
+    carrier_half();
+    rotate([0, 0, 180]) carrier_half();
+} else if (PART == "half") {
+    rotate([0, -90, 0]) carrier_half();          // split face down on the bed
+} else {                                          // "pair"
+    translate([0,  OD/2 + 4, 0]) rotate([0, -90, 0]) carrier_half();
+    translate([0, -OD/2 - 4, 0]) rotate([0, -90, 0]) carrier_half();
+}
+
+// ---- printing ------------------------------------------------------------
+// PETG. 0.2 mm layers, 4 perimeters, 40 % infill.
+//
+// Print each half ON ITS SPLIT FACE (PART = "half" or "pair" does this): the
+// layers then run across the clamping load instead of along it, and the magnet
+// pockets come out round rather than bridged.
+//
+// No supports needed in that orientation. The pockets are horizontal holes and
+// will print with a slightly flattened top — that is wanted, since MAG_CLEAR is
+// negative and the magnets are meant to be a press fit.
+//
+// ASSEMBLY ORDER MATTERS. At this pitch every magnet can feel its neighbours,
+// and the alternating pattern pushes each one toward the orientation that is
+// wrong. Press each magnet fully home, add adhesive, and let it cure before
+// fitting the next. Then run the hand-turn check in §1.2.3 before the carrier
+// goes anywhere near the vehicle.
