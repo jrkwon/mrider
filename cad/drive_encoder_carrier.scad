@@ -41,23 +41,20 @@ PART = "ring";              // [ring, gauge]
 GAUGE_DELTA  = 0.0;
 
 /* [Measured on the vehicle] */
-// Spline crest diameter of the gearbox output hub, mm.
+// Crest diameter of the gearbox output hub, mm.
 //
-// Measured 2026-10-06 by paper strip: circumference 205 mm -> 205/pi = 65.25.
-// That is a FLOOR, not the answer. The strip rides the crests and chords the
-// valleys, so it measures an inscribed polygon, P = N*D*sin(pi/N), which is
-// always short of pi*D. Recovering D needs the spline count N:
+// Measured 2026-10-06: a wire laid round the crests reads 205 mm, so 65.25.
 //
-//     N      12      16      20      24      30
-//     D    66.00   65.67   65.52   65.44   65.37
-//
-// N is not counted yet, so this takes the top of that band. Erring HIGH is the
-// benign direction — a bore too large only means the screws go in further, a
-// bore too small means the ring does not go on at all. Count the splines and
-// this tightens to +-0.1.
-HUB_D        = 66.0;
-// How uncertain that measurement is, mm. The grub screws must cover it.
-// Holds the uncounted splines AND the spread across three vehicles.
+// The hub is NOT a fine spline. It is SIX broad lobes separated by narrow gaps,
+// so a wire rides the crest ARCS and only chords across each gap. The loss is
+// about 0.1 mm at a 20-degree gap and still only 0.37 mm at 30 — far inside the
+// +-1 mm of the measurement itself. (An earlier revision applied a point-crest
+// polygon correction of up to 0.75 mm. That model is for splines whose crests
+// are points, and it does not describe this hub.)
+HUB_D        = 65.3;
+// How uncertain that measurement is, mm — the wire, and the spread across three
+// vehicles. BORE_CLEAR must stay larger than this or the bore can come out
+// SMALLER than the hub, which is the one failure the screws cannot rescue.
 HUB_TOL      = 1.0;
 // Axial room between the gearbox rotating face and the wheel, mm.
 AXIAL_GAP    = 8.0;
@@ -68,7 +65,7 @@ RADIAL_ROOM  = -1;
 /* [Carrier] */
 WALL         = 7.0;         // radial wall thickness, mm
 WIDTH        = 6.0;         // axial width, mm — leaves 1 mm each side in AXIAL_GAP
-BORE_CLEAR   = 1.0;         // bore = HUB_D + this. CLEARANCE, not interference.
+BORE_CLEAR   = 1.7;         // bore = HUB_D + this. CLEARANCE, not interference.
 
 /* [Magnets] */
 N_MAG        = 18;          // 9 pole pairs -> 36 counts/rev. Must divide by N_SET.
@@ -118,6 +115,7 @@ echo(str("magnet pitch",  PITCH,  " mm"));
 echo(str("SENSOR OFFSET", OFFSET, " mm  <- space the two Hall sensors by this"));
 echo(str("counts / rev",  COUNTS));
 echo(str("screw reach",   REACH,  " mm past the bore, vs ", SLACK, " mm of slack"));
+echo(str("bore clears the largest credible hub by ", BORE_CLEAR - HUB_TOL, " mm"));
 echo(str("radial room needed ", NEED_R, " mm (ring + sensor)"));
 
 assert(WIDTH < AXIAL_GAP,  "carrier is wider than the gap between gearbox and wheel");
@@ -129,6 +127,8 @@ assert(PITCH/2 > (MAG_D + INSERT_D)/2 + 1,
        "insert hole would run into the magnets either side of it");
 assert(INSERT_L + 1.5 <= WALL, "no pilot left between the insert and the bore");
 assert(REACH >= SLACK, "grub screw cannot reach the hub across the worst-case slack");
+assert(BORE_CLEAR > HUB_TOL,
+       "bore can come out smaller than the hub — the ring would not go on at all");
 assert(RADIAL_ROOM < 0 || RADIAL_ROOM >= NEED_R,
        "ring plus sensor will not clear the obstruction in the axial slice");
 if (RADIAL_ROOM < 0)
@@ -205,10 +205,11 @@ if (PART == "gauge") gauge();
 else                 carrier();
 
 // ---- fitting -------------------------------------------------------------
-// 1. Measure HUB_D with a paper strip around the spline crests: wrap, mark the
-//    overlap, measure the length, divide by pi — then COUNT THE SPLINES and
-//    divide by sin(pi/N)*N/pi, because the strip chords the valleys and reads
-//    low. Do it on all three vehicles and enter the LARGEST.
+// 1. Measure HUB_D with a WIRE round the crests: wrap, mark the overlap,
+//    measure the length, divide by pi. On this hub — six broad lobes, narrow
+//    gaps — the wire rides the crest arcs and the chord loss is about 0.1 mm,
+//    so no correction is worth applying. Do all three vehicles, enter the
+//    LARGEST, and keep BORE_CLEAR above the spread.
 // 2. Print PART = "gauge" three times, at GAUGE_DELTA = -0.4, 0 and +0.4.
 // 3. The right one slides on by hand over the full 6 mm and rattles slightly.
 //    It is SUPPOSED to rattle — the screws remove the rattle, not the bore.
@@ -245,8 +246,15 @@ else                 carrier();
 // each magnet fully home, add adhesive, let it cure, then fit the next. Run the
 // hand-turn check in §1.2.3 before the carrier goes near the vehicle.
 //
-// Then: heat-set the three inserts from the outside, slide the ring onto the
-// hub, and run the grub screws down in rotation — a turn each, round and round,
+// Then: heat-set the three inserts from the outside and slide the ring on.
+//
+// BEFORE TIGHTENING, ROTATE THE RING ONE LOBE. Six lobes sit 60 degrees apart
+// and the three screws 120, which is exactly two lobe pitches — so all three
+// screws are always in the SAME place on the lobe pattern. Turn the ring until
+// they drop into the GAPS: that is a positive form lock on all three at once.
+// Land them on the crests instead and all you have is friction.
+//
+// Then run the grub screws down in rotation — a turn each, round and round,
 // so the ring centres itself rather than being shoved against the hub. Blue
 // threadlocker on the screws. Finally spin the wheel by hand and watch the air
 // gap: it should not visibly change through a revolution.

@@ -442,13 +442,13 @@ failure modes for students to learn, not two.
 
 This is the plan already in the BOM, made specific. Three choices decide whether it is reliable:
 
-**The hub's spline crests measure 205 mm around (2026-10-06), and that settles the build.**
+**The hub's lobe crests measure 205 mm around (2026-10-06), and that settles the build.**
 
 ![End view and axial section of the carrier: a one-piece printed ring slides onto the splined hub and presents a plain cylinder carrying eighteen alternating magnets, held by three recessed grub screws, with two Hall sensors outside it half a pitch apart](../images/drive-encoder-carrier.svg)
 
 | | |
 |---|---:|
-| Hub, spline crest Ø | **66.0 mm** *(top of the band — see the note below)* |
+| Hub, lobe crest Ø | **65.3 mm** *(205 mm round, ±1)* |
 | Printed ring bore — **clearance, not a fit** | **Ø67.0 mm** |
 | Printed ring, 7 mm wall | **OD 81.0 mm** |
 | Magnet track circumference | **254.5 mm** |
@@ -502,10 +502,9 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > have taken the sensor and its bracket off on the first turn of the wheel. **The wheel comes off**,
 > so the ring can simply be slid on.
 >
-> **The bore carries no load.** The hub is somewhere in **65.4–66.0 mm** and FDM holds a Ø67 bore
-> to perhaps ±0.3 mm; a press fit needs both numbers to ±0.1, which is two significant figures out
-> of reach — and there are three hubs, not one. So the bore is deliberately **clear** of the hub,
-> and three
+> **The bore carries no load.** The hub measures **65.3 mm ±1** and FDM holds a Ø67 bore to perhaps
+> ±0.3 mm; a press fit needs both numbers to ±0.1, which is two significant figures out of reach —
+> and there are three hubs, not one. So the bore is deliberately **clear** of the hub, and three
 > recessed M3 grub screws take up whatever slack exists. Their points settle into **spline
 > valleys**, which is a form lock rather than friction.
 >
@@ -518,6 +517,12 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > **Three screws, not four.** Three points determine a circle — a four-point grip over-constrains
 > it, and tightened unevenly pushes the ring off centre. Run them down **in rotation**, a turn each,
 > so the ring centres itself. Blue threadlocker.
+>
+> **Rotate the ring one lobe before tightening.** Six lobes sit 60° apart and the three screws 120°,
+> which is exactly **two lobe pitches** — so all three screws are always in the *same* place on the
+> lobe pattern. Turn the ring until they drop into the **gaps** and you get a positive form lock on
+> all three at once; land them on the crests and all you have is friction. This is luck turned into
+> a procedure, and it only works because 6 divides 360/3.
 >
 > Nothing here needs a hard grip anyway: the carrier transmits no torque, and the **8 mm slot
 > between the gearbox face and the wheel captures it axially** without help.
@@ -537,7 +542,7 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > that tension lies *inside* the layer planes. Lay it with the **index groove facing up** — a
 > 0.8 mm recess in the top surface prints clean, on the bed it would bridge over nothing.
 >
-> At `HUB_D = 66.0` it derives bore Ø67.0, outside **Ø81.0**, track 254.5 mm, pitch **14.14 mm**,
+> At `HUB_D = 65.3` it derives bore Ø67.0, outside **Ø81.0**, track 254.5 mm, pitch **14.14 mm**,
 > **sensor offset 7.07 mm**, 36 counts/rev → **15.8 mm/count**. Fasteners, per vehicle:
 > **3 × M3 heat-set insert, 3 × M3 × 10 grub screw** (cup or cone point — a cone point finds a
 > spline valley on its own).
@@ -562,26 +567,29 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > on, `HUB_D` is wrong — re-measure before committing 20 g of carrier. Add the winning delta to
 > `BORE_CLEAR` and print.
 >
-> **Measure the hub with a paper strip**, not a caliper: wrap it round the spline crests, mark the
-> overlap, measure the length, divide by π. A caliper across the crests does not read the crest
-> circle if the spline count is odd — and it is the crest circle the bore has to clear. Do it on all
-> three vehicles and enter the **largest**.
+> **Measure the hub with a wire round the crests**, not a caliper: wrap, mark the overlap, measure
+> the length, divide by π. A caliper across the crests does not read the crest circle at all unless
+> it happens to span two opposite lobes — and it is the crest circle the bore has to clear. Do it on
+> all three vehicles and enter the **largest**.
 >
-> **Then correct it, because the strip chords the valleys.** It rides on the crests and cuts across
-> the gaps, so what it measures is an inscribed polygon — `P = N·D·sin(π/N)` — which is always
-> *short* of `π·D`. The measured 205 mm gives 65.25 mm straight off, and that is a **floor**:
+> **No chord correction is worth applying here, and it matters that you know why.** A wrap does ride
+> the crests and cut across the gaps, so in general it reads an inscribed polygon that is short of
+> `π·D`. But that model assumes the crests are *points*. **This hub is six broad lobes separated by
+> narrow gaps** (2026-10-06 teardown photographs), so the wire follows the crest *arcs* for most of
+> the way round and only chords six short gaps:
 >
-> | splines | 12 | 16 | 20 | 24 | 30 |
-> |---|---:|---:|---:|---:|---:|
-> | **true crest Ø** | 66.00 | 65.67 | 65.52 | 65.44 | 65.37 |
+> | gap angle | 15° | 20° | 25° | 30° |
+> |---|---:|---:|---:|---:|
+> | **loss on Ø** | 0.05 mm | 0.11 mm | 0.22 mm | 0.37 mm |
 >
-> **Count the splines** and this collapses to ±0.1 mm. Until then the model takes **66.0**, the top
-> of the band, because the error is asymmetric: a bore too large only means the screws go in
-> further, a bore too small means the ring does not go on at all.
+> That is inside the ±1 mm of the measurement itself, so **205 mm → 65.25 mm is taken as it reads**.
+> An earlier revision of this page applied the point-crest polygon formula and inflated the hub to
+> 66.0; the formula was right and the form it assumed was wrong.
 >
-> *This is not hypothetical. The earlier figure of 63.5 mm — eyeballed, not wrapped — was about
-> 2 mm low, which would have put the bore at Ø64.7 against a hub of at least 65.3. The ring would
-> not have fitted, and a clearance bore does not save you from a wrong input.*
+> *The measurement itself was not optional, though. The figure before it — 63.5 mm, eyeballed rather
+> than wrapped — was about 2 mm low, which would have put the bore at Ø64.7 against a hub of 65.3.
+> The ring would not have fitted. **A clearance bore does not save you from a wrong input**, which is
+> why `BORE_CLEAR` must stay larger than `HUB_TOL` and the model now `assert`s it.*
 
 > [!IMPORTANT]
 > **A reversed magnet cannot be prevented. Make it visible instead.**
@@ -620,8 +628,9 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 |---|---|
 | **Axial clearance, gearbox rotating part → wheel** | **≥ 8 mm** — *measured on the delivered vehicle and **this is what decided Branch C**. It was not written down at the time; recorded 2026-10-03.* |
 | **Smallest obstruction radius in that 8 mm slice** | **≥ 47.5 mm needed** — ring (40.5) + air gap (3) + sensor (4). *Open. The two-piece revision already needed Ø91 for its ears and nobody asked; `RADIAL_ROOM` in the model is set negative until this is measured, and says so on every build.* |
-| Hub spline crest circumference, by paper strip | **205 mm** *(2026-10-06; an earlier 63.5 mm estimate was ~2 mm low). Re-take on all three and enter the largest.* |
-| **Spline count** | *(Open. Collapses the 65.4–66.0 mm band to ±0.1 — see the strip-reads-chords note)* |
+| Hub lobe-crest circumference, by wire | **205 mm → Ø65.3** *(2026-10-06; an earlier 63.5 mm estimate was ~2 mm low). Re-take on all three and enter the largest.* |
+| Hub form | **Six broad lobes, narrow gaps** *(2026-10-06 photographs — not a fine spline, which is why no chord correction applies)* |
+| **Axial length of the lobed boss that stays exposed with the wheel fitted** | *(Open. The ring is 6 mm wide and has to sit on that length — see the note below)* |
 | Screw bosses available on the housing | *(count and thread — **this is what still blocks the sensor bracket**)* |
 
 > [!IMPORTANT]
