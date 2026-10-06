@@ -18,7 +18,7 @@
   </defs>
   <rect width="980" height="700" fill="#ffffff"/>
   <text x="24" y="34" font-size="19" font-weight="bold" fill="#0f172a">Carrier and magnet track — one piece, nothing standing proud</text>
-  <text x="24" y="56" font-size="13" fill="#475569">Hub measured 63.5 mm across the spline crests. Left: end view, looking along the axle. Right: axial section.</text>
+  <text x="24" y="56" font-size="13" fill="#475569">Hub crests measure 205 mm around — crest Ø 66.0 mm. Left: end view, looking along the axle. Right: axial section.</text>
   <rect x="24" y="76" width="492" height="600" rx="8" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
   <text x="44" y="102" font-size="15" font-weight="bold" fill="#0f172a">END VIEW — looking along the axle</text>
   <circle cx="262" cy="346" r="106.2" fill="#fde68a" stroke="#b45309" stroke-width="2.5"/>
@@ -54,14 +54,14 @@
   <g transform="translate(241.9,232.1) rotate(-100.0)"><rect x="-6" y="-9" width="12" height="18" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/></g><text x="241.9" y="236.1" font-size="10" font-weight="bold" fill="#14532d" text-anchor="middle">A</text>
   <g transform="translate(282.1,232.1) rotate(-80.0)"><rect x="-6" y="-9" width="12" height="18" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/></g><text x="282.1" y="236.1" font-size="10" font-weight="bold" fill="#14532d" text-anchor="middle">B</text>
   <line x1="239.8" y1="220.2" x2="284.2" y2="220.2" stroke="#15803d" stroke-width="2" marker-start="url(#g)" marker-end="url(#g)"/>
-  <text x="262" y="204" font-size="11.5" font-weight="bold" fill="#15803d" text-anchor="middle">6.87 mm</text>
+  <text x="262" y="204" font-size="11.5" font-weight="bold" fill="#15803d" text-anchor="middle">7.07 mm</text>
   <text x="262" y="190" font-size="10.5" fill="#15803d" text-anchor="middle">= HALF a magnet pitch</text>
   <text x="382" y="250" font-size="11.5" font-weight="bold" fill="#b45309">one-piece ring</text>
-  <text x="382" y="264" font-size="10.5" fill="#92400e">bore Ø64.7 (clearance)</text>
-  <text x="382" y="278" font-size="10.5" fill="#92400e">plain OD Ø78.7</text>
+  <text x="382" y="264" font-size="10.5" fill="#92400e">bore Ø67.0 (clearance)</text>
+  <text x="382" y="278" font-size="10.5" fill="#92400e">plain OD Ø81.0</text>
   <line x1="378" y1="270" x2="346" y2="282" stroke="#b45309" stroke-width="1.2"/>
   <text x="44" y="474" font-size="11.5" font-weight="bold" fill="#1e3a8a">18 magnets, alternating</text>
-  <text x="44" y="489" font-size="10.5" fill="#2563eb">pitch 13.74 mm · 36 counts/rev</text>
+  <text x="44" y="489" font-size="10.5" fill="#2563eb">pitch 14.14 mm · 36 counts/rev</text>
   <line x1="140" y1="468" x2="186" y2="432" stroke="#2563eb" stroke-width="1.2"/>
   <text x="300" y="492" font-size="11.5" font-weight="bold" fill="#7f1d1d">3 × M3 grub screw</text>
   <text x="300" y="507" font-size="10.5" fill="#b91c1c">recessed below the OD,</text>
@@ -71,7 +71,7 @@
   <text x="398" y="352" font-size="10.5" font-weight="bold" fill="#0f172a">index groove</text>
   <text x="398" y="366" font-size="10.5" fill="#334155">in one face only</text>
   <rect x="40" y="546" width="460" height="52" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
-  <text x="56" y="568" font-size="12.5" font-weight="bold" fill="#7f1d1d">Every feature here is a RECESS. Nothing stands proud of Ø78.7.</text>
+  <text x="56" y="568" font-size="12.5" font-weight="bold" fill="#7f1d1d">Every feature here is a RECESS. Nothing stands proud of Ø81.0.</text>
   <text x="56" y="587" font-size="12" fill="#7f1d1d">A two-piece version put clamp ears 9 mm out — they swept the sensor.</text>
   <text x="44" y="628" font-size="12.5" fill="#334155">One electrical cycle spans <tspan font-weight="bold">two</tspan> magnets, so 90° electrical is</text>
   <text x="44" y="646" font-size="12.5" fill="#334155"><tspan font-weight="bold">half</tspan> a pitch — not a quarter, which this page once had wrong.</text>
@@ -114,5 +114,5 @@
   <text x="552" y="592" font-size="12.5" fill="#14532d">The sensors sit <tspan font-weight="bold">radially outside</tspan> the magnets, not beside</text>
   <text x="552" y="610" font-size="12.5" fill="#14532d">them — so the 8 mm holds the track width and the sensor&#39;s</text>
   <text x="552" y="628" font-size="12.5" fill="#14532d">thickness <tspan font-weight="bold">side by side</tspan>, not stacked. Both fit comfortably.</text>
-  <text x="552" y="652" font-size="12" fill="#15803d" font-style="italic">Radial room still to measure: 46.35 mm, ring plus sensor.</text>
+  <text x="552" y="652" font-size="12" fill="#15803d" font-style="italic">Radial room still to measure: 47.5 mm, ring plus sensor.</text>
 </svg>

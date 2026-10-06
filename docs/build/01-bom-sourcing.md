@@ -442,24 +442,24 @@ failure modes for students to learn, not two.
 
 This is the plan already in the BOM, made specific. Three choices decide whether it is reliable:
 
-**The hub measured 63.5 mm across the spline crests (2026-10-03), and that settles the build.**
+**The hub's spline crests measure 205 mm around (2026-10-06), and that settles the build.**
 
 ![End view and axial section of the carrier: a one-piece printed ring slides onto the splined hub and presents a plain cylinder carrying eighteen alternating magnets, held by three recessed grub screws, with two Hall sensors outside it half a pitch apart](../images/drive-encoder-carrier.svg)
 
 | | |
 |---|---:|
-| Hub, spline major Ø | **63.5 mm** |
-| Printed ring bore — **clearance, not a fit** | **Ø64.7 mm** |
-| Printed ring, 7 mm wall | **OD 78.7 mm** |
-| Magnet track circumference | **247.2 mm** |
+| Hub, spline crest Ø | **66.0 mm** *(top of the band — see the note below)* |
+| Printed ring bore — **clearance, not a fit** | **Ø67.0 mm** |
+| Printed ring, 7 mm wall | **OD 81.0 mm** |
+| Magnet track circumference | **254.5 mm** |
 
 | magnets | pole pitch | **quadrature offset** | counts/rev | mm/count |
 |---:|---:|---:|---:|---:|
-| 12 | 20.60 mm | 10.30 mm | 24 | 23.7 |
-| **18** | **13.74 mm** | **6.87 mm** | **36** | **15.8** |
-| 24 | 10.30 mm | 5.15 mm | 48 | 11.9 |
+| 12 | 21.21 mm | 10.60 mm | 24 | 23.7 |
+| **18** | **14.14 mm** | **7.07 mm** | **36** | **15.8** |
+| 24 | 10.60 mm | 5.30 mm | 48 | 11.9 |
 
-**Take 18.** A 13.74 mm pitch prints and populates easily, the 6.87 mm sensor offset is buildable
+**Take 18.** A 14.14 mm pitch prints and populates easily, the 7.07 mm sensor offset is buildable
 with surface-mount parts, and 15.8 mm/count clears the **≤ 2 % over 20 m** gate by more than an
 order of magnitude — resolution was never the constraint here.
 
@@ -471,7 +471,7 @@ count must divide by the screw count. 16 ÷ 3 does not, 18 ÷ 3 does. The file `
 
 **1 — A multipole ring was the plan and does not survive the diameter.** A single ring magnetised
 with alternating poles would remove spacing, polarity and placement at once, which is why it was
-specified. At a **64.7 mm bore** those are industrial parts, not commodity ones. So: **discrete
+specified. At a **67 mm bore** those are industrial parts, not commodity ones. So: **discrete
 magnets in a printed carrier**, which is where this started, with the polarity risk handled below
 rather than designed away.
 
@@ -482,7 +482,7 @@ into a counting error.
 
 **3 — The offset is `(n + ½)` pole pitches, not `(n + ¼)`.** *Corrected 2026-10-04 — this page had
 it wrong.* One **electrical cycle** spans **two** magnets, so a 90° electrical offset is **half a
-pole pitch**: 6.87 mm at 18 magnets. Building to a quarter pitch would put the sensors 45° apart
+pole pitch**: 7.07 mm at 18 magnets. Building to a quarter pitch would put the sensors 45° apart
 electrically — still two signals, but not quadrature, and the direction sense would be wrong near
 the transitions. **Print both sensors into one bracket** so the spacing is fixed by construction.
 
@@ -502,9 +502,10 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > have taken the sensor and its bracket off on the first turn of the wheel. **The wheel comes off**,
 > so the ring can simply be slid on.
 >
-> **The bore carries no load.** The hub measures 63–64 mm and FDM holds a Ø65 bore to perhaps
-> ±0.3 mm; a press fit needs both numbers to ±0.1, which is two significant figures out of reach —
-> and there are three hubs, not one. So the bore is deliberately **clear** of the hub, and three
+> **The bore carries no load.** The hub is somewhere in **65.4–66.0 mm** and FDM holds a Ø67 bore
+> to perhaps ±0.3 mm; a press fit needs both numbers to ±0.1, which is two significant figures out
+> of reach — and there are three hubs, not one. So the bore is deliberately **clear** of the hub,
+> and three
 > recessed M3 grub screws take up whatever slack exists. Their points settle into **spline
 > valleys**, which is a form lock rather than friction.
 >
@@ -536,13 +537,13 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > that tension lies *inside* the layer planes. Lay it with the **index groove facing up** — a
 > 0.8 mm recess in the top surface prints clean, on the bed it would bridge over nothing.
 >
-> At `HUB_D = 63.5` it derives bore Ø64.7, outside **Ø78.7**, track 247.2 mm, pitch **13.74 mm**,
-> **sensor offset 6.87 mm**, 36 counts/rev → **15.8 mm/count**. Fasteners, per vehicle:
+> At `HUB_D = 66.0` it derives bore Ø67.0, outside **Ø81.0**, track 254.5 mm, pitch **14.14 mm**,
+> **sensor offset 7.07 mm**, 36 counts/rev → **15.8 mm/count**. Fasteners, per vehicle:
 > **3 × M3 heat-set insert, 3 × M3 × 10 grub screw** (cup or cone point — a cone point finds a
 > spline valley on its own).
 >
 > **Rendered and checked 2026-10-06.** CGAL reports `Simple: yes`, `Volumes: 2` — one connected
-> solid — and the **maximum swept radius measured off the STL is 39.350 mm, exactly `OD/2`**. That
+> solid — and the **maximum swept radius measured off the STL is 40.500 mm, exactly `OD/2`**. That
 > is the check that matters on this part: nothing stands proud of the surface the sensor faces.
 >
 > **It is the check that was missing.** Two faults got through without it. The clamp ears above were
@@ -565,6 +566,22 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > overlap, measure the length, divide by π. A caliper across the crests does not read the crest
 > circle if the spline count is odd — and it is the crest circle the bore has to clear. Do it on all
 > three vehicles and enter the **largest**.
+>
+> **Then correct it, because the strip chords the valleys.** It rides on the crests and cuts across
+> the gaps, so what it measures is an inscribed polygon — `P = N·D·sin(π/N)` — which is always
+> *short* of `π·D`. The measured 205 mm gives 65.25 mm straight off, and that is a **floor**:
+>
+> | splines | 12 | 16 | 20 | 24 | 30 |
+> |---|---:|---:|---:|---:|---:|
+> | **true crest Ø** | 66.00 | 65.67 | 65.52 | 65.44 | 65.37 |
+>
+> **Count the splines** and this collapses to ±0.1 mm. Until then the model takes **66.0**, the top
+> of the band, because the error is asymmetric: a bore too large only means the screws go in
+> further, a bore too small means the ring does not go on at all.
+>
+> *This is not hypothetical. The earlier figure of 63.5 mm — eyeballed, not wrapped — was about
+> 2 mm low, which would have put the bore at Ø64.7 against a hub of at least 65.3. The ring would
+> not have fitted, and a clearance bore does not save you from a wrong input.*
 
 > [!IMPORTANT]
 > **A reversed magnet cannot be prevented. Make it visible instead.**
@@ -585,7 +602,7 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 >
 > **Do this on all three carriers and record it.** It is the acceptance test for #6c.
 >
-> **The magnets will also fight you during assembly.** At 13.74 mm spacing each one is close enough
+> **The magnets will also fight you during assembly.** At 14.14 mm spacing each one is close enough
 > to feel its neighbours, and an alternating pattern means every magnet is being pushed toward the
 > orientation that is *wrong*. **Make the pockets a press fit and add adhesive** — a pocket that
 > only locates and relies on glue will let one rotate before the glue cures, which is the failure
@@ -602,8 +619,9 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 | | |
 |---|---|
 | **Axial clearance, gearbox rotating part → wheel** | **≥ 8 mm** — *measured on the delivered vehicle and **this is what decided Branch C**. It was not written down at the time; recorded 2026-10-03.* |
-| **Smallest obstruction radius in that 8 mm slice** | **≥ 46.35 mm needed** — ring (39.35) + air gap (3) + sensor (4). *Open. The two-piece revision already needed Ø91 for its ears and nobody asked; `RADIAL_ROOM` in the model is set negative until this is measured, and says so on every build.* |
-| Hub spline crest diameter, by paper strip | **63.5 mm** *(2026-10-03 — re-take on all three and enter the largest)* |
+| **Smallest obstruction radius in that 8 mm slice** | **≥ 47.5 mm needed** — ring (40.5) + air gap (3) + sensor (4). *Open. The two-piece revision already needed Ø91 for its ears and nobody asked; `RADIAL_ROOM` in the model is set negative until this is measured, and says so on every build.* |
+| Hub spline crest circumference, by paper strip | **205 mm** *(2026-10-06; an earlier 63.5 mm estimate was ~2 mm low). Re-take on all three and enter the largest.* |
+| **Spline count** | *(Open. Collapses the 65.4–66.0 mm band to ±0.1 — see the strip-reads-chords note)* |
 | Screw bosses available on the housing | *(count and thread — **this is what still blocks the sensor bracket**)* |
 
 > [!IMPORTANT]
@@ -612,7 +630,7 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 > *Corrected 2026-10-04.* An earlier revision treated the 8 mm as a stack of bracket arm **plus**
 > sensor and concluded a TO-92 pair leaves ~1 mm. That assumed the sensors sit **beside** the
 > magnets axially. They do not — they sit **outside** them radially, and the two sensors are spaced
-> **along the circumference**, 6.87 mm apart.
+> **along the circumference**, 7.07 mm apart.
 >
 > So the 8 mm has to contain the **magnet track's width** (4–6 mm) and the sensor's **axial**
 > extent, side by side radially rather than stacked. Both package types fit.

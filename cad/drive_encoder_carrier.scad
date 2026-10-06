@@ -41,12 +41,24 @@ PART = "ring";              // [ring, gauge]
 GAUGE_DELTA  = 0.0;
 
 /* [Measured on the vehicle] */
-// Spline crest diameter of the gearbox output hub, mm. Measure with a paper
-// strip around the crests: circumference / pi. A caliper across the crests
-// misreads this if the spline count is odd.
-HUB_D        = 63.5;
+// Spline crest diameter of the gearbox output hub, mm.
+//
+// Measured 2026-10-06 by paper strip: circumference 205 mm -> 205/pi = 65.25.
+// That is a FLOOR, not the answer. The strip rides the crests and chords the
+// valleys, so it measures an inscribed polygon, P = N*D*sin(pi/N), which is
+// always short of pi*D. Recovering D needs the spline count N:
+//
+//     N      12      16      20      24      30
+//     D    66.00   65.67   65.52   65.44   65.37
+//
+// N is not counted yet, so this takes the top of that band. Erring HIGH is the
+// benign direction — a bore too large only means the screws go in further, a
+// bore too small means the ring does not go on at all. Count the splines and
+// this tightens to +-0.1.
+HUB_D        = 66.0;
 // How uncertain that measurement is, mm. The grub screws must cover it.
-HUB_TOL      = 0.5;
+// Holds the uncounted splines AND the spread across three vehicles.
+HUB_TOL      = 1.0;
 // Axial room between the gearbox rotating face and the wheel, mm.
 AXIAL_GAP    = 8.0;
 // Smallest obstruction radius in that 8 mm slice, mm. NEGATIVE = NOT YET
@@ -56,7 +68,7 @@ RADIAL_ROOM  = -1;
 /* [Carrier] */
 WALL         = 7.0;         // radial wall thickness, mm
 WIDTH        = 6.0;         // axial width, mm — leaves 1 mm each side in AXIAL_GAP
-BORE_CLEAR   = 1.2;         // bore = HUB_D + this. CLEARANCE, not interference.
+BORE_CLEAR   = 1.0;         // bore = HUB_D + this. CLEARANCE, not interference.
 
 /* [Magnets] */
 N_MAG        = 18;          // 9 pole pairs -> 36 counts/rev. Must divide by N_SET.
@@ -194,8 +206,9 @@ else                 carrier();
 
 // ---- fitting -------------------------------------------------------------
 // 1. Measure HUB_D with a paper strip around the spline crests: wrap, mark the
-//    overlap, measure the length, divide by pi. Do it on all three vehicles and
-//    enter the LARGEST.
+//    overlap, measure the length, divide by pi — then COUNT THE SPLINES and
+//    divide by sin(pi/N)*N/pi, because the strip chords the valleys and reads
+//    low. Do it on all three vehicles and enter the LARGEST.
 // 2. Print PART = "gauge" three times, at GAUGE_DELTA = -0.4, 0 and +0.4.
 // 3. The right one slides on by hand over the full 6 mm and rattles slightly.
 //    It is SUPPOSED to rattle — the screws remove the rattle, not the bore.
