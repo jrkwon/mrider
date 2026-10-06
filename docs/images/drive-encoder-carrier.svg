@@ -1,13 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 700" width="980" height="700"
      font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
-  <title>Drive encoder carrier — one-piece ring, end view and axial section</title>
-  <desc>Left: looking along the axle. A one-piece printed ring slides onto the splined gearbox
-  output hub and presents a plain cylinder carrying eighteen magnets in alternating polarity.
-  Three recessed grub screws, set half a magnet pitch away from their neighbours, take up the
-  bore clearance and drop into spline valleys. Two Hall sensors sit radially outside the track,
-  half a magnet pitch apart. Right: the same assembly in axial section, showing that the sensors
-  sit outside the magnets rather than beside them, and that nothing on the ring stands proud of
-  the sensing surface.</desc>
+  <title>Drive encoder carrier — one-piece ring on a six-lobe hub</title>
+  <desc>Left: looking along the axle. A one-piece printed ring slides onto the gearbox output
+  hub, which is six broad lobes separated by narrow gaps, and presents a plain cylinder carrying
+  eighteen magnets in alternating polarity. Three recessed grub screws, 120 degrees apart and so
+  exactly two lobe pitches apart, are shown dropped into lobe gaps. Two Hall sensors sit radially
+  outside the track, half a magnet pitch apart. Right: the same assembly in axial section.</desc>
   <defs>
     <marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
       <path d="M0,0 L0,6 L8,3 z" fill="#b91c1c"/></marker>
@@ -21,60 +19,65 @@
   <text x="24" y="56" font-size="13" fill="#475569">Hub lobe crests measure 205 mm around — crest Ø 65.3 mm. Left: end view, looking along the axle. Right: axial section.</text>
   <rect x="24" y="76" width="492" height="600" rx="8" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
   <text x="44" y="102" font-size="15" font-weight="bold" fill="#0f172a">END VIEW — looking along the axle</text>
-  <circle cx="262" cy="346" r="106.2" fill="#fde68a" stroke="#b45309" stroke-width="2.5"/>
-  <circle cx="262" cy="346" r="87.3" fill="#e2e8f0" stroke="#475569" stroke-width="2"/>
-  <path d="M349.3,346.0 L355.3,343.6 L355.2,340.3 L349.0,338.4 Z M348.0,330.8 L353.5,327.4 L352.8,324.2 L346.4,323.4 Z M344.1,316.1 L348.8,311.8 L347.6,308.8 L341.2,309.1 Z M337.6,302.3 L341.6,297.2 L339.8,294.5 L333.5,295.9 Z M328.9,289.9 L331.9,284.1 L329.7,281.7 L323.8,284.2 Z M318.1,279.1 L320.1,272.9 L317.5,271.0 L312.1,274.5 Z M305.7,270.4 L306.5,264.0 L303.7,262.5 L298.9,266.8 Z M291.9,263.9 L291.6,257.5 L288.5,256.5 L284.6,261.6 Z M277.2,260.0 L275.8,253.7 L272.6,253.3 L269.6,259.0 Z M262.0,258.7 L259.6,252.7 L256.3,252.8 L254.4,259.0 Z M246.8,260.0 L243.4,254.5 L240.2,255.2 L239.4,261.6 Z M232.1,263.9 L227.8,259.2 L224.8,260.4 L225.1,266.8 Z M218.3,270.4 L213.2,266.4 L210.5,268.2 L211.9,274.5 Z M205.9,279.1 L200.1,276.1 L197.7,278.3 L200.2,284.2 Z M195.1,289.9 L188.9,287.9 L187.0,290.5 L190.5,295.9 Z M186.4,302.3 L180.0,301.5 L178.5,304.3 L182.8,309.1 Z M179.9,316.1 L173.5,316.4 L172.5,319.5 L177.6,323.4 Z M176.0,330.8 L169.7,332.2 L169.3,335.4 L175.0,338.4 Z M174.7,346.0 L168.7,348.4 L168.8,351.7 L175.0,353.6 Z M176.0,361.2 L170.5,364.6 L171.2,367.8 L177.6,368.6 Z M179.9,375.9 L175.2,380.2 L176.4,383.2 L182.8,382.9 Z M186.4,389.7 L182.4,394.8 L184.2,397.5 L190.5,396.1 Z M195.1,402.1 L192.1,407.9 L194.3,410.3 L200.2,407.8 Z M205.9,412.9 L203.9,419.1 L206.5,421.0 L211.9,417.5 Z M218.3,421.6 L217.5,428.0 L220.3,429.5 L225.1,425.2 Z M232.1,428.1 L232.4,434.5 L235.5,435.5 L239.4,430.4 Z M246.8,432.0 L248.2,438.3 L251.4,438.7 L254.4,433.0 Z M262.0,433.3 L264.4,439.3 L267.7,439.2 L269.6,433.0 Z M277.2,432.0 L280.6,437.5 L283.8,436.8 L284.6,430.4 Z M291.9,428.1 L296.2,432.8 L299.2,431.6 L298.9,425.2 Z M305.7,421.6 L310.8,425.6 L313.5,423.8 L312.1,417.5 Z M318.1,412.9 L323.9,415.9 L326.3,413.7 L323.8,407.8 Z M328.9,402.1 L335.1,404.1 L337.0,401.5 L333.5,396.1 Z M337.6,389.7 L344.0,390.5 L345.5,387.7 L341.2,382.9 Z M344.1,375.9 L350.5,375.6 L351.5,372.5 L346.4,368.6 Z M348.0,361.2 L354.3,359.8 L354.7,356.6 L349.0,353.6 Z" fill="#cbd5e1" stroke="#475569" stroke-width="0.8"/>
-  <circle cx="262" cy="346" r="20.8" fill="#ffffff" stroke="#475569" stroke-width="2"/>
+  <circle cx="262" cy="346" r="109.4" fill="#fde68a" stroke="#b45309" stroke-width="2.5"/>
+  <circle cx="262" cy="346" r="90.5" fill="#ffffff" stroke="#475569" stroke-width="1.5"/>
+  <path d="M347.5,316.6 L346.3,313.1 L344.8,309.7 L343.3,306.3 L341.6,303.1 L339.8,299.9 L337.9,296.7 L335.8,293.7 L333.6,290.7 L331.3,287.9 L328.9,285.1 L326.3,282.4 L323.7,279.8 L320.9,277.4 L318.1,275.0 L315.2,272.8 L312.1,270.7 L309.0,268.7 L305.9,266.9 L294.5,279.3 L291.0,277.7 L279.3,257.2 L275.6,256.6 L272.0,256.1 L268.3,255.8 L264.6,255.6 L260.9,255.6 L257.3,255.7 L253.6,255.9 L249.9,256.4 L246.3,256.9 L242.7,257.6 L239.1,258.5 L235.6,259.5 L232.1,260.7 L228.6,261.9 L225.2,263.4 L221.9,264.9 L218.6,266.6 L215.4,268.5 L220.5,284.4 L217.3,286.7 L193.7,286.7 L191.4,289.5 L189.1,292.4 L187.0,295.4 L185.0,298.5 L183.1,301.7 L181.4,304.9 L179.8,308.3 L178.3,311.6 L177.0,315.1 L175.8,318.6 L174.8,322.1 L173.9,325.7 L173.1,329.3 L172.5,332.9 L172.0,336.5 L171.7,340.2 L171.6,343.9 L171.6,347.6 L187.9,351.2 L188.3,355.0 L176.5,375.4 L177.7,378.9 L179.2,382.3 L180.7,385.7 L182.4,388.9 L184.2,392.1 L186.1,395.3 L188.2,398.3 L190.4,401.3 L192.7,404.1 L195.1,406.9 L197.7,409.6 L200.3,412.2 L203.1,414.6 L205.9,417.0 L208.8,419.2 L211.9,421.3 L215.0,423.3 L218.1,425.1 L229.5,412.7 L233.0,414.3 L244.7,434.8 L248.4,435.4 L252.0,435.9 L255.7,436.2 L259.4,436.4 L263.1,436.4 L266.7,436.3 L270.4,436.1 L274.1,435.6 L277.7,435.1 L281.3,434.4 L284.9,433.5 L288.4,432.5 L291.9,431.3 L295.4,430.1 L298.8,428.6 L302.1,427.1 L305.4,425.4 L308.6,423.5 L303.5,407.6 L306.7,405.3 L330.3,405.3 L332.6,402.5 L334.9,399.6 L337.0,396.6 L339.0,393.5 L340.9,390.3 L342.6,387.1 L344.2,383.7 L345.7,380.4 L347.0,376.9 L348.2,373.4 L349.2,369.9 L350.1,366.3 L350.9,362.7 L351.5,359.1 L352.0,355.5 L352.3,351.8 L352.4,348.1 L352.4,344.4 L336.1,340.8 L335.7,337.0 Z" fill="#e2e8f0" stroke="#475569" stroke-width="2"/>
+  <circle cx="262" cy="346" r="21" fill="#ffffff" stroke="#475569" stroke-width="2"/>
   <text x="262" y="350" font-size="10.5" fill="#475569" text-anchor="middle">axle</text>
-  <g transform="translate(365.5,346.0) rotate(-0.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(359.3,310.6) rotate(-20.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(341.3,279.4) rotate(-40.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(313.8,256.3) rotate(-60.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(280.0,244.0) rotate(-80.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(244.0,244.0) rotate(-100.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(210.2,256.3) rotate(-120.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(182.7,279.4) rotate(-140.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(164.7,310.6) rotate(-160.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(158.5,346.0) rotate(-180.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(164.7,381.4) rotate(-200.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(182.7,412.6) rotate(-220.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(210.2,435.7) rotate(-240.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(244.0,448.0) rotate(-260.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(280.0,448.0) rotate(-280.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(313.8,435.7) rotate(-300.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(341.3,412.6) rotate(-320.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(359.3,381.4) rotate(-340.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <line x1="345.1" y1="331.4" x2="366.6" y2="327.6" stroke="#7f1d1d" stroke-width="4.5" stroke-linecap="round"/>
-  <g transform="translate(360.0,328.7) rotate(-10.0)"><rect x="-6.8" y="-6.2" width="13.5" height="12.4" rx="1.5" fill="#fecaca" stroke="#7f1d1d" stroke-width="1.5"/></g>
-  <line x1="207.8" y1="281.4" x2="193.7" y2="264.6" stroke="#7f1d1d" stroke-width="4.5" stroke-linecap="round"/>
-  <g transform="translate(198.0,269.8) rotate(-130.0)"><rect x="-6.8" y="-6.2" width="13.5" height="12.4" rx="1.5" fill="#fecaca" stroke="#7f1d1d" stroke-width="1.5"/></g>
-  <line x1="233.2" y1="425.3" x2="225.7" y2="445.8" stroke="#7f1d1d" stroke-width="4.5" stroke-linecap="round"/>
-  <g transform="translate(228.0,439.5) rotate(-250.0)"><rect x="-6.8" y="-6.2" width="13.5" height="12.4" rx="1.5" fill="#fecaca" stroke="#7f1d1d" stroke-width="1.5"/></g>
-  <line x1="349.3" y1="346.0" x2="360.1" y2="346.0" stroke="#0f172a" stroke-width="3" stroke-dasharray="4 3"/>
-  <g transform="translate(241.9,232.1) rotate(-100.0)"><rect x="-6" y="-9" width="12" height="18" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/></g><text x="241.9" y="236.1" font-size="10" font-weight="bold" fill="#14532d" text-anchor="middle">A</text>
-  <g transform="translate(282.1,232.1) rotate(-80.0)"><rect x="-6" y="-9" width="12" height="18" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/></g><text x="282.1" y="236.1" font-size="10" font-weight="bold" fill="#14532d" text-anchor="middle">B</text>
-  <line x1="239.8" y1="220.2" x2="284.2" y2="220.2" stroke="#15803d" stroke-width="2" marker-start="url(#g)" marker-end="url(#g)"/>
-  <text x="262" y="204" font-size="11.5" font-weight="bold" fill="#15803d" text-anchor="middle">7.07 mm</text>
-  <text x="262" y="190" font-size="10.5" fill="#15803d" text-anchor="middle">= HALF a magnet pitch</text>
-  <text x="382" y="250" font-size="11.5" font-weight="bold" fill="#b45309">one-piece ring</text>
-  <text x="382" y="264" font-size="10.5" fill="#92400e">bore Ø67.0 (clearance)</text>
-  <text x="382" y="278" font-size="10.5" fill="#92400e">plain OD Ø81.0</text>
-  <line x1="378" y1="270" x2="346" y2="282" stroke="#b45309" stroke-width="1.2"/>
+  <g transform="translate(368.6,346.0) rotate(-0.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
+  <g transform="translate(362.2,309.5) rotate(-20.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
+  <g transform="translate(343.7,277.4) rotate(-40.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
+  <g transform="translate(315.3,253.6) rotate(-60.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
+  <g transform="translate(280.5,241.0) rotate(-80.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
+  <g transform="translate(243.5,241.0) rotate(-100.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
+  <g transform="translate(208.7,253.6) rotate(-120.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
+  <g transform="translate(180.3,277.4) rotate(-140.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
+  <g transform="translate(161.8,309.5) rotate(-160.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
+  <g transform="translate(155.3,346.0) rotate(-180.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
+  <g transform="translate(161.8,382.5) rotate(-200.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
+  <g transform="translate(180.3,414.6) rotate(-220.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
+  <g transform="translate(208.7,438.4) rotate(-240.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
+  <g transform="translate(243.5,451.0) rotate(-260.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
+  <g transform="translate(280.5,451.0) rotate(-280.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
+  <g transform="translate(315.3,438.4) rotate(-300.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
+  <g transform="translate(343.7,414.6) rotate(-320.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
+  <g transform="translate(362.2,382.5) rotate(-340.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
+  <line x1="339.1" y1="332.4" x2="369.7" y2="327.0" stroke="#7f1d1d" stroke-width="4.5" stroke-linecap="round"/>
+  <g transform="translate(363.0,328.2) rotate(-10.0)"><rect x="-6.8" y="-6.2" width="13.5" height="12.4" rx="1.5" fill="#fecaca" stroke="#7f1d1d" stroke-width="1.5"/></g>
+  <line x1="211.7" y1="286.1" x2="191.7" y2="262.2" stroke="#7f1d1d" stroke-width="4.5" stroke-linecap="round"/>
+  <g transform="translate(196.0,267.4) rotate(-130.0)"><rect x="-6.8" y="-6.2" width="13.5" height="12.4" rx="1.5" fill="#fecaca" stroke="#7f1d1d" stroke-width="1.5"/></g>
+  <line x1="235.2" y1="419.5" x2="224.6" y2="448.8" stroke="#7f1d1d" stroke-width="4.5" stroke-linecap="round"/>
+  <g transform="translate(226.9,442.4) rotate(-250.0)"><rect x="-6.8" y="-6.2" width="13.5" height="12.4" rx="1.5" fill="#fecaca" stroke="#7f1d1d" stroke-width="1.5"/></g>
+  <line x1="352.4" y1="346.0" x2="363.2" y2="346.0" stroke="#0f172a" stroke-width="3" stroke-dasharray="4 3"/>
+  <g transform="translate(241.4,229.0) rotate(-100.0)"><rect x="-6" y="-9" width="12" height="18" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/></g><text x="241.4" y="233.0" font-size="10" font-weight="bold" fill="#14532d" text-anchor="middle">A</text>
+  <g transform="translate(282.6,229.0) rotate(-80.0)"><rect x="-6" y="-9" width="12" height="18" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/></g><text x="282.6" y="233.0" font-size="10" font-weight="bold" fill="#14532d" text-anchor="middle">B</text>
+  <line x1="239.3" y1="217.2" x2="284.7" y2="217.2" stroke="#15803d" stroke-width="2" marker-start="url(#g)" marker-end="url(#g)"/>
+  <text x="262" y="199" font-size="11.5" font-weight="bold" fill="#15803d" text-anchor="middle">7.07 mm</text>
+  <text x="262" y="185" font-size="10.5" fill="#15803d" text-anchor="middle">= HALF a magnet pitch</text>
+  <line x1="382" y1="272" x2="352" y2="284" stroke="#b45309" stroke-width="1.2"/>
+  <text x="386" y="252" font-size="11.5" font-weight="bold" fill="#b45309">one-piece ring</text>
+  <text x="386" y="266" font-size="10.5" fill="#92400e">bore Ø67.0 (clearance)</text>
+  <text x="386" y="280" font-size="10.5" fill="#92400e">plain OD Ø81.0</text>
+  <line x1="398" y1="348" x2="368" y2="346" stroke="#334155" stroke-width="1.2"/>
+  <text x="402" y="352" font-size="10.5" font-weight="bold" fill="#0f172a">index groove</text>
+  <text x="402" y="366" font-size="10.5" fill="#334155">in one face only</text>
   <text x="44" y="474" font-size="11.5" font-weight="bold" fill="#1e3a8a">18 magnets, alternating</text>
   <text x="44" y="489" font-size="10.5" fill="#2563eb">pitch 14.14 mm · 36 counts/rev</text>
-  <line x1="140" y1="468" x2="186" y2="432" stroke="#2563eb" stroke-width="1.2"/>
+  <line x1="146" y1="468" x2="190" y2="436" stroke="#2563eb" stroke-width="1.2"/>
   <text x="300" y="492" font-size="11.5" font-weight="bold" fill="#7f1d1d">3 × M3 grub screw</text>
   <text x="300" y="507" font-size="10.5" fill="#b91c1c">recessed below the OD,</text>
-  <text x="300" y="521" font-size="10.5" fill="#b91c1c">into spline valleys</text>
-  <line x1="332" y1="484" x2="316" y2="452" stroke="#b91c1c" stroke-width="1.2"/>
-  <line x1="394" y1="348" x2="364" y2="346" stroke="#334155" stroke-width="1.2"/>
-  <text x="398" y="352" font-size="10.5" font-weight="bold" fill="#0f172a">index groove</text>
-  <text x="398" y="366" font-size="10.5" fill="#334155">in one face only</text>
-  <rect x="40" y="546" width="460" height="52" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
-  <text x="56" y="568" font-size="12.5" font-weight="bold" fill="#7f1d1d">Every feature here is a RECESS. Nothing stands proud of Ø81.0.</text>
-  <text x="56" y="587" font-size="12" fill="#7f1d1d">A two-piece version put clamp ears 9 mm out — they swept the sensor.</text>
-  <text x="44" y="628" font-size="12.5" fill="#334155">One electrical cycle spans <tspan font-weight="bold">two</tspan> magnets, so 90° electrical is</text>
-  <text x="44" y="646" font-size="12.5" fill="#334155"><tspan font-weight="bold">half</tspan> a pitch — not a quarter, which this page once had wrong.</text>
+  <text x="300" y="521" font-size="10.5" fill="#b91c1c">dropped into lobe gaps</text>
+  <line x1="330" y1="484" x2="314" y2="456" stroke="#b91c1c" stroke-width="1.2"/>
+  <text x="44" y="136" font-size="11" font-weight="bold" fill="#334155">SIX broad lobes, narrow gaps</text>
+  <text x="44" y="151" font-size="10.5" fill="#64748b">— not a fine spline, which is why a wire</text>
+  <text x="44" y="165" font-size="10.5" fill="#64748b">round the crests reads Ø to within 0.1 mm</text>
+  <line x1="112" y1="172" x2="176" y2="292" stroke="#64748b" stroke-width="1.2"/>
+  <rect x="40" y="540" width="460" height="56" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="56" y="562" font-size="12.5" font-weight="bold" fill="#7f1d1d">Every feature here is a RECESS. Nothing stands proud of Ø81.0.</text>
+  <text x="56" y="581" font-size="12" fill="#7f1d1d">A two-piece version put clamp ears 9 mm out — they swept the sensor.</text>
+  <rect x="40" y="606" width="460" height="56" rx="6" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="56" y="628" font-size="12.5" font-weight="bold" fill="#92400e">6 lobes at 60° · 3 screws at 120° = exactly two lobe pitches.</text>
+  <text x="56" y="647" font-size="12" fill="#78350f">So all three land together. Turn the ring one lobe to seat them in gaps.</text>
   <rect x="532" y="76" width="424" height="600" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
   <text x="552" y="102" font-size="15" font-weight="bold" fill="#14532d">AXIAL SECTION — where the 8 mm goes</text>
   <line x1="560" y1="470" x2="930" y2="470" stroke="#64748b" stroke-width="1.5" stroke-dasharray="9 5"/>
@@ -85,11 +88,11 @@
   <text x="580" y="506" font-size="10.5" fill="#64748b">FIXED</text>
   <circle cx="608" cy="348" r="5" fill="#fff" stroke="#475569" stroke-width="2"/>
   <rect x="660" y="372" width="96" height="98" fill="#e2e8f0" stroke="#475569" stroke-width="2"/>
-  <text x="668" y="492" font-size="11" font-weight="bold" fill="#1e3a8a">hub · ROTATES</text>
+  <text x="664" y="492" font-size="11" font-weight="bold" fill="#1e3a8a">lobed boss · ROTATES</text>
   <rect x="668" y="344" width="80" height="28" fill="#fde68a" stroke="#b45309" stroke-width="2"/>
   <rect x="672" y="336" width="72" height="10" fill="#1e3a8a"/>
   <g font-size="8" fill="#fff" text-anchor="middle"><text x="682" y="344">N</text><text x="700" y="344">S</text><text x="718" y="344">N</text><text x="736" y="344">S</text></g>
-  <line x1="700" y1="346" x2="700" y2="378" stroke="#7f1d1d" stroke-width="5" stroke-linecap="round"/>
+  <line x1="700" y1="346" x2="700" y2="380" stroke="#7f1d1d" stroke-width="5" stroke-linecap="round"/>
   <rect x="768" y="300" width="30" height="170" rx="5" fill="#f1f5f900" stroke="#94a3b8" stroke-width="2"/>
   <text x="804" y="392" font-size="11" fill="#64748b">wheel</text>
   <line x1="782" y1="182" x2="746" y2="339" stroke="#2563eb" stroke-width="1.2"/>
@@ -100,8 +103,8 @@
   <text x="786" y="228" font-size="10" fill="#92400e">no split, no ears</text>
   <line x1="782" y1="318" x2="706" y2="362" stroke="#b91c1c" stroke-width="1.2"/>
   <text x="786" y="312" font-size="11" font-weight="bold" fill="#7f1d1d">grub screw</text>
-  <text x="786" y="326" font-size="10" fill="#b91c1c">flush, then into a</text>
-  <text x="786" y="340" font-size="10" fill="#b91c1c">spline valley</text>
+  <text x="786" y="326" font-size="10" fill="#b91c1c">flush, then into</text>
+  <text x="786" y="340" font-size="10" fill="#b91c1c">a lobe gap</text>
   <text x="804" y="406" font-size="10" fill="#94a3b8">comes off</text>
   <path d="M608,340 L608,262 L700,262 L700,310" fill="none" stroke="#15803d" stroke-width="5" stroke-linejoin="round"/>
   <rect x="684" y="310" width="32" height="16" rx="3" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
@@ -114,5 +117,5 @@
   <text x="552" y="592" font-size="12.5" fill="#14532d">The sensors sit <tspan font-weight="bold">radially outside</tspan> the magnets, not beside</text>
   <text x="552" y="610" font-size="12.5" fill="#14532d">them — so the 8 mm holds the track width and the sensor&#39;s</text>
   <text x="552" y="628" font-size="12.5" fill="#14532d">thickness <tspan font-weight="bold">side by side</tspan>, not stacked. Both fit comfortably.</text>
-  <text x="552" y="652" font-size="12" fill="#15803d" font-style="italic">Radial room still to measure: 47.5 mm, ring plus sensor.</text>
+  <text x="552" y="652" font-size="12" fill="#15803d" font-style="italic">Radial room: not measured. The fit mule either spins or it does not.</text>
 </svg>

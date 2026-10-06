@@ -444,7 +444,7 @@ This is the plan already in the BOM, made specific. Three choices decide whether
 
 **The hub's lobe crests measure 205 mm around (2026-10-06), and that settles the build.**
 
-![End view and axial section of the carrier: a one-piece printed ring slides onto the splined hub and presents a plain cylinder carrying eighteen alternating magnets, held by three recessed grub screws, with two Hall sensors outside it half a pitch apart](../images/drive-encoder-carrier.svg)
+![End view and axial section of the carrier: a one-piece printed ring slides onto the six-lobe hub and presents a plain cylinder carrying eighteen alternating magnets, held by three recessed grub screws, with two Hall sensors outside it half a pitch apart](../images/drive-encoder-carrier.svg)
 
 | | |
 |---|---:|
