@@ -444,29 +444,34 @@ This is the plan already in the BOM, made specific. Three choices decide whether
 
 **The hub measured 63.5 mm across the spline crests (2026-10-03), and that settles the build.**
 
-![End view and axial section of the carrier: a printed sleeve grips the splined hub and presents a plain cylinder carrying sixteen alternating magnets, with two Hall sensors outside it half a pitch apart](../images/drive-encoder-carrier.svg)
+![End view and axial section of the carrier: a one-piece printed ring slides onto the splined hub and presents a plain cylinder carrying eighteen alternating magnets, held by three recessed grub screws, with two Hall sensors outside it half a pitch apart](../images/drive-encoder-carrier.svg)
 
 | | |
 |---|---:|
 | Hub, spline major Ø | **63.5 mm** |
-| Printed carrier, 3 mm wall | **OD 69.5 mm** |
-| Magnet track circumference | **218 mm** |
+| Printed ring bore — **clearance, not a fit** | **Ø64.7 mm** |
+| Printed ring, 7 mm wall | **OD 78.7 mm** |
+| Magnet track circumference | **247.2 mm** |
 
 | magnets | pole pitch | **quadrature offset** | counts/rev | mm/count |
 |---:|---:|---:|---:|---:|
-| 12 | 18.2 mm | 9.1 mm | 24 | 23.8 |
-| **16** | **13.6 mm** | **6.8 mm** | **32** | **17.8** |
-| 24 | 9.1 mm | 4.5 mm | 48 | 11.9 |
+| 12 | 20.60 mm | 10.30 mm | 24 | 23.7 |
+| **18** | **13.74 mm** | **6.87 mm** | **36** | **15.8** |
+| 24 | 10.30 mm | 5.15 mm | 48 | 11.9 |
 
-**Take 16.** A 13.6 mm pitch prints and populates easily, the 6.8 mm sensor offset is buildable with
-surface-mount parts, and 17.8 mm/count clears the **≤ 2 % over 20 m** gate by more than an order of
-magnitude — resolution was never the constraint here.
+**Take 18.** A 13.74 mm pitch prints and populates easily, the 6.87 mm sensor offset is buildable
+with surface-mount parts, and 15.8 mm/count clears the **≤ 2 % over 20 m** gate by more than an
+order of magnitude — resolution was never the constraint here.
+
+**Sixteen is not on that list, and the reason is the screws.** The three grub screws that hold the
+ring have to sit **exactly half a pitch** from their neighbouring magnets, which means the magnet
+count must divide by the screw count. 16 ÷ 3 does not, 18 ÷ 3 does. The file `assert`s it.
 
 **Three things decide whether this is reliable rather than merely specified:**
 
 **1 — A multipole ring was the plan and does not survive the diameter.** A single ring magnetised
 with alternating poles would remove spacing, polarity and placement at once, which is why it was
-specified. At a **69.5 mm bore** those are industrial parts, not commodity ones. So: **discrete
+specified. At a **64.7 mm bore** those are industrial parts, not commodity ones. So: **discrete
 magnets in a printed carrier**, which is where this started, with the polarity risk handled below
 rather than designed away.
 
@@ -477,65 +482,89 @@ into a counting error.
 
 **3 — The offset is `(n + ½)` pole pitches, not `(n + ¼)`.** *Corrected 2026-10-04 — this page had
 it wrong.* One **electrical cycle** spans **two** magnets, so a 90° electrical offset is **half a
-pole pitch**: 6.8 mm at 16 magnets. Building to a quarter pitch would put the sensors 45° apart
+pole pitch**: 6.87 mm at 18 magnets. Building to a quarter pitch would put the sensors 45° apart
 electrically — still two signals, but not quadrature, and the direction sense would be wrong near
 the transitions. **Print both sensors into one bracket** so the spacing is fixed by construction.
 
 > [!IMPORTANT]
-> **Print the carrier as a two-piece clamp — do not model the splines**
+> **Print the carrier as ONE piece, and do not make the bore a fit**
 >
 > **3D printing is the right process here**, and not as a compromise: the carrier **transmits no
 > torque**, it only has to ride along, so there is no strength case for machining it. Three
 > identical copies from one file is what printing is for, and [#14](#7-8-11-12-14-what-to-actually-buy)
-> already brings the PETG.
+> already brings the PETG. **Keep PETG, not PLA** — this sits beside a gearbox and a motor, and PLA
+> is soft by 60 °C.
 >
-> **But do not try to match the spline profile.** That means measuring tooth count, tooth form and
-> undercut, modelling it, and then printing it to a tolerance FDM does not hold — for no gain,
-> because nothing needs to be transmitted through those teeth.
+> **One piece, because the sensor rides 1–3 mm off the outer surface.** Every feature on this part
+> is therefore a *recess*. A split ring has to put its fastener somewhere, and on a wall this thin
+> there is nowhere both reachable by a hex key and inside the sensing cylinder. The revision that
+> tried it stood its clamp ears **9 mm proud**, sweeping Ø91 against a sensor face at Ø78 — it would
+> have taken the sensor and its bracket off on the first turn of the wheel. **The wheel comes off**,
+> so the ring can simply be slid on.
+>
+> **The bore carries no load.** The hub measures 63–64 mm and FDM holds a Ø65 bore to perhaps
+> ±0.3 mm; a press fit needs both numbers to ±0.1, which is two significant figures out of reach —
+> and there are three hubs, not one. So the bore is deliberately **clear** of the hub, and three
+> recessed M3 grub screws take up whatever slack exists. Their points settle into **spline
+> valleys**, which is a form lock rather than friction.
 >
 > | | |
 > |---|---|
-> | Model the spline form | Needs the full tooth geometry. Buys nothing |
-> | Undersized bore, pressed on | A 0.5 mm interference across Ø63.5 risks splitting PETG |
-> | **Two-piece clamp, bolted** | **Needs one diameter.** Fits and removes by hand, and the spline crests stop it creeping |
+> | Model the spline form | Needs tooth count, form and undercut, printed to a tolerance FDM does not hold. Buys nothing — nothing is transmitted through those teeth |
+> | Undersized bore, pressed on | Needs ±0.1 mm on two numbers that are ±0.3 and ±0.5 |
+> | **Clear bore + 3 grub screws** | **Needs one diameter, loosely.** One print fits all three vehicles, and a hub 0.5 mm off nominal only changes how far the screws go in |
 >
-> **Print it in two halves with M3 clamping screws.** The bore is a plain Ø63.5 cylinder with a
-> little clearance; the clamp supplies the grip and the splines supply the anti-slip. It also goes
-> on and off **without pulling the wheel**, which matters when three vehicles get rebuilt by
-> students.
+> **Three screws, not four.** Three points determine a circle — a four-point grip over-constrains
+> it, and tightened unevenly pushes the ring off centre. Run them down **in rotation**, a turn each,
+> so the ring centres itself. Blue threadlocker.
 >
-> **Keep PETG, not PLA** — this sits beside a gearbox and a motor, and PLA is soft by 60 °C.
+> Nothing here needs a hard grip anyway: the carrier transmits no torque, and the **8 mm slot
+> between the gearbox face and the wheel captures it axially** without help.
 >
 > **The model is in the repository**: [`cad/drive_encoder_carrier.scad`](https://github.com/jrkwon/mrider/blob/main/cad/drive_encoder_carrier.scad).
 > Parametric OpenSCAD — `HUB_D` at the top is the one measured number, everything else derives from
-> it, and it `assert`s the four ways the parameters can be made impossible (carrier wider than the
-> gap, magnet wider than the carrier, pocket deeper than the wall, magnets too close to each other).
-> Build with `openscad -o carrier.stl cad/drive_encoder_carrier.scad` — the default `PART = "print"`
-> is **the file you slice**: both halves lying flat, 5 mm apart, 76.9 × 89.9 mm on the bed and 6 mm
-> tall. `"ring"` is the assembled preview for checking fit; it is not a print.
+> it, and **nine `assert`s** catch the ways the parameters can be made impossible: carrier wider
+> than the axial gap, magnet wider than the carrier, pocket deeper than the wall, magnets too close,
+> a magnet count that does not divide by the screw count, a screw hole that would run into its
+> neighbouring magnets, no pilot left between insert and bore, a grub screw too short to cross the
+> worst-case slack, and the ring-plus-sensor radial clearance once it is measured.
+> Build with `openscad -o carrier.stl cad/drive_encoder_carrier.scad` — the default `PART = "ring"`
+> is **the file you slice**. `PART = "gauge"` is the bore check below.
 >
-> **Print it flat, and that is a structural choice rather than a convenience.** The clamp screws
-> pull along X, so with the part flat that load sits **inside** the layer planes. Standing a half on
-> its split face — which an earlier revision of this file recommended — puts the same load **normal
-> to the layers**, the one direction FDM is weak in, and balances a 36 mm tall part on a 4 × 6 mm
-> footprint.
+> **Print it flat, ring axis vertical**, and that is structural rather than convenient. The only
+> load the part sees is the three screws pushing inward, which is **hoop tension**; printed flat
+> that tension lies *inside* the layer planes. Lay it with the **index groove facing up** — a
+> 0.8 mm recess in the top surface prints clean, on the bed it would bridge over nothing.
 >
-> **Both halves are the same print.** One ear carries the nut pocket, the other the screw-head
-> counterbore, so two copies rotated 180° give every joint a head on one side and a nut on the
-> other — from one STL. Fasteners: **2 × M3 socket cap ≈16 mm, 2 × M3 nut.**
+> At `HUB_D = 63.5` it derives bore Ø64.7, outside **Ø78.7**, track 247.2 mm, pitch **13.74 mm**,
+> **sensor offset 6.87 mm**, 36 counts/rev → **15.8 mm/count**. Fasteners, per vehicle:
+> **3 × M3 heat-set insert, 3 × M3 × 10 grub screw** (cup or cone point — a cone point finds a
+> spline valley on its own).
 >
-> At `HUB_D = 63.5` it derives bore Ø63.9, outside **Ø71.9**, track 225.9 mm, pitch **14.12 mm**,
-> **sensor offset 7.06 mm**, 32 counts/rev → **17.8 mm/count**.
+> **Rendered and checked 2026-10-06.** CGAL reports `Simple: yes`, `Volumes: 2` — one connected
+> solid — and the **maximum swept radius measured off the STL is 39.350 mm, exactly `OD/2`**. That
+> is the check that matters on this part: nothing stands proud of the surface the sensor faces.
 >
-> **Rendered and checked 2026-10-06.** CGAL reports `Simple: yes` and, for one half, `Volumes: 2`
-> — a single connected solid, so the ears are part of the body rather than floating near it. The
-> assembled bounding box comes out **X ±35.95, Y ±44.95, Z 0–6**, and `Y ±44.95` is exactly
-> `OD/2 + EAR_W`, which is what proves **both** ears project outward.
+> **It is the check that was missing.** Two faults got through without it. The clamp ears above were
+> one. The other was quieter: the index mark was a Ø2 through-hole centred at `OD/2 - 1.0` with a
+> radius of `1.0`, which put it exactly **tangent** to the outer surface — zero wall at the tangent
+> point, a feather edge pointed straight at the sensor. It is now a groove in one *face*, ending
+> 1 mm short of the magnet pocket floor, so it cannot reach the track by construction.
+
+> [!IMPORTANT]
+> **Print the Ø-check ring before the carrier**
 >
-> That last check exists because they did not. An earlier revision translated the second ear
-> **inward** — `translate([0, sign * OD/2, 0])` with a cube growing in +Y put the mirrored copy at
-> `y −35.9 … −26.9`, inside the ring, where it merged into the wall and cut its nut pocket into the
-> bore. The render looked plausible from the top; only the bounding box made it obvious.
+> `PART = "gauge"` is a 3 mm wide ring, bore only — about 2 g and five minutes. Print it at
+> `GAUGE_DELTA` = **−0.4, 0 and +0.4** and keep the one that slides on by hand over its full width.
+>
+> **It is supposed to rattle.** The screws remove the rattle, not the bore. If even +0.4 will not go
+> on, `HUB_D` is wrong — re-measure before committing 20 g of carrier. Add the winning delta to
+> `BORE_CLEAR` and print.
+>
+> **Measure the hub with a paper strip**, not a caliper: wrap it round the spline crests, mark the
+> overlap, measure the length, divide by π. A caliper across the crests does not read the crest
+> circle if the spline count is odd — and it is the crest circle the bore has to clear. Do it on all
+> three vehicles and enter the **largest**.
 
 > [!IMPORTANT]
 > **A reversed magnet cannot be prevented. Make it visible instead.**
@@ -544,14 +573,19 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > cylindrical magnet gives no clue which way it is in. One reversed magnet is a **permanent**
 > odometry error that roll-out calibration will partly absorb — and therefore hide.
 >
-> **It is trivially detectable, though, and the check costs a minute.** Before the carrier goes on
-> the vehicle: power the sensors, **turn the carrier slowly by hand**, and watch one channel. A
-> correct ring gives an even train of pulses. A reversed magnet shows as **one long gap and one
-> short pulse**, at the same place every revolution.
+> **Check the finished track directly first** — magnetic viewing film, or a spare magnet walked
+> round the ring, feeling the attract/repel alternate. Either shows a reversed disc **immediately**,
+> before anything is powered or fitted.
+>
+> **Then the electrical check, which costs a minute.** Before the carrier goes on the vehicle: power
+> the sensors, **turn the ring slowly by hand**, and watch one channel. A correct ring gives an even
+> train of pulses. A reversed magnet shows as **one long gap and one short pulse**, at the same place
+> every revolution — and that is all it tells you, that one exists. **Count from the index groove**
+> to find which.
 >
 > **Do this on all three carriers and record it.** It is the acceptance test for #6c.
 >
-> **The magnets will also fight you during assembly.** At 13.6 mm spacing each one is close enough
+> **The magnets will also fight you during assembly.** At 13.74 mm spacing each one is close enough
 > to feel its neighbours, and an alternating pattern means every magnet is being pushed toward the
 > orientation that is *wrong*. **Make the pockets a press fit and add adhesive** — a pocket that
 > only locates and relies on glue will let one rotate before the glue cures, which is the failure
@@ -568,9 +602,9 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 | | |
 |---|---|
 | **Axial clearance, gearbox rotating part → wheel** | **≥ 8 mm** — *measured on the delivered vehicle and **this is what decided Branch C**. It was not written down at the time; recorded 2026-10-03.* |
-| **Is there a plain, unsplined cylindrical section on the hub?** | *(Y/N — decides whether #6c prints a carrier sleeve)* |
-| Diameter of the surface the ring will sit on | *(mm — sizes the ring and sets the pole pitch)* |
-| Screw bosses available on the housing | *(count and thread)* |
+| **Smallest obstruction radius in that 8 mm slice** | **≥ 46.35 mm needed** — ring (39.35) + air gap (3) + sensor (4). *Open. The two-piece revision already needed Ø91 for its ears and nobody asked; `RADIAL_ROOM` in the model is set negative until this is measured, and says so on every build.* |
+| Hub spline crest diameter, by paper strip | **63.5 mm** *(2026-10-03 — re-take on all three and enter the largest)* |
+| Screw bosses available on the housing | *(count and thread — **this is what still blocks the sensor bracket**)* |
 
 > [!IMPORTANT]
 > **8 mm is an AXIAL budget, and it is more comfortable than it first looked**
@@ -578,7 +612,7 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 > *Corrected 2026-10-04.* An earlier revision treated the 8 mm as a stack of bracket arm **plus**
 > sensor and concluded a TO-92 pair leaves ~1 mm. That assumed the sensors sit **beside** the
 > magnets axially. They do not — they sit **outside** them radially, and the two sensors are spaced
-> **along the circumference**, 6.8 mm apart.
+> **along the circumference**, 6.87 mm apart.
 >
 > So the 8 mm has to contain the **magnet track's width** (4–6 mm) and the sensor's **axial**
 > extent, side by side radially rather than stacked. Both package types fit.
@@ -601,12 +635,15 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 >
 > - **A plain cylindrical section exists somewhere on the hub** → the ring sits there directly, and
 >   #6c is only the sensor bracket.
-> - **The whole exposed surface is splined** → #6c also prints a **carrier sleeve**: splined inside
->   to drive off the hub, plain cylinder outside for the ring.
+> - **The whole exposed surface is splined** → #6c also prints the **carrier**, which is what the
+>   2026-10-03 teardown found and what the model above builds.
 >
-> The carrier was dropped when loose magnets were replaced by a ring. **It may come back for an
-> entirely different reason** — not to space magnets, but to give the ring something round to hold.
-> Either way, the diameter to measure is **the surface the ring will actually sit on**, which is
+> **The carrier's bore is plain, not splined.** It does not drive off the tooth flanks — it is a
+> clear bore pulled onto the crests by three grub screws. The carrier was dropped when loose magnets
+> were replaced by a ring, and came back for an entirely different reason: not to space magnets, but
+> to give them something round to sit on.
+>
+> Either way, the diameter to measure is **the surface the magnets will actually sit on**, which is
 > the carrier's outside diameter in the second case.
 
 > ([category 000400040012](https://www.devicemart.co.kr/goods/catalog?code=000400040012)) and filter

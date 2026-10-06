@@ -70,7 +70,7 @@
   <rect x="196" y="244" width="40" height="18" rx="3" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
   <text x="246" y="200" font-size="11.5" font-weight="bold" fill="#15803d">printed bracket</text>
   <text x="246" y="215" font-size="10.5" fill="#15803d">both sensors in ONE part →</text>
-  <text x="246" y="229" font-size="10.5" fill="#15803d">(n + ¼) pitch fixed by construction</text>
+  <text x="246" y="229" font-size="10.5" fill="#15803d">(n + ½) pitch fixed by construction</text>
 
   <!-- air gap -->
   <line x1="216" y1="262" x2="216" y2="268" stroke="#b91c1c" stroke-width="2"/>

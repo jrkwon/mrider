@@ -1,84 +1,126 @@
 // MRider — drive encoder magnet carrier
-// ======================================
-// A two-piece clamp that grips the gearbox output hub and presents a plain
-// cylinder carrying the encoder magnets.
+// =====================================
+// A one-piece ring that slides onto the gearbox output hub and presents a plain
+// cylinder carrying the encoder magnets. Three recessed grub screws hold it.
 //
-// WHY A CLAMP AND NOT A SPLINED SLEEVE
-//   The carrier transmits no torque — it only has to ride along — so there is
-//   nothing to gain from matching the hub's spline form, and matching it would
-//   mean measuring tooth count, form and undercut and then printing to a
-//   tolerance FDM does not hold. The clamp supplies grip; the spline crests
-//   supply anti-slip. One diameter is all that has to be measured.
+// THE RULE THIS FILE EXISTS TO OBEY
+//   The Hall sensors ride 1-3 mm off the ring's outer surface, so every feature
+//   below is a SUBTRACTION from that cylinder. Anything ADDED outside it is
+//   swept through the sensor and its bracket once per revolution. An earlier
+//   two-piece revision put the clamp screws in ears standing 9 mm proud of the
+//   track: they swept Ø91 against a sensor face at Ø78, and would have taken the
+//   sensor off on the first turn of the wheel.
 //
-// WHY PRINTED
-//   No load path, three identical copies from one file, and PETG is already in
-//   the BOM for #14. PETG and not PLA: this sits beside a gearbox and a motor,
-//   and PLA is soft by 60 °C.
+// WHY ONE PIECE
+//   The wheel comes off, so the ring can simply be slid on. A split ring has to
+//   put its fastener somewhere, and on a wall this thin there is nowhere that is
+//   both reachable by a hex key and inside the sensing cylinder.
 //
-//   Build:  openscad -o carrier.stl drive_encoder_carrier.scad
-//   Preview a half:  set PART = "half"
+// WHY THE BORE IS CLEAR AND NOT A PRESS FIT
+//   The hub measures 63-64 mm and FDM holds a Ø65 bore to perhaps +-0.3 mm. A
+//   press fit needs both numbers to +-0.1, so it is two significant figures out
+//   of reach — and there are three hubs, not one. The bore is therefore
+//   deliberately LOOSE and carries no load. The three grub screws take up
+//   whatever slack exists and their points settle into spline valleys, which is
+//   a form lock rather than friction. A hub 0.5 mm off nominal changes nothing
+//   except how far the screws go in, so one print fits all three vehicles.
+//
+//   Nothing here needs a hard grip: the carrier transmits no torque, and the
+//   8 mm slot between the gearbox face and the wheel captures it axially.
+//
+//   Build:       openscad -o carrier.stl drive_encoder_carrier.scad
+//   Bore check:  set PART = "gauge"  — print this FIRST, see FITTING below
 //
 // Spec: docs/build/01-bom-sourcing.md  §1.2.3
 // Figure: docs/images/drive-encoder-carrier.svg
 
 /* [What to build] */
-// "print" = two halves laid out on the bed · "half" = one of them · "ring" = assembled, for checking fit only
-PART = "print";             // [print, half, ring]
+// "ring" = the carrier, ready to slice · "gauge" = thin bore-check ring
+PART = "ring";              // [ring, gauge]
+// Bore adjustment for the gauge ring only, mm. Print at -0.4, 0 and +0.4.
+GAUGE_DELTA  = 0.0;
 
 /* [Measured on the vehicle] */
-// Spline crest diameter of the gearbox output hub, mm. THE ONE MEASUREMENT THIS NEEDS.
+// Spline crest diameter of the gearbox output hub, mm. Measure with a paper
+// strip around the crests: circumference / pi. A caliper across the crests
+// misreads this if the spline count is odd.
 HUB_D        = 63.5;
-// Axial room between the gearbox rotating face and the wheel, mm. The carrier must be narrower.
+// How uncertain that measurement is, mm. The grub screws must cover it.
+HUB_TOL      = 0.5;
+// Axial room between the gearbox rotating face and the wheel, mm.
 AXIAL_GAP    = 8.0;
+// Smallest obstruction radius in that 8 mm slice, mm. NEGATIVE = NOT YET
+// MEASURED. Set it and the assert below proves the ring and sensor fit.
+RADIAL_ROOM  = -1;
 
 /* [Carrier] */
-WALL         = 4.0;         // radial wall thickness, mm
-WIDTH        = 6.0;         // axial width, mm — leaves 1 mm each side inside AXIAL_GAP
-BORE_CLEAR   = 0.4;         // added to HUB_D so the halves close onto the splines rather than bottoming out
-SPLIT_GAP    = 1.2;         // gap at each split line, so clamping actually tightens
-PRINT_GAP    = 5.0;         // clearance between the two halves when laid out to print
+WALL         = 7.0;         // radial wall thickness, mm
+WIDTH        = 6.0;         // axial width, mm — leaves 1 mm each side in AXIAL_GAP
+BORE_CLEAR   = 1.2;         // bore = HUB_D + this. CLEARANCE, not interference.
 
 /* [Magnets] */
-N_MAG        = 16;          // 8 pole pairs -> 32 counts/rev
+N_MAG        = 18;          // 9 pole pairs -> 36 counts/rev. Must divide by N_SET.
 MAG_D        = 5.0;         // disc diameter, mm
 MAG_T        = 2.0;         // disc thickness, mm
-MAG_CLEAR    = -0.1;        // NEGATIVE = press fit. Magnets must not be free to rotate before adhesive cures.
+MAG_CLEAR    = -0.1;        // NEGATIVE = press fit. Magnets must not turn before the adhesive cures.
 
-/* [Clamp screws] */
-SCREW_D      = 3.2;         // M3 clearance
-NUT_AF       = 5.5;         // M3 nut across flats
-NUT_T        = 2.6;         // M3 nut thickness
-HEAD_D       = 6.2;         // M3 socket-head clearance
-HEAD_T       = 3.2;         // counterbore depth
-EAR_W        = 9.0;         // flange width (radial), mm
-EAR_L        = 7.0;         // flange length each side of the split, mm
+/* [Grub screws] */
+N_SET        = 3;           // three points centre the ring; four can skew it
+SET_PILOT_D  = 3.2;         // M3 clearance, bore to insert — the screw passes through
+SET_SCREW_L  = 10.0;        // M3 x this, cup or cone point, no head
+INSERT_D     = 4.6;         // M3 heat-set insert, largest OD. CHECK against the part bought.
+INSERT_L     = 5.0;         // insert length, mm
+
+/* [Index mark] */
+MARK_W       = 1.6;         // groove width, mm
+MARK_DEPTH   = 0.8;         // groove depth into one face, mm
+
+/* [Sensors — for the clearance assert only] */
+SENSOR_GAP   = 3.0;         // largest air gap the bracket will be set to, mm
+SENSOR_T     = 4.0;         // sensor + PCB radial thickness, mm
 
 /* [Hidden] */
 $fn = 160;
 EPS = 0.01;
 
 // ---- derived -------------------------------------------------------------
-BORE_D  = HUB_D + BORE_CLEAR;
-OD      = BORE_D + 2 * WALL;
-CIRC    = PI * OD;
-PITCH   = CIRC / N_MAG;              // magnet pitch along the track
-OFFSET  = PITCH / 2;                 // quadrature offset: HALF a pole pitch,
+BORE_D   = HUB_D + BORE_CLEAR;
+OD       = BORE_D + 2 * WALL;
+CIRC     = PI * OD;
+PITCH    = CIRC / N_MAG;             // magnet pitch along the track
+OFFSET   = PITCH / 2;                // quadrature offset: HALF a pole pitch,
                                      // because one electrical cycle spans TWO magnets
-COUNTS  = 2 * N_MAG;                 // with 4x quadrature decoding
+COUNTS   = 2 * N_MAG;                // with 4x quadrature decoding
+SET_A0   = 180 / N_MAG;              // first screw, half a pitch off magnet 0
+SLACK    = BORE_CLEAR + HUB_TOL;     // worst-case gap a screw has to close
+REACH    = SET_SCREW_L - WALL;       // how far a flush screw passes the bore
+NEED_R   = OD/2 + SENSOR_GAP + SENSOR_T;
+MARK_R   = OD/2 - MAG_T - 1.0;       // index groove ends 1 mm short of the pocket
+                                     // FLOOR, so it cannot reach the track by
+                                     // construction — no assert can fail here
 
-echo(str("bore Ø",        BORE_D, " mm"));
-echo(str("outside Ø",     OD,     " mm"));
+echo(str("bore Ø",        BORE_D, " mm  (hub + ", BORE_CLEAR, " CLEARANCE)"));
+echo(str("SWEPT Ø",       OD,     " mm  <- nothing stands proud of this"));
 echo(str("track circum.", CIRC,   " mm"));
 echo(str("magnet pitch",  PITCH,  " mm"));
 echo(str("SENSOR OFFSET", OFFSET, " mm  <- space the two Hall sensors by this"));
 echo(str("counts / rev",  COUNTS));
+echo(str("screw reach",   REACH,  " mm past the bore, vs ", SLACK, " mm of slack"));
+echo(str("radial room needed ", NEED_R, " mm (ring + sensor)"));
 
 assert(WIDTH < AXIAL_GAP,  "carrier is wider than the gap between gearbox and wheel");
 assert(MAG_D < WIDTH,      "magnet will not fit inside the carrier width");
 assert(MAG_T < WALL,       "magnet pocket would break through the back of the wall");
-assert(PITCH > MAG_D + 2,  "magnets too close — reduce N_MAG or increase OD");
-assert(EAR_L > HEAD_T + 2, "ear too short for the screw-head counterbore");
-assert(EAR_L > NUT_T + 2,  "ear too short for the nut pocket");
+assert(PITCH > MAG_D + 2,  "magnets too close — reduce N_MAG or increase WALL");
+assert(N_MAG % N_SET == 0, "N_MAG must divide by N_SET, or a screw lands on a magnet");
+assert(PITCH/2 > (MAG_D + INSERT_D)/2 + 1,
+       "insert hole would run into the magnets either side of it");
+assert(INSERT_L + 1.5 <= WALL, "no pilot left between the insert and the bore");
+assert(REACH >= SLACK, "grub screw cannot reach the hub across the worst-case slack");
+assert(RADIAL_ROOM < 0 || RADIAL_ROOM >= NEED_R,
+       "ring plus sensor will not clear the obstruction in the axial slice");
+if (RADIAL_ROOM < 0)
+    echo("NOTE: RADIAL_ROOM unmeasured — the clearance assert is not proving anything yet");
 
 // ---- parts ---------------------------------------------------------------
 
@@ -92,109 +134,109 @@ module magnet_pockets() {
                     cylinder(d = MAG_D + MAG_CLEAR, h = MAG_T + EPS);
 }
 
-// A witness notch beside magnet 0. The acceptance test is to turn the carrier
-// by hand and watch one channel — a reversed magnet shows as one long gap and
-// one short pulse, and this marks where in the revolution to look.
-module index_notch() {
-    // placed HALF a pitch round from magnet 0, so it cannot clash with a pocket
-    rotate([0, 0, 180 / N_MAG])
-        translate([OD/2 - 1.0, 0, -EPS])
-            cylinder(d = 2.0, h = WIDTH + 2*EPS);
-}
-
-// One flange straddling a split line. Mirrored for the far side, so BOTH ears
-// project outward — an earlier revision translated the second one inward, where
-// it vanished into the ring and cut its nut pocket into the wall.
+// Each screw sits half a magnet pitch away from its neighbours, in the dead
+// space between two magnets. A Hall LATCH holds its state until the opposite
+// pole arrives, so a hole in that dead space is invisible to it.
 //
-// The two halves stay IDENTICAL: one ear carries the nut, the other carries the
-// screw-head counterbore. After the 180° assembly rotation every joint then has
-// a head on one side and a nut on the other, from two copies of one print.
-module ear_body(with_nut) {
-    // reaches WALL deep into the ring so it merges with full wall thickness
-    // rather than touching the curve tangentially at a single line
-    translate([0, OD/2 - WALL, 0])
-        difference() {
-            translate([-EAR_L, 0, 0])
-                cube([EAR_L * 2, EAR_W + WALL, WIDTH]);
-
-            // clamp screw, through both halves, parallel to the split line
-            translate([0, WALL + EAR_W/2, WIDTH/2]) rotate([0, 90, 0])
-                translate([0, 0, -EAR_L - EPS])
-                    cylinder(d = SCREW_D, h = EAR_L * 2 + 2*EPS);
-
-            if (with_nut)
-                // captive hex pocket, open to the outer face
-                translate([EAR_L - NUT_T, WALL + EAR_W/2, WIDTH/2]) rotate([0, 90, 0])
-                    rotate([0, 0, 30])
-                        cylinder(d = NUT_AF / cos(30), h = NUT_T + EPS, $fn = 6);
-            else
-                // counterbore so the screw head finishes below the surface
-                translate([EAR_L - HEAD_T, WALL + EAR_W/2, WIDTH/2]) rotate([0, 90, 0])
-                    cylinder(d = HEAD_D, h = HEAD_T + EPS);
+// Insert is driven in from the OUTSIDE; the screw then passes through the pilot
+// and lands in a spline valley. Flush at the surface it reaches REACH mm past
+// the bore, which is what makes the fit tolerant.
+module set_screw_holes() {
+    for (k = [0 : N_SET - 1])
+        rotate([0, 0, SET_A0 + k * 360 / N_SET]) {
+            // pilot, bore to surface
+            translate([BORE_D/2 - EPS, 0, WIDTH/2]) rotate([0, 90, 0])
+                cylinder(d = SET_PILOT_D, h = WALL + 2*EPS);
+            // insert seat, open to the surface
+            translate([OD/2 - INSERT_L, 0, WIDTH/2]) rotate([0, 90, 0])
+                cylinder(d = INSERT_D, h = INSERT_L + EPS);
         }
 }
 
-module ear(sign, with_nut) {
-    if (sign > 0) ear_body(with_nut);
-    else          mirror([0, 1, 0]) ear_body(with_nut);
+// A witness mark at magnet 0, so the pattern has a named starting point.
+// Eighteen identical discs give you no way to say WHICH one went in backwards —
+// not while placing them, and not when the hand-turn check in §1.2.3 shows one
+// long gap and one short pulse.
+//
+// It was a Ø2 through-hole until the arithmetic was checked: centred at
+// OD/2 - 1.0 with a radius of 1.0, it sat exactly TANGENT to the outer surface,
+// leaving zero wall at the tangent point — a feather edge on the one surface
+// that has to stay clean, pointed straight at the sensor. A groove in the face
+// cannot reach the track at all: it stops 1 mm short of the pocket floor.
+module index_mark() {
+    translate([BORE_D/2 - EPS, -MARK_W/2, WIDTH - MARK_DEPTH])
+        cube([MARK_R - BORE_D/2 + EPS, MARK_W, MARK_DEPTH + EPS]);
 }
 
-module full_ring() {
+module carrier() {
     difference() {
-        union() {
-            cylinder(d = OD, h = WIDTH);
-            ear( 1, true);    // nut side
-            ear(-1, false);   // screw-head side
-        }
+        cylinder(d = OD, h = WIDTH);
         translate([0, 0, -EPS]) cylinder(d = BORE_D, h = WIDTH + 2*EPS);
         magnet_pockets();
-        index_notch();
+        set_screw_holes();
+        index_mark();
     }
 }
 
-// One half: everything on +X, minus half the split gap on each face.
-module carrier_half() {
-    intersection() {
-        full_ring();
-        translate([SPLIT_GAP/2, -OD, -OD]) cube([OD * 2, OD * 2, OD * 2]);
+// Thin ring, same bore, nothing else. Costs about 2 g and five minutes and
+// answers the only question a drawing cannot: does it go on the hub at all.
+module gauge() {
+    GB = BORE_D + GAUGE_DELTA;
+    difference() {
+        cylinder(d = GB + 6, h = 3);
+        translate([0, 0, -EPS]) cylinder(d = GB, h = 3 + 2*EPS);
     }
 }
 
 // ---- output --------------------------------------------------------------
-// Both halves lie FLAT, ring axis vertical. See the printing note below for why
-// that is the orientation and not a convenience.
-if (PART == "ring") {
-    // assembled preview — for checking fit, not for printing
-    carrier_half();
-    rotate([0, 0, 180]) carrier_half();
-} else if (PART == "half") {
-    carrier_half();
-} else {                                          // "print" — two halves, laid out
-    carrier_half();
-    translate([-PRINT_GAP, 0, 0]) rotate([0, 0, 180]) carrier_half();
-}
+if (PART == "gauge") gauge();
+else                 carrier();
 
+// ---- fitting -------------------------------------------------------------
+// 1. Measure HUB_D with a paper strip around the spline crests: wrap, mark the
+//    overlap, measure the length, divide by pi. Do it on all three vehicles and
+//    enter the LARGEST.
+// 2. Print PART = "gauge" three times, at GAUGE_DELTA = -0.4, 0 and +0.4.
+// 3. The right one slides on by hand over the full 6 mm and rattles slightly.
+//    It is SUPPOSED to rattle — the screws remove the rattle, not the bore.
+//    If even +0.4 will not go on, HUB_D is wrong; re-measure before printing
+//    20 g of carrier.
+// 4. Add the winning delta to BORE_CLEAR, then print the carrier.
+//
 // ---- printing ------------------------------------------------------------
-// PETG. 0.2 mm layers, 4 perimeters, 40 % infill. No supports.
+// PETG. 0.2 mm layers, 4 perimeters, 40 % infill. No supports. One ring per
+// plate takes about 20 g.
 //
-// PRINT IT FLAT, exactly as it comes out of PART = "print". The clamp screws
-// pull along X, so with the part flat that load sits INSIDE the layer planes.
-// Standing a half on its split face would put the same load NORMAL to the
-// layers — the one direction FDM is weak in — and leave a 4 x 6 mm footprint
-// holding up a 36 mm tall part. (An earlier revision of this file recommended
-// exactly that. It was wrong on both counts.)
+// PRINT IT FLAT, ring axis vertical — straight out of PART = "ring". The only
+// load this part ever sees is the three grub screws pushing inward, which is
+// hoop tension in the ring, and printed flat that tension lies INSIDE the layer
+// planes. On edge it would pull the layers apart and need supports as well.
 //
-// The magnet pockets are horizontal holes in this orientation, so each one
-// bridges across its top. Over a 5 mm span that is a short bridge and the top
-// will come out slightly flattened — which suits a press fit, but check the
-// first pocket with a magnet before populating all sixteen.
+// Lay it with the index groove FACING UP. A 0.8 mm recess in the top surface
+// prints clean; on the bed it would come out as a bridge over nothing.
 //
-// ASSEMBLY ORDER MATTERS. At this pitch every magnet can feel its neighbours,
-// and the alternating pattern pushes each one toward the orientation that is
-// wrong. Press each magnet fully home, add adhesive, and let it cure before
-// fitting the next. Then run the hand-turn check in §1.2.3 before the carrier
-// goes anywhere near the vehicle.
+// The magnet pockets and the insert seats are horizontal holes in this
+// orientation, so each bridges across its top and will come out slightly
+// flattened. That suits a press fit, and the heat-set inserts melt their own
+// seat regardless — but check the FIRST magnet pocket with a magnet before
+// populating all eighteen.
 //
-// FASTENERS: 2 x M3 socket cap, about 16 mm, and 2 x M3 nut. Both halves are the
-// same print — one ear has the nut pocket and the other the head counterbore, so
-// two copies rotated 180° give every joint a head and a nut.
+// ---- assembly ------------------------------------------------------------
+// Check the finished track with magnetic viewing film, or by walking a spare
+// magnet round it and feeling the attract/repel alternate. Either shows a
+// reversed disc directly; the hand-turn signal check only tells you that one
+// exists, and then you count from the index groove to find it.
+//
+// MAGNET ORDER MATTERS. At this pitch every magnet can feel its neighbours and
+// the alternating pattern pushes each one toward the wrong orientation. Press
+// each magnet fully home, add adhesive, let it cure, then fit the next. Run the
+// hand-turn check in §1.2.3 before the carrier goes near the vehicle.
+//
+// Then: heat-set the three inserts from the outside, slide the ring onto the
+// hub, and run the grub screws down in rotation — a turn each, round and round,
+// so the ring centres itself rather than being shoved against the hub. Blue
+// threadlocker on the screws. Finally spin the wheel by hand and watch the air
+// gap: it should not visibly change through a revolution.
+//
+// FASTENERS, per vehicle: 3 x M3 heat-set insert, 3 x M3 x 10 grub screw
+// (cup or cone point — a cone point finds a spline valley on its own).
