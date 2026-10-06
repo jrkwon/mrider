@@ -512,11 +512,22 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > gap, magnet wider than the carrier, pocket deeper than the wall, magnets too close to each other).
 > Build with `openscad -o carrier.stl cad/drive_encoder_carrier.scad`.
 >
+> **Both halves are the same print.** One ear carries the nut pocket, the other the screw-head
+> counterbore, so two copies rotated 180° give every joint a head on one side and a nut on the
+> other — from one STL. Fasteners: **2 × M3 socket cap ≈16 mm, 2 × M3 nut.**
+>
 > At `HUB_D = 63.5` it derives bore Ø63.9, outside **Ø71.9**, track 225.9 mm, pitch **14.12 mm**,
 > **sensor offset 7.06 mm**, 32 counts/rev → **17.8 mm/count**.
 >
-> **It has not been rendered** — OpenSCAD is not installed here, so the geometry is reasoned rather
-> than seen. Open it and look before printing three of them.
+> **Rendered and checked 2026-10-06.** CGAL reports `Simple: yes` and, for one half, `Volumes: 2`
+> — a single connected solid, so the ears are part of the body rather than floating near it. The
+> assembled bounding box comes out **X ±35.95, Y ±44.95, Z 0–6**, and `Y ±44.95` is exactly
+> `OD/2 + EAR_W`, which is what proves **both** ears project outward.
+>
+> That last check exists because they did not. An earlier revision translated the second ear
+> **inward** — `translate([0, sign * OD/2, 0])` with a cube growing in +Y put the mirrored copy at
+> `y −35.9 … −26.9`, inside the ring, where it merged into the wall and cut its nut pocket into the
+> bore. The render looked plausible from the top; only the bounding box made it obvious.
 
 > [!IMPORTANT]
 > **A reversed magnet cannot be prevented. Make it visible instead.**

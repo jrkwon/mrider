@@ -47,6 +47,8 @@ MAG_CLEAR    = -0.1;        // NEGATIVE = press fit. Magnets must not be free to
 SCREW_D      = 3.2;         // M3 clearance
 NUT_AF       = 5.5;         // M3 nut across flats
 NUT_T        = 2.6;         // M3 nut thickness
+HEAD_D       = 6.2;         // M3 socket-head clearance
+HEAD_T       = 3.2;         // counterbore depth
 EAR_W        = 9.0;         // flange width (radial), mm
 EAR_L        = 7.0;         // flange length each side of the split, mm
 
@@ -74,6 +76,8 @@ assert(WIDTH < AXIAL_GAP,  "carrier is wider than the gap between gearbox and wh
 assert(MAG_D < WIDTH,      "magnet will not fit inside the carrier width");
 assert(MAG_T < WALL,       "magnet pocket would break through the back of the wall");
 assert(PITCH > MAG_D + 2,  "magnets too close — reduce N_MAG or increase OD");
+assert(EAR_L > HEAD_T + 2, "ear too short for the screw-head counterbore");
+assert(EAR_L > NUT_T + 2,  "ear too short for the nut pocket");
 
 // ---- parts ---------------------------------------------------------------
 
@@ -97,29 +101,49 @@ module index_notch() {
             cylinder(d = 2.0, h = WIDTH + 2*EPS);
 }
 
-module ear(sign) {
-    // flange either side of a split line, carrying the clamp screw
-    translate([0, sign * (OD/2 - EPS), 0])
+// One flange straddling a split line. Mirrored for the far side, so BOTH ears
+// project outward — an earlier revision translated the second one inward, where
+// it vanished into the ring and cut its nut pocket into the wall.
+//
+// The two halves stay IDENTICAL: one ear carries the nut, the other carries the
+// screw-head counterbore. After the 180° assembly rotation every joint then has
+// a head on one side and a nut on the other, from two copies of one print.
+module ear_body(with_nut) {
+    // reaches WALL deep into the ring so it merges with full wall thickness
+    // rather than touching the curve tangentially at a single line
+    translate([0, OD/2 - WALL, 0])
         difference() {
             translate([-EAR_L, 0, 0])
-                cube([EAR_L * 2, EAR_W, WIDTH]);
-            // screw runs parallel to the split line, through both halves
-            translate([0, EAR_W/2, WIDTH/2]) rotate([0, 90, 0])
+                cube([EAR_L * 2, EAR_W + WALL, WIDTH]);
+
+            // clamp screw, through both halves, parallel to the split line
+            translate([0, WALL + EAR_W/2, WIDTH/2]) rotate([0, 90, 0])
                 translate([0, 0, -EAR_L - EPS])
                     cylinder(d = SCREW_D, h = EAR_L * 2 + 2*EPS);
-            // captive nut on one side only
-            translate([EAR_L - NUT_T, EAR_W/2, WIDTH/2]) rotate([0, 90, 0])
-                rotate([0, 0, 30])
-                    cylinder(d = NUT_AF / cos(30), h = NUT_T + EPS, $fn = 6);
+
+            if (with_nut)
+                // captive hex pocket, open to the outer face
+                translate([EAR_L - NUT_T, WALL + EAR_W/2, WIDTH/2]) rotate([0, 90, 0])
+                    rotate([0, 0, 30])
+                        cylinder(d = NUT_AF / cos(30), h = NUT_T + EPS, $fn = 6);
+            else
+                // counterbore so the screw head finishes below the surface
+                translate([EAR_L - HEAD_T, WALL + EAR_W/2, WIDTH/2]) rotate([0, 90, 0])
+                    cylinder(d = HEAD_D, h = HEAD_T + EPS);
         }
+}
+
+module ear(sign, with_nut) {
+    if (sign > 0) ear_body(with_nut);
+    else          mirror([0, 1, 0]) ear_body(with_nut);
 }
 
 module full_ring() {
     difference() {
         union() {
             cylinder(d = OD, h = WIDTH);
-            ear( 1);
-            ear(-1);
+            ear( 1, true);    // nut side
+            ear(-1, false);   // screw-head side
         }
         translate([0, 0, -EPS]) cylinder(d = BORE_D, h = WIDTH + 2*EPS);
         magnet_pockets();
@@ -162,3 +186,7 @@ if (PART == "ring") {
 // wrong. Press each magnet fully home, add adhesive, and let it cure before
 // fitting the next. Then run the hand-turn check in §1.2.3 before the carrier
 // goes anywhere near the vehicle.
+//
+// FASTENERS: 2 x M3 socket cap, about 16 mm, and 2 x M3 nut. Both halves are the
+// same print — one ear has the nut pocket and the other the head counterbore, so
+// two copies rotated 180° give every joint a head and a nut.
