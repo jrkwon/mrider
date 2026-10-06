@@ -482,6 +482,31 @@ electrically — still two signals, but not quadrature, and the direction sense 
 the transitions. **Print both sensors into one bracket** so the spacing is fixed by construction.
 
 > [!IMPORTANT]
+> **Print the carrier as a two-piece clamp — do not model the splines**
+>
+> **3D printing is the right process here**, and not as a compromise: the carrier **transmits no
+> torque**, it only has to ride along, so there is no strength case for machining it. Three
+> identical copies from one file is what printing is for, and [#14](#7-8-11-12-14-what-to-actually-buy)
+> already brings the PETG.
+>
+> **But do not try to match the spline profile.** That means measuring tooth count, tooth form and
+> undercut, modelling it, and then printing it to a tolerance FDM does not hold — for no gain,
+> because nothing needs to be transmitted through those teeth.
+>
+> | | |
+> |---|---|
+> | Model the spline form | Needs the full tooth geometry. Buys nothing |
+> | Undersized bore, pressed on | A 0.5 mm interference across Ø63.5 risks splitting PETG |
+> | **Two-piece clamp, bolted** | **Needs one diameter.** Fits and removes by hand, and the spline crests stop it creeping |
+>
+> **Print it in two halves with M3 clamping screws.** The bore is a plain Ø63.5 cylinder with a
+> little clearance; the clamp supplies the grip and the splines supply the anti-slip. It also goes
+> on and off **without pulling the wheel**, which matters when three vehicles get rebuilt by
+> students.
+>
+> **Keep PETG, not PLA** — this sits beside a gearbox and a motor, and PLA is soft by 60 °C.
+
+> [!IMPORTANT]
 > **A reversed magnet cannot be prevented. Make it visible instead.**
 >
 > With discrete magnets back in the design, a student can fit one the wrong way round, and a
@@ -494,6 +519,12 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > short pulse**, at the same place every revolution.
 >
 > **Do this on all three carriers and record it.** It is the acceptance test for #6c.
+>
+> **The magnets will also fight you during assembly.** At 13.6 mm spacing each one is close enough
+> to feel its neighbours, and an alternating pattern means every magnet is being pushed toward the
+> orientation that is *wrong*. **Make the pockets a press fit and add adhesive** — a pocket that
+> only locates and relies on glue will let one rotate before the glue cures, which is the failure
+> the check above then catches at the end of a wasted hour.
 
 **Also pin:** 3.3 V supply, or an open-drain part with a 3.3 V pull-up — [the Teensy is not 5 V
 tolerant](#7-8-11-12-14-what-to-actually-buy) — and feed A/B to **two of the Teensy's four hardware
