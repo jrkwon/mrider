@@ -558,14 +558,22 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > 1 mm short of the magnet pocket floor, so it cannot reach the track by construction.
 
 > [!IMPORTANT]
-> **Print the Ø-check ring before the carrier**
+> **Print the fit mule before the carrier**
 >
-> `PART = "gauge"` is a 3 mm wide ring, bore only — about 2 g and five minutes. Print it at
-> `GAUGE_DELTA` = **−0.4, 0 and +0.4** and keep the one that slides on by hand over its full width.
+> `PART = "gauge"` is the carrier's **real bore, real outside diameter and real width** with none
+> of the features — about 12 g. Print it at `GAUGE_DELTA = 0`; go to **+0.4** if it will not go on,
+> **−0.4** if it sits visibly off centre.
 >
 > **It is supposed to rattle.** The screws remove the rattle, not the bore. If even +0.4 will not go
 > on, `HUB_D` is wrong — re-measure before committing 20 g of carrier. Add the winning delta to
 > `BORE_CLEAR` and print.
+>
+> **Then refit the wheel and turn it one full revolution.** Nothing may touch. That single turn is
+> the acceptance test for the radial clearance *and* the axial gap, and it is worth more than
+> either measurement: finding the smallest obstruction radius inside a 6 mm slot behind a fitted
+> wheel is awkward and easy to get wrong, and turning the wheel is neither. It is also the last
+> moment at which discovering the carrier does not fit costs 12 g instead of eighteen glued
+> magnets.
 >
 > **Measure the hub with a wire round the crests**, not a caliper: wrap, mark the overlap, measure
 > the length, divide by π. A caliper across the crests does not read the crest circle at all unless
@@ -627,10 +635,10 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 | | |
 |---|---|
 | **Axial clearance, gearbox rotating part → wheel** | **≥ 8 mm** — *measured on the delivered vehicle and **this is what decided Branch C**. It was not written down at the time; recorded 2026-10-03.* |
-| **Smallest obstruction radius in that 8 mm slice** | **≥ 47.5 mm needed** — ring (40.5) + air gap (3) + sensor (4). *Open. The two-piece revision already needed Ø91 for its ears and nobody asked; `RADIAL_ROOM` in the model is set negative until this is measured, and says so on every build.* |
+| **Smallest obstruction radius in that 8 mm slice** | **≥ 47.5 mm needed** — ring (40.5) + air gap (3) + sensor (4). *Open, but **do not measure it** — print the fit mule, refit the wheel and turn it. `RADIAL_ROOM` stays negative in the model until something settles it, and says so on every build.* |
 | Hub lobe-crest circumference, by wire | **205 mm → Ø65.3** *(2026-10-06; an earlier 63.5 mm estimate was ~2 mm low). Re-take on all three and enter the largest.* |
 | Hub form | **Six broad lobes, narrow gaps** *(2026-10-06 photographs — not a fine spline, which is why no chord correction applies)* |
-| **Axial length of the lobed boss that stays exposed with the wheel fitted** | *(Open. The ring is 6 mm wide and has to sit on that length — see the note below)* |
+| **Axial length of the lobed boss that stays exposed with the wheel fitted** | *(Open. The ring is 6 mm wide and has to sit on that length — the fit mule answers this too)* |
 | Screw bosses available on the housing | *(count and thread — **this is what still blocks the sensor bracket**)* |
 
 > [!IMPORTANT]

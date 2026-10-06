@@ -190,13 +190,21 @@ module carrier() {
     }
 }
 
-// Thin ring, same bore, nothing else. Costs about 2 g and five minutes and
-// answers the only question a drawing cannot: does it go on the hub at all.
+// A FIT MULE: the carrier's real bore, real outside diameter and real width,
+// with none of the features. About 12 g, and it settles three things no drawing
+// and no tape measure in a wheel arch can settle:
+//
+//   1. does the bore go onto the hub          -> is HUB_D right
+//   2. does it SPIN without touching anything -> is RADIAL_ROOM >= OD/2
+//   3. does it sit in the gap                 -> is WIDTH < AXIAL_GAP
+//
+// (2) is the one that matters most. Measuring the smallest obstruction radius
+// inside a 6 mm slot behind a wheel is awkward and easy to get wrong; turning
+// the wheel one revolution with this on the hub is neither.
 module gauge() {
-    GB = BORE_D + GAUGE_DELTA;
     difference() {
-        cylinder(d = GB + 6, h = 3);
-        translate([0, 0, -EPS]) cylinder(d = GB, h = 3 + 2*EPS);
+        cylinder(d = OD, h = WIDTH);
+        translate([0, 0, -EPS]) cylinder(d = BORE_D + GAUGE_DELTA, h = WIDTH + 2*EPS);
     }
 }
 
@@ -210,12 +218,17 @@ else                 carrier();
 //    gaps — the wire rides the crest arcs and the chord loss is about 0.1 mm,
 //    so no correction is worth applying. Do all three vehicles, enter the
 //    LARGEST, and keep BORE_CLEAR above the spread.
-// 2. Print PART = "gauge" three times, at GAUGE_DELTA = -0.4, 0 and +0.4.
+// 2. Print PART = "gauge" at GAUGE_DELTA = 0. If it will not go on, print
+//    +0.4; if it is sloppy enough to sit visibly off centre, print -0.4.
 // 3. The right one slides on by hand over the full 6 mm and rattles slightly.
 //    It is SUPPOSED to rattle — the screws remove the rattle, not the bore.
 //    If even +0.4 will not go on, HUB_D is wrong; re-measure before printing
 //    20 g of carrier.
-// 4. Add the winning delta to BORE_CLEAR, then print the carrier.
+// 4. WITH THE MULE ON THE HUB, REFIT THE WHEEL AND TURN IT A FULL REVOLUTION.
+//    Nothing may touch. This is the acceptance test for RADIAL_ROOM, and it is
+//    also the last chance to find out that the carrier does not fit before
+//    eighteen magnets are glued into one.
+// 5. Add the winning delta to BORE_CLEAR, then print the carrier.
 //
 // ---- printing ------------------------------------------------------------
 // PETG. 0.2 mm layers, 4 perimeters, 40 % infill. No supports. One ring per
