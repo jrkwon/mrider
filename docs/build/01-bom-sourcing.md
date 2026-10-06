@@ -401,6 +401,108 @@ That single answer picks between two builds that differ enormously in how much h
 does not. A rotating **hub** offers a cylindrical **surface** — sense it radially from beside it. An
 AS5600 needs a shaft **end**, with clear space in front that nothing rotates through.
 
+##### Why magnetic sensing, and not optical or a bought encoder
+
+This was never chosen on preference. It is what is left once the geometry closes the other doors,
+and it is worth writing down because the BOM line still says *"드라이브 엔코더 + 샤프트 어댑터"* and
+someone will try to buy one.
+
+**A bought incremental encoder needs a shaft to couple to.** That is branches A and B, and this
+vehicle has neither: the motor end is a 2 mm shaft carrying a pinion into a sealed gearbox, and the
+axle ends at the outer face of the wheel. **An AS5600 needs a shaft end** with clear space in front
+of it — the same door, withdrawn above. What is actually available is a rotating **surface**, and
+the question becomes which sensing technology reads a surface.
+
+**Optical reads a surface, and loses on where this one lives.**
+
+| | |
+|---|---|
+| Where it sits | Inside the wheel arch, 8 mm from a tyre, under a vehicle students drive on a floor |
+| What kills it | Dust, water, tyre rubber, gearbox grease — **contamination sits directly in the signal path**, and a disc that is merely dirty reads as a dirty signal rather than as a fault |
+| Slot type | Needs a disc through a fork. A fork straddling Ø81 inside a 6 mm slot is not a part anyone is going to print |
+| Reflective type | Needs a printed or stuck black/white pattern to survive the same environment at 1–2 mm |
+| What is actually sold | **Single channel** — see the warning at the end of this section. No direction |
+
+**Magnetic reads the same surface and does not care about any of that.** The field crosses a
+non-magnetic air gap, so dust, water, grease and a printed carrier are all simply transparent to it.
+Nothing touches, nothing wears, and a contaminated sensor reads exactly like a clean one. The
+rotating part becomes a printed ring with pressed magnets — no optics, no disc flatness, no
+alignment to a beam.
+
+It also fits what is already decided: **two latches give quadrature** with their spacing fixed by
+printing both into one bracket, and an **open-drain output pulled up to 3.3 V** is safe on a Teensy
+that is not 5 V tolerant, whatever the sensor's own supply is.
+
+**What it costs** is the one thing optical would not have: discrete magnets can be fitted the wrong
+way round. That is handled below rather than wished away.
+
+##### The sensor must be a LATCH. This is a hard filter, not a preference
+
+> [!CAUTION]
+> **A Hall *switch* cannot do this job, and the parts shops stock are switches.**
+>
+> **A latch's edges are set by geometry. A switch's edges are set by amplitude.**
+>
+> A **bipolar latch** toggles on north and toggles back on south. Each edge is caused by the field
+> **reversing sign**, and the sign reverses at the physical boundary between two magnets — a fixed
+> place on the ring. Move the sensor nearer or further and the field gets stronger or weaker, but it
+> still changes sign in the same place. **The edge does not move.**
+>
+> A **unipolar switch** operates above `B_OP` and releases below `B_RP`, both of which are field
+> *magnitudes*. Where those thresholds are crossed depends on how strong the field is, which depends
+> on the air gap and the temperature. So every edge walks as the gap varies — around one revolution
+> if the carrier runs out, and from vehicle to vehicle. **An omnipolar switch has the same problem**:
+> it turns on for either pole and releases in between, and the release is still a threshold crossing.
+>
+> Two consequences, and the second is worse than the first:
+>
+> 1. **Counting jitter.** Edges that move with gap are ticks that move with gap.
+> 2. **Direction errors.** Direction is read from the *phase* between A and B. If both channels' edges
+>    walk independently with their own local gaps, the phase walks too — and it does so worst near
+>    the transitions, which is exactly where a direction decision is made. This vehicle reverses
+>    under Nav2 as a matter of course.
+>
+> There is also a mode where a switch simply stops working: if the gap grows enough that the field
+> between magnets never falls below `B_RP`, it never releases and the channel goes quiet.
+
+**The parts that will be offered to you, and which of them are wrong**
+
+| Part | What it actually is | Usable? |
+|---|---|---|
+| **A3144 / OH3144 / AH3144** | Unipolar **switch**. The default hit for "홀센서" in Korea | **No** |
+| **US5881** | Unipolar **switch** — and it is stocked domestically | **No.** One digit from US1881 |
+| **49E / SS49E** | **Linear** analogue output, not digital at all | **No** |
+| "Omnipolar" / 옴니폴라 | Switch on either pole, release in between | **No** |
+| **US1881** | Bipolar **latch**, TO-92, 3.5–24 V, open-collector | Yes |
+| **DRV5013**`xx`**LPGM** | Bipolar **latch**, TO-92, 2.5–38 V, open-drain | **Yes — buy this** |
+
+> [!IMPORTANT]
+> **Buy DRV5013 in the TO-92 (`LPG`) package**
+>
+> TI's `DRV5013` is a chopper-stabilised digital bipolar latch. It beats the US1881 on the two
+> things that matter here:
+>
+> - **2.5 V minimum supply**, so it runs **directly from the 3.3 V logic rail** — the US1881 needs
+>   3.5 V and therefore a 5 V feed plus a pull-up to 3.3 V. Fewer rails crossing the one sensor
+>   cable that has to run past a PWM'd motor.
+> - **`B_OP ±10 %` over the full temperature range.** The whole argument for a latch is that edges
+>   do not move; a part that also holds its thresholds over temperature is the same argument carried
+>   through.
+>
+> Open-drain, 30 mA sink, so it still wants a pull-up — **to 3.3 V**, which is what keeps the Teensy
+> safe regardless of supply.
+>
+> **Sensitivity variant: take `BC` (±12 mT) or `AG` (±6 mT), not the sensitive ones.** A Ø5 × 2 mm
+> neodymium disc puts roughly **75–240 mT** on axis across a 1–3 mm gap, so even the *least*
+> sensitive option has 6× margin at the far end. Spending that margin on sensitivity buys nothing
+> and costs noise immunity next to a PWM'd motor. `FA/FD` (±1.3 mT) and `AD/ND` (±2.7 mT) are for
+> weak fields; this is not one.
+>
+> **Availability:** stocked at DigiKey and Mouser at roughly **$0.47–0.67** in ones, which for
+> **6 sensors plus spares** is a rounding error against the postage. It is not a Korean domestic
+> shelf item, so order it with something else. **US1881 (TO-92, marked `U18` / `OH188`)** is the
+> fallback if lead time bites — cheap and everywhere, at the cost of the 5 V feed.
+
 ##### C-abs — AS5600 on the axle centreline *(withdrawn — see the figure)*
 
 > [!CAUTION]
@@ -505,8 +607,8 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > **The bore carries no load.** The hub measures **65.3 mm ±1** and FDM holds a Ø67 bore to perhaps
 > ±0.3 mm; a press fit needs both numbers to ±0.1, which is two significant figures out of reach —
 > and there are three hubs, not one. So the bore is deliberately **clear** of the hub, and three
-> recessed M3 grub screws take up whatever slack exists. Their points settle into **spline
-> valleys**, which is a form lock rather than friction.
+> recessed M3 grub screws take up whatever slack exists. Their points settle into the **gaps
+> between the hub's six lobes**, which is a form lock rather than friction.
 >
 > | | |
 > |---|---|
@@ -545,7 +647,7 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > At `HUB_D = 65.3` it derives bore Ø67.0, outside **Ø81.0**, track 254.5 mm, pitch **14.14 mm**,
 > **sensor offset 7.07 mm**, 36 counts/rev → **15.8 mm/count**. Fasteners, per vehicle:
 > **3 × M3 heat-set insert, 3 × M3 × 10 grub screw** (cup or cone point — a cone point finds a
-> spline valley on its own).
+> lobe gap on its own).
 >
 > **Rendered and checked 2026-10-06.** CGAL reports `Simple: yes`, `Volumes: 2` — one connected
 > solid — and the **maximum swept radius measured off the STL is 40.500 mm, exactly `OD/2`**. That
@@ -628,6 +730,45 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 tolerant](#7-8-11-12-14-what-to-actually-buy) — and feed A/B to **two of the Teensy's four hardware
 quadrature decoder channels**, which counts in hardware regardless of what firmware is doing.
 
+##### The bracket — clamp the gearbox housing nose, do not hunt for screw bosses
+
+**#6c was blocked on a measurement it does not need.** The open item was *"screw bosses available on
+the housing — count and thread"*, and the plan was to bolt a bracket to whatever turned up. The
+teardown photographs show something better: **the gearbox housing's output end is a cylinder
+concentric with the axle.** Clamp that instead.
+
+| | Bolt to screw bosses | **Clamp the housing nose** |
+|---|---|---|
+| What must be measured | Boss count, thread, positions, and whether any of them face the right way | **One diameter and one length** |
+| Air gap | Set by how well the builder aligned the bracket | **Set by the print** — the clamp is concentric with the axle, so the gap is a dimension, not an assembly skill |
+| If the bosses are wrong | Start again | Does not arise |
+| Three vehicles | Three alignments | One part, three times |
+
+It is the carrier's own trick used twice, and the second time is easier, because **the bracket does
+not rotate**. The rule that forced the carrier to be one piece — nothing may stand proud of the
+sensing cylinder — does not apply to a part that never sweeps anything. **A two-piece bolted clamp
+with ears is fine here**, and the ears are the obvious place to put the slot that sets the gap.
+
+**Design it with the gap adjustable.** Slot the sensor pad radially so it can be slid and locked.
+The latch makes the *timing* gap-independent, but the sensor still has to be close enough to see the
+field and far enough not to be struck, and the first vehicle is where that gets learned.
+
+**Both sensors in one printed part.** The two sit on a chord while the magnets ride an arc, so the
+gap differs between A and B by the sagitta: `c²/8R = 7.07² / (8 × 40.5) = `**`0.154 mm`**. A flat
+two-up pad is therefore correct, not an approximation.
+
+**What to measure now:**
+
+| | |
+|---|---|
+| **Diameter of the gearbox housing nose** | *(the fixed cylinder around the hub — a wire round it, as before)* |
+| **Axial length of that nose that stays reachable with the wheel fitted** | *(the clamp has to grip something)* |
+
+**Fallbacks, recorded so nobody re-derives them:** replace the housing's own assembly screws with
+longer ones and hang the bracket off those; or bolt to the black chassis pocket the gearbox sits in.
+Both work and **neither is concentric with the axle**, so both turn the air gap back into an
+alignment job. Take the nose clamp if the nose exists.
+
 ##### Measurements this needs
 
 Both forms need the hub measured; C-inc needs it to size the ring and the pitch table above.
@@ -639,7 +780,7 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 | Hub lobe-crest circumference, by wire | **205 mm → Ø65.3** *(2026-10-06; an earlier 63.5 mm estimate was ~2 mm low). Re-take on all three and enter the largest.* |
 | Hub form | **Six broad lobes, narrow gaps** *(2026-10-06 photographs — not a fine spline, which is why no chord correction applies)* |
 | **Axial length of the lobed boss that stays exposed with the wheel fitted** | *(Open. The ring is 6 mm wide and has to sit on that length — the fit mule answers this too)* |
-| Screw bosses available on the housing | *(count and thread — **this is what still blocks the sensor bracket**)* |
+| **Gearbox housing nose — diameter and reachable length** | *(Open. **This is what the sensor bracket needs** — it replaces the screw-boss question, which the nose clamp makes unnecessary)* |
 
 > [!IMPORTANT]
 > **8 mm is an AXIAL budget, and it is more comfortable than it first looked**
@@ -652,10 +793,16 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 > So the 8 mm has to contain the **magnet track's width** (4–6 mm) and the sensor's **axial**
 > extent, side by side radially rather than stacked. Both package types fit.
 >
-> **Surface-mount is still the better choice** — a SOT-23 on a small PCB is ~3 mm against a TO-92's
-> ~4 mm, and the flat PCB is far easier to locate precisely in a printed bracket than three round
-> legs. But it is a preference now, not a necessity, and the 1 mm figure was an artefact of
-> picturing the geometry wrongly.
+> **So take TO-92, and that reverses what this page used to say.** Surface mount was preferred only
+> while the axial budget looked tight; the budget was never tight, and the preference had no other
+> leg to stand on. Two TO-92 bodies (4 × 3 × 1.5 mm) at 7.07 mm centres leave **3.07 mm of air**
+> between them, which is comfortable.
+>
+> **What TO-92 buys is the whole of the difference.** SOT-23 means a PCB: a layout, a fab order, a
+> lead time, and reflow or fine-pitch soldering by students. TO-92 means **two pockets printed into
+> the bracket and six wires**. The spacing is fixed by the print either way — that was never the
+> PCB's job — and a course with thirteen students and three vehicles should not have a PCB fab on
+> its critical path for a part with two components on it.
 >
 > A multipole ring is 3–6 mm wide axially and sits *on* the hub, so it spends no part of this
 > budget.

@@ -21,7 +21,8 @@
 //   press fit needs both numbers to +-0.1, so it is two significant figures out
 //   of reach — and there are three hubs, not one. The bore is therefore
 //   deliberately LOOSE and carries no load. The three grub screws take up
-//   whatever slack exists and their points settle into spline valleys, which is
+//   whatever slack exists and their points settle into the gaps between the
+//   hub's six lobes, which is
 //   a form lock rather than friction. A hub 0.5 mm off nominal changes nothing
 //   except how far the screws go in, so one print fits all three vehicles.
 //
@@ -151,7 +152,7 @@ module magnet_pockets() {
 // pole arrives, so a hole in that dead space is invisible to it.
 //
 // Insert is driven in from the OUTSIDE; the screw then passes through the pilot
-// and lands in a spline valley. Flush at the surface it reaches REACH mm past
+// and lands in a lobe gap. Flush at the surface it reaches REACH mm past
 // the bore, which is what makes the fit tolerant.
 module set_screw_holes() {
     for (k = [0 : N_SET - 1])
@@ -273,4 +274,4 @@ else                 carrier();
 // gap: it should not visibly change through a revolution.
 //
 // FASTENERS, per vehicle: 3 x M3 heat-set insert, 3 x M3 x 10 grub screw
-// (cup or cone point — a cone point finds a spline valley on its own).
+// (cup or cone point — a cone point finds a lobe gap on its own).

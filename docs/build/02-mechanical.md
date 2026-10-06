@@ -166,16 +166,39 @@ auxiliary — it provides velocity and stall detection only.
 
 ## 2.6 Mount the drive-shaft encoder
 
-Follow the mrover shaft-adapter method: a **3.15 mm → 5 mm adapter** onto the drive-motor
-shaft, with the encoder body bracketed to the motor mount
-([ADR C](../design/dbw.md#8-adr-c-drive-distance-encoding), `vehicle_setup.md:70-72`).
+> [!WARNING]
+> **This section used to describe the mrover shaft-adapter method. You cannot do it on this
+> vehicle, and following it will waste a teardown.** It called for a 3.15 mm → 5 mm adapter onto
+> the drive-motor shaft with the encoder bracketed to the motor mount. This vehicle's motor has a
+> **2 mm shaft carrying a pinion straight into a sealed gearbox** — there is no shaft to couple to
+> and no face to bracket against. That is exactly why
+> [§1.2.3 branches A and B](01-bom-sourcing.md#6-drive-encoder-what-to-actually-buy) were closed and
+> **Branch C** taken. *Corrected 2026-10-06.*
 
-- Confirm the adapter matches **your** measured shaft diameter — the 3.15 mm figure is
-  mrover's motor, not necessarily yours.
-- Concentricity matters more than it looks: a wobbling encoder disc produces periodic tick
-  errors that alias into odometry.
-- Route the encoder cable away from the motor leads. Encoder lines next to a PWM'd 12 V
-  motor pick up noise that reads as phantom ticks.
+Measure at the **gearbox output hub** instead — 1:1 with the wheel, which is better than the motor
+shaft was going to be. The buildable form is specified in full at
+[§1.2.3](01-bom-sourcing.md#6-drive-encoder-what-to-actually-buy); the mechanical work here is:
+
+1. **Pull the wheel.** The carrier is a one-piece ring and goes on over the hub.
+2. **Print the fit mule first** (`PART = "gauge"` in `cad/drive_encoder_carrier.scad`), fit it,
+   refit the wheel and **turn one revolution**. Nothing may touch. Do not populate a carrier with
+   magnets until a mule has passed on that vehicle.
+3. **Fit the carrier**, rotating it one lobe so the three grub screws drop into lobe gaps rather
+   than onto crests, and tighten them in rotation so the ring centres itself.
+4. **Bracket the two Hall latches to something that does not turn**, with both sensors in one
+   printed part so their **7.07 mm** spacing is fixed by construction rather than by assembly.
+5. **Route the encoder cable away from the motor leads.** Encoder lines next to a PWM'd motor pick
+   up noise that reads as phantom ticks.
+
+**Concentricity still matters, and the mount now supplies it** rather than asking the builder for
+it: the carrier is centred by three screws on a round hub, and the bracket clamps the gearbox
+housing nose, which is concentric with the axle. A carrier that runs out produces periodic tick
+errors that alias into odometry — the same failure the old shaft-adapter note warned about, from a
+different cause.
+
+**Direction comes from quadrature, so the two sensors are not optional** and neither is the
+**latch** type — [§1.2.3](01-bom-sourcing.md#6-drive-encoder-what-to-actually-buy) explains why a
+Hall *switch* cannot do this job.
 
 > [!NOTE]
 > **You are instrumenting one motor of a paralleled pair**
