@@ -510,7 +510,15 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > Parametric OpenSCAD — `HUB_D` at the top is the one measured number, everything else derives from
 > it, and it `assert`s the four ways the parameters can be made impossible (carrier wider than the
 > gap, magnet wider than the carrier, pocket deeper than the wall, magnets too close to each other).
-> Build with `openscad -o carrier.stl cad/drive_encoder_carrier.scad`.
+> Build with `openscad -o carrier.stl cad/drive_encoder_carrier.scad` — the default `PART = "print"`
+> is **the file you slice**: both halves lying flat, 5 mm apart, 76.9 × 89.9 mm on the bed and 6 mm
+> tall. `"ring"` is the assembled preview for checking fit; it is not a print.
+>
+> **Print it flat, and that is a structural choice rather than a convenience.** The clamp screws
+> pull along X, so with the part flat that load sits **inside** the layer planes. Standing a half on
+> its split face — which an earlier revision of this file recommended — puts the same load **normal
+> to the layers**, the one direction FDM is weak in, and balances a 36 mm tall part on a 4 × 6 mm
+> footprint.
 >
 > **Both halves are the same print.** One ear carries the nut pocket, the other the screw-head
 > counterbore, so two copies rotated 180° give every joint a head on one side and a nut on the

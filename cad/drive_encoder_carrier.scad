@@ -22,8 +22,8 @@
 // Figure: docs/images/drive-encoder-carrier.svg
 
 /* [What to build] */
-// "ring" = both halves in place (for checking), "half" = one half laid flat to print, "pair" = two halves laid out to print
-PART = "pair";              // [ring, half, pair]
+// "print" = two halves laid out on the bed · "half" = one of them · "ring" = assembled, for checking fit only
+PART = "print";             // [print, half, ring]
 
 /* [Measured on the vehicle] */
 // Spline crest diameter of the gearbox output hub, mm. THE ONE MEASUREMENT THIS NEEDS.
@@ -36,6 +36,7 @@ WALL         = 4.0;         // radial wall thickness, mm
 WIDTH        = 6.0;         // axial width, mm — leaves 1 mm each side inside AXIAL_GAP
 BORE_CLEAR   = 0.4;         // added to HUB_D so the halves close onto the splines rather than bottoming out
 SPLIT_GAP    = 1.2;         // gap at each split line, so clamping actually tightens
+PRINT_GAP    = 5.0;         // clearance between the two halves when laid out to print
 
 /* [Magnets] */
 N_MAG        = 16;          // 8 pole pairs -> 32 counts/rev
@@ -160,26 +161,33 @@ module carrier_half() {
 }
 
 // ---- output --------------------------------------------------------------
+// Both halves lie FLAT, ring axis vertical. See the printing note below for why
+// that is the orientation and not a convenience.
 if (PART == "ring") {
+    // assembled preview — for checking fit, not for printing
     carrier_half();
     rotate([0, 0, 180]) carrier_half();
 } else if (PART == "half") {
-    rotate([0, -90, 0]) carrier_half();          // split face down on the bed
-} else {                                          // "pair"
-    translate([0,  OD/2 + 4, 0]) rotate([0, -90, 0]) carrier_half();
-    translate([0, -OD/2 - 4, 0]) rotate([0, -90, 0]) carrier_half();
+    carrier_half();
+} else {                                          // "print" — two halves, laid out
+    carrier_half();
+    translate([-PRINT_GAP, 0, 0]) rotate([0, 0, 180]) carrier_half();
 }
 
 // ---- printing ------------------------------------------------------------
-// PETG. 0.2 mm layers, 4 perimeters, 40 % infill.
+// PETG. 0.2 mm layers, 4 perimeters, 40 % infill. No supports.
 //
-// Print each half ON ITS SPLIT FACE (PART = "half" or "pair" does this): the
-// layers then run across the clamping load instead of along it, and the magnet
-// pockets come out round rather than bridged.
+// PRINT IT FLAT, exactly as it comes out of PART = "print". The clamp screws
+// pull along X, so with the part flat that load sits INSIDE the layer planes.
+// Standing a half on its split face would put the same load NORMAL to the
+// layers — the one direction FDM is weak in — and leave a 4 x 6 mm footprint
+// holding up a 36 mm tall part. (An earlier revision of this file recommended
+// exactly that. It was wrong on both counts.)
 //
-// No supports needed in that orientation. The pockets are horizontal holes and
-// will print with a slightly flattened top — that is wanted, since MAG_CLEAR is
-// negative and the magnets are meant to be a press fit.
+// The magnet pockets are horizontal holes in this orientation, so each one
+// bridges across its top. Over a 5 mm span that is a short bridge and the top
+// will come out slightly flattened — which suits a press fit, but check the
+// first pocket with a magnet before populating all sixteen.
 //
 // ASSEMBLY ORDER MATTERS. At this pitch every magnet can feel its neighbours,
 // and the alternating pattern pushes each one toward the orientation that is
