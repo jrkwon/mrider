@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 760" width="980" height="760"
+     font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+  <title>What to measure for the encoder bracket — the gearbox housing nose</title>
+  <desc>Left: an axial section through the rear hub, not to scale. The fixed gearbox housing ends
+  in a fixed cylindrical nose that surrounds the rotating lobed output hub. The printed carrier
+  and its magnets ride on the hub in the gap between the nose and the wheel, and the sensor
+  bracket clamps around the nose and reaches over. Two dimensions are marked: the nose diameter
+  and the usable length of the nose. Right: an end view naming the same circles, and a one-finger
+  test for telling the rotating hub from the fixed nose.</desc>
+  <defs>
+    <marker id="r" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#b91c1c"/></marker>
+    <marker id="rs" markerWidth="9" markerHeight="9" refX="1" refY="3" orient="auto">
+      <path d="M8,0 L8,6 L0,3 z" fill="#b91c1c"/></marker>
+    <marker id="k" markerWidth="8" markerHeight="8" refX="7" refY="2.5" orient="auto">
+      <path d="M0,0 L0,5 L7,2.5 z" fill="#334155"/></marker>
+    <marker id="ks" markerWidth="8" markerHeight="8" refX="1" refY="2.5" orient="auto">
+      <path d="M7,0 L7,5 L0,2.5 z" fill="#334155"/></marker>
+    <pattern id="h" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#94a3b8" stroke-width="2.5"/></pattern>
+  </defs>
+  <rect width="980" height="760" fill="#ffffff"/>
+  <text x="24" y="34" font-size="19" font-weight="bold" fill="#0f172a">The two numbers the sensor bracket needs</text>
+  <text x="24" y="56" font-size="13" fill="#475569">Both are on the <tspan font-weight="bold">fixed</tspan> part of the gearbox, not on anything that turns. Hatched = does not rotate. Schematic — not to scale.</text>
+  <rect x="24" y="76" width="580" height="660" rx="8" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+  <text x="44" y="102" font-size="15" font-weight="bold" fill="#0f172a">AXIAL SECTION — cut through the axle</text>
+  <rect x="86" y="172" width="164" height="150" fill="url(#h)" stroke="#475569" stroke-width="2"/>
+  <rect x="86" y="172" width="164" height="150" fill="#e2e8f0" fill-opacity="0.62" stroke="#475569" stroke-width="2"/>
+  <rect x="86" y="322" width="164" height="150" fill="url(#h)" stroke="#475569" stroke-width="2"/>
+  <rect x="86" y="322" width="164" height="150" fill="#e2e8f0" fill-opacity="0.62" stroke="#475569" stroke-width="2"/>
+  <rect x="250" y="210" width="80" height="24" fill="url(#h)" stroke="#7c2d12" stroke-width="2.5"/>
+  <rect x="250" y="210" width="80" height="24" fill="#fed7aa" fill-opacity="0.62" stroke="#7c2d12" stroke-width="2.5"/>
+  <rect x="250" y="410" width="80" height="24" fill="url(#h)" stroke="#7c2d12" stroke-width="2.5"/>
+  <rect x="250" y="410" width="80" height="24" fill="#fed7aa" fill-opacity="0.62" stroke="#7c2d12" stroke-width="2.5"/>
+  <rect x="250" y="270" width="198" height="52" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <rect x="250" y="322" width="198" height="52" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <rect x="356" y="242" width="48" height="28" fill="#fde68a" stroke="#b45309" stroke-width="2"/>
+  <rect x="356" y="374" width="48" height="28" fill="#fde68a" stroke="#b45309" stroke-width="2"/>
+  <rect x="360" y="242" width="40" height="8" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1"/>
+  <rect x="360" y="394" width="40" height="8" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1"/>
+  <line x1="60" y1="322" x2="585" y2="322" stroke="#64748b" stroke-width="1.5" stroke-dasharray="9 5"/>
+  <text x="508" y="314" font-size="10.5" fill="#64748b">axle centreline</text>
+  <rect x="448" y="118" width="34" height="408" rx="6" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+  <text x="490" y="150" font-size="11.5" fill="#64748b">wheel</text>
+  <text x="490" y="165" font-size="10" fill="#94a3b8">(comes off)</text>
+  <rect x="256" y="186" width="66" height="24" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+  <rect x="256" y="434" width="66" height="24" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+  <rect x="300" y="198" width="80" height="12" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+  <rect x="368" y="198" width="12" height="42" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+  <rect x="344" y="224" width="40" height="14" rx="3" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+  <line x1="344" y1="240" x2="384" y2="240" stroke="#b91c1c" stroke-width="1"/>
+  <line x1="408" y1="241" x2="388" y2="240" stroke="#b91c1c" stroke-width="1"/>
+  <text x="412" y="245" font-size="10.5" font-weight="bold" fill="#b91c1c">1–3 mm air gap</text>
+  <text x="94" y="200" font-size="11.5" font-weight="bold" fill="#334155">gearbox housing · FIXED</text>
+  <text x="258" y="152" font-size="12" font-weight="bold" fill="#7c2d12">housing NOSE</text>
+  <text x="258" y="167" font-size="10.5" fill="#9a3412">fixed collar round the hub</text>
+  <line x1="286" y1="174" x2="286" y2="208" stroke="#7c2d12" stroke-width="1.2"/>
+  <text x="300" y="362" font-size="11.5" font-weight="bold" fill="#1e3a8a">lobed hub · ROTATES</text>
+  <text x="412" y="272" font-size="11" font-weight="bold" fill="#b45309">carrier + magnets</text>
+  <text x="412" y="286" font-size="10" fill="#92400e">ROTATES</text>
+  <line x1="408" y1="278" x2="398" y2="260" stroke="#b45309" stroke-width="1.2"/>
+  <text x="412" y="208" font-size="11" font-weight="bold" fill="#15803d">bracket + 2 sensors</text>
+  <text x="412" y="222" font-size="10" fill="#15803d">never turns</text>
+  <line x1="408" y1="214" x2="380" y2="202" stroke="#15803d" stroke-width="1.2"/>
+  <text x="104" y="450" font-size="11.5" font-weight="bold" fill="#15803d">the clamp wraps the nose</text>
+  <line x1="246" y1="446" x2="258" y2="446" stroke="#15803d" stroke-width="1.2"/>
+  <line x1="216" y1="210" x2="216" y2="434" stroke="#b91c1c" stroke-width="2" marker-start="url(#rs)" marker-end="url(#r)"/>
+  <line x1="250" y1="210" x2="212" y2="210" stroke="#b91c1c" stroke-width="1" stroke-dasharray="3 3"/>
+  <line x1="250" y1="434" x2="212" y2="434" stroke="#b91c1c" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="206" y="316" font-size="13.5" font-weight="bold" fill="#b91c1c" text-anchor="end">① nose</text>
+  <text x="206" y="334" font-size="13.5" font-weight="bold" fill="#b91c1c" text-anchor="end">DIAMETER</text>
+  <text x="206" y="352" font-size="11" fill="#b91c1c" text-anchor="end">= ? mm</text>
+  <line x1="250" y1="518" x2="330" y2="518" stroke="#b91c1c" stroke-width="2" marker-start="url(#rs)" marker-end="url(#r)"/>
+  <line x1="250" y1="440" x2="250" y2="524" stroke="#b91c1c" stroke-width="1" stroke-dasharray="3 3"/>
+  <line x1="330" y1="440" x2="330" y2="524" stroke="#b91c1c" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="290" y="540" font-size="13.5" font-weight="bold" fill="#b91c1c" text-anchor="middle">② usable nose LENGTH</text>
+  <text x="290" y="556" font-size="10.5" fill="#b91c1c" text-anchor="middle">bare cylinder — nothing in the way of a clamp</text>
+  <line x1="330" y1="482" x2="448" y2="482" stroke="#334155" stroke-width="1.6" marker-start="url(#ks)" marker-end="url(#k)"/>
+  <text x="389" y="476" font-size="10.5" fill="#334155" text-anchor="middle">8 mm — already measured</text>
+  <rect x="44" y="612" width="540" height="104" rx="6" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="60" y="634" font-size="12.5" font-weight="bold" fill="#92400e">Why clamp the nose instead of bolting to screw bosses</text>
+  <text x="60" y="654" font-size="12" fill="#78350f">The nose is a cylinder <tspan font-weight="bold">concentric with the axle</tspan>, so a clamp on it is centred on the</text>
+  <text x="60" y="672" font-size="12" fill="#78350f">magnet track automatically: the <tspan font-weight="bold">air gap becomes a printed dimension, not an</tspan></text>
+  <text x="60" y="690" font-size="12" fill="#78350f"><tspan font-weight="bold">alignment skill</tspan>, and it is one part for all three vehicles. Bolting to bosses needs their</text>
+  <text x="60" y="708" font-size="12" fill="#78350f">count, thread, position and facing — and still leaves the gap to be eyeballed.</text>
+  <rect x="616" y="76" width="340" height="660" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+  <text x="636" y="102" font-size="15" font-weight="bold" fill="#14532d">END VIEW — which circle is which</text>
+  <text x="636" y="122" font-size="11" fill="#15803d">wheel off, looking straight at the hub</text>
+  <rect x="644" y="166" width="284" height="240" rx="38" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+  <circle cx="786" cy="286" r="106" fill="url(#h)" stroke="#7c2d12" stroke-width="2.5"/>
+  <circle cx="786" cy="300" r="106" fill="#fed7aa" fill-opacity="0.62" stroke="#7c2d12" stroke-width="2.5"/>
+  <circle cx="786" cy="286" r="86" fill="#ffffff" stroke="#7c2d12" stroke-width="2"/>
+  <path d="M848.4,278.5 L847.2,275.3 L845.8,272.1 L844.3,269.0 L842.6,266.0 L840.7,263.1 L838.7,260.3 L836.6,257.6 L834.3,255.0 L831.8,252.5 L829.3,250.2 L826.6,248.0 L823.9,245.9 L821.0,244.0 L818.0,242.3 L807.9,255.1 L805.5,254.0 L798.6,235.2 L795.2,234.6 L791.8,234.3 L788.3,234.0 L784.8,234.0 L781.4,234.2 L778.0,234.5 L774.5,235.0 L771.2,235.7 L767.8,236.6 L764.5,237.6 L761.3,238.8 L758.1,240.2 L755.0,241.7 L752.0,243.4 L758.0,258.5 L755.9,260.1 L736.2,256.7 L734.0,259.4 L731.9,262.1 L730.0,265.0 L728.3,268.0 L726.7,271.1 L725.2,274.2 L724.0,277.4 L722.9,280.7 L722.0,284.0 L721.2,287.4 L720.6,290.8 L720.3,294.2 L720.0,297.7 L720.0,301.2 L736.1,303.5 L736.4,306.1 L723.6,321.5 L724.8,324.7 L726.2,327.9 L727.7,331.0 L729.4,334.0 L731.3,336.9 L733.3,339.7 L735.4,342.4 L737.7,345.0 L740.2,347.5 L742.7,349.8 L745.4,352.0 L748.1,354.1 L751.0,356.0 L754.0,357.7 L764.1,344.9 L766.5,346.0 L773.4,364.8 L776.8,365.4 L780.2,365.7 L783.7,366.0 L787.2,366.0 L790.6,365.8 L794.0,365.5 L797.5,365.0 L800.8,364.3 L804.2,363.4 L807.5,362.4 L810.7,361.2 L813.9,359.8 L817.0,358.3 L820.0,356.6 L814.0,341.5 L816.1,339.9 L835.8,343.3 L838.0,340.6 L840.1,337.9 L842.0,335.0 L843.7,332.0 L845.3,328.9 L846.8,325.8 L848.0,322.6 L849.1,319.3 L850.0,316.0 L850.8,312.6 L851.4,309.2 L851.7,305.8 L852.0,302.3 L852.0,298.8 L835.9,296.5 L835.6,293.9 Z" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <circle cx="786" cy="286" r="17" fill="#ffffff" stroke="#475569" stroke-width="2"/>
+  <text x="786" y="290" font-size="10" fill="#475569" text-anchor="middle">axle</text>
+  <line x1="882" y1="190" x2="856" y2="216" stroke="#7c2d12" stroke-width="1.4"/>
+  <text x="636" y="160" font-size="12" font-weight="bold" fill="#7c2d12">① housing nose — FIXED</text>
+  <text x="636" y="175" font-size="10.5" fill="#9a3412">the shaded ring. Measure this Ø.</text>
+  <line x1="694" y1="352" x2="742" y2="324" stroke="#2563eb" stroke-width="1.2"/>
+  <text x="640" y="412" font-size="12" font-weight="bold" fill="#1e3a8a">lobed hub — ROTATES</text>
+  <text x="640" y="427" font-size="10.5" fill="#2563eb">Ø65.3, already measured</text>
+  <text x="640" y="443" font-size="10.5" fill="#64748b">gearbox body behind it is not round</text>
+  <rect x="636" y="466" width="300" height="128" rx="6" fill="#ecfdf5" stroke="#15803d" stroke-width="1.5"/>
+  <text x="652" y="488" font-size="12.5" font-weight="bold" fill="#14532d">The one-finger test</text>
+  <text x="652" y="509" font-size="12" fill="#14532d">Rest a finger on it and turn the wheel.</text>
+  <text x="652" y="532" font-size="12" fill="#1e3a8a">• <tspan font-weight="bold">turns with the wheel</tspan> → the hub.</text>
+  <text x="664" y="548" font-size="11.5" fill="#2563eb">The carrier goes there.</text>
+  <text x="652" y="570" font-size="12" fill="#334155">• <tspan font-weight="bold">stays still</tspan> → the nose.</text>
+  <text x="664" y="586" font-size="11.5" fill="#64748b">The bracket clamps there.</text>
+  <rect x="636" y="606" width="300" height="112" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="652" y="628" font-size="12.5" font-weight="bold" fill="#7f1d1d">If there is no fixed collar</text>
+  <text x="652" y="648" font-size="11.5" fill="#7f1d1d">Say so — do not improvise. The fallbacks are</text>
+  <text x="652" y="665" font-size="11.5" fill="#7f1d1d">the housing&#39;s own assembly screws, or the</text>
+  <text x="652" y="682" font-size="11.5" fill="#7f1d1d">chassis pocket it sits in. Both work, neither is</text>
+  <text x="652" y="699" font-size="11.5" fill="#7f1d1d">concentric, so both hand the gap back to you.</text>
+</svg>

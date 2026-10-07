@@ -737,6 +737,14 @@ the housing — count and thread"*, and the plan was to bolt a bracket to whatev
 teardown photographs show something better: **the gearbox housing's output end is a cylinder
 concentric with the axle.** Clamp that instead.
 
+![What to measure for the bracket: an axial section showing the fixed gearbox housing ending in a fixed cylindrical nose around the rotating lobed hub, with the carrier and magnets in the gap outboard of it and the bracket clamped round the nose; the two dimensions marked are the nose diameter and its usable length. An end view names the same circles and gives a one-finger test for telling the rotating hub from the fixed nose](../images/drive-encoder-bracket-mount.svg)
+
+**"Nose" means the fixed collar the hub comes out of** — the ring of housing that surrounds the
+lobed boss, concentric with the axle, which does **not** turn when the wheel does. It is not the
+oval gearbox body and it is not the lobed hub itself. **The one-finger test settles it:** rest a
+finger on it and turn the wheel. What turns is the hub and takes the carrier; what stays still is
+the nose and takes the bracket.
+
 | | Bolt to screw bosses | **Clamp the housing nose** |
 |---|---|---|
 | What must be measured | Boss count, thread, positions, and whether any of them face the right way | **One diameter and one length** |
@@ -761,8 +769,12 @@ two-up pad is therefore correct, not an approximation.
 
 | | |
 |---|---|
-| **Diameter of the gearbox housing nose** | *(the fixed cylinder around the hub — a wire round it, as before)* |
-| **Axial length of that nose that stays reachable with the wheel fitted** | *(the clamp has to grip something)* |
+| **① Nose diameter** | *The fixed collar's outside Ø — a wire round it, as before. This is what the clamp closes on.* |
+| **② Usable nose length** | *How much of that collar is **bare cylinder**: from where it leaves the gearbox body to where it ends. A clamp needs roughly 6–10 mm of it, and nothing — a rib, a step, a cable, the chassis — may be sitting on it.* |
+
+**Both are taken with the wheel off**, which is also when the bracket gets fitted. The only thing
+the wheel decides is whether the finished bracket fouls it, and the fit mule already answers that
+for the carrier.
 
 **Fallbacks, recorded so nobody re-derives them:** replace the housing's own assembly screws with
 longer ones and hang the bracket off those; or bolt to the black chassis pocket the gearbox sits in.
