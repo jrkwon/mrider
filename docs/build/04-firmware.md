@@ -20,6 +20,27 @@ the motor disconnected until the software is trustworthy.
 > permanent USB link, because that link carries command **and** feedback
 > ([failsafe row 2](../design/safety.md#2-failsafe-matrix)). Do it before Stage 0 — the first
 > moment both supplies are present — and the laptop at risk is a student's own.
+>
+> **Where the pads are, and how to be sure you cut the right thing.** They are on the **underside**
+> of the board, near the USB end: two small pads bridged by a **short, thin trace**. Nothing else on
+> the Teensy looks like that, but do not go by looks —
+>
+> | | |
+> |---|---|
+> | **Before** | Multimeter on continuity. One probe on the **`VIN` pin**, the other on the **USB connector's 5 V shell pin** (or the `VUSB` pad). **It should beep.** If it does not, you are on the wrong pads — stop. |
+> | **Cut** | A sharp craft knife, two or three light passes across the trace between the pads. Do not dig; the goal is to part a trace, not to carve the board. |
+> | **After** | The same continuity check. **It must now be open.** Then check `VIN` to `GND` is not shorted. |
+>
+> **After the cut, USB alone will not power the board — and that is going to surprise someone.**
+> PJRC's wording is that cutting "will isolate the USB power from the rest of the circuit board", so
+> a Teensy on a bench with nothing but a laptop cable is **dead, not broken**. On this project the
+> logic rail has to be up before the board does anything, including being programmed. **Label each
+> board** once cut, because an unlabelled cut Teensy that does not enumerate looks exactly like a
+> failed one, and there are thirteen students and no spare.
+>
+> **It is reversible** — PJRC: "the pads can be soldered together" — so a board that ends up on a
+> bench permanently can be put back. Record it in the Order Log if you do.
+
 - **Expected outcome:** the Teensy holds a commanded steering angle against a hand
   disturbance, publishes `DbwStatus` at ≥ 50 Hz with zero USB dropouts over 30 minutes, and
   both override layers are demonstrated.
