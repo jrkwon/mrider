@@ -21,13 +21,28 @@ the motor disconnected until the software is trustworthy.
 > ([failsafe row 2](../design/safety.md#2-failsafe-matrix)). Do it before Stage 0 — the first
 > moment both supplies are present — and the laptop at risk is a student's own.
 >
-> **Where the pads are, and how to be sure you cut the right thing.** They are on the **underside**
-> of the board, near the USB end: two small pads bridged by a **short, thin trace**. Nothing else on
-> the Teensy looks like that, but do not go by looks —
+> **Where the pads are, and how to be sure you cut the right thing.** On the **underside**, near the
+> USB end, **right beside the `5V` pin** — which is the top-left corner when the board is face down
+> with the USB at the top, because the columns mirror. Two small pads bridged by a **short, thin
+> trace**.
+>
+> **Expect to have trouble seeing it, and do not take that as a sign you are in the wrong place.**
+> PJRC's own page still carries a `TODO` where the photograph of these pads should be, and the
+> trace is fine enough that a loupe helps. **Identify it electrically instead** —
+>
+> | probe from | to | before the cut |
+> |---|---|---|
+> | `5V` pin | USB connector's 5 V | **beeps** — this is the path you are breaking |
+> | `5V` pin | one pad of the pair | beeps → that is the **`VIN`** side |
+> | USB 5 V | the other pad | beeps → that is the **`VUSB`** side |
+> | pad | pad | beeps → the trace between them is the cut |
+>
+> **If a candidate pair does not satisfy all four, it is not the pair. Stop and look again.**
+>
+> Then —
 >
 > | | |
 > |---|---|
-> | **Before** | Multimeter on continuity. One probe on the **`VIN` pin**, the other on the **USB connector's 5 V shell pin** (or the `VUSB` pad). **It should beep.** If it does not, you are on the wrong pads — stop. |
 > | **Cut** | A sharp craft knife, two or three light passes across the trace between the pads. Do not dig; the goal is to part a trace, not to carve the board. |
 > | **After** | The same continuity check. **It must now be open.** Then check `VIN` to `GND` is not shorted. |
 >
