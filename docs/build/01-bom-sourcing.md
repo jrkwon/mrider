@@ -548,6 +548,35 @@ This is the plan already in the BOM, made specific. Three choices decide whether
 
 ![End view and axial section of the carrier: a one-piece printed ring slides onto the six-lobe hub and presents a plain cylinder carrying eighteen alternating magnets, held by three recessed grub screws, with two Hall sensors outside it half a pitch apart](../images/drive-encoder-carrier.svg)
 
+> [!IMPORTANT]
+> **Magnet spec, fixed independently of everything still open**
+>
+> **18 × Ø5 × 2 mm, axially magnetised, neodymium N35 or better, NiCuNi.** 54 for three vehicles.
+>
+> It is worth saying why this could be ordered while the mount was still unsettled. **The count
+> survives any carrier diameter** — at Ø70 the pitch is still 12.2 mm against the 7 mm the magnets
+> need, and 18 divides by 2, 3, 6 and 9, so "half a pitch from its neighbours" holds for any
+> plausible screw count. **The size survives any air gap** the mount could plausibly force: a Ø5 × 2
+> N35 disc puts 232 mT on axis at 1 mm and still **28 mT at 5 mm**, against a ±12 mT threshold.
+>
+> | air gap | 1 mm | 2 | 3 | 4 | **5 mm** |
+> |---|---:|---:|---:|---:|---:|
+> | field | 232 | 131 | 74 | 44 | **28 mT** |
+> | × threshold | 19 | 11 | 6.2 | 3.7 | **2.3** |
+>
+> The one case that would break it is a carrier forced **narrower than 6 mm**, which a Ø5 magnet
+> cannot sit in. Against a ₩12,000 line and ₩398,424 of headroom, that risk is cheaper to carry
+> than the lead time.
+>
+> **AXIAL magnetisation is the specification that matters.** The flat faces must be the poles, so
+> that a disc lying in a radial pocket throws its field outward at the sensor. A **diametrically**
+> magnetised disc of the same dimensions is useless here and is sold alongside it. `D5x2T` discs are
+> axial by default, but confirm it on the listing.
+>
+> **Buy well over 54.** Neodymium is brittle and these snap together hard enough to chip; a magnet
+> fitted backwards is a destructive removal, not a re-do; and the first one goes into a scrap pocket
+> as a fit test. Three rings of eighteen, assembled by thirteen students, and the course runs again.
+
 | | |
 |---|---:|
 | Hub, lobe crest Ø | **65.3 mm** *(205 mm round, ±1)* |
@@ -626,8 +655,13 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > all three at once; land them on the crests and all you have is friction. This is luck turned into
 > a procedure, and it only works because 6 divides 360/3.
 >
-> Nothing here needs a hard grip anyway: the carrier transmits no torque, and the **8 mm slot
-> between the gearbox face and the wheel captures it axially** without help.
+> Nothing here needs a hard grip anyway — the carrier transmits no torque.
+>
+> **It is not captured axially, though, and this page used to say it was.** The 2026-10-08 side view
+> shows the lobed boss standing about **10 mm clear of the housing**, with a 6 mm ring going onto
+> it. There is no slot holding the ring in place; the screws hold it, and **its axial position is a
+> choice made at assembly**. Push it up against the housing end face, and do that on every vehicle —
+> otherwise the sensor bracket has three different reaches to cover.
 >
 > **The model is in the repository**: [`cad/drive_encoder_carrier.scad`](https://github.com/jrkwon/mrider/blob/main/cad/drive_encoder_carrier.scad).
 > Parametric OpenSCAD — `HUB_D` at the top is the one measured number, everything else derives from
@@ -769,7 +803,7 @@ two-up pad is therefore correct, not an approximation.
 
 | | |
 |---|---|
-| **① Nose diameter** | *The fixed collar's outside Ø — a wire round it, as before. This is what the clamp closes on.* |
+| **① Nose diameter** | *The fixed collar's outside Ø — a wire round it, as before. This is what the clamp closes on. **Two photographs disagree**: end-on reads ~Ø85–90, the side view ~Ø72–75. Close-up perspective inflates the first. Measure it.* |
 | **② Usable nose length** | *How much of that collar is **bare cylinder**: from where it leaves the gearbox body to where it ends. A clamp needs roughly 6–10 mm of it, and nothing — a rib, a step, a cable, the chassis — may be sitting on it.* |
 
 **Both are taken with the wheel off**, which is also when the bracket gets fitted. The only thing
@@ -791,7 +825,7 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 | **Smallest obstruction radius in that 8 mm slice** | **≥ 47.5 mm needed** — ring (40.5) + air gap (3) + sensor (4). *Open, but **do not measure it** — print the fit mule, refit the wheel and turn it. `RADIAL_ROOM` stays negative in the model until something settles it, and says so on every build.* |
 | Hub lobe-crest circumference, by wire | **205 mm → Ø65.3** *(2026-10-06; an earlier 63.5 mm estimate was ~2 mm low). Re-take on all three and enter the largest.* |
 | Hub form | **Six broad lobes, narrow gaps** *(2026-10-06 photographs — not a fine spline, which is why no chord correction applies)* |
-| **Axial length of the lobed boss that stays exposed with the wheel fitted** | *(Open. The ring is 6 mm wide and has to sit on that length — the fit mule answers this too)* |
+| **Does the lobed boss stand clear of the housing end?** | **Yes — about 10 mm of it** *(2026-10-08 side view). This was the risk that could have killed Branch C: an end-on photograph made the hub look recessed inside the housing collar, and a Ø81 ring cannot reach a hub sunk inside a ~Ø72 bore. It is not sunk. The 6 mm ring goes on with room to spare — and therefore does not locate itself, so see the assembly note.* |
 | **Gearbox housing nose — diameter and reachable length** | *(Open. **This is what the sensor bracket needs** — it replaces the screw-boss question, which the nose clamp makes unnecessary)* |
 
 > [!IMPORTANT]

@@ -26,8 +26,13 @@
 //   a form lock rather than friction. A hub 0.5 mm off nominal changes nothing
 //   except how far the screws go in, so one print fits all three vehicles.
 //
-//   Nothing here needs a hard grip: the carrier transmits no torque, and the
-//   8 mm slot between the gearbox face and the wheel captures it axially.
+//   Nothing here needs a hard grip either: the carrier transmits no torque.
+//   It is NOT captured axially, though — an earlier revision said the slot
+//   between the gearbox face and the wheel held it, and the 2026-10-08 side
+//   view shows the lobed boss standing about 10 mm clear of the housing with a
+//   6 mm ring on it. The screws hold it, and its axial POSITION is a choice
+//   made at assembly. Make the same choice on all three vehicles — see
+//   ASSEMBLY below — or the sensor bracket has three different reaches.
 //
 //   Build:       openscad -o carrier.stl drive_encoder_carrier.scad
 //   Bore check:  set PART = "gauge"  — print this FIRST, see FITTING below
@@ -57,7 +62,10 @@ HUB_D        = 65.3;
 // vehicles. BORE_CLEAR must stay larger than this or the bore can come out
 // SMALLER than the hub, which is the one failure the screws cannot rescue.
 HUB_TOL      = 1.0;
-// Axial room between the gearbox rotating face and the wheel, mm.
+// Axial room on the protruding lobed boss, mm. The 2026-10-08 side view reads
+// about 10 mm with the wheel off; this keeps the older, smaller "gearbox face
+// to wheel" figure because the wheel is what finally closes on it, and the fit
+// mule settles which one binds.
 AXIAL_GAP    = 8.0;
 // Smallest obstruction radius in that 8 mm slice, mm. NEGATIVE = NOT YET
 // MEASURED. Set it and the assert below proves the ring and sensor fit.
@@ -119,7 +127,7 @@ echo(str("screw reach",   REACH,  " mm past the bore, vs ", SLACK, " mm of slack
 echo(str("bore clears the largest credible hub by ", BORE_CLEAR - HUB_TOL, " mm"));
 echo(str("radial room needed ", NEED_R, " mm (ring + sensor)"));
 
-assert(WIDTH < AXIAL_GAP,  "carrier is wider than the gap between gearbox and wheel");
+assert(WIDTH < AXIAL_GAP,  "carrier is wider than the room on the boss");
 assert(MAG_D < WIDTH,      "magnet will not fit inside the carrier width");
 assert(MAG_T < WALL,       "magnet pocket would break through the back of the wall");
 assert(PITCH > MAG_D + 2,  "magnets too close — reduce N_MAG or increase WALL");
@@ -261,6 +269,11 @@ else                 carrier();
 // hand-turn check in §1.2.3 before the carrier goes near the vehicle.
 //
 // Then: heat-set the three inserts from the outside and slide the ring on.
+//
+// PUSH IT UP AGAINST THE HOUSING END FACE before tightening, and do that on
+// every vehicle. The boss is longer than the ring, so the ring does not find
+// its own place — where it stops is where you stopped it, and the sensor
+// bracket's reach is drawn to one number.
 //
 // BEFORE TIGHTENING, ROTATE THE RING ONE LOBE. Six lobes sit 60 degrees apart
 // and the three screws 120, which is exactly two lobe pitches — so all three
