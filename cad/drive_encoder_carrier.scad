@@ -49,7 +49,7 @@ GAUGE_DELTA  = 0.0;
 /* [Measured on the vehicle] */
 // Crest diameter of the gearbox output hub, mm.
 //
-// MEASURED DIRECTLY, 2026-10-09: a tape across two opposite lobe crests, three
+// MEASURED DIRECTLY, 2026-10-08: a tape across two opposite lobe crests, three
 // positions round the hub, 63.0 every time. Six lobes is an EVEN count, so
 // opposite crests face each other and a straight measurement reads the crest
 // circle. Do this. Do not wrap.

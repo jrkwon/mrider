@@ -544,7 +544,7 @@ failure modes for students to learn, not two.
 
 This is the plan already in the BOM, made specific. Three choices decide whether it is reliable:
 
-**The hub measures 63.0 mm across opposite lobe crests (2026-10-09), and that settles the build.**
+**The hub measures 63.0 mm across opposite lobe crests (2026-10-08), and that settles the build.**
 
 ![End view and axial section of the carrier: a one-piece printed ring slides onto the six-lobe hub and presents a plain cylinder carrying eighteen alternating magnets, held by three recessed grub screws, with two Hall sensors outside it half a pitch apart](../images/drive-encoder-carrier.svg)
 
@@ -872,7 +872,7 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 |---|---|
 | **Axial clearance, gearbox rotating part → wheel** | **≥ 8 mm** — *measured on the delivered vehicle and **this is what decided Branch C**. It was not written down at the time; recorded 2026-10-03.* |
 | **Smallest obstruction radius in that 8 mm slice** | **≥ 46.1 mm needed** — ring (39.1) + air gap (3) + sensor (4). *Open, but **do not measure it** — print the fit mule, refit the wheel and turn it. `RADIAL_ROOM` stays negative in the model until something settles it, and says so on every build.* |
-| Hub lobe-crest Ø, across opposite crests | **63.0 mm** *(2026-10-09, three positions. Supersedes a 205 mm wire reading that was 2.3 mm high — see the wrap note.)* Re-take on all three and enter the largest. |
+| Hub lobe-crest Ø, across opposite crests | **63.0 mm** *(2026-10-08, three positions. Supersedes a 205 mm wire reading that was 2.3 mm high — see the wrap note.)* Re-take on all three and enter the largest. |
 | Hub form | **Six broad lobes, narrow gaps** *(2026-10-06 photographs — not a fine spline, which is why no chord correction applies)* |
 | **Does the lobed boss stand clear of the housing end?** | **Yes — about 10 mm of it** *(2026-10-08 side view). This was the risk that could have killed Branch C: an end-on photograph made the hub look recessed inside the housing collar, and a Ø81 ring cannot reach a hub sunk inside a ~Ø72 bore. It is not sunk. The 6 mm ring goes on with room to spare — and therefore does not locate itself, so see the assembly note.* |
 | **Gearbox housing nose — diameter and reachable length** | *(Open. **This is what the sensor bracket needs** — it replaces the screw-boss question, which the nose clamp makes unnecessary)* |
