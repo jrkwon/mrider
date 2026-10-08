@@ -263,10 +263,25 @@ else                 carrier();
 // reversed disc directly; the hand-turn signal check only tells you that one
 // exists, and then you count from the index groove to find it.
 //
-// MAGNET ORDER MATTERS. At this pitch every magnet can feel its neighbours and
-// the alternating pattern pushes each one toward the wrong orientation. Press
-// each magnet fully home, add adhesive, let it cure, then fit the next. Run the
-// hand-turn check in §1.2.3 before the carrier goes near the vehicle.
+// MAGNETS. Degrease them and the pockets with IPA first — they ship oiled, and
+// that is the usual reason a magnet bond fails. Pull them off the shipped stack
+// one at a time and dot the face that pointed the same way each time; then fit
+// dot-out, dot-in, dot-out, starting dot-out at the index groove. Polarity
+// becomes something you can see instead of something you have to test.
+//
+// Press each fully home, flush with the track, then ONE drop of thin CA at the
+// rim and wipe the excess BEFORE it cures — a cured bead proud of the track is
+// the exact fault this part is shaped to avoid, and the sensor passes 1-3 mm
+// away. No accelerator: it leaves the joint foamy and the residue stands proud.
+//
+// Nothing has to be clamped while it cures. An earlier revision of this file
+// said the alternating pattern pushes each magnet toward the wrong orientation;
+// it is the opposite. Side-by-side dipoles prefer to sit ANTIPARALLEL, which is
+// what an alternating ring is, so the neighbour field summed at a magnet's seat
+// (+2.57 mT) is ALIGNED with it — a correct magnet is held correct. A reversed
+// one is being pushed to flip, but at 0.09 mN*m, about 4 gf at the rim, it will
+// not climb out of an interference pocket. The hand-turn check in §1.2.3 is
+// still what catches it. Run it before the carrier goes near the vehicle.
 //
 // Then: heat-set the three inserts from the outside and slide the ring on.
 //
