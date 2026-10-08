@@ -186,7 +186,7 @@ shaft was going to be. The buildable form is specified in full at
 3. **Fit the carrier**, rotating it one lobe so the three grub screws drop into lobe gaps rather
    than onto crests, and tighten them in rotation so the ring centres itself.
 4. **Bracket the two Hall latches to something that does not turn**, with both sensors in one
-   printed part so their **7.07 mm** spacing is fixed by construction rather than by assembly.
+   printed part so their **6.82 mm** spacing is fixed by construction rather than by assembly.
 5. **Route the encoder cable away from the motor leads.** Encoder lines next to a PWM'd motor pick
    up noise that reads as phantom ticks.
 

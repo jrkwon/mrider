@@ -98,7 +98,7 @@
   <text x="636" y="175" font-size="10.5" fill="#9a3412">the shaded ring. Measure this Ø.</text>
   <line x1="694" y1="352" x2="742" y2="324" stroke="#2563eb" stroke-width="1.2"/>
   <text x="640" y="412" font-size="12" font-weight="bold" fill="#1e3a8a">lobed hub — ROTATES</text>
-  <text x="640" y="427" font-size="10.5" fill="#2563eb">Ø65.3, already measured</text>
+  <text x="640" y="427" font-size="10.5" fill="#2563eb">Ø63.0, measured across</text>
   <text x="640" y="443" font-size="10.5" fill="#64748b">gearbox body behind it is not round</text>
   <rect x="636" y="466" width="300" height="128" rx="6" fill="#ecfdf5" stroke="#15803d" stroke-width="1.5"/>
   <text x="652" y="488" font-size="12.5" font-weight="bold" fill="#14532d">The one-finger test</text>

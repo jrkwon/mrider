@@ -49,19 +49,31 @@ GAUGE_DELTA  = 0.0;
 /* [Measured on the vehicle] */
 // Crest diameter of the gearbox output hub, mm.
 //
-// Measured 2026-10-06: a wire laid round the crests reads 205 mm, so 65.25.
+// MEASURED DIRECTLY, 2026-10-09: a tape across two opposite lobe crests, three
+// positions round the hub, 63.0 every time. Six lobes is an EVEN count, so
+// opposite crests face each other and a straight measurement reads the crest
+// circle. Do this. Do not wrap.
 //
-// The hub is NOT a fine spline. It is SIX broad lobes separated by narrow gaps,
-// so a wire rides the crest ARCS and only chords across each gap. The loss is
-// about 0.1 mm at a 20-degree gap and still only 0.37 mm at 30 — far inside the
-// +-1 mm of the measurement itself. (An earlier revision applied a point-crest
-// polygon correction of up to 0.75 mm. That model is for splines whose crests
-// are points, and it does not describe this hub.)
-HUB_D        = 65.3;
-// How uncertain that measurement is, mm — the wire, and the spread across three
-// vehicles. BORE_CLEAR must stay larger than this or the bore can come out
-// SMALLER than the hub, which is the one failure the screws cannot rescue.
-HUB_TOL      = 1.0;
+// A wire round the crests had read 205 mm, and two corrections were argued over
+// that number before anyone measured across it. Both were wrong:
+//
+//   * 205/pi = 65.25 ignores that THE WIRE HAS THICKNESS. Its centreline sits
+//     half a wire-diameter off the surface, so what you measure is
+//     pi*(D + d_wire), not pi*D. A 2 mm wire gives 65.25 - 2.0 = 63.25 against
+//     the 63.0 measured across. That is the entire discrepancy.
+//   * a polygon "chord" correction was then argued on top of it, pushing the
+//     figure to 66.0 — in the WRONG DIRECTION, and for a crest form this hub
+//     does not have.
+//
+// Net: HUB_D was carried 2.3 mm too large, the bore came out 4 mm oversize, and
+// a 20 g ring was printed that could not be clamped. If a wrap is ever the only
+// option, SUBTRACT THE WIRE OR STRIP THICKNESS.
+HUB_D        = 63.0;
+// How uncertain that measurement is, mm. A tape resolves about half a
+// millimetre and reads SHORT if it misses the centre, plus the spread across
+// three vehicles. BORE_CLEAR must stay larger than this or the bore can come
+// out SMALLER than the hub, which is the one failure the screws cannot rescue.
+HUB_TOL      = 0.6;
 // Axial room on the protruding lobed boss, mm. The 2026-10-08 side view reads
 // about 10 mm with the wheel off; this keeps the older, smaller "gearbox face
 // to wheel" figure because the wheel is what finally closes on it, and the fit
@@ -74,7 +86,7 @@ RADIAL_ROOM  = -1;
 /* [Carrier] */
 WALL         = 7.0;         // radial wall thickness, mm
 WIDTH        = 6.0;         // axial width, mm — leaves 1 mm each side in AXIAL_GAP
-BORE_CLEAR   = 1.7;         // bore = HUB_D + this. CLEARANCE, not interference.
+BORE_CLEAR   = 1.2;         // bore = HUB_D + this. CLEARANCE, not interference.
 
 /* [Magnets] */
 N_MAG        = 18;          // 9 pole pairs -> 36 counts/rev. Must divide by N_SET.
@@ -222,11 +234,12 @@ if (PART == "gauge") gauge();
 else                 carrier();
 
 // ---- fitting -------------------------------------------------------------
-// 1. Measure HUB_D with a WIRE round the crests: wrap, mark the overlap,
-//    measure the length, divide by pi. On this hub — six broad lobes, narrow
-//    gaps — the wire rides the crest arcs and the chord loss is about 0.1 mm,
-//    so no correction is worth applying. Do all three vehicles, enter the
-//    LARGEST, and keep BORE_CLEAR above the spread.
+// 1. Measure HUB_D ACROSS TWO OPPOSITE LOBE CRESTS. Six lobes is even, so
+//    opposite crests face each other and a caliper — or even a tape — reads the
+//    crest circle directly. Three positions round the hub, all three vehicles,
+//    enter the LARGEST, and keep BORE_CLEAR above the spread. If you must wrap
+//    instead, subtract the wire or strip thickness: getting that wrong once
+//    already cost a print.
 // 2. Print PART = "gauge" at GAUGE_DELTA = 0. If it will not go on, print
 //    +0.4; if it is sloppy enough to sit visibly off centre, print -0.4.
 // 3. The right one slides on by hand over the full 6 mm and rattles slightly.
