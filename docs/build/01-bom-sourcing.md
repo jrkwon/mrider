@@ -753,12 +753,64 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > to find which.
 >
 > **Do this on all three carriers and record it.** It is the acceptance test for #6c.
+
+> [!IMPORTANT]
+> **Bonding the magnets — the bond carries almost nothing, so pick for durability and cleanliness**
 >
-> **The magnets will also fight you during assembly.** At 14.14 mm spacing each one is close enough
-> to feel its neighbours, and an alternating pattern means every magnet is being pushed toward the
-> orientation that is *wrong*. **Make the pockets a press fit and add adhesive** — a pocket that
-> only locates and relies on glue will let one rotate before the glue cures, which is the failure
-> the check above then catches at the end of a wasted hour.
+> Work out the load before choosing an adhesive. A Ø5 × 2 disc weighs **0.3 g**, and at a walking
+> pace the wheel turns about 2.6 rev/s, so the centrifugal force at R 39.5 mm is **0.003 N — a
+> third of a gramme-force**. Nothing structural is being asked of this joint. What the adhesive
+> actually has to do is stop a magnet **creeping out of a plastic pocket over a semester** and keep
+> moisture off the nickel. The press fit does the holding; the adhesive locks and seals it.
+>
+> **Method: press fit, then wick thin cyanoacrylate at the rim.**
+>
+> 1. **Degrease the magnets and the pockets with IPA.** Magnets ship with an oil film, and this is
+>    the single most common reason a magnet bond fails. Nothing else on this list matters as much.
+> 2. **Mark one face of every magnet.** Pull them off the shipped stack one at a time and put a
+>    marker dot on the face that was pointing the same way each time. You never need to know which
+>    pole it is — only that all the dots match. Then fit **dot-out, dot-in, dot-out…**, starting
+>    dot-out at the index groove. Polarity becomes a thing you can *see* instead of a thing you have
+>    to test.
+> 3. **Press each magnet fully home, flush with the track.** Check the first pocket on a scrap or on
+>    one position before committing to eighteen.
+> 4. **One small drop of thin, low-viscosity CA at the rim.** Capillary action takes it into what is
+>    left of the clearance. Thick gel CA will not wick and will sit proud.
+> 5. **Wipe the excess immediately, before it cures.** A cured bead standing proud of the track is
+>    precisely the fault this entire part is shaped to avoid, and the sensor passes 1–3 mm away.
+> 6. **No accelerator.** Sprayed into the joint it makes the bond foamy and brittle and leaves
+>    residue standing proud — see the previous point.
+> 7. **Let it cure fully before the hand-turn check**, and keep CA out of the bore and off the
+>    grub-screw inserts.
+>
+> **Why not epoxy,** which bonds nickel and PETG better and resists heat and moisture better: it
+> needs a **clearance** for its glue line, and an interference fit scrapes it off on the way in.
+> Switching to a clearance pocket means the magnets are loose until cured, and the pockets are
+> horizontal when the carrier lies flat, so they would have to be filled one at a time with the ring
+> rotated pocket-up — eighteen times, inside a five-minute pot life. For a joint carrying 0.3 gf
+> that is a poor trade. **If a carrier ever comes back with magnets loose, this is the first thing
+> to change** — clearance pocket, epoxy, ring stood on edge.
+>
+> **An earlier revision of this page said the magnets fight you during assembly, and that an
+> alternating pattern pushes each one toward the orientation that is wrong. It is the opposite.**
+> *Corrected 2026-10-08.* Side-by-side dipoles prefer to sit **antiparallel**, and alternating
+> radial poles on a ring is exactly that arrangement — it is the low-energy state, which is why a
+> magnetised ring adopts it on its own. Summing the neighbour field at one magnet's seat over the
+> whole ring gives **+2.57 mT pointing outward**, aligned with that magnet's own moment. **A
+> correctly fitted magnet is held correct by its neighbours.**
+>
+> Two things follow, and both make assembly easier rather than harder:
+>
+> - **Nothing has to be clamped while adhesive cures.** The restoring torque is about
+>   **0.09 mN·m** — roughly 4 gf at the rim of the disc. The earlier instruction to glue and cure
+>   each magnet before fitting the next was answering a problem that does not exist.
+> - **A reversed magnet still will not right itself.** It is in the *unstable* state and is being
+>   pushed to flip, but 4 gf does not move a disc out of an interference pocket. The acceptance
+>   check above is still the thing that catches it.
+>
+> **The real hazard is in the air, not in the pocket.** A loose magnet brought near the ring snaps
+> onto the nearest fitted one face-to-face, which is the strongest attraction available, and
+> neodymium chips when it does that. Keep the box away from the work.
 
 **Also pin:** 3.3 V supply, or an open-drain part with a 3.3 V pull-up — [the Teensy is not 5 V
 tolerant](#7-8-11-12-14-what-to-actually-buy) — and feed A/B to **two of the Teensy's four hardware
