@@ -157,16 +157,17 @@ agreed to. Divergences are listed here instead, and the live state of every item
 | 13 | Steering coupler + magnet mount, ₩20,000 | **Partly unneeded** — no motor coupler required | 0 *(pending)* | The stock motor is already coupled to the linkage. The angle-sensor magnet mount is still required |
 | 8 | E-stop + contactor, ₩35,000 | Split into **8a** contactor ₩11,000 · **8b** button ₩11,924 = **₩22,924** | **−36,228** | The line hid two parts from two vendors on different dates. Both now ordered; the button came in well under the estimate |
 | 6d | *(part of the ₩6,000 #6 line)* | **₩15,000** — fasteners **plus adhesive and IPA** | **+12,000** | The assembly procedure requires **thin cyanoacrylate** to lock the magnets into their pockets and **isopropyl alcohol** to degrease them first, and the line funded neither. Both are shared across the three vehicles. Same class of omission as **#6c**, caught before it reached a build rather than after |
-| | | **Net** | **−307,904** | |
+| 6b | Magnet, ₩4,000 × 3 = ₩12,000 | **₩19,890** — one shared 200-piece pack | **+7,890** | Priced per vehicle; bought once. 54 discs are needed and 200 cost ₩19,890, so the spares are free in every sense that matters — neodymium chips, and a magnet fitted backwards is a destructive removal |
+| | | **Net** | **−300,014** | |
 
-**Projected total ₩3,613,576 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows.
+**Projected total ₩3,621,466 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows.
 
 > [!IMPORTANT]
 > **What was actually approved: a ceiling of ₩4,000,000, not this line-item schedule**
 >
 > The university approved a **total**. Individual items may move in price, be substituted, split,
 > or dropped **without further approval**. Only the total binds, and the live figure against it is
-> **₩3,613,576 projected, ₩386,424 of headroom**.
+> **₩3,621,466 projected, ₩378,534 of headroom**.
 >
 > So the amendments above are **not an approval trail** — nothing in them needed permission. They
 > exist for the reason this document already states: *"the estimates above will not match, and the

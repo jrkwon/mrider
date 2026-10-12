@@ -510,16 +510,26 @@ wants a **10 kΩ pull-up to 3.3 V**. Nothing on this cable goes above the Teensy
 > the same 해외구매 route [#3](#12-order-long-lead-items-first) already used for the Cytron. Listed
 > that day, `LPG` being the TO-92 package:
 >
-> | part | threshold | listed |
-> |---|---|---:|
-> | **`DRV5013BCQLPGQ1`** | **±12 mT** — take this | **₩2,410** |
-> | `DRV5013AGQLPGQ1` | ±6 mT | ₩1,460 |
-> | `DRV5013ADQLPG` | ±2.7 mT — too sensitive here | ₩1,910 |
+> **Buy `DRV5013BCELPEM`** — 디바이스마트 [13173732](https://www.devicemart.co.kr/goods/view?no=13173732),
+> *Digital Switch Latch Open Drain Hall Effect TO-92-3*, DigiKey `296-DRV5013BCELPEMCT-ND`. **`BC` is
+> the ±12 mT variant** this section argues for and **`E` is the −40…150 °C temperature grade**.
 >
-> Minimum order 1, lead **5–14 days**. Six sensors plus spares is ₩20,000-odd against a ₩42,000
-> line. **Do not order the `DBZ` parts** that come up alongside — those are SOT-23, and TO-92 is the
-> whole point. **US1881 (TO-92, marked `U18` / `OH188`)** stays the fallback if lead time bites, at
-> the cost of the 5 V feed.
+> | | |
+> |---|---|
+> | Price | **₩930 each, ₩780 at 10+** — ten is **₩8,580 incl. VAT** against a ₩42,000 line |
+> | Stock / lead | 375, DigiKey **4–5 days** |
+> | Terms | **반품 불가.** Buy **ten**: six fitted, four spare, and there is no sending them back |
+>
+> **Two traps found the hard way.** The obvious catalogue page for this part —
+> [13173897](https://www.devicemart.co.kr/goods/view?no=13173897), `DRV5013BCQLPGQ1` — shows 995 in
+> stock and four tiers of bulk pricing and is **판매중지**; the buy button is dead and nothing above
+> it says so. And the Element14 row in the realtime search looks cheapest at ₩970, but **Element14
+> carries a ₩20,000 handling charge**, which turns ten pieces into ₩29,700 and reverses the whole
+> comparison. **Check the cart for a 해외구매 수수료 before paying** — that line is what decided this.
+>
+> **Do not order the `DBZ` parts** that come up alongside: those are SOT-23, and TO-92 is the whole
+> point. **US1881 (TO-92, marked `U18` / `OH188`)** stays the fallback if lead time bites, at the
+> cost of the 5 V feed.
 
 ##### C-abs — AS5600 on the axle centreline *(withdrawn — see the figure)*
 
