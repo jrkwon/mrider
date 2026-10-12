@@ -557,6 +557,14 @@ This is the plan already in the BOM, made specific. Three choices decide whether
 
 **The hub measures 63.0 mm across opposite lobe crests (2026-10-08), and that settles the build.**
 
+![Hub and bore defined: left, the six-lobe rotating boss on the vehicle, whose Ø63.0 is measured across two opposite lobe crests and is not the smaller root diameter; middle, the printed carrier, whose Ø64.2 bore faces the hub while its Ø78.2 outside diameter is the magnet track; bottom, the two assembled with the deliberate 0.60 mm per-side clearance drawn magnified, and the three mistakes already made — taking the fixed grey collar for the hub, taking root Ø for crest Ø, and wrapping with something whose own thickness was never subtracted](../images/hub-and-bore.svg)
+
+**Two diameters near 63 mm, and they are not the same thing.** The **hub** is on the vehicle, it
+rotates, and you *measure* it — across two opposite lobe crests, which works because six is an even
+count. The **bore** is the hole in the printed carrier, and you *print* it. The carrier also has an
+**outside** diameter, Ø78.2, which is the magnet track and faces the sensor; the bore faces the hub.
+**bore − hub = 1.2 mm, 0.60 mm a side, deliberately.**
+
 ![End view and axial section of the carrier: a one-piece printed ring slides onto the six-lobe hub and presents a plain cylinder carrying eighteen alternating magnets, held by three recessed grub screws, with two Hall sensors outside it half a pitch apart](../images/drive-encoder-carrier.svg)
 
 > [!IMPORTANT]
