@@ -529,8 +529,13 @@ wants a **10 kΩ pull-up to 3.3 V**. Nothing on this cable goes above the Teensy
 > stock and four tiers of bulk pricing and is **판매중지**; the buy button is dead and nothing above
 > it says so. And the Element14 row in the realtime search looks cheapest at ₩970, but **Element14
 > carries a ₩20,000 handling charge**, which turns ten pieces into ₩29,700 and reverses the whole
-> comparison. **Check the cart for a 해외구매 수수료 before paying** — that line is what decided this,
-> and it is the one figure that was never visible from any page.
+> comparison.
+>
+> **Answered at the till, 2026-10-12: there is no 해외구매 수수료 on this route.** Twenty came to
+> **₩17,160 incl. VAT plus ₩2,700 of ordinary carriage — ₩19,860**, against Element14's ₩29,700 for
+> ten. A 디바이스마트 catalogue item sourced through DigiKey costs **ex-VAT × 1.1 and domestic postage,
+> nothing else**, and that is worth carrying forward: **Element14's ₩20,000 is specific to Element14**,
+> not a property of buying from abroad, and the next overseas line should not be priced as if it were.
 >
 > **The route deliberately not taken:** `US1881` from AliExpress, about ₩3,000 for ten with no fee —
 > a tenth of the price. It costs **2–4 weeks**, it needs a 5 V feed rather than the 3.3 V rail, and
