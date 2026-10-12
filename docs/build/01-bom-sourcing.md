@@ -516,16 +516,27 @@ wants a **10 kΩ pull-up to 3.3 V**. Nothing on this cable goes above the Teensy
 >
 > | | |
 > |---|---|
-> | Price | **₩930 each, ₩780 at 10+** — ten is **₩8,580 incl. VAT** against a ₩42,000 line |
+> | Price | **₩930 each, ₩780 at 10–25** — **twenty is ₩17,160 incl. VAT** against a ₩42,000 line |
 > | Stock / lead | 375, DigiKey **4–5 days** |
-> | Terms | **반품 불가.** Buy **ten**: six fitted, four spare, and there is no sending them back |
+> | Terms | **반품 불가.** Buy **twenty**: six fitted, fourteen spare. The extra ten cost ₩7,800 and the part is soldered by thirteen students onto a package where reversed `VCC`/`GND` destroys it — spares turn a wiring mistake into a lost part rather than a lost week |
+>
+> **No domestic latch exists, so some overseas route is unavoidable.** *Checked 2026-10-12:*
+> 디바이스마트's 마그네틱스위치 category with **품절 and 해외구매 both excluded**, searched for `latch`,
+> returns **0 results**. Plenty of A3144-class *switches* are stocked here; latches are not.
 >
 > **Two traps found the hard way.** The obvious catalogue page for this part —
 > [13173897](https://www.devicemart.co.kr/goods/view?no=13173897), `DRV5013BCQLPGQ1` — shows 995 in
 > stock and four tiers of bulk pricing and is **판매중지**; the buy button is dead and nothing above
 > it says so. And the Element14 row in the realtime search looks cheapest at ₩970, but **Element14
 > carries a ₩20,000 handling charge**, which turns ten pieces into ₩29,700 and reverses the whole
-> comparison. **Check the cart for a 해외구매 수수료 before paying** — that line is what decided this.
+> comparison. **Check the cart for a 해외구매 수수료 before paying** — that line is what decided this,
+> and it is the one figure that was never visible from any page.
+>
+> **The route deliberately not taken:** `US1881` from AliExpress, about ₩3,000 for ten with no fee —
+> a tenth of the price. It costs **2–4 weeks**, it needs a 5 V feed rather than the 3.3 V rail, and
+> Hall sensors are a category where relabelled parts are common, so a "latch" that turns out to be a
+> switch would be found only by testing. Against ₩378,534 of headroom, ₩20,000-odd buys three weeks
+> of schedule and a part whose provenance is not in question.
 >
 > **Do not order the `DBZ` parts** that come up alongside: those are SOT-23, and TO-92 is the whole
 > point. **US1881 (TO-92, marked `U18` / `OH188`)** stays the fallback if lead time bites, at the
