@@ -498,10 +498,21 @@ way round. That is handled below rather than wished away.
 > and costs noise immunity next to a PWM'd motor. `FA/FD` (±1.3 mT) and `AD/ND` (±2.7 mT) are for
 > weak fields; this is not one.
 >
-> **Availability:** stocked at DigiKey and Mouser at roughly **$0.47–0.67** in ones, which for
-> **6 sensors plus spares** is a rounding error against the postage. It is not a Korean domestic
-> shelf item, so order it with something else. **US1881 (TO-92, marked `U18` / `OH188`)** is the
-> fallback if lead time bites — cheap and everywhere, at the cost of the 5 V feed.
+> **Availability — no international order is needed.** *Checked 2026-10-12.* 디바이스마트's own shelf
+> carries neither `DRV5013` nor `US1881`, but its **realtime DigiKey/Mouser search does**, which is
+> the same 해외구매 route [#3](#12-order-long-lead-items-first) already used for the Cytron. Listed
+> that day, `LPG` being the TO-92 package:
+>
+> | part | threshold | listed |
+> |---|---|---:|
+> | **`DRV5013BCQLPGQ1`** | **±12 mT** — take this | **₩2,410** |
+> | `DRV5013AGQLPGQ1` | ±6 mT | ₩1,460 |
+> | `DRV5013ADQLPG` | ±2.7 mT — too sensitive here | ₩1,910 |
+>
+> Minimum order 1, lead **5–14 days**. Six sensors plus spares is ₩20,000-odd against a ₩42,000
+> line. **Do not order the `DBZ` parts** that come up alongside — those are SOT-23, and TO-92 is the
+> whole point. **US1881 (TO-92, marked `U18` / `OH188`)** stays the fallback if lead time bites, at
+> the cost of the 5 V feed.
 
 ##### C-abs — AS5600 on the axle centreline *(withdrawn — see the figure)*
 
