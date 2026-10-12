@@ -68,12 +68,33 @@ GAUGE_DELTA  = 0.0;
 // Net: HUB_D was carried 2.3 mm too large, the bore came out 4 mm oversize, and
 // a 20 g ring was printed that could not be clamped. If a wrap is ever the only
 // option, SUBTRACT THE WIRE OR STRIP THICKNESS.
+//
+// THREE MEASUREMENTS NOW DISAGREE, and the spread is about a millimetre:
+//
+//     wire wrap 205 mm, less 2 mm wire ....... 63.25
+//     tape ACROSS opposite crests, x3 ........ 63.00
+//     thin paper wrap 195 mm, less 0.1 ....... 61.97
+//
+// The wraps are the suspect ones, and they err in opposite directions: thickness
+// pushes a wrap HIGH, chording across the six gaps pushes it LOW. Paper takes
+// the shortest path between contact points however carefully it is held, and
+// gaps of 35-40 degrees would account for the whole discrepancy on their own.
+// The tape across two opposite crests has NO chord term at all, which is the
+// reason to prefer it.
+//
+// This stays at 63.0 anyway, and not because the argument above is decisive.
+// Erring high is the safe direction: a bore that comes out under the hub does
+// not go on at all, while a bore over it only means the screws travel further.
+// And the Ø64.2 bore has already been printed and fitted, which outranks all
+// three numbers. Across the whole 62.0-63.6 band the screws close the gap with
+// at least 3x margin, so the millimetre does not reach the part.
 HUB_D        = 63.0;
 // How uncertain that measurement is, mm. A tape resolves about half a
 // millimetre and reads SHORT if it misses the centre, plus the spread across
-// three vehicles. BORE_CLEAR must stay larger than this or the bore can come
-// out SMALLER than the hub, which is the one failure the screws cannot rescue.
-HUB_TOL      = 0.6;
+// three vehicles — now also the 62.0-63.25 spread between three methods.
+// BORE_CLEAR must stay larger than this or the bore can come out SMALLER than
+// the hub, which is the one failure the screws cannot rescue.
+HUB_TOL      = 1.0;
 // Axial room on the protruding lobed boss, mm. The 2026-10-08 side view reads
 // about 10 mm with the wheel off; this keeps the older, smaller "gearbox face
 // to wheel" figure because the wheel is what finally closes on it, and the fit

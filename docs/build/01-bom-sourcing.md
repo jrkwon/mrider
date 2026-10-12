@@ -598,7 +598,7 @@ count. The **bore** is the hole in the printed carrier, and you *print* it. The 
 
 | | |
 |---|---:|
-| Hub, lobe crest Ø | **63.0 mm** *(across opposite crests, three positions)* |
+| Hub, lobe crest Ø | **63.0 mm** *(across opposite crests; three methods span 62.0–63.25 — see below)* |
 | Printed ring bore — **clearance, not a fit** | **Ø64.2 mm** |
 | Printed ring, 7 mm wall | **OD 78.2 mm** |
 | Magnet track circumference | **245.7 mm** |
@@ -750,6 +750,24 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > *A clearance bore does not save you from a wrong input, which is why `BORE_CLEAR` must stay larger
 > than `HUB_TOL` and the model now `assert`s it. **If a wrap is ever the only option, subtract the
 > wire or strip thickness.***
+>
+> **And then stop measuring.** *2026-10-12.* A thin paper wrap, deliberately held circular, read
+> 195 mm → **62.0**, a millimetre under the across-crests figure. Wraps err in both directions —
+> thickness high, chording low — and paper takes the shortest path between contact points however
+> carefully it is held. **`HUB_D` stays at 63.0**, not because that argument is decisive but because
+> erring high is the safe direction, and because **the Ø64.2 bore has already been printed and
+> fitted, which outranks all three numbers.**
+>
+> | if the hub is really | gap per side | screws reach |
+> |---|---:|---|
+> | 62.0 | 1.10 mm | 3.00 mm — fine |
+> | 63.0 | 0.60 mm | 3.00 mm — fine |
+> | 63.6 | 0.30 mm | 3.00 mm — fine |
+>
+> **The millimetre does not reach the part.** Its only consequence is more play, and more play is
+> more potential eccentricity — which a *latch* is immune to, because its edges come from the field
+> reversing sign rather than from a threshold on its strength. `HUB_TOL` goes to 1.0 to carry the
+> spread honestly.
 
 > [!IMPORTANT]
 > **A reversed magnet cannot be prevented. Make it visible instead.**
@@ -891,7 +909,7 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 |---|---|
 | **Axial clearance, gearbox rotating part → wheel** | **≥ 8 mm** — *measured on the delivered vehicle and **this is what decided Branch C**. It was not written down at the time; recorded 2026-10-03.* |
 | **Smallest obstruction radius in that 8 mm slice** | **≥ 46.1 mm needed** — ring (39.1) + air gap (3) + sensor (4). *Open, but **do not measure it** — print the fit mule, refit the wheel and turn it. `RADIAL_ROOM` stays negative in the model until something settles it, and says so on every build.* |
-| Hub lobe-crest Ø, across opposite crests | **63.0 mm** *(2026-10-08, three positions. Supersedes a 205 mm wire reading that was 2.3 mm high — see the wrap note.)* Re-take on all three and enter the largest. |
+| Hub lobe-crest Ø, across opposite crests | **63.0 mm** *(2026-10-08, three positions).* **Three methods now disagree by about a millimetre:** wire wrap less its thickness **63.25**, tape across crests **63.00**, thin paper wrap less its thickness **61.97** (2026-10-12). The wraps err both ways — thickness pushes them high, chording across the six gaps pushes them low, and 35–40° gaps would account for the whole spread. **The across-crests figure has no chord term and is kept.** It does not reach the part: see below. |
 | Hub form | **Six broad lobes, narrow gaps** *(2026-10-06 photographs — not a fine spline, which is why no chord correction applies)* |
 | **Does the lobed boss stand clear of the housing end?** | **Yes — about 10 mm of it** *(2026-10-08 side view). This was the risk that could have killed Branch C: an end-on photograph made the hub look recessed inside the housing collar, and a Ø81 ring cannot reach a hub sunk inside a ~Ø72 bore. It is not sunk. The 6 mm ring goes on with room to spare — and therefore does not locate itself, so see the assembly note.* |
 | **Gearbox housing nose — diameter and reachable length** | *(Open. **This is what the sensor bracket needs** — it replaces the screw-boss question, which the nose clamp makes unnecessary)* |
