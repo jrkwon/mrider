@@ -324,6 +324,14 @@ else                 carrier();
 // its own place — where it stops is where you stopped it, and the sensor
 // bracket's reach is drawn to one number.
 //
+// DO NOT DRILL THE HUB to give the screws a dimple. It is the plastic part
+// that carries full drive torque to the wheel, the vehicle has to stay
+// returnable to factory condition (02-mechanical 2.8), and the load is 0.3 gf —
+// a cup point forms its own seat in a few turns. A lobe gap stops rotation but
+// not sliding, since it is an axial groove; axial position is held by friction
+// and by having pushed the ring home. If one ever creeps, use a drop of
+// adhesive, not a hole.
+//
 // BEFORE TIGHTENING, ROTATE THE RING ONE LOBE. Six lobes sit 60 degrees apart
 // and the three screws 120, which is exactly two lobe pitches — so all three
 // screws are always in the SAME place on the lobe pattern. Turn the ring until

@@ -668,6 +668,24 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > it, and tightened unevenly pushes the ring off centre. Run them down **in rotation**, a turn each,
 > so the ring centres itself. Blue threadlocker.
 >
+> **Do not drill the hub.** The thought comes up because a grub screw looks like it wants a dimple
+> to sit in, and on a metal shaft it often would. Three reasons not to here:
+>
+> - **The hub is the plastic part that carries the full drive torque to the wheel.** A hole in it is
+>   a stress raiser in the one component whose failure stops the vehicle driving.
+> - **It is irreversible, and this project requires the vehicle not to be.**
+>   [02-mechanical §2.8](02-mechanical.md) asks the builder to be able to *describe, out loud, how to
+>   return this vehicle to factory condition.* Nine drilled holes across three vehicles is the answer
+>   being "I cannot."
+> - **Nothing needs the grip.** The load is the carrier's own centrifugal force, **0.3 gf**. A
+>   cup-point screw tightened onto plastic forms its own seat in a few turns and that is already
+>   orders of magnitude more than is being asked.
+>
+> **A lobe gap resists rotation but not sliding** — it is an axial groove, so the screw can travel
+> along it. Axial position is held by friction and by having pushed the ring against the housing
+> face, which is enough against vibration alone. **If a carrier ever does creep, the answer is a
+> drop of adhesive, not a hole.**
+>
 > **Rotate the ring one lobe before tightening.** Six lobes sit 60° apart and the three screws 120°,
 > which is exactly **two lobe pitches** — so all three screws are always in the *same* place on the
 > lobe pattern. Turn the ring until they drop into the **gaps** and you get a positive form lock on

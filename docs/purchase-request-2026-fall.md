@@ -156,16 +156,17 @@ agreed to. Divergences are listed here instead, and the live state of every item
 | 4 | Steering gearmotor + encoder, ₩48,000 | **Expected ₩0** — the delivered vehicle has a **stock steering gearmotor** | 0 *(pending)* | Confirmed 2026-10-01: all three steer under the parent remote, and the vehicle's rated **25 kg** occupant load against ~6 kg of added kit demonstrates the ≥ 2× torque margin without measurement. The design reuses the motor rather than adding one. **Still funded** against one residual risk: it was never specified for continuous closed-loop duty. Released at bench Stage 1 |
 | 13 | Steering coupler + magnet mount, ₩20,000 | **Partly unneeded** — no motor coupler required | 0 *(pending)* | The stock motor is already coupled to the linkage. The angle-sensor magnet mount is still required |
 | 8 | E-stop + contactor, ₩35,000 | Split into **8a** contactor ₩11,000 · **8b** button ₩11,924 = **₩22,924** | **−36,228** | The line hid two parts from two vendors on different dates. Both now ordered; the button came in well under the estimate |
-| | | **Net** | **−319,904** | |
+| 6d | *(part of the ₩6,000 #6 line)* | **₩15,000** — fasteners **plus adhesive and IPA** | **+12,000** | The assembly procedure requires **thin cyanoacrylate** to lock the magnets into their pockets and **isopropyl alcohol** to degrease them first, and the line funded neither. Both are shared across the three vehicles. Same class of omission as **#6c**, caught before it reached a build rather than after |
+| | | **Net** | **−307,904** | |
 
-**Projected total ₩3,601,576 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows.
+**Projected total ₩3,613,576 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows.
 
 > [!IMPORTANT]
 > **What was actually approved: a ceiling of ₩4,000,000, not this line-item schedule**
 >
 > The university approved a **total**. Individual items may move in price, be substituted, split,
 > or dropped **without further approval**. Only the total binds, and the live figure against it is
-> **₩3,601,576 projected, ₩398,424 of headroom**.
+> **₩3,613,576 projected, ₩386,424 of headroom**.
 >
 > So the amendments above are **not an approval trail** — nothing in them needed permission. They
 > exist for the reason this document already states: *"the estimates above will not match, and the
