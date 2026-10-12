@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 790" width="980" height="790"
+     font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+  <title>Mounting the two Hall latches — package, spacing, air gap and wiring</title>
+  <desc>Four panels. Top left: the TO-92 package, its three leads and which face senses. Top
+  middle: the pair printed into one bracket at 6.82 mm centres with both flat faces turned toward
+  the magnets. Top right: a radial section showing the sensor standing 1 to 3 mm off the magnet
+  track. Bottom: the wiring — supply and ground shared, two open-drain outputs pulled up to 3.3 V,
+  four conductors to the Teensy — and the three rules that decide whether it works.</desc>
+  <defs>
+    <marker id="r" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#b91c1c"/></marker>
+    <marker id="rs" markerWidth="9" markerHeight="9" refX="1" refY="3" orient="auto">
+      <path d="M8,0 L8,6 L0,3 z" fill="#b91c1c"/></marker>
+    <marker id="g" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#15803d"/></marker>
+  </defs>
+  <rect width="980" height="790" fill="#ffffff"/>
+  <text x="24" y="34" font-size="19" font-weight="bold" fill="#0f172a">The two Hall latches — three legs each, and which way they face</text>
+  <text x="24" y="56" font-size="13" fill="#475569">TI <tspan font-family="monospace">DRV5013</tspan>, TO-92. Yes — wires solder to the legs. Everything else here is about orientation.</text>
+  <rect x="24" y="76" width="296" height="420" rx="8" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+  <text x="44" y="102" font-size="14" font-weight="bold" fill="#0f172a">1 — the part</text>
+  <path d="M132,250 L132,196 A40,40 0 0 1 212,196 L212,250 Z" fill="#334155" stroke="#0f172a" stroke-width="2"/>
+  <line x1="132" y1="250" x2="212" y2="250" stroke="#0f172a" stroke-width="3"/>
+  <line x1="152" y1="250" x2="152" y2="330" stroke="#94a3b8" stroke-width="4"/>
+  <text x="152" y="348" font-size="12" font-weight="bold" fill="#334155" text-anchor="middle">1</text>
+  <line x1="172" y1="250" x2="172" y2="330" stroke="#94a3b8" stroke-width="4"/>
+  <text x="172" y="348" font-size="12" font-weight="bold" fill="#334155" text-anchor="middle">2</text>
+  <line x1="192" y1="250" x2="192" y2="330" stroke="#94a3b8" stroke-width="4"/>
+  <text x="192" y="348" font-size="12" font-weight="bold" fill="#334155" text-anchor="middle">3</text>
+  <text x="44" y="372" font-size="12" font-weight="bold" fill="#334155">1 V<tspan font-size="10">CC</tspan>   ·   2 GND   ·   3 OUT</text>
+  <text x="44" y="389" font-size="11" fill="#b91c1c">from the datasheet — <tspan font-weight="bold">confirm it</tspan></text>
+  <text x="44" y="404" font-size="11" fill="#b91c1c"><tspan font-weight="bold">before soldering.</tspan> Reversed VCC/GND kills it.</text>
+  <text x="44" y="432" font-size="12" fill="#334155"><tspan font-weight="bold">Yes, wires solder to the legs.</tspan> Three per</text>
+  <text x="44" y="449" font-size="12" fill="#334155">sensor, and two of the three are shared —</text>
+  <text x="44" y="466" font-size="12" fill="#334155">see the wiring below.</text>
+  <line x1="172" y1="150" x2="172" y2="186" stroke="#15803d" stroke-width="2.5" marker-end="url(#g)"/>
+  <text x="172" y="142" font-size="11.5" font-weight="bold" fill="#15803d" text-anchor="middle">senses along here</text>
+  <text x="228" y="216" font-size="11" font-weight="bold" fill="#15803d">the FLAT</text>
+  <text x="228" y="230" font-size="11" font-weight="bold" fill="#15803d">face</text>
+  <text x="228" y="246" font-size="10.5" fill="#15803d">faces you</text>
+  <rect x="332" y="76" width="300" height="420" rx="8" fill="#ecfdf5" stroke="#15803d" stroke-width="2"/>
+  <text x="352" y="102" font-size="14" font-weight="bold" fill="#14532d">2 — both in ONE printed part</text>
+  <text x="352" y="121" font-size="11.5" fill="#15803d">looking at them from the magnets’ side</text>
+  <rect x="368" y="150" width="228" height="120" rx="6" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+  <path d="M406,230 L406,196 A28,28 0 0 1 462,196 L462,230 Z" fill="#334155" stroke="#0f172a" stroke-width="2"/>
+  <text x="434" y="222" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">A</text>
+  <line x1="420" y1="230" x2="420" y2="262" stroke="#94a3b8" stroke-width="3"/>
+  <line x1="434" y1="230" x2="434" y2="262" stroke="#94a3b8" stroke-width="3"/>
+  <line x1="448" y1="230" x2="448" y2="262" stroke="#94a3b8" stroke-width="3"/>
+  <path d="M502,230 L502,196 A28,28 0 0 1 558,196 L558,230 Z" fill="#334155" stroke="#0f172a" stroke-width="2"/>
+  <text x="530" y="222" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">B</text>
+  <line x1="516" y1="230" x2="516" y2="262" stroke="#94a3b8" stroke-width="3"/>
+  <line x1="530" y1="230" x2="530" y2="262" stroke="#94a3b8" stroke-width="3"/>
+  <line x1="544" y1="230" x2="544" y2="262" stroke="#94a3b8" stroke-width="3"/>
+  <line x1="434" y1="172" x2="530" y2="172" stroke="#b91c1c" stroke-width="2" marker-start="url(#rs)" marker-end="url(#r)"/>
+  <text x="482" y="166" font-size="13" font-weight="bold" fill="#b91c1c" text-anchor="middle">6.82 mm</text>
+  <text x="352" y="300" font-size="12" fill="#14532d"><tspan font-weight="bold">Printed, not assembled.</tspan> The spacing is</text>
+  <text x="352" y="317" font-size="12" fill="#14532d">half a magnet pitch, and half a pitch is</text>
+  <text x="352" y="334" font-size="12" fill="#14532d">what makes the two channels quadrature.</text>
+  <rect x="352" y="352" width="260" height="76" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="366" y="374" font-size="12" font-weight="bold" fill="#7f1d1d">Both the SAME way round.</text>
+  <text x="366" y="392" font-size="11.5" fill="#7f1d1d">Flat faces toward the magnets, legs the</text>
+  <text x="366" y="408" font-size="11.5" fill="#7f1d1d">same side. One flipped inverts its</text>
+  <text x="366" y="424" font-size="11.5" fill="#7f1d1d">channel: reverse reads as forward.</text>
+  <text x="352" y="458" font-size="11.5" fill="#15803d">A latch does not care which pole is</text>
+  <text x="352" y="474" font-size="11.5" fill="#15803d">which — only that A and B agree.</text>
+  <rect x="644" y="76" width="312" height="420" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  <text x="664" y="102" font-size="14" font-weight="bold" fill="#92400e">3 — how far off the track</text>
+  <text x="664" y="121" font-size="11.5" fill="#b45309">radial section, outward is up</text>
+  <rect x="676" y="396" width="250" height="60" fill="#fde68a" stroke="#b45309" stroke-width="2"/>
+  <text x="700" y="432" font-size="11.5" font-weight="bold" fill="#92400e">carrier, rotating</text>
+  <rect x="760" y="368" width="80" height="28" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1"/>
+  <text x="800" y="387" font-size="11" fill="#ffffff" text-anchor="middle">magnet</text>
+  <rect x="744" y="282" width="112" height="56" rx="4" fill="#334155" stroke="#0f172a" stroke-width="2"/>
+  <text x="800" y="316" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">sensor</text>
+  <rect x="676" y="246" width="250" height="36" rx="4" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+  <text x="716" y="270" font-size="11.5" font-weight="bold" fill="#14532d">printed bracket — does not turn</text>
+  <line x1="880" y1="338" x2="880" y2="368" stroke="#b91c1c" stroke-width="2" marker-start="url(#rs)" marker-end="url(#r)"/>
+  <text x="892" y="357" font-size="12.5" font-weight="bold" fill="#b91c1c">1–3 mm</text>
+  <text x="664" y="486" font-size="11.5" fill="#92400e">Slot the pad so the gap can be set and locked.</text>
+  <text x="664" y="470" font-size="11.5" fill="#92400e">Nothing touches. The field crosses the air.</text>
+  <rect x="24" y="508" width="932" height="258" rx="8" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+  <text x="44" y="534" font-size="14" font-weight="bold" fill="#0f172a">4 — six legs, four wires</text>
+  <path d="M124,598 L124,570 A26,26 0 0 1 176,570 L176,598 Z" fill="#334155" stroke="#0f172a" stroke-width="2"/>
+  <text x="150" y="590" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">A</text>
+  <path d="M124,668 L124,640 A26,26 0 0 1 176,640 L176,668 Z" fill="#334155" stroke="#0f172a" stroke-width="2"/>
+  <text x="150" y="660" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">B</text>
+  <line x1="176" y1="560" x2="330" y2="560" stroke="#b91c1c" stroke-width="2.5"/>
+  <line x1="176" y1="630" x2="330" y2="630" stroke="#b91c1c" stroke-width="2.5"/>
+  <line x1="330" y1="560" x2="330" y2="630" stroke="#b91c1c" stroke-width="2.5"/>
+  <line x1="330" y1="595" x2="470" y2="595" stroke="#b91c1c" stroke-width="2.5"/>
+  <text x="360" y="588" font-size="12" font-weight="bold" fill="#b91c1c">3.3 V — shared</text>
+  <line x1="176" y1="586" x2="300" y2="586" stroke="#0f172a" stroke-width="2.5"/>
+  <line x1="176" y1="656" x2="300" y2="656" stroke="#0f172a" stroke-width="2.5"/>
+  <line x1="300" y1="586" x2="300" y2="656" stroke="#0f172a" stroke-width="2.5"/>
+  <line x1="300" y1="672" x2="470" y2="672" stroke="#0f172a" stroke-width="2.5"/>
+  <line x1="300" y1="656" x2="300" y2="672" stroke="#0f172a" stroke-width="2.5"/>
+  <text x="360" y="666" font-size="12" font-weight="bold" fill="#0f172a">GND — shared</text>
+  <line x1="176" y1="572" x2="470" y2="572" stroke="#2563eb" stroke-width="2.5"/>
+  <line x1="176" y1="642" x2="470" y2="642" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="392" y="566" font-size="12" font-weight="bold" fill="#1e3a8a">OUT A</text>
+  <text x="392" y="636" font-size="12" font-weight="bold" fill="#1e3a8a">OUT B</text>
+  <rect x="512" y="548" width="196" height="140" rx="6" fill="#e0e7ff" stroke="#4338ca" stroke-width="2"/>
+  <text x="610" y="576" font-size="13" font-weight="bold" fill="#312e81" text-anchor="middle">Teensy 4.1</text>
+  <text x="610" y="598" font-size="11.5" fill="#3730a3" text-anchor="middle">hardware quadrature</text>
+  <text x="610" y="614" font-size="11.5" fill="#3730a3" text-anchor="middle">decoder, 2 channels</text>
+  <text x="610" y="644" font-size="11.5" font-weight="bold" fill="#7f1d1d" text-anchor="middle">10 kΩ pull-up on each</text>
+  <text x="610" y="660" font-size="11.5" font-weight="bold" fill="#7f1d1d" text-anchor="middle">output, to 3.3 V</text>
+  <text x="610" y="678" font-size="10.5" fill="#3730a3" text-anchor="middle">the outputs are open-drain</text>
+  <text x="736" y="548" font-size="12" font-weight="bold" fill="#0f172a">Four conductors in the cable</text>
+  <text x="736" y="568" font-size="11.5" fill="#334155">3.3 V · GND · OUT A · OUT B.</text>
+  <text x="736" y="588" font-size="11.5" fill="#334155">The DRV5013 runs from 2.5 V, so it</text>
+  <text x="736" y="604" font-size="11.5" fill="#334155">takes the 3.3 V rail directly — no 5 V,</text>
+  <text x="736" y="620" font-size="11.5" fill="#334155">no level shifting, nothing above the</text>
+  <text x="736" y="636" font-size="11.5" fill="#334155">Teensy’s limit anywhere on this cable.</text>
+  <text x="736" y="662" font-size="11.5" font-weight="bold" fill="#b45309">Route it away from the motor leads.</text>
+  <text x="736" y="678" font-size="11" fill="#b45309">PWM pickup reads as phantom ticks.</text>
+  <text x="44" y="716" font-size="12.5" font-weight="bold" fill="#0f172a">The three things that decide whether this works:</text>
+  <text x="44" y="736" font-size="12" fill="#334155">① pin order confirmed against the datasheet    ② both sensors the same way round, flat faces toward the magnets</text>
+  <text x="44" y="754" font-size="12" fill="#334155">③ the 6.82 mm spacing printed into the bracket, never set by hand</text>
+</svg>

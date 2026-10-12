@@ -498,6 +498,13 @@ way round. That is handled below rather than wished away.
 > and costs noise immunity next to a PWM'd motor. `FA/FD` (±1.3 mT) and `AD/ND` (±2.7 mT) are for
 > weak fields; this is not one.
 >
+![Mounting the two Hall latches: the TO-92 package with its three leads named and the flat face identified as the sensing face; both sensors printed into one bracket at 6.82 mm centres with their flat faces toward the magnets and the same way round; a radial section showing the sensor standing 1 to 3 mm off the magnet track with nothing touching; and the wiring — supply and ground shared, two open-drain outputs each pulled up to 3.3 V, four conductors to the Teensy](../images/hall-sensor-mounting.svg)
+
+**Yes, wires solder to the three legs**, and two of the three are shared between the pair, so the
+cable carries **four conductors: 3.3 V, GND, OUT A, OUT B.** The outputs are open-drain and each
+wants a **10 kΩ pull-up to 3.3 V**. Nothing on this cable goes above the Teensy's limit, because the
+`DRV5013` runs from 2.5 V and takes the 3.3 V rail directly.
+
 > **Availability — no international order is needed.** *Checked 2026-10-12.* 디바이스마트's own shelf
 > carries neither `DRV5013` nor `US1881`, but its **realtime DigiKey/Mouser search does**, which is
 > the same 해외구매 route [#3](#12-order-long-lead-items-first) already used for the Cytron. Listed
