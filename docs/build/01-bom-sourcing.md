@@ -154,7 +154,7 @@ treat these as *this week's* answer and re-check before paying.
 | **14** | **PETG 1 kg, YELLOW** | [Lay1 PETG 1.75 mm 1kg 옐로우](https://www.coupang.com/vp/products/9577432592) | ₩13,900 | **Required, not a preference** — ISO 13850 puts the red actuator on a yellow background, and [§#8](#7-8-11-12-14-what-to-actually-buy) prints that plate rather than buying it. 올리민's yellow is ₩11,900 but 품절임박 |
 | **14** | M3 heat-set inserts | [Lay1 황동 인서트 100개](https://www.coupang.com/vp/products/9470532681) | ₩9,800 | Options `M3x5x4.2` / `M3x4x5`. 품절임박 |
 | 14 | *(assorted alt)* | [황동 인서트 너트 M2~M6 220PCS](https://www.coupang.com/vp/products/9510071311) | ₩11,900 | 무료배송. Covers the enclosures too |
-| **6d** | M3 × 10 grub screw ×100 | [국산 스텐 무두렌치볼트 M3 10 mm](https://www.coupang.com/vp/products/9695006462) | ₩6,000 | Cup point. Nine are fitted |
+| **6d** | **M3 × 8** grub screw ×100 | [국산 스텐 무두렌치볼트](https://www.coupang.com/vp/products/9695006462) — pick the **8 mm** length | ₩6,000 | Cup point. Nine are fitted. **Not 10 mm**: it must cross wall + gap, 7.35–7.85 mm, and anything longer stands proud of the sensing surface |
 | 6d | *(free shipping alt)* | [올커버 304 스텐 150개](https://www.coupang.com/vp/products/9672141776) | ₩5,400 | 무료배송, **단 1개 남음** |
 | **6d** | Thin CA, 20 g × 2 | [엑시아 031GC 20g 2개](https://www.coupang.com/vp/products/9080803470) | ₩4,560 | 무료배송. **`031` is the low-viscosity one; `231C` is not.** No gel |
 | **6d** | IPA 99.9 %, 1 L | [고순도 이소프로필알콜 1L](https://www.coupang.com/vp/products/9757544198) | ₩7,500 | 무료배송 |
@@ -789,7 +789,7 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 >
 > At `HUB_D = 63.0` it derives bore Ø64.2, outside **Ø78.2**, track 245.7 mm, pitch **13.65 mm**,
 > **sensor offset 6.82 mm**, 36 counts/rev → **15.8 mm/count**. Fasteners, per vehicle:
-> **3 × M3 heat-set insert, 3 × M3 × 10 grub screw** (cup or cone point — a cone point finds a
+> **3 × M3 × 8 grub screw** (cup or cone point — a cone point finds a
 > lobe gap on its own).
 >
 > **Rendered and checked 2026-10-06.** CGAL reports `Simple: yes`, `Volumes: 2` — one connected
