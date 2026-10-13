@@ -159,16 +159,18 @@ agreed to. Divergences are listed here instead, and the live state of every item
 | 6d | *(part of the ₩6,000 #6 line)* | **₩15,000** — fasteners **plus adhesive and IPA** | **+12,000** | The assembly procedure requires **thin cyanoacrylate** to lock the magnets into their pockets and **isopropyl alcohol** to degrease them first, and the line funded neither. Both are shared across the three vehicles. Same class of omission as **#6c**, caught before it reached a build rather than after |
 | 6b | Magnet, ₩4,000 × 3 = ₩12,000 | **₩19,890** — one shared 200-piece pack | **+7,890** | Priced per vehicle; bought once. 54 discs are needed and 200 cost ₩19,890, so the spares are free in every sense that matters — neodymium chips, and a magnet fitted backwards is a destructive removal |
 | 6a | Sensor, ₩14,000 × 3 = ₩42,000 | **₩17,160** — twenty `DRV5013BCELPEM` at the 10–25 tier | **−24,840** | Priced per vehicle; bought once, and bought deep. Six are fitted and fourteen are spare because the part is 반품 불가 and reversed `VCC`/`GND` destroys it. **No 해외구매 수수료 on this route** — Element14's ₩20,000 handling is specific to Element14 |
-| | | **Net** | **−322,154** | |
+| 14 | Mounts and print material, ₩41,000 × 3 = ₩123,000 | **₩35,600** — two 1 kg PETG rolls and 100 M3 heat-set inserts | **−87,400** | Bought once rather than per vehicle. One roll is yellow, which **ISO 13850 requires** for the E-stop backing plate. The 2020 extrusion is deliberately not bought: it is for the mast, and the mast is not designed |
+| 6d | Fasteners etc., ₩5,000 × 3 = ₩15,000 | **₩31,840** — grub screws, cyanoacrylate, IPA, threadlocker | **+16,840** | The estimate was written when this line was fasteners only. Adhesive and IPA were added on 2026-10-12 — the assembly procedure required them and nothing funded them — and priced at a guess |
+| | | **Net** | **−392,714** | |
 
-**Projected total ₩3,599,326 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows.
+**Projected total ₩3,528,766 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows.
 
 > [!IMPORTANT]
 > **What was actually approved: a ceiling of ₩4,000,000, not this line-item schedule**
 >
 > The university approved a **total**. Individual items may move in price, be substituted, split,
 > or dropped **without further approval**. Only the total binds, and the live figure against it is
-> **₩3,599,326 projected, ₩400,674 of headroom**.
+> **₩3,528,766 projected, ₩471,234 of headroom**.
 >
 > So the amendments above are **not an approval trail** — nothing in them needed permission. They
 > exist for the reason this document already states: *"the estimates above will not match, and the
