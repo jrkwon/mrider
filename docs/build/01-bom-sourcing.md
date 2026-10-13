@@ -140,6 +140,45 @@ the search, not a fact about the market.
 > ₩38,000 to Tier 1 — record the actuals in the [Order Log](../order-log.md) rather than the
 > estimates.
 
+### #14 and #6d — verified 2026-10-13
+
+Read off the vendor pages on **2026-10-13**. Both lines are 쿠팡, so they go in **one basket and one
+carriage**. Listings rot — the `DRV5013BCQLPGQ1` page that showed 995 in stock was 판매중지 — so
+treat these as *this week's* answer and re-check before paying.
+
+| # | Item | Where | Price | Note |
+|---|------|-------|------:|------|
+| **14** | PETG 1 kg × 2 | [올리민 PETG 1.75 mm 1KG](https://www.coupang.com/vp/products/9533639155) | ₩11,900 ea | 무료배송, 62 reviews. **Any colour** — the only colour the project mandates is the yellow below |
+| 14 | *(cheap black)* | [3D고속출력 PETG 1 kg 블랙](https://www.coupang.com/vp/products/9692144600) | ₩10,760 | 무료배송, only 4 reviews |
+| 14 | *(safe black)* | [CaiLab PETG 1.75 mm 1 kg](https://www.coupang.com/vp/products/9320420246) | ₩15,700 | 201 reviews |
+| **14** | **PETG 1 kg, YELLOW** | [Lay1 PETG 1.75 mm 1kg 옐로우](https://www.coupang.com/vp/products/9577432592) | ₩13,900 | **Required, not a preference** — ISO 13850 puts the red actuator on a yellow background, and [§#8](#7-8-11-12-14-what-to-actually-buy) prints that plate rather than buying it. 올리민's yellow is ₩11,900 but 품절임박 |
+| **14** | M3 heat-set inserts | [Lay1 황동 인서트 100개](https://www.coupang.com/vp/products/9470532681) | ₩9,800 | Options `M3x5x4.2` / `M3x4x5`. 품절임박 |
+| 14 | *(assorted alt)* | [황동 인서트 너트 M2~M6 220PCS](https://www.coupang.com/vp/products/9510071311) | ₩11,900 | 무료배송. Covers the enclosures too |
+| **6d** | M3 × 10 grub screw ×100 | [국산 스텐 무두렌치볼트 M3 10 mm](https://www.coupang.com/vp/products/9695006462) | ₩6,000 | Cup point. Nine are fitted |
+| 6d | *(free shipping alt)* | [올커버 304 스텐 150개](https://www.coupang.com/vp/products/9672141776) | ₩5,400 | 무료배송, **단 1개 남음** |
+| **6d** | Thin CA, 20 g × 2 | [엑시아 031GC 20g 2개](https://www.coupang.com/vp/products/9080803470) | ₩4,560 | 무료배송. **`031` is the low-viscosity one; `231C` is not.** No gel |
+| **6d** | IPA 99.9 %, 1 L | [고순도 이소프로필알콜 1L](https://www.coupang.com/vp/products/9757544198) | ₩7,500 | 무료배송 |
+| 6d | *(cheaper alt)* | [땜쟁이 IPA 1L PCB세척제](https://www.coupang.com/vp/products/6059354871) | ₩5,390 | + ₩3,000 carriage |
+| **6d** | Threadlocker, blue | [록타이트 243 5 g 중강도](https://www.coupang.com/vp/products/8194549583) | ₩4,000 | **243 blue, removable. Not 271 red** — red means the grub screws never come out again |
+
+**About ₩47,500 for #14 and ₩22,100 for #6d**, against ₩123,000 and ₩15,000 of budget. Still to add
+from a local shop: **M3/M4 bolts, nylon standoffs, cable ties**.
+
+> [!IMPORTANT]
+> **Measure the inserts when they arrive, before printing a carrier**
+>
+> The model carries `INSERT_D = 4.6` (outside Ø) and `INSERT_L = 5.0` (length), and insert listings
+> write their dimensions in whatever order they please — `M3x5x4.2` and `M3x4x5` are the same
+> seller's two options. **Caliper the OD and the length and set the two parameters to match.** The
+> carrier has not been printed in final form yet, so this costs nothing now and a reprint later.
+
+> [!NOTE]
+> **The 2020 extrusion is deliberately not in this order**
+>
+> The mast is what it is for, and the mast is not designed — so its length is unknown. Buying it now
+> means guessing a length and cutting twice. It is a NOTE in §1.2.4 rather than a line item for the
+> same reason.
+
 ### Leads still to confirm
 
 Everything here came from a search result rather than the vendor's own page — DeviceMart and
