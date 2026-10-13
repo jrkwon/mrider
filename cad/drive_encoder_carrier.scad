@@ -91,10 +91,18 @@ GAUGE_DELTA  = 0.0;
 HUB_D        = 63.0;
 // How uncertain that measurement is, mm. A tape resolves about half a
 // millimetre and reads SHORT if it misses the centre, plus the spread across
-// three vehicles — now also the 62.0-63.25 spread between three methods.
+// three vehicles.
+//
+// Was 1.0 while three methods spread 62.0-63.25 and the low one was unexplained.
+// It is explained now — the paper wrap chorded the six gaps and read low — so
+// the credible band is 63.0-63.25 and +-0.5 covers it with room. That is a
+// JUDGEMENT on the evidence, not a measurement: a caliper across two opposite
+// crests would settle it outright, and it has to be settled, because the grub
+// screw assert below is what this number now feeds.
+//
 // BORE_CLEAR must stay larger than this or the bore can come out SMALLER than
 // the hub, which is the one failure the screws cannot rescue.
-HUB_TOL      = 1.0;
+HUB_TOL      = 0.5;
 // Axial room on the protruding lobed boss, mm. The 2026-10-08 side view reads
 // about 10 mm with the wheel off; this keeps the older, smaller "gearbox face
 // to wheel" figure because the wheel is what finally closes on it, and the fit
@@ -117,10 +125,17 @@ MAG_CLEAR    = -0.1;        // NEGATIVE = press fit. Magnets must not turn befor
 
 /* [Grub screws] */
 N_SET        = 3;           // three points centre the ring; four can skew it
-SET_PILOT_D  = 3.2;         // M3 clearance, bore to insert — the screw passes through
-SET_SCREW_L  = 10.0;        // M3 x this, cup or cone point, no head
-INSERT_D     = 4.6;         // M3 heat-set insert, largest OD. CHECK against the part bought.
-INSERT_L     = 5.0;         // insert length, mm
+// The thread is TAPPED STRAIGHT INTO THE PETG. Drill-and-tap M3, which wants a
+// 2.5 mm pilot, and the screw then engages the whole 7 mm wall.
+//
+// Heat-set inserts were the plan and do not fit. The ones bought are M3 x 4 x 5:
+// 4 mm long, 5 mm OD, and the maker asks for a 4.5 mm hole. A 4.5 mm hole across
+// a 6 mm wide ring leaves 0.75 mm of PETG on each side, and the insert swages
+// out to 5.0 as it goes in — it would split the carrier's faces. A 2.5 mm tapped
+// hole leaves 1.75 mm. The inserts are not wasted: #14 bought them for the
+// enclosures, which is what that line always said they were for.
+SET_TAP_D    = 2.5;         // M3 tap drill, through the whole wall
+SET_SCREW_L  = 8.0;         // M3 x this, cup or cone point, no head — see below
 
 /* [Index mark] */
 MARK_W       = 1.6;         // groove width, mm
@@ -144,7 +159,9 @@ OFFSET   = PITCH / 2;                // quadrature offset: HALF a pole pitch,
 COUNTS   = 2 * N_MAG;                // with 4x quadrature decoding
 SET_A0   = 180 / N_MAG;              // first screw, half a pitch off magnet 0
 SLACK    = BORE_CLEAR + HUB_TOL;     // worst-case gap a screw has to close
-REACH    = SET_SCREW_L - WALL;       // how far a flush screw passes the bore
+SPAN_MAX = WALL + (BORE_CLEAR + HUB_TOL)/2;   // wall + the LARGEST radial gap
+SPAN_MIN = WALL + (BORE_CLEAR - HUB_TOL)/2;   // wall + the SMALLEST
+PROUD    = SET_SCREW_L - SPAN_MIN;            // worst-case stand-off past the OD
 NEED_R   = OD/2 + SENSOR_GAP + SENSOR_T;
 MARK_R   = OD/2 - MAG_T - 1.0;       // index groove ends 1 mm short of the pocket
                                      // FLOOR, so it cannot reach the track by
@@ -156,7 +173,8 @@ echo(str("track circum.", CIRC,   " mm"));
 echo(str("magnet pitch",  PITCH,  " mm"));
 echo(str("SENSOR OFFSET", OFFSET, " mm  <- space the two Hall sensors by this"));
 echo(str("counts / rev",  COUNTS));
-echo(str("screw reach",   REACH,  " mm past the bore, vs ", SLACK, " mm of slack"));
+echo(str("screw span needed ", SPAN_MIN, " to ", SPAN_MAX, " mm — M3 x ", SET_SCREW_L, " chosen"));
+echo(str("WORST-CASE SCREW STAND-OFF ", PROUD, " mm past the OD  <- set the air gap ABOVE this"));
 echo(str("bore clears the largest credible hub by ", BORE_CLEAR - HUB_TOL, " mm"));
 echo(str("radial room needed ", NEED_R, " mm (ring + sensor)"));
 
@@ -165,10 +183,15 @@ assert(MAG_D < WIDTH,      "magnet will not fit inside the carrier width");
 assert(MAG_T < WALL,       "magnet pocket would break through the back of the wall");
 assert(PITCH > MAG_D + 2,  "magnets too close — reduce N_MAG or increase WALL");
 assert(N_MAG % N_SET == 0, "N_MAG must divide by N_SET, or a screw lands on a magnet");
-assert(PITCH/2 > (MAG_D + INSERT_D)/2 + 1,
-       "insert hole would run into the magnets either side of it");
-assert(INSERT_L + 1.5 <= WALL, "no pilot left between the insert and the bore");
-assert(REACH >= SLACK, "grub screw cannot reach the hub across the worst-case slack");
+assert(PITCH/2 > (MAG_D + SET_TAP_D)/2 + 1,
+       "screw hole would run into the magnets either side of it");
+assert((WIDTH - SET_TAP_D)/2 >= 1.2,
+       "not enough PETG beside the screw hole — it would split the carrier's faces");
+// A grub screw is as deep as it is long: its tip stops on the hub and whatever
+// is left sticks out past the OD. SPAN is what it has to cross, and SPAN moves
+// with the hub, so no single length is flush across the whole band.
+assert(SET_SCREW_L >= SPAN_MAX, "grub screw too short to touch the smallest credible hub");
+assert(PROUD < 1.5, "grub screw would stand too far proud of the sensing surface");
 assert(BORE_CLEAR > HUB_TOL,
        "bore can come out smaller than the hub — the ring would not go on at all");
 assert(RADIAL_ROOM < 0 || RADIAL_ROOM >= NEED_R,
@@ -197,14 +220,9 @@ module magnet_pockets() {
 // the bore, which is what makes the fit tolerant.
 module set_screw_holes() {
     for (k = [0 : N_SET - 1])
-        rotate([0, 0, SET_A0 + k * 360 / N_SET]) {
-            // pilot, bore to surface
+        rotate([0, 0, SET_A0 + k * 360 / N_SET])
             translate([BORE_D/2 - EPS, 0, WIDTH/2]) rotate([0, 90, 0])
-                cylinder(d = SET_PILOT_D, h = WALL + 2*EPS);
-            // insert seat, open to the surface
-            translate([OD/2 - INSERT_L, 0, WIDTH/2]) rotate([0, 90, 0])
-                cylinder(d = INSERT_D, h = INSERT_L + EPS);
-        }
+                cylinder(d = SET_TAP_D, h = WALL + 2*EPS);
 }
 
 // A witness mark at magnet 0, so the pattern has a named starting point.
@@ -317,7 +335,8 @@ else                 carrier();
 // not climb out of an interference pocket. The hand-turn check in §1.2.3 is
 // still what catches it. Run it before the carrier goes near the vehicle.
 //
-// Then: heat-set the three inserts from the outside and slide the ring on.
+// Then: TAP the three holes M3 (2.5 mm pilot is already in the model) and slide
+// the ring on. No inserts here — see the note by SET_TAP_D.
 //
 // PUSH IT UP AGAINST THE HOUSING END FACE before tightening, and do that on
 // every vehicle. The boss is longer than the ring, so the ring does not find
@@ -343,5 +362,13 @@ else                 carrier();
 // threadlocker on the screws. Finally spin the wheel by hand and watch the air
 // gap: it should not visibly change through a revolution.
 //
-// FASTENERS, per vehicle: 3 x M3 heat-set insert, 3 x M3 x 10 grub screw
-// (cup or cone point — a cone point finds a lobe gap on its own).
+// FASTENERS, per vehicle: 3 x M3 x 8 grub screw, cup or cone point — a cone
+// point finds a lobe gap on its own. NOT M3 x 10: the screw has to cross the
+// 7 mm wall plus the gap, 7.35-7.85 mm, and anything longer stands proud of the
+// surface the sensor faces. No heat-set inserts: the thread is tapped into the
+// PETG, and the inserts bought on #14 are for the enclosures.
+//
+// SET THE SENSOR AIR GAP FROM THE SCREW ENDS, NOT FROM THE TRACK. The screws
+// can stand up to 0.65 mm proud depending where the hub lands in its band, and
+// that is the highest point on a rotating assembly. Measure it once the ring is
+// tightened and keep the sensor above it.
