@@ -95,9 +95,15 @@ HUB_D        = 62.7;
 // millimetre and reads SHORT if it misses the centre, plus the spread across
 // three vehicles.
 //
-// It is settled: a caliper read 62.7 at three positions on 2026-10-15 with no
-// spread. 0.2 carries the instrument and the vehicle-to-vehicle difference,
-// which is the whole remaining uncertainty.
+// A caliper read 62.7 at three positions on the drive hub, 2026-10-15. This was
+// 0.2 for a few hours on the strength of that one hub — until the STEERING
+// gearbox on the same vehicle, which turns out to be the same assembly with the
+// same six-lobe output, read 62.23. Two hubs, one vehicle, 0.47 mm apart.
+//
+// So 0.2 was measuring the instrument when the real variation is between PARTS.
+// HUB_D stays at the larger figure, because the bore has to clear the largest
+// hub it will meet, and 0.5 carries the spread downward. The other two vehicles'
+// drive hubs are still unmeasured and are what would settle this properly.
 //
 // The history is worth keeping. This was 1.0 while three indirect methods spread
 // 62.0-63.25, then 0.5 once the low one was explained as a paper wrap chording
@@ -107,7 +113,7 @@ HUB_D        = 62.7;
 //
 // BORE_CLEAR must stay larger than this or the bore can come out SMALLER than
 // the hub, which is the one failure the screws cannot rescue.
-HUB_TOL      = 0.2;
+HUB_TOL      = 0.5;
 // Axial room on the protruding lobed boss, mm. The 2026-10-08 side view reads
 // about 10 mm with the wheel off; this keeps the older, smaller "gearbox face
 // to wheel" figure because the wheel is what finally closes on it, and the fit
