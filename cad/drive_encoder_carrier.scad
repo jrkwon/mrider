@@ -49,8 +49,10 @@ GAUGE_DELTA  = 0.0;
 /* [Measured on the vehicle] */
 // Crest diameter of the gearbox output hub, mm.
 //
-// MEASURED DIRECTLY, 2026-10-08: a tape across two opposite lobe crests, three
-// positions round the hub, 63.0 every time. Six lobes is an EVEN count, so
+// MEASURED WITH A CALIPER, 2026-10-15: across two opposite lobe crests, three
+// positions round the hub, 62.7 every time with no spread worth recording.
+// This supersedes the 63.0 taken with a tape on 2026-10-08 — same method, finer
+// instrument, 0.3 mm lower. Six lobes is an EVEN count, so
 // opposite crests face each other and a straight measurement reads the crest
 // circle. Do this. Do not wrap.
 //
@@ -88,21 +90,24 @@ GAUGE_DELTA  = 0.0;
 // And the Ø64.2 bore has already been printed and fitted, which outranks all
 // three numbers. Across the whole 62.0-63.6 band the screws close the gap with
 // at least 3x margin, so the millimetre does not reach the part.
-HUB_D        = 63.0;
+HUB_D        = 62.7;
 // How uncertain that measurement is, mm. A tape resolves about half a
 // millimetre and reads SHORT if it misses the centre, plus the spread across
 // three vehicles.
 //
-// Was 1.0 while three methods spread 62.0-63.25 and the low one was unexplained.
-// It is explained now — the paper wrap chorded the six gaps and read low — so
-// the credible band is 63.0-63.25 and +-0.5 covers it with room. That is a
-// JUDGEMENT on the evidence, not a measurement: a caliper across two opposite
-// crests would settle it outright, and it has to be settled, because the grub
-// screw assert below is what this number now feeds.
+// It is settled: a caliper read 62.7 at three positions on 2026-10-15 with no
+// spread. 0.2 carries the instrument and the vehicle-to-vehicle difference,
+// which is the whole remaining uncertainty.
+//
+// The history is worth keeping. This was 1.0 while three indirect methods spread
+// 62.0-63.25, then 0.5 once the low one was explained as a paper wrap chording
+// the six gaps. Every wrap and every tape read HIGH of the caliper; the direct
+// measurement was always the one to take and it took three tries to go and take
+// it. The grub-screw assert now depends on this number.
 //
 // BORE_CLEAR must stay larger than this or the bore can come out SMALLER than
 // the hub, which is the one failure the screws cannot rescue.
-HUB_TOL      = 0.5;
+HUB_TOL      = 0.2;
 // Axial room on the protruding lobed boss, mm. The 2026-10-08 side view reads
 // about 10 mm with the wheel off; this keeps the older, smaller "gearbox face
 // to wheel" figure because the wheel is what finally closes on it, and the fit

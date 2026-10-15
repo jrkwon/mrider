@@ -2,7 +2,7 @@
      font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
   <title>Mounting the two Hall latches — package, spacing, air gap and wiring</title>
   <desc>Four panels. Top left: the TO-92 package, its three leads and which face senses. Top
-  middle: the pair printed into one bracket at 6.82 mm centres with both flat faces turned toward
+  middle: the pair printed into one bracket at 6.80 mm centres with both flat faces turned toward
   the magnets. Top right: a radial section showing the sensor standing 1 to 3 mm off the magnet
   track. Bottom: the wiring — supply and ground shared, two open-drain outputs pulled up to 3.3 V,
   four conductors to the Teensy — and the three rules that decide whether it works.</desc>
@@ -53,7 +53,7 @@
   <line x1="530" y1="230" x2="530" y2="262" stroke="#94a3b8" stroke-width="3"/>
   <line x1="544" y1="230" x2="544" y2="262" stroke="#94a3b8" stroke-width="3"/>
   <line x1="434" y1="172" x2="530" y2="172" stroke="#b91c1c" stroke-width="2" marker-start="url(#rs)" marker-end="url(#r)"/>
-  <text x="482" y="166" font-size="13" font-weight="bold" fill="#b91c1c" text-anchor="middle">6.82 mm</text>
+  <text x="482" y="166" font-size="13" font-weight="bold" fill="#b91c1c" text-anchor="middle">6.80 mm</text>
   <text x="352" y="300" font-size="12" fill="#14532d"><tspan font-weight="bold">Printed, not assembled.</tspan> The spacing is</text>
   <text x="352" y="317" font-size="12" fill="#14532d">half a magnet pitch, and half a pitch is</text>
   <text x="352" y="334" font-size="12" fill="#14532d">what makes the two channels quadrature.</text>
@@ -117,5 +117,5 @@
   <text x="736" y="678" font-size="11" fill="#b45309">PWM pickup reads as phantom ticks.</text>
   <text x="44" y="716" font-size="12.5" font-weight="bold" fill="#0f172a">The three things that decide whether this works:</text>
   <text x="44" y="736" font-size="12" fill="#334155">① pin order confirmed against the datasheet    ② both sensors the same way round, flat faces toward the magnets</text>
-  <text x="44" y="754" font-size="12" fill="#334155">③ the 6.82 mm spacing printed into the bracket, never set by hand</text>
+  <text x="44" y="754" font-size="12" fill="#334155">③ the 6.80 mm spacing printed into the bracket, never set by hand</text>
 </svg>

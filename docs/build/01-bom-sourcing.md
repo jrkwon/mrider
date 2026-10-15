@@ -537,7 +537,7 @@ way round. That is handled below rather than wished away.
 > and costs noise immunity next to a PWM'd motor. `FA/FD` (±1.3 mT) and `AD/ND` (±2.7 mT) are for
 > weak fields; this is not one.
 >
-![Mounting the two Hall latches: the TO-92 package with its three leads named and the flat face identified as the sensing face; both sensors printed into one bracket at 6.82 mm centres with their flat faces toward the magnets and the same way round; a radial section showing the sensor standing 1 to 3 mm off the magnet track with nothing touching; and the wiring — supply and ground shared, two open-drain outputs each pulled up to 3.3 V, four conductors to the Teensy](../images/hall-sensor-mounting.svg)
+![Mounting the two Hall latches: the TO-92 package with its three leads named and the flat face identified as the sensing face; both sensors printed into one bracket at 6.80 mm centres with their flat faces toward the magnets and the same way round; a radial section showing the sensor standing 1 to 3 mm off the magnet track with nothing touching; and the wiring — supply and ground shared, two open-drain outputs each pulled up to 3.3 V, four conductors to the Teensy](../images/hall-sensor-mounting.svg)
 
 **Yes, wires solder to the three legs**, and two of the three are shared between the pair, so the
 cable carries **four conductors: 3.3 V, GND, OUT A, OUT B.** The outputs are open-drain and each
@@ -629,12 +629,12 @@ This is the plan already in the BOM, made specific. Three choices decide whether
 
 **The hub measures 63.0 mm across opposite lobe crests (2026-10-08), and that settles the build.**
 
-![Hub and bore defined: left, the six-lobe rotating boss on the vehicle, whose Ø63.0 is measured across two opposite lobe crests and is not the smaller root diameter; middle, the printed carrier, whose Ø64.2 bore faces the hub while its Ø78.2 outside diameter is the magnet track; bottom, the two assembled with the deliberate 0.60 mm per-side clearance drawn magnified, and the three mistakes already made — taking the fixed grey collar for the hub, taking root Ø for crest Ø, and wrapping with something whose own thickness was never subtracted](../images/hub-and-bore.svg)
+![Hub and bore defined: left, the six-lobe rotating boss on the vehicle, whose Ø62.7 is measured across two opposite lobe crests and is not the smaller root diameter; middle, the printed carrier, whose Ø63.9 bore faces the hub while its Ø77.9 outside diameter is the magnet track; bottom, the two assembled with the deliberate 0.60 mm per-side clearance drawn magnified, and the three mistakes already made — taking the fixed grey collar for the hub, taking root Ø for crest Ø, and wrapping with something whose own thickness was never subtracted](../images/hub-and-bore.svg)
 
 **Two diameters near 63 mm, and they are not the same thing.** The **hub** is on the vehicle, it
 rotates, and you *measure* it — across two opposite lobe crests, which works because six is an even
 count. The **bore** is the hole in the printed carrier, and you *print* it. The carrier also has an
-**outside** diameter, Ø78.2, which is the magnet track and faces the sensor; the bore faces the hub.
+**outside** diameter, Ø77.9, which is the magnet track and faces the sensor; the bore faces the hub.
 **bore − hub = 1.2 mm, 0.60 mm a side, deliberately.**
 
 ![End view and axial section of the carrier: a one-piece printed ring slides onto the six-lobe hub and presents a plain cylinder carrying eighteen alternating magnets, held by three recessed grub screws, with two Hall sensors outside it half a pitch apart](../images/drive-encoder-carrier.svg)
@@ -670,18 +670,18 @@ count. The **bore** is the hole in the printed carrier, and you *print* it. The 
 
 | | |
 |---|---:|
-| Hub, lobe crest Ø | **63.0 mm** *(across opposite crests; three methods span 62.0–63.25 — see below)* |
-| Printed ring bore — **clearance, not a fit** | **Ø64.2 mm** |
-| Printed ring, 7 mm wall | **OD 78.2 mm** |
-| Magnet track circumference | **245.7 mm** |
+| Hub, lobe crest Ø | **62.7 mm** *(caliper, three positions, 2026-10-15)* |
+| Printed ring bore — **clearance, not a fit** | **Ø63.9 mm** |
+| Printed ring, 7 mm wall | **OD 77.9 mm** |
+| Magnet track circumference | **244.7 mm** |
 
 | magnets | pole pitch | **quadrature offset** | counts/rev | mm/count |
 |---:|---:|---:|---:|---:|
 | 12 | 20.47 mm | 10.24 mm | 24 | 23.7 |
-| **18** | **13.65 mm** | **6.82 mm** | **36** | **15.8** |
+| **18** | **13.60 mm** | **6.80 mm** | **36** | **15.8** |
 | 24 | 10.24 mm | 5.12 mm | 48 | 11.9 |
 
-**Take 18.** A 13.65 mm pitch prints and populates easily, the 6.82 mm sensor offset is buildable
+**Take 18.** A 13.60 mm pitch prints and populates easily, the 6.80 mm sensor offset is buildable
 with surface-mount parts, and 15.8 mm/count clears the **≤ 2 % over 20 m** gate by more than an
 order of magnitude — resolution was never the constraint here.
 
@@ -704,7 +704,7 @@ into a counting error.
 
 **3 — The offset is `(n + ½)` pole pitches, not `(n + ¼)`.** *Corrected 2026-10-04 — this page had
 it wrong.* One **electrical cycle** spans **two** magnets, so a 90° electrical offset is **half a
-pole pitch**: 6.82 mm at 18 magnets. Building to a quarter pitch would put the sensors 45° apart
+pole pitch**: 6.80 mm at 18 magnets. Building to a quarter pitch would put the sensors 45° apart
 electrically — still two signals, but not quadrature, and the direction sense would be wrong near
 the transitions. **Print both sensors into one bracket** so the spacing is fixed by construction.
 
@@ -724,7 +724,7 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > have taken the sensor and its bracket off on the first turn of the wheel. **The wheel comes off**,
 > so the ring can simply be slid on.
 >
-> **The bore carries no load.** The hub measures **63.0 mm** and FDM holds a Ø64 bore to perhaps
+> **The bore carries no load.** The hub measures **62.7 mm** and FDM holds a Ø64 bore to perhaps
 > ±0.3 mm; a press fit needs both numbers to ±0.1, which is two significant figures out of reach —
 > and there are three hubs, not one. So the bore is deliberately **clear** of the hub, and three
 > recessed M3 grub screws take up whatever slack exists. Their points settle into the **gaps
@@ -787,13 +787,13 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > that tension lies *inside* the layer planes. Lay it with the **index groove facing up** — a
 > 0.8 mm recess in the top surface prints clean, on the bed it would bridge over nothing.
 >
-> At `HUB_D = 63.0` it derives bore Ø64.2, outside **Ø78.2**, track 245.7 mm, pitch **13.65 mm**,
-> **sensor offset 6.82 mm**, 36 counts/rev → **15.8 mm/count**. Fasteners, per vehicle:
+> At `HUB_D = 62.7` it derives bore Ø63.9, outside **Ø77.9**, track 244.7 mm, pitch **13.60 mm**,
+> **sensor offset 6.80 mm**, 36 counts/rev → **15.8 mm/count**. Fasteners, per vehicle:
 > **3 × M3 × 8 grub screw** (cup or cone point — a cone point finds a
 > lobe gap on its own).
 >
 > **Rendered and checked 2026-10-06.** CGAL reports `Simple: yes`, `Volumes: 2` — one connected
-> solid — and the **maximum swept radius measured off the STL is 39.100 mm, exactly `OD/2`**. That
+> solid — and the **maximum swept radius measured off the STL is 38.950 mm, exactly `OD/2`**. That
 > is the check that matters on this part: nothing stands proud of the surface the sensor faces.
 >
 > **It is the check that was missing.** Two faults got through without it. The clamp ears above were
@@ -841,23 +841,24 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > than `HUB_TOL` and the model now `assert`s it. **If a wrap is ever the only option, subtract the
 > wire or strip thickness.***
 >
-> **And then stop measuring.** *2026-10-12.* A thin paper wrap, deliberately held circular, read
-> 195 mm → **62.0**, a millimetre under the across-crests figure. Wraps err in both directions —
-> thickness high, chording low — and paper takes the shortest path between contact points however
-> carefully it is held. **`HUB_D` stays at 63.0**, not because that argument is decisive but because
-> erring high is the safe direction, and because **the Ø64.2 bore has already been printed and
-> fitted, which outranks all three numbers.**
+> **Settled with a caliper, 2026-10-15: 62.7 mm**, three positions, no spread worth recording.
+> That ends four indirect attempts, and the pattern in them is the lesson:
 >
-> | if the hub is really | gap per side | screws reach |
+> | | reads | why it was off |
 > |---|---:|---|
-> | 62.0 | 1.10 mm | 3.00 mm — fine |
-> | 63.0 | 0.60 mm | 3.00 mm — fine |
-> | 63.6 | 0.30 mm | 3.00 mm — fine |
+> | wire wrap, 205 mm | 65.25 | the wire's own 2 mm thickness, never subtracted |
+> | + a polygon "chord" correction | 66.00 | applied in the wrong direction, for a crest form this hub does not have |
+> | tape across opposite crests | 63.00 | right method, coarse instrument |
+> | thin paper wrap, 195 mm | 62.00 | chorded the six gaps and read low |
+> | **caliper across opposite crests** | **62.70** | |
 >
-> **The millimetre does not reach the part.** Its only consequence is more play, and more play is
-> more potential eccentricity — which a *latch* is immune to, because its edges come from the field
-> reversing sign rather than from a threshold on its strength. `HUB_TOL` goes to 1.0 to carry the
-> spread honestly.
+> **Every indirect method missed, and the direct one was available from the first day.** Six lobes
+> is an even count, so opposite crests face each other — that was true before any of this. It took
+> a ring printed 4 mm oversize to go and measure across.
+>
+> `HUB_TOL` is now **0.2**, carrying the instrument and the vehicle-to-vehicle spread and nothing
+> else. It is no longer a shrug: the grub-screw length assert depends on it, and at 0.2 the worst-
+> case screw stand-off is **0.5 mm**.
 
 > [!IMPORTANT]
 > **A reversed magnet cannot be prevented. Make it visible instead.**
@@ -972,7 +973,7 @@ The latch makes the *timing* gap-independent, but the sensor still has to be clo
 field and far enough not to be struck, and the first vehicle is where that gets learned.
 
 **Both sensors in one printed part.** The two sit on a chord while the magnets ride an arc, so the
-gap differs between A and B by the sagitta: `c²/8R = 6.82² / (8 × 39.1) = `**`0.149 mm`**. A flat
+gap differs between A and B by the sagitta: `c²/8R = 6.80² / (8 × 38.95) = `**`0.148 mm`**. A flat
 two-up pad is therefore correct, not an approximation.
 
 **What to measure now:**
@@ -998,7 +999,7 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 | | |
 |---|---|
 | **Axial clearance, gearbox rotating part → wheel** | **≥ 8 mm** — *measured on the delivered vehicle and **this is what decided Branch C**. It was not written down at the time; recorded 2026-10-03.* |
-| **Smallest obstruction radius in that 8 mm slice** | **≥ 46.1 mm needed** — ring (39.1) + air gap (3) + sensor (4). *Open, but **do not measure it** — print the fit mule, refit the wheel and turn it. `RADIAL_ROOM` stays negative in the model until something settles it, and says so on every build.* |
+| **Smallest obstruction radius in that 8 mm slice** | **≥ 45.95 mm needed** — ring (38.95) + air gap (3) + sensor (4). *Open, but **do not measure it** — print the fit mule, refit the wheel and turn it. `RADIAL_ROOM` stays negative in the model until something settles it, and says so on every build.* |
 | Hub lobe-crest Ø, across opposite crests | **63.0 mm** *(2026-10-08, three positions).* **Three methods now disagree by about a millimetre:** wire wrap less its thickness **63.25**, tape across crests **63.00**, thin paper wrap less its thickness **61.97** (2026-10-12). The wraps err both ways — thickness pushes them high, chording across the six gaps pushes them low, and 35–40° gaps would account for the whole spread. **The across-crests figure has no chord term and is kept.** It does not reach the part: see below. |
 | Hub form | **Six broad lobes, narrow gaps** *(2026-10-06 photographs — not a fine spline, which is why no chord correction applies)* |
 | **Does the lobed boss stand clear of the housing end?** | **Yes — about 10 mm of it** *(2026-10-08 side view). This was the risk that could have killed Branch C: an end-on photograph made the hub look recessed inside the housing collar, and a Ø81 ring cannot reach a hub sunk inside a ~Ø72 bore. It is not sunk. The 6 mm ring goes on with room to spare — and therefore does not locate itself, so see the assembly note.* |
@@ -1010,14 +1011,14 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 > *Corrected 2026-10-04.* An earlier revision treated the 8 mm as a stack of bracket arm **plus**
 > sensor and concluded a TO-92 pair leaves ~1 mm. That assumed the sensors sit **beside** the
 > magnets axially. They do not — they sit **outside** them radially, and the two sensors are spaced
-> **along the circumference**, 6.82 mm apart.
+> **along the circumference**, 6.80 mm apart.
 >
 > So the 8 mm has to contain the **magnet track's width** (4–6 mm) and the sensor's **axial**
 > extent, side by side radially rather than stacked. Both package types fit.
 >
 > **So take TO-92, and that reverses what this page used to say.** Surface mount was preferred only
 > while the axial budget looked tight; the budget was never tight, and the preference had no other
-> leg to stand on. Two TO-92 bodies (4 × 3 × 1.5 mm) at 6.82 mm centres leave **2.82 mm of air**
+> leg to stand on. Two TO-92 bodies (4 × 3 × 1.5 mm) at 6.80 mm centres leave **2.80 mm of air**
 > between them, which is comfortable.
 >
 > **What TO-92 buys is the whole of the difference.** SOT-23 means a PCB: a layout, a fab order, a
