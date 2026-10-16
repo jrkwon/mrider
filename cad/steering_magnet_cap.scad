@@ -25,9 +25,19 @@
 // Kingpin bolt head, across the flats, mm. THE ONE MEASUREMENT THIS NEEDS.
 // 13.3 measured 2026-10-16 — an M8 head is 13.0 nominal, so this is M8 plus paint.
 HEAD_AF      = 13.3;
-// Height of the hex head, mm. NOT YET MEASURED — 5.3 is the ISO 4017 figure for
-// M8 and is a placeholder. Caliper it before printing; too shallow and the cap
-// rocks, too deep and it bottoms on the boss instead of seating on the head.
+// How deep the socket has to be: from the WASHER'S TOP FACE to the very top of
+// everything above it — the hex head plus the small raised pip on top of it.
+//
+// A caliper across the whole stack read 10.0 mm on 2026-10-16, but that span
+// INCLUDED THE WASHER, so it over-states this number by the washer's thickness.
+// 8.0 is that reading less a nominal 2 mm washer and is a placeholder. Measure
+// from the washer's top face and set it:
+//   too shallow -> the cap stops on the pip and rocks on the hex
+//   too deep    -> it pushes past the washer onto whatever is underneath, which
+//                  may not be turning with the wheel
+STACK_H      = 8.0;
+// Hex height alone, mm — only used to check there is enough flat to locate on.
+// 5.3 is the ISO 4017 figure for M8. Confirm with the same caliper pass.
 HEAD_H       = 5.3;
 // Clear air above the head, mm. 100 measured — the sensor bracket is unconstrained.
 HEAD_CLEAR   = 100.0;
@@ -51,13 +61,14 @@ EPS = 0.01;
 SOCK_AF = HEAD_AF + SOCKET_CLEAR;
 SOCK_AC = SOCK_AF / cos(30);          // across corners
 OD      = SOCK_AC + 2 * WALL;
-SOCK_H  = HEAD_H + SEAT_EXTRA;
+SOCK_H  = STACK_H + SEAT_EXTRA;
 TOTAL_H = SOCK_H + MAG_BACK + MAG_T;
 
 echo(str("socket across flats ", SOCK_AF, " mm"));
 echo(str("cap outside Ø",        OD,      " mm"));
 echo(str("cap height",           TOTAL_H, " mm"));
-echo(str("magnet face sits ",    TOTAL_H - HEAD_H, " mm above the bolt head"));
+echo(str("magnet face sits ",    TOTAL_H - STACK_H, " mm above the top of the bolt"));
+echo(str("hex engaged",          HEAD_H, " mm of the ", SOCK_H, " mm socket"));
 echo(str("wall at the flats",    (OD - SOCK_AF)/2, " mm"));
 
 assert(MAG_D < SOCK_AF,
@@ -65,6 +76,8 @@ assert(MAG_D < SOCK_AF,
 assert(MAG_BACK >= 0.8, "floor under the magnet too thin to print");
 assert(TOTAL_H < HEAD_CLEAR, "cap is taller than the room above the bolt head");
 assert(SOCKET_CLEAR > 0, "socket must slip on by hand — this part is removed to return the vehicle to stock");
+assert(HEAD_H >= 4.0, "too little hex for the cap to locate on without rocking");
+assert(STACK_H >= HEAD_H, "the stack cannot be shorter than the hex inside it");
 
 // ---- parts ---------------------------------------------------------------
 module hex(af, h) { cylinder(d = af / cos(30), h = h, $fn = 6); }
@@ -89,12 +102,11 @@ cap();
 // magnet face comes off the bed flat, which is the face the sensor reads across.
 //
 // ---- fitting -------------------------------------------------------------
-// 1. CHECK THE BOLT SPINS RATHER THAN ORBITS. A mark on the head that turns on
-//    the spot means the bolt is on the steering axis. A mark that travels in a
-//    circle means it is offset, and this cap cannot work — say so before
-//    printing.
-// 2. Caliper HEAD_H and set it. The socket must bottom on nothing: it seats on
-//    the hex, and SEAT_EXTRA keeps it off whatever is under the head.
+// 1. The bolt SPINS ON THE SPOT rather than orbiting — confirmed 2026-10-16, so
+//    it sits on the steering axis and this cap is viable at all.
+// 2. Measure STACK_H FROM THE WASHER'S TOP FACE. The 10.0 mm caliper pass
+//    spanned the washer as well, and a socket cut to 10 would push past the
+//    washer onto whatever is under it.
 // 3. Press the cap on by hand. It should need a push and come off with a pull.
 //    No adhesive on the BOLT, ever — the cap comes off to return the vehicle to
 //    stock. If it ever works loose, glue the magnet, not the cap.
