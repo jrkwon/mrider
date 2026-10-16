@@ -1,0 +1,105 @@
+// MRider — steering angle magnet cap
+// ==================================
+// A cap that drops over the kingpin bolt head and presents a diametrically
+// magnetised magnet on the steering axis for an AS5600.
+//
+// WHY THIS PART EXISTS, AND WHY IT IS A CAP
+//   ADR B wants the absolute angle measured LOAD-SIDE, so that gearbox backlash
+//   and linkage slop show up as measured error instead of invisible bias. This
+//   vehicle refused an end-mounted magnet three times — no motor rear stub, no
+//   free drive output, no free steering output, every axis occupied. The kingpin
+//   bolt is the first one that is free, and its head TURNS WITH THE ROAD WHEEL
+//   (mark test, 2026-10-16), with about 100 mm of clear air above it.
+//
+// WHY IT REGISTERS ON THE HEX AND NOT ON THE BOSS
+//   An AS5600 wants its magnet concentric with the die to about +-0.25 mm. A hex
+//   socket locates on six formed flats and centres itself; the boss below may or
+//   may not even rotate. Nothing is drilled, nothing is cut, and pulling the cap
+//   off returns the vehicle to stock — which 02-mechanical 2.8 asks for.
+//
+//   Build:  openscad -o cap.stl steering_magnet_cap.scad
+//
+// Spec: docs/order-log.md #13 · Sensor: docs/order-log.md #5
+
+/* [Measured on the vehicle] */
+// Kingpin bolt head, across the flats, mm. THE ONE MEASUREMENT THIS NEEDS.
+// 13.3 measured 2026-10-16 — an M8 head is 13.0 nominal, so this is M8 plus paint.
+HEAD_AF      = 13.3;
+// Height of the hex head, mm. NOT YET MEASURED — 5.3 is the ISO 4017 figure for
+// M8 and is a placeholder. Caliper it before printing; too shallow and the cap
+// rocks, too deep and it bottoms on the boss instead of seating on the head.
+HEAD_H       = 5.3;
+// Clear air above the head, mm. 100 measured — the sensor bracket is unconstrained.
+HEAD_CLEAR   = 100.0;
+
+/* [Magnet — DIAMETRICALLY magnetised, not axial] */
+MAG_D        = 6.0;         // disc diameter, mm
+MAG_T        = 2.5;         // disc thickness, mm
+MAG_CLEAR    = -0.1;        // NEGATIVE = press fit
+MAG_BACK     = 1.2;         // floor under the magnet, mm
+
+/* [Cap] */
+WALL         = 3.0;         // radial wall around the hex, mm
+SOCKET_CLEAR = 0.3;         // added across flats so it slips on by hand
+SEAT_EXTRA   = 1.0;         // socket deeper than the head, so it seats on the head
+
+/* [Hidden] */
+$fn = 120;
+EPS = 0.01;
+
+// ---- derived -------------------------------------------------------------
+SOCK_AF = HEAD_AF + SOCKET_CLEAR;
+SOCK_AC = SOCK_AF / cos(30);          // across corners
+OD      = SOCK_AC + 2 * WALL;
+SOCK_H  = HEAD_H + SEAT_EXTRA;
+TOTAL_H = SOCK_H + MAG_BACK + MAG_T;
+
+echo(str("socket across flats ", SOCK_AF, " mm"));
+echo(str("cap outside Ø",        OD,      " mm"));
+echo(str("cap height",           TOTAL_H, " mm"));
+echo(str("magnet face sits ",    TOTAL_H - HEAD_H, " mm above the bolt head"));
+echo(str("wall at the flats",    (OD - SOCK_AF)/2, " mm"));
+
+assert(MAG_D < SOCK_AF,
+       "magnet pocket is wider than the socket — its floor would have nothing to sit on");
+assert(MAG_BACK >= 0.8, "floor under the magnet too thin to print");
+assert(TOTAL_H < HEAD_CLEAR, "cap is taller than the room above the bolt head");
+assert(SOCKET_CLEAR > 0, "socket must slip on by hand — this part is removed to return the vehicle to stock");
+
+// ---- parts ---------------------------------------------------------------
+module hex(af, h) { cylinder(d = af / cos(30), h = h, $fn = 6); }
+
+module cap() {
+    difference() {
+        cylinder(d = OD, h = TOTAL_H);
+        // hex socket, open at the bottom
+        translate([0, 0, -EPS]) hex(SOCK_AF, SOCK_H + EPS);
+        // magnet pocket, open at the top
+        translate([0, 0, TOTAL_H - MAG_T])
+            cylinder(d = MAG_D + MAG_CLEAR, h = MAG_T + EPS);
+    }
+}
+cap();
+
+// ---- printing ------------------------------------------------------------
+// PETG, 0.2 mm layers, 4 perimeters, 40 % infill, no supports.
+//
+// PRINT IT MAGNET-FACE DOWN, socket opening upward. The floor under the magnet
+// then bridges only the 6 mm pocket instead of the 13.6 mm socket, and the
+// magnet face comes off the bed flat, which is the face the sensor reads across.
+//
+// ---- fitting -------------------------------------------------------------
+// 1. CHECK THE BOLT SPINS RATHER THAN ORBITS. A mark on the head that turns on
+//    the spot means the bolt is on the steering axis. A mark that travels in a
+//    circle means it is offset, and this cap cannot work — say so before
+//    printing.
+// 2. Caliper HEAD_H and set it. The socket must bottom on nothing: it seats on
+//    the hex, and SEAT_EXTRA keeps it off whatever is under the head.
+// 3. Press the cap on by hand. It should need a push and come off with a pull.
+//    No adhesive on the BOLT, ever — the cap comes off to return the vehicle to
+//    stock. If it ever works loose, glue the magnet, not the cap.
+// 4. Press the magnet in flush. A diametric magnet has its poles across the
+//    disc, so which way round it goes does not matter: the AS5600's zero is
+//    programmable and firmware carries the offset anyway.
+// 5. The sensor faces the magnet across 0.5-3 mm, die centred on the axis,
+//    on a bracket fixed to the CHASSIS.
