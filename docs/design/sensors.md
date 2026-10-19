@@ -256,6 +256,23 @@ carry the sensor-selection weight.
 > the equipment plate as a real 6 kg link so this margin is testable in simulation before
 > anything is bolted to the real car.
 
+> [!NOTE]
+> **Mast and plate materials decided — 2026-10-19**
+>
+> This section says *"mast"* throughout without ever saying what it is made of. It is **2020
+> aluminium extrusion**, ~0.7 m: a printed tube of that length delaminates under bending, and the
+> rigidity requirement below is this section's own. The **T-slot** also makes the camera and LiDAR
+> heights adjustable without reprinting a bracket, which matters because both are re-calibrated at
+> [step 6](../build/06-bench-test.md) regardless.
+>
+> It stands on an **equipment plate of 12 mm birch plywood** replacing the seat — the part
+> [vehicle.md §3](vehicle.md) requires and which, until now, no document specified and no budget
+> line funded. The mounts and the two control enclosures are printed PETG.
+>
+> **The geometry is still unmeasured.** [V4 in the Order Log](../order-log.md) carries the
+> measurement set, including the question that decides whether the mast may bolt to the seat holes
+> at all: whether those bolts thread into a **metal frame or into moulded body plastic**.
+
 The sensors share a single **mast** on the deck/bed ([vehicle.md](vehicle.md) C5)
 so their extrinsics are fixed once ([calibration.md](calibration.md)).
 

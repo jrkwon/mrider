@@ -1894,12 +1894,26 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 | Inserts | M3 heat-set threaded inserts for the enclosures |
 | Fasteners | M3/M4 bolts, nylon standoffs |
 
-> [!NOTE]
-> **Consider aluminium profile for the mast itself**
+> [!IMPORTANT]
+> **Decided 2026-10-19 — and this line was never complete**
 >
-> Printed brackets are right for the LiDAR and camera mounts. The **mast** carries them at height
-> and is the part whose flex shows up directly in the extrinsics. A short length of 2020 extrusion
-> is stiffer than any print of the same mass, and it is cheap.
+> The table above funds filament, inserts and fasteners. It does **not** fund the mast tube, and it
+> does not fund the **equipment plate** that replaces the seat — a part
+> [vehicle.md §3](../design/vehicle.md) requires and no line in this document has ever carried.
+>
+> | | Chosen | Why not the alternative |
+> |---|---|---|
+> | **Mast** | **2020 aluminium extrusion**, ~0.7 m per vehicle | A 0.65 m printed tube delaminates along its layer lines under bending, and that flex lands in the camera↔LiDAR extrinsics. The **T-slot** also makes sensor height adjustable without reprinting a bracket |
+> | **Plate** | **12 mm birch plywood**, cut to the seat footprint | A 30–40 cm span is past most printer beds, and a split print puts a glue joint under the mast base. Aluminium needs a cutting shop and a metal drill to move a hole; plywood needs a cordless drill, which is what thirteen students changing the layout actually need. It damps better than aluminium too, and [sensors.md §5](../design/sensors.md#5-mounting-mast-concept) makes vibration an IMU and camera problem |
+> | **Enclosures** | **two printed boxes** — power and logic | [safety.md §5](../design/safety.md#5-power-rail-isolation-and-brownout-protection)'s rail isolation is a claim in a document until two boxes make it visible. It also keeps a 30 A PWM harness out of the box students open weekly |
+>
+> **Buy per vehicle:** 2020 extrusion ~0.7 m, four corner brackets, M5 T-nuts and bolts, one
+> plywood blank. **The motor driver is enclosed by neither box** — the MDDS30 needs its heatsink in
+> open air, under a vented guard.
+>
+> **Nothing is cut until [V4](../order-log.md) is filled in.** The plate dimension comes from the
+> seat footprint and the mast anchoring depends on whether the seat bolts thread into **metal or
+> into body plastic** — on plastic those holes carry the plate and nothing more.
 
 ---
 

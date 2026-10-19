@@ -225,6 +225,59 @@ The laptop rides on its own battery and is not wired into the 12 V system in v1
 ([safety.md §5](../design/safety.md#5-power-rail-isolation-and-brownout-protection)) —
 mechanically, it just needs a secure, ventilated place to sit.
 
+### 2.7.1 What this stage actually builds
+
+> [!IMPORTANT]
+> **Build the plate first. Everything else in this section bolts to it.**
+>
+> [vehicle.md §3](../design/vehicle.md) records that this chassis has **no flat deck** — the seat is
+> the only flat area, it comes out, and an **equipment plate** takes its place. The mast, both
+> enclosures, the IMU and the motor driver all land on that plate, so it is not an accessory to this
+> stage; it is the stage's first part.
+
+Five parts, in this order. **Nothing is cut or printed before
+[V4](../order-log.md) is filled in** — the drive encoder cost four wasted
+prints and 20 g of filament by designing to a hub diameter nobody had measured across.
+
+| Order | Part | Made from | Gated on |
+|---:|---|---|---|
+| 1 | **Equipment plate** | 12 mm birch plywood, cut to the seat footprint | V4 **D** |
+| 2 | **Mast + base bracket** | 2020 aluminium extrusion; the base is printed PETG | V4 **D** |
+| 3 | **LiDAR mount** | printed PETG, clamps to the 2020 T-slot | V4 **S** |
+| 4 | **Camera mount** | printed PETG, clamps to the 2020 T-slot, ~10–15° down | V4 **S** |
+| 5 | **Two enclosures** | printed PETG, heat-set M3 inserts from [#14](../order-log.md) | V4 **E**, plus #7 and #8 in hand |
+
+**The mast is extrusion, not a print.** A 0.65 m printed tube delaminates along its layer lines
+under exactly the bending load a mast sees, and that flex lands straight in the camera↔LiDAR
+extrinsics the bullet above calls load-bearing. The T-slot earns its place twice over: sensor height
+becomes adjustable **without reprinting a bracket**, which matters over sixteen weeks.
+
+**The plate is plywood, not aluminium or print.** A 30–40 cm span is past most printer beds, and a
+split plate puts a glue joint directly under the mast base. Plywood is re-drillable on the bench
+with a cordless drill, which is what a cohort of thirteen moving the layout actually needs, and it
+damps better than aluminium — relevant because vibration is an IMU and camera problem here, not a
+comfort one.
+
+**Two enclosures, not one** — power (contactor, relay MUX, fuses, XT60, logic battery, UBECs) and
+logic (Teensy, RC signal MUX, receiver). The rail isolation in
+[safety.md §5](../design/safety.md#5-power-rail-isolation-and-brownout-protection) is currently a
+claim in a document; two boxes make it something you can see without a meter, and they keep a 30 A
+PWM harness out of the box students open every week.
+
+> [!WARNING]
+> **The motor driver goes in neither box.**
+>
+> The MDDS30 dissipates into a heatsink. Enclose it and the heatsink does nothing. It mounts in
+> **open air on the plate**, under a vented guard that stops a dropped spanner reaching the
+> terminals — a guard, not a case.
+
+### 2.7.2 Before the first cut
+
+- [ ] [V4 **D**](../order-log.md) — deck geometry, **and whether the seat bolts thread into metal or plastic**
+- [ ] [V4 **S**](../order-log.md) — LiDAR and camera bodies; both parts are already in hand
+- [ ] [V4 **E**](../order-log.md) — every item destined for the two boxes, measured **and weighed**
+- [ ] Build **vehicle 1 only**, fit it, drive it, then repeat for 2 and 3
+
 ## 2.8 Confirm reversibility
 
 Before moving to electrical, satisfy yourself that this is still a stock vehicle underneath:

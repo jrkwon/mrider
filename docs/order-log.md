@@ -143,7 +143,8 @@ Prices are the verified figures from
 | 112 | **#11c** Hold-up + fuse — **closed, absorbed into #12** | 3 | 쿠팡 | 0 | 2026-10-02 | 2026-10-03 | 3/3 | 0 | **₩0 by construction, not by cancellation.** The 1000 µF 25 V capacitors and the 5 A fuses were bought on the #12 Coupang order and are counted there. Splitting the receipt to populate this row would make the log disagree with the invoice. Divider resistors come from the #7 kit **Secured 2026-10-08:** capacitors read **1000 µF 25 V**, which is the part the corrected spec asks for — a 16 V part sits at 91 % while the pack charges at 14.6 V. | **Capacitors arrived 2026-10-03** on the #12 shipment, as designed.
 | 900 | **Shipping** — running total, not per set | 1 | — | 23,100 | 2026-10-02 | . | — | 23,100 | Battery ₩3,500 · charger ₩3,500 · UBEC ₩4,400 *(flat, any quantity)*. **#12's ₩3,000 was refunded with a cancelled line**, so that order carries none. Kept off the part rows so `paid = unit × qty` stays a meaningful check — folding carriage in would make it misfire on every shipped row and train the reader to ignore the one thing that has caught two VAT errors. **Closed 2026-10-02: the earlier 디바이스마트 orders show ₩0 carriage**, so nothing is missing from before. UBEC carriage to be re-confirmed from the final charge **+₩2,700 on 2026-10-12** — the #6a Hall-latch order. **+₩6,000 on 2026-10-13** — the #14/#6d 쿠팡 order. **+₩3,000 on 2026-10-19** — the #5 AS5600 쿠팡 order. |
 | 12 | Wiring / connectors / fuses | 3 | 쿠팡 | 63,180 | 2026-10-02 | 2026-10-07 | 3/3 | 189,540 | **AWG 14 silicone red+black 10 m each** · AWG 20 UL1007 ×2 (32 m, 4-colour) · AWG 22 UL1015 ×3 · **ATO 대형 10종 50개** · **12 AWG holder ×8 + 12 fuses** · **18 AWG holder ×3** · **1000 µF 25 V ×10** · **XT60 ×10 pairs**. ₩205,820 less a ₩15,800 discount, **less ₩480 for 12× MINI 5 A fuses cancelled 2026-10-02** — ordered in error, they are MINI size and these holders are standard. **The ₩3,000 carriage was refunded with them**, so this order carries none. **Confirm the 10종 set includes 5 A** — with the MINI pack gone there is no fallback **Secured 2026-10-08:** wire lengths and colours all sufficient, and the **ATO 10종 set contains 5 × 5 A** — which closes the open question, because the MINI pack was cancelled and there was no other way to fuse the logic rail. **Three are fitted, so two spares across three vehicles for a whole semester.** Fuses are consumables and a blown one with no replacement stops a lab: top up the 5 A separately. | **Arrived in two parts:** fuse holders, AWG 14, AWG 22, XT60 pairs and the capacitors on **2026-10-03**; AWG 20 and the ATO fuse set on **2026-10-07**. Counts match the order on both.
-| 14 | Mounts / 3D-print material | 3 | 쿠팡 | 11,867 | 2026-10-13 | . | 0/3 | 35,600 | **Spec:** [§1.2.4](build/01-bom-sourcing.md#7-8-11-12-14-what-to-actually-buy) — **PETG, not PLA** — PLA softens at ~60 °C and mast rigidity is a calibration requirement **Sourced 2026-10-13** ([§1.2.1](build/01-bom-sourcing.md#14-and-6d-verified-2026-10-13)): **PETG 1 kg ×2** [올리민 ₩11,900](https://www.coupang.com/vp/products/9533639155) — any colour — · **PETG 1 kg YELLOW** [Lay1 ₩13,900](https://www.coupang.com/vp/products/9577432592), **required by ISO 13850** for the E-stop backing plate, not a preference · **M3 heat-set inserts ×100** [Lay1 ₩9,800](https://www.coupang.com/vp/products/9470532681) or the [M2–M6 220-piece assortment ₩11,900](https://www.coupang.com/vp/products/9510071311). ≈ **₩47,500** of a ₩123,000 line, plus M3/M4 bolts, nylon standoffs and cable ties from a local shop. **The 2020 extrusion is deliberately left out** — the mast is not designed, so its length is a guess. **Caliper the inserts on arrival**: the model's `INSERT_D` 4.6 and `INSERT_L` 5.0 have to match what turns up, and listings write those two numbers in either order. **Ordered 2026-10-13** (쿠팡 `2103582332487`): PETG 1 kg **옐로우** ₩13,900 · PETG 1 kg **딥블루** ₩11,900 · 황동 인서트**`M3x4x5`** 100개 ₩9,800 = **₩35,600** against a ₩123,000 estimate. One shared purchase, so the unit price here is the total over three and lands ₩1 off by rounding. **One roll of non-yellow may or may not be enough, and nobody can say yet.** Three carriers are about 60 g; the brackets, mounts and enclosures for three vehicles are the unknown, and those parts are not designed. **Do not pre-buy. The trigger is: print one vehicle's full set, weigh what is left on the spool, multiply by three.** Filament is next-day and the colour need not match, so a second roll is a five-minute decision once there is a number behind it rather than a guess. **The inserts are `M3x4x5` and the model wants `INSERT_D` 4.6 / `INSERT_L` 5.0 — caliper them before printing a carrier**, because the listing's two numbers could be either order and the same seller also sells `M3x5x4.2`. |
+| 14 | Mounts / 3D-print material | 3 | 쿠팡 | 11,867 | 2026-10-13 | . | 0/3 | 35,600 | **Spec:** [§1.2.4](build/01-bom-sourcing.md#7-8-11-12-14-what-to-actually-buy) — **PETG, not PLA** — PLA softens at ~60 °C and mast rigidity is a calibration requirement **Sourced 2026-10-13** ([§1.2.1](build/01-bom-sourcing.md#14-and-6d-verified-2026-10-13)): **PETG 1 kg ×2** [올리민 ₩11,900](https://www.coupang.com/vp/products/9533639155) — any colour — · **PETG 1 kg YELLOW** [Lay1 ₩13,900](https://www.coupang.com/vp/products/9577432592), **required by ISO 13850** for the E-stop backing plate, not a preference · **M3 heat-set inserts ×100** [Lay1 ₩9,800](https://www.coupang.com/vp/products/9470532681) or the [M2–M6 220-piece assortment ₩11,900](https://www.coupang.com/vp/products/9510071311). ≈ **₩47,500** of a ₩123,000 line, plus M3/M4 bolts, nylon standoffs and cable ties from a local shop. **The 2020 extrusion is deliberately left out** — the mast is not designed, so its length is a guess. **Caliper the inserts on arrival**: the model's `INSERT_D` 4.6 and `INSERT_L` 5.0 have to match what turns up, and listings write those two numbers in either order. **Ordered 2026-10-13** (쿠팡 `2103582332487`): PETG 1 kg **옐로우** ₩13,900 · PETG 1 kg **딥블루** ₩11,900 · 황동 인서트**`M3x4x5`** 100개 ₩9,800 = **₩35,600** against a ₩123,000 estimate. One shared purchase, so the unit price here is the total over three and lands ₩1 off by rounding. **One roll of non-yellow may or may not be enough, and nobody can say yet.** Three carriers are about 60 g; the brackets, mounts and enclosures for three vehicles are the unknown, and those parts are not designed. **Do not pre-buy. The trigger is: print one vehicle's full set, weigh what is left on the spool, multiply by three.** Filament is next-day and the colour need not match, so a second roll is a five-minute decision once there is a number behind it rather than a guess. **The inserts are `M3x4x5` and the model wants `INSERT_D` 4.6 / `INSERT_L` 5.0 — caliper them before printing a carrier**, because the listing's two numbers could be either order and the same seller also sells `M3x5x4.2`. **2026-10-19 — this row is the FILAMENT half only.** The mast tube and the equipment plate are neither printed nor funded here; they moved to [#141](#) when the materials were decided. |
+| 141 | **#14b** Mast + equipment plate — 2020 extrusion, plywood, T-slot hardware | 3 | 쿠팡 | 16,000 | . | . | 0/3 | | **Decided 2026-10-19:** 2020 aluminium extrusion for the mast, **12 mm birch plywood** for the plate that replaces the seat, printed PETG for the mounts and the two enclosures ([§1.2.4](build/01-bom-sourcing.md#14-mounts-and-print-material-38000), [§2.7](build/02-mechanical.md#27-mount-the-sensor-mast-and-compute)). **The plate had never appeared in any budget line** although [vehicle.md §3](design/vehicle.md) requires it — this row is where it now lives. **Sourced 2026-10-19, all domestic, all next-day:** 2020 profile **cut to 700 mm** [쿠팡 8531595597](https://www.coupang.com/vp/products/8531595597) ₩4,800 each — three is ₩14,400, and 700 mm is deliberate: [sensors.md §5](design/sensors.md#5-mounting-mast-concept) fixes the mast at ~0.65 m, so a cut length of 700 leaves trim and **you can only ever cut shorter** *(₩6,900 buys 900 mm if more margin is wanted)* · corner brackets [쿠팡 7260659679](https://www.coupang.com/vp/products/7260659679) ₩400 each, twelve is ₩4,800 · **T-nut + bolt + washer set, 200 pc** [쿠팡 9560823334](https://www.coupang.com/vp/products/9560823334) ₩13,850 무료배송 — taken over the ₩5,350 nuts-only set because the M5 bolts are not otherwise in the build and a T-nut without its bolt is not a fastener. **Goods ₩33,050, carriage ₩6,000** to the [Shipping row](#). **Plywood is NOT yet sourced and must not be** — its size is the seat footprint, which is [V4 **D**](#v4-deck-and-payload-geometry-unblocks-14) and unmeasured; the ₩16,000 unit here carries roughly ₩15,000 of plywood as an estimate. **Buy the three metal lines now, the plate after V4.** The extrusion is safe to buy ahead of the measurement because its length is set by the mast height, which [sensors.md §5](design/sensors.md#5-mounting-mast-concept) already fixed on a tip-over argument, not by the deck. |
 | 15 | USB gamepad — Logitech F710 class | 3 | [옥션](https://itempage3.auction.co.kr/DetailView.aspx?ItemNo=E428299758) | 66,680 | 2026-09-29 | . | 0/3 | 200,040 | ₩64,000 est → **₩66,680 actual**. Xbox layout; record the map if not |
 | | **Batch 1** | | | **973,930** | | | | | **× 3 = 2,921,790** |
 
@@ -557,6 +558,99 @@ Measure **every** candidate mounting shaft, not just the intended one.
 | **Axial length of the lobed boss still exposed with the wheel fitted** (the ring is 6 mm wide) | *Settled by the fit mule* |
 | **Gearbox housing nose — diameter and reachable length** (the sensor bracket clamps it) | |
 | Date / by | |
+
+### V4 — Deck and payload geometry → unblocks #14
+
+> [!IMPORTANT]
+> **Three decisions taken 2026-10-19, so this measurement set has a target to hit**
+>
+> | | Chosen | Instead of |
+> |---|---|---|
+> | **Mast** | **2020 aluminium extrusion** | printed, or pipe-and-clamp |
+> | **Equipment plate** | **12 mm birch plywood** | aluminium sheet, acrylic, printed |
+> | **Enclosures** | **two boxes — power and logic, separate** | one combined box |
+>
+> The mast is extrusion because [§1.2.4](build/01-bom-sourcing.md#14-mounts-and-print-material-38000)
+> already argued it and because the **T-slot makes sensor height adjustable without reprinting a
+> bracket** — over sixteen weeks the camera height changes at least once, and extrinsics are
+> re-calibrated at [step 6](build/06-bench-test.md) either way. The plate is plywood because
+> **thirteen students will move the layout** and a hole drilled on the bench has to be free; it also
+> damps better than aluminium, and [sensors.md §5](design/sensors.md#5-mounting-mast-concept) makes
+> vibration an IMU and camera problem. Two boxes because
+> [safety.md §5](design/safety.md#5-power-rail-isolation-and-brownout-protection)'s rail isolation is
+> currently a *claim in a document*; two physical enclosures make it something an inspector can see,
+> and they keep a 30 A PWM harness out of the box the students open.
+>
+> **The motor driver goes in neither box.** The MDDS30 dissipates into a heatsink and must stay in
+> open air, on the plate under a vented guard.
+
+> [!WARNING]
+> **Nothing here can be designed before these numbers exist — and the plate is the one nobody has named.**
+>
+> [vehicle.md §3](design/vehicle.md) records *"no flat deck — the seat is removed and replaced with
+> an equipment plate"*, and **no document specifies that plate and no line funds it.** The mast, both
+> enclosures, the IMU and the LiDAR all bolt to it, so it is the first thing measured and the first
+> thing made. This is the same gate **V3** enforced on the drive
+> encoder, where **five hub values were wrong** before anyone put a caliper across the lobes.
+
+**D — the deck.** *Blocks every other part of #14.*
+
+| Field | Value |
+|---|---|
+| Flat area left with the seat removed — length × width (mm) | |
+| Is it actually flat, or humped / channelled / sloped? | |
+| Seat fixing bolts — count, thread size | |
+| Seat bolt pattern — centre-to-centre spacings (mm) | |
+| **Do those bolts thread into a METAL frame or into the PLASTIC body?** | |
+| Obstruction heights around the area — seat back, wheel arches, column (mm, and which side) | |
+| Clear height above the deck before the body line interferes (mm) | |
+
+> **Why the metal-or-plastic question decides the design.** A 0.65 m mast is a lever: the sensors
+> are light, but braking and kerb strikes put a moment into its base. **Into steel, the mast base
+> can bolt to the seat holes directly.** Into moulded body plastic, those holes carry the plate and
+> nothing more — the mast then needs the plate to spread the load, or a separate tie to the chassis.
+> Answering this wrong is not a fit problem; it is a mast that works on the bench and loosens on the
+> first kerb.
+
+**S — the sensors, both already in hand.** *Measurable today; nothing is waiting on a delivery.*
+
+| Field | Value |
+|---|---|
+| RPLIDAR A1M8 — base bolt pattern: count, thread, spacing (mm) | |
+| RPLIDAR A1M8 — overall height, and **scan-plane height above the base** (mm) | |
+| RPLIDAR A1M8 — cable exit direction and connector clearance needed (mm) | |
+| Camera — case length × width × height (mm) | |
+| Camera — **1/4"-20 tripod thread present?** (Y/N) | |
+| Camera — optical-axis height above the case bottom (mm) | |
+| Camera — cable exit direction | |
+
+> **The scan-plane height is not a packaging number, it is a sightline number.**
+> [sensors.md §5](design/sensors.md#5-mounting-mast-concept) requires any **permanent occlusion
+> sector** to be recorded for Nav2 masking. That sector is set by where the scan plane sits relative
+> to the body line and the mast tube — so measure the **obstruction height in each quadrant** around
+> the chosen mast position too, and the occlusion comes out as arithmetic rather than as a surprise
+> during the first mapping run.
+
+**E — what goes in the two boxes.** *All in hand except the relay MUX and the E-stop parts.*
+
+| Field | Value |
+|---|---|
+| Cytron MDDS30 **including heatsink** — L × W × H and mounting-hole pattern (mm) | |
+| LiFePO₄ 12.8 V 6 Ah — L × W × H (mm) and mass (g) | |
+| Teensy 4.1 **with headers fitted** — L × W × H (mm) | |
+| Pololu #2806 — L × W × H (mm) | |
+| UBEC — L × W × H (mm) | |
+| Relay MUX assembly — footprint with sockets fitted (mm) | *#7 is in hand — measure as built, not from the datasheet* |
+| E-stop button — panel cut-out Ø and depth behind the panel (mm) | *waiting on [#8b](#)* |
+| Contactor — L × W × H with bracket (mm) | *waiting on [#8a](#)* |
+| **Total added mass (g) and the height of each item above the plate** | *feeds the tip-over check* |
+| Date / by | |
+
+> **The mass column is not bookkeeping.** [sensors.md §5](design/sensors.md#5-mounting-mast-concept)
+> cut the mast from 1.2 m to 0.65 m on a tip-over argument using an **estimated** 6 kg at an
+> estimated height. Every item above is now in hand and can be weighed, so the estimate can be
+> replaced by the real figure before anything is bolted down — and if it comes out high, the fix is
+> to move mass off the mast, which is cheap now and expensive after the brackets are printed.
 
 ---
 
