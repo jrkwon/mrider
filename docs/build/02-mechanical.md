@@ -271,7 +271,65 @@ PWM harness out of the box students open every week.
 > **open air on the plate**, under a vented guard that stops a dropped spanner reaching the
 > terminals — a guard, not a case.
 
-### 2.7.2 Before the first cut
+### 2.7.2 The layout and the cut plan
+
+![Sensor mast layout: a 500 mm 2020 post on a 250 mm fore-aft base rail bolted through the plywood plate, the LiDAR on a printed cap at the top of the post so the scan plane is clear of the mast, and the camera on a 150 mm forward boom pitched 12 degrees down; alongside, how one 900 mm length is cut into post, rail and boom, and why a post beside the LiDAR leaves a permanent blind sector](../images/sensor-mast-layout.svg)
+
+**One 900 mm length of 2020 per vehicle, cut into three. Two cuts, no offcut.**
+
+| Piece | Length | Job |
+|---|---:|---|
+| **Post** | 500 mm | vertical; carries everything |
+| **Base rail** | 250 mm | flat on the plate, fore-aft, **T-slot facing up** |
+| **Camera boom** | 150 mm | horizontal, forward, at ~380 mm |
+
+Aluminium 2020 cuts with a hacksaw and a mitre box in about two minutes. **File the cut square** —
+a post that meets the rail out of square puts the whole mast out of plumb, and the camera pitch is
+then wrong by whatever the error is.
+
+**The four corner brackets each have a job.** Two at the post foot, **front and rear**, because
+braking and kerb strikes load the mast fore-and-aft and that is the plane that needs the triangle.
+Two at the boom joint, above and below, which is what stops the camera drooping and twisting. The
+base rail needs none — it bolts **down through the plywood into T-nuts** in its upward slot, which
+is both stronger and easier to move later. The LiDAR needs none either: a printed cap slides onto
+the post's top end and carries its bolt pattern.
+
+> [!IMPORTANT]
+> **The LiDAR goes on TOP of the post, and the camera below it on the boom — the reverse of
+> [sensors.md §5](../design/sensors.md#5-mounting-mast-concept)'s ordering**
+>
+> That section puts the camera at the top and the LiDAR below it. **It also gives the reason — the
+> body and mast tube should "occlude as little as possible" — and the reason beats the ordering.**
+>
+> A post running past the side of a LiDAR subtends a **permanent blind sector of roughly 20°**: a
+> 20 mm post at ~55 mm from the scan centre. It is in every scan, every map and every costmap, and
+> it points backwards, which is where you most want to see while reversing. Put the post **under**
+> the scan plane instead and the occlusion is **zero** — the mast simply ends below the sensor.
+>
+> The price is camera height: **~390 mm instead of ~550 mm.** That is acceptable because the
+> camera's height only has to be **fixed and recorded**, not maximised — §5's own warning is that a
+> policy trained at one height does not transfer, which is an argument for writing the number down,
+> not for making it large. At 390 mm and 12° down the optical axis meets the ground at ~1.8 m, so
+> the 2–8 m band §5 asks for is still well inside the frame.
+>
+> **Record the final heights in [calibration.md](../design/calibration.md)** before the first
+> behavior-cloning dataset is captured.
+
+> [!WARNING]
+> **The seat bolts thread into body plastic — confirmed 2026-10-19. Label the mast NOT A HANDLE.**
+>
+> Run the numbers rather than guessing. 0.5 kg of sensors at 0.555 m hitting a kerb at 1 g is
+> **2.7 N·m**; across the 250 mm base rail that is **±11 N, about 1 kgf per end** — a moulded boss
+> shrugs it off. One adult leaning **10 kgf** on the mast top is **54 N·m**, which is **±216 N or
+> 22 kgf of pull-out per end**, and that is what tears a boss out of a moulding.
+>
+> **Driving is not the hazard. Handling is.** So the response is three cheap changes rather than a
+> heavier mast — the **250 mm base rail** (a couple, not a point load), a **plate that extends past
+> the seat bolt pattern** so it bears on the tub shell in compression, and **large backing washers**
+> under the plastic. Then the rule that follows from the second number: never lift, push, drag or
+> park the vehicle by the mast, and put a label on it saying so where a student will read it.
+
+### 2.7.3 Before the first cut
 
 - [ ] [V4 **D**](../order-log.md) — deck geometry, **and whether the seat bolts thread into metal or plastic**
 - [ ] [V4 **S**](../order-log.md) — LiDAR and camera bodies; both parts are already in hand

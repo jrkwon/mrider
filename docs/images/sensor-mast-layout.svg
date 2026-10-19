@@ -1,0 +1,228 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 830" width="1120" height="830"
+     font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+  <title>Sensor mast layout, the 900 mm cut plan, and why the LiDAR sits on top of the post</title>
+  <desc>Three panels. Left: a side elevation of the equipment plate and mast, with the LiDAR on a
+  printed cap at the top of a 500 mm post and the camera on a 150 mm forward boom, dimensioned from
+  the plate surface. Top right: how one 900 mm length of 2020 extrusion is cut into a 500 mm post,
+  a 250 mm base rail and a 150 mm camera boom, and where the four corner brackets go. Bottom right:
+  plan views comparing a post mounted beside the LiDAR, which leaves a permanent blind sector, with
+  a post mounted under it, which leaves the scan plane clear. Footer: why the seat bolts threading
+  into body plastic changes the base, with the arithmetic.</desc>
+
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#334155"/>
+    </marker>
+    <marker id="as" markerWidth="8" markerHeight="8" refX="7" refY="2.6" orient="auto">
+      <path d="M0,0 L0,5.2 L7,2.6 z" fill="#64748b"/>
+    </marker>
+    <marker id="ag" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#15803d"/>
+    </marker>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#b91c1c"/>
+    </marker>
+    <pattern id="hatch" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#cbd5e1" stroke-width="2.5"/>
+    </pattern>
+    <pattern id="ply" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#fde8c8"/>
+      <line x1="0" y1="3" x2="6" y2="3" stroke="#d9a259" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1120" height="830" fill="#ffffff"/>
+
+  <text x="24" y="34" font-size="19" font-weight="bold" fill="#0f172a">
+    Sensor mast — one 900 mm length of 2020 per vehicle, cut into three
+  </text>
+  <text x="24" y="56" font-size="13" fill="#475569">
+    Vehicle front is to the right. Heights are from the TOP FACE of the plywood plate, which is the datum for every mount.
+  </text>
+
+  <!-- ================= PANEL A : side elevation ================= -->
+  <rect x="24" y="76" width="516" height="624" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="44" y="102" font-size="14.5" font-weight="bold" fill="#0f172a">A · Side elevation</text>
+  <text x="44" y="120" font-size="11.5" fill="#64748b">mast drawn to scale above the plate; vehicle body indicative</text>
+
+  <!-- ground -->
+  <line x1="60" y1="660" x2="510" y2="660" stroke="#475569" stroke-width="2.5"/>
+  <rect x="60" y="660" width="450" height="12" fill="url(#hatch)"/>
+  <text x="62" y="688" font-size="11" fill="#64748b">ground</text>
+
+  <!-- vehicle body (indicative) -->
+  <path d="M130,566 L130,616 Q130,640 155,640 L400,640 Q424,640 424,616 L424,566 Z"
+        fill="#eef2f7" stroke="#94a3b8" stroke-width="1.8"/>
+  <circle cx="178" cy="645" r="16" fill="#e2e8f0" stroke="#64748b" stroke-width="2"/>
+  <circle cx="392" cy="645" r="16" fill="#e2e8f0" stroke="#64748b" stroke-width="2"/>
+  <text x="196" y="614" font-size="11" fill="#64748b">body tub — the seat came out of here</text>
+
+  <!-- the plate -->
+  <rect x="118" y="560" width="318" height="7" fill="url(#ply)" stroke="#a16207" stroke-width="1.6"/>
+  <text x="118" y="590" font-size="11.5" font-weight="bold" fill="#92400e">equipment plate — 12 mm birch plywood</text>
+  <text x="118" y="605" font-size="10.5" fill="#a16207">extends PAST the seat bolt pattern, so it bears on the tub shell</text>
+  <!-- seat bolts -->
+  <g stroke="#b91c1c" stroke-width="2">
+    <line x1="160" y1="556" x2="160" y2="580"/>
+    <line x1="230" y1="556" x2="230" y2="580"/>
+    <line x1="330" y1="556" x2="330" y2="580"/>
+    <line x1="400" y1="556" x2="400" y2="580"/>
+  </g>
+  <circle cx="160" cy="580" r="4.5" fill="#fecaca" stroke="#b91c1c" stroke-width="1.6"/>
+  <circle cx="230" cy="580" r="4.5" fill="#fecaca" stroke="#b91c1c" stroke-width="1.6"/>
+  <circle cx="330" cy="580" r="4.5" fill="#fecaca" stroke="#b91c1c" stroke-width="1.6"/>
+  <circle cx="400" cy="580" r="4.5" fill="#fecaca" stroke="#b91c1c" stroke-width="1.6"/>
+  <text x="300" y="629" font-size="10.5" font-weight="bold" fill="#b91c1c">large backing washers — the bolts thread into PLASTIC</text>
+
+  <!-- base rail : 250 mm, flat, fore-aft -->
+  <rect x="185" y="549" width="130" height="11" rx="1.5" fill="#cbd5e1" stroke="#475569" stroke-width="1.8"/>
+  <text x="96" y="528" font-size="11.5" font-weight="bold" fill="#334155">base rail 250 mm</text>
+  <text x="96" y="542" font-size="10.5" fill="#64748b">flat, fore-aft, T-slot UP</text>
+  <!-- bolts up through plate into the rail -->
+  <g stroke="#1d4ed8" stroke-width="2">
+    <line x1="196" y1="572" x2="196" y2="552" marker-end="url(#a)"/>
+    <line x1="304" y1="572" x2="304" y2="552" marker-end="url(#a)"/>
+  </g>
+  <text x="188" y="662" font-size="0" fill="#000"> </text>
+
+  <!-- post : 500 mm -->
+  <rect x="245" y="290" width="11" height="259" fill="#e2e8f0" stroke="#334155" stroke-width="2"/>
+  <line x1="250.5" y1="290" x2="250.5" y2="549" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 3"/>
+
+  <!-- 2 corner brackets at the foot, front and rear -->
+  <path d="M233,549 L233,528 L245,528" fill="none" stroke="#15803d" stroke-width="4.5" stroke-linejoin="round"/>
+  <path d="M268,549 L268,528 L256,528" fill="none" stroke="#15803d" stroke-width="4.5" stroke-linejoin="round"/>
+  <text x="96" y="508" font-size="10.5" font-weight="bold" fill="#15803d">2 × corner bracket</text>
+  <text x="96" y="494" font-size="10.5" fill="#15803d">(fore + aft — the braking direction)</text>
+  <path d="M176,503 L231,524" stroke="#15803d" stroke-width="1.4" marker-end="url(#ag)"/>
+
+  <!-- camera boom : 150 mm forward, at 380 -->
+  <rect x="256" y="352" width="78" height="11" rx="1.5" fill="#cbd5e1" stroke="#475569" stroke-width="1.8"/>
+  <path d="M256,374 L270,374 L270,363" fill="none" stroke="#15803d" stroke-width="4.5" stroke-linejoin="round"/>
+  <path d="M256,341 L270,341 L270,352" fill="none" stroke="#15803d" stroke-width="4.5" stroke-linejoin="round"/>
+  <text x="342" y="332" font-size="11.5" font-weight="bold" fill="#334155">camera boom 150 mm</text>
+  <text x="342" y="346" font-size="10.5" font-weight="bold" fill="#15803d">+ 2 × corner bracket</text>
+
+  <!-- camera, pitched ~12 deg down -->
+  <g transform="translate(334,357) rotate(12)">
+    <rect x="0" y="-11" width="26" height="22" rx="3" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="2"/>
+    <circle cx="24" cy="0" r="5" fill="#1e3a8a"/>
+  </g>
+  <path d="M366,366 L430,380" stroke="#1d4ed8" stroke-width="1.5" stroke-dasharray="7 4" marker-end="url(#a)"/>
+  <text x="372" y="402" font-size="11.5" font-weight="bold" fill="#1d4ed8">camera, ~12° down</text>
+  <text x="372" y="417" font-size="10.5" fill="#1d4ed8">printed cradle on the boom end</text>
+
+  <!-- printed cap + LiDAR on top -->
+  <rect x="238" y="282" width="26" height="9" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="1.8"/>
+  <text x="272" y="291" font-size="10.5" font-weight="bold" fill="#15803d">printed cap</text>
+  <rect x="222" y="253" width="58" height="29" rx="4" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="228" y="272" font-size="10.5" font-weight="bold" fill="#1e3a8a">RPLIDAR</text>
+  <!-- scan plane -->
+  <line x1="120" y1="261" x2="470" y2="261" stroke="#b91c1c" stroke-width="2.2"/>
+  <path d="M150,261 L126,261" stroke="#b91c1c" stroke-width="2.2" marker-end="url(#ar)"/>
+  <path d="M440,261 L466,261" stroke="#b91c1c" stroke-width="2.2" marker-end="url(#ar)"/>
+  <text x="296" y="253" font-size="11.5" font-weight="bold" fill="#b91c1c">scan plane — nothing of the mast is above it</text>
+
+  <!-- dimension stack on the left -->
+  <g stroke="#64748b" stroke-width="1.2" font-size="10.5" fill="#334155">
+    <line x1="76" y1="560" x2="76" y2="261"/>
+    <line x1="70" y1="560" x2="82" y2="560"/>
+    <line x1="70" y1="261" x2="82" y2="261"/>
+    <line x1="76" y1="430" x2="76" y2="275" marker-end="url(#as)"/>
+    <line x1="76" y1="400" x2="76" y2="546" marker-end="url(#as)"/>
+    <text x="30" y="350" font-weight="bold" fill="#b91c1c">≈ 555</text>
+    <text x="30" y="364" fill="#b91c1c">scan</text>
+
+    <line x1="104" y1="560" x2="104" y2="357"/>
+    <line x1="98" y1="357" x2="110" y2="357"/>
+    <line x1="104" y1="470" x2="104" y2="370" marker-end="url(#as)"/>
+    <line x1="104" y1="450" x2="104" y2="548" marker-end="url(#as)"/>
+    <text x="60" y="440" font-weight="bold" fill="#1d4ed8">≈ 390</text>
+    <text x="60" y="454" fill="#1d4ed8">camera</text>
+  </g>
+  <text x="30" y="246" font-size="10.5" fill="#64748b">mm above the plate</text>
+
+  <!-- the MDDS30 and heavy kit, low and central -->
+  <rect x="236" y="534" width="53" height="0" fill="none"/>
+  <text x="118" y="645" font-size="10.5" fill="#475569">
+    Heavy kit stays on the plate, low: MDDS30 102 × 97 × 42, 260 g, in open air under a vented guard
+  </text>
+
+  <!-- ================= PANEL B : the cut plan ================= -->
+  <rect x="556" y="76" width="540" height="316" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="576" y="102" font-size="14.5" font-weight="bold" fill="#14532d">B · One 900 mm length → three pieces, two cuts</text>
+  <text x="576" y="121" font-size="11.5" fill="#15803d">Yes — it is cut. 2020 aluminium cuts with a hacksaw and a mitre box in about two minutes.</text>
+
+  <!-- the bar -->
+  <rect x="580" y="150" width="490" height="34" fill="#e2e8f0" stroke="#334155" stroke-width="2"/>
+  <line x1="852" y1="142" x2="852" y2="192" stroke="#b91c1c" stroke-width="2.5" stroke-dasharray="6 4"/>
+  <line x1="988" y1="142" x2="988" y2="192" stroke="#b91c1c" stroke-width="2.5" stroke-dasharray="6 4"/>
+  <text x="844" y="136" font-size="10.5" font-weight="bold" fill="#b91c1c">cut 1</text>
+  <text x="980" y="136" font-size="10.5" font-weight="bold" fill="#b91c1c">cut 2</text>
+
+  <text x="640" y="172" font-size="12" font-weight="bold" fill="#0f172a">POST 500</text>
+  <text x="872" y="172" font-size="11.5" font-weight="bold" fill="#0f172a">RAIL 250</text>
+  <text x="1000" y="172" font-size="11" font-weight="bold" fill="#0f172a">BOOM 150</text>
+
+  <g stroke="#64748b" stroke-width="1.1" font-size="10.5" fill="#475569">
+    <line x1="580" y1="200" x2="1070" y2="200"/>
+    <line x1="580" y1="195" x2="580" y2="205"/>
+    <line x1="1070" y1="195" x2="1070" y2="205"/>
+    <text x="800" y="216" font-weight="bold">900 mm — exactly one length, no offcut</text>
+  </g>
+
+  <text x="580" y="248" font-size="12" font-weight="bold" fill="#14532d">The four corner brackets, per vehicle</text>
+  <text x="580" y="270" font-size="11.5" fill="#166534">■ 2 at the post foot, front and rear — this is the braking and kerb direction</text>
+  <text x="580" y="289" font-size="11.5" fill="#166534">■ 2 at the boom joint, above and below — stops the camera drooping and twisting</text>
+  <text x="580" y="314" font-size="11.5" fill="#15803d">The rail bolts <tspan font-weight="bold">down through the plywood into T-nuts</tspan> in its upward slot — no bracket there.</text>
+  <text x="580" y="333" font-size="11.5" fill="#15803d">The LiDAR needs no bracket either: a printed cap slides onto the post's top end.</text>
+  <text x="580" y="362" font-size="11.5" font-weight="bold" fill="#b91c1c">Why 900 and not the 700 first quoted:</text>
+  <text x="580" y="380" font-size="11.5" fill="#7f1d1d">700 leaves only an 80 mm base rail once the post and boom are taken out. ₩2,100 more per vehicle.</text>
+
+  <!-- ================= PANEL C : occlusion ================= -->
+  <rect x="556" y="408" width="540" height="292" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="576" y="434" font-size="14.5" font-weight="bold" fill="#0f172a">C · Why the LiDAR goes ON TOP, not below the camera</text>
+  <text x="576" y="452" font-size="11.5" fill="#64748b">plan view of the scan plane</text>
+
+  <!-- left : post beside -->
+  <circle cx="690" cy="556" r="46" fill="none" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 4"/>
+  <circle cx="690" cy="556" r="17" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
+  <path d="M690,556 L634,536 A60,60 0 0,1 634,576 Z" fill="#fecaca" stroke="#b91c1c" stroke-width="1.5"/>
+  <rect x="631" y="549" width="13" height="13" fill="#94a3b8" stroke="#334155" stroke-width="1.6"/>
+  <text x="604" y="616" font-size="11.5" font-weight="bold" fill="#b91c1c">✗ post BESIDE the LiDAR</text>
+  <text x="604" y="633" font-size="11" fill="#7f1d1d">~20° blind sector, permanently,</text>
+  <text x="604" y="648" font-size="11" fill="#7f1d1d">pointing where you reverse</text>
+
+  <!-- right : post under -->
+  <circle cx="952" cy="556" r="46" fill="none" stroke="#15803d" stroke-width="2.2"/>
+  <circle cx="952" cy="556" r="17" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
+  <rect x="945" y="549" width="13" height="13" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="3 2"/>
+  <g stroke="#15803d" stroke-width="1.6">
+    <path d="M952,520 L952,508" marker-end="url(#ag)"/>
+    <path d="M988,556 L1000,556" marker-end="url(#ag)"/>
+    <path d="M952,592 L952,604" marker-end="url(#ag)"/>
+    <path d="M916,556 L904,556" marker-end="url(#ag)"/>
+  </g>
+  <text x="876" y="632" font-size="11.5" font-weight="bold" fill="#15803d">✓ post UNDER the LiDAR</text>
+  <text x="876" y="649" font-size="11" fill="#166534">clean 360°; the post ends below</text>
+  <text x="876" y="664" font-size="11" fill="#166534">the scan plane</text>
+
+  <text x="576" y="686" font-size="11.5" fill="#475569">
+    This swaps the order in <tspan font-style="italic">sensors.md §5</tspan> — but serves its stated reason, “occlude as little as possible”, better than its own ordering did.
+  </text>
+
+  <!-- ================= FOOTER ================= -->
+  <rect x="24" y="716" width="1072" height="98" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.8"/>
+  <text x="44" y="740" font-size="13" font-weight="bold" fill="#92400e">
+    The seat bolts thread into body PLASTIC — so run the numbers rather than guessing
+  </text>
+  <text x="44" y="762" font-size="12" fill="#78350f">
+    0.5 kg of sensors at 0.555 m, hitting a kerb at 1 g → 2.7 N·m. Over the 250 mm base rail that is <tspan font-weight="bold">±11 N, about 1 kgf per end.</tspan> A plastic boss shrugs that off.
+  </text>
+  <text x="44" y="782" font-size="12" fill="#78350f">
+    One adult leaning 10 kgf on the mast top → 54 N·m → <tspan font-weight="bold">±216 N, 22 kgf of pull-out per end.</tspan> That is what tears a boss out of a moulding.
+  </text>
+  <text x="44" y="803" font-size="12" font-weight="bold" fill="#b45309">
+    Driving is not the hazard; handling is. Label the mast NOT A HANDLE, and never lift, push or park the vehicle by it.
+  </text>
+</svg>

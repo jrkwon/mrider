@@ -272,6 +272,32 @@ carry the sensor-selection weight.
 > **The geometry is still unmeasured.** [V4 in the Order Log](../order-log.md) carries the
 > measurement set, including the question that decides whether the mast may bolt to the seat holes
 > at all: whether those bolts thread into a **metal frame or into moulded body plastic**.
+>
+> **And the answer came back plastic — 2026-10-19.** The seat bolts thread into the moulded body,
+> not a steel frame, so the mast stands on a **250 mm fore-aft base rail** that turns its moment
+> into a push-pull couple, on a plate that extends past the bolt pattern to bear on the tub shell.
+> The arithmetic is in [02-mechanical §2.7.2](../build/02-mechanical.md#272-the-layout-and-the-cut-plan):
+> driving loads are about 1 kgf per end, a person leaning on the mast is 22 kgf, so the mast carries
+> a **NOT A HANDLE** label and the structure stays light.
+
+> [!CAUTION]
+> **The order of the camera and the LiDAR on the mast is now reversed — 2026-10-19**
+>
+> The bullets below put the **camera at the top** and the **LiDAR beneath it**. As built it is the
+> other way round: the **LiDAR sits on a printed cap on top of the post** and the **camera on a
+> 150 mm forward boom at ~390 mm**.
+>
+> **This serves this section's own stated reason better than its ordering did.** The requirement
+> below is that the body and mast tube "occlude as little as possible" — and a post running past
+> the side of a LiDAR subtends a **permanent ~20° blind sector**, in every scan and every costmap,
+> pointing backwards. With the post ending *below* the scan plane the occlusion is **zero**.
+>
+> The cost is camera height, ~390 mm instead of ~550 mm. That is acceptable because this section's
+> own concern is that a policy trained at one height does not transfer — which is an argument for
+> **recording** the height, not for maximising it. **Record the final figures in
+> [calibration.md](calibration.md)** before the first behavior-cloning capture.
+>
+> ![Mast layout: LiDAR on a printed cap at the top of a 500 mm post with a clear scan plane, camera on a 150 mm forward boom below it, on a 250 mm base rail bolted through the plywood plate](../images/sensor-mast-layout.svg)
 
 The sensors share a single **mast** on the deck/bed ([vehicle.md](vehicle.md) C5)
 so their extrinsics are fixed once ([calibration.md](calibration.md)).
