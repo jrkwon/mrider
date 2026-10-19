@@ -559,6 +559,13 @@ wants a **10 kΩ pull-up to 3.3 V**. Nothing on this cable goes above the Teensy
 > | Stock / lead | 375, DigiKey **4–5 days** |
 > | Terms | **반품 불가.** Buy **twenty**: six fitted, fourteen spare. The extra ten cost ₩7,800 and the part is soldered by thirteen students onto a package where reversed `VCC`/`GND` destroys it — spares turn a wiring mistake into a lost part rather than a lost week |
 >
+> **In hand 2026-10-17 — twenty pieces, five days door to door, ₩19,860 all in.** The route is
+> proven: a 디바이스마트 catalogue item sourced on the DigiKey channel cost **ex-VAT × 1.1 plus
+> ordinary domestic carriage and nothing else** — no 해외구매 수수료. That now holds for every
+> overseas line on this build, not just this one. **Keep the parts in their labelled bag:** TI
+> marks a TO-92 body with an abbreviated code rather than the full part number, so loose parts
+> are unidentifiable and `BC` (±12 mT) and `AG` (±6 mT) look identical.
+>
 > **No domestic latch exists, so some overseas route is unavoidable.** *Checked 2026-10-12:*
 > 디바이스마트's 마그네틱스위치 category with **품절 and 해외구매 both excluded**, searched for `latch`,
 > returns **0 results**. Plenty of A3144-class *switches* are stocked here; latches are not.
@@ -1952,6 +1959,19 @@ rather than invisible bias
 > sensed shaft, with the air gap inside spec. That mechanical precision is the main reason
 > the pot fallback is retained. Check for magnetic interference from the steering motor
 > during bench validation.
+> 
+> **Sourced and ordered 2026-10-19 — and the magnet is not a separate purchase.** Every AS5600
+> breakout ships with its own diametrically magnetised disc, because the module cannot work
+> without one; buying the pair together is also the only reliable way to get a *diametric*
+> magnet rather than guessing magnetisation off a listing. **Taken:**
+> [(PP-A818) 쿠팡 9158383428](https://www.coupang.com/vp/products/9158383428), ₩2,500 each,
+> **five for ₩12,500** plus ₩3,000 carriage, against an ₩81,000 line. Better-reviewed fallback:
+> [쿠팡 8459176702](https://www.coupang.com/vp/products/8459176702), four for ₩34,000, 무료배송 —
+> the same commodity board, the difference is margin. **Five rather than three** so one can be
+> benched before any vehicle is built. **On arrival:** caliper the supplied magnet and set
+> `MAG_D`/`MAG_T` in `cad/steering_magnet_cap.scad` (Ø6 × 2.5 are placeholders; these kits ship
+> Ø6 × 3 as often as not), **confirm the poles are on the RIM and not the faces**, and feed
+> `VCC` from **3.3 V** — the AS5600 is a 3.3 V part and the Teensy is not 5 V tolerant.
 
 ## 1.4 Substitution notes
 

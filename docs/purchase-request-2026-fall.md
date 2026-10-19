@@ -152,7 +152,7 @@ agreed to. Divergences are listed here instead, and the live state of every item
 | 11c | *(part of the ₩60,000 above)* | **₩0** — capacitors and fuses bought on the #12 order | **−15,000** | Counted where the receipt puts them. Splitting an invoice to populate a row makes the log disagree with the invoice |
 | 12 | Wiring, connectors, fuses, ₩55,000 | **₩63,180** | **+24,540** | Wire and connectors came in above the estimate, which priced neither the AWG 22 multi-colour reels nor ten XT60 pairs |
 | 11 | Isolated logic rail, ₩60,000 | Split into **11a** battery + charger ₩66,000 · **11b** UBEC ×2 ₩23,518 · **11c** passives ₩5,000 est. = **₩94,518** | **+103,554** | The SLA was replaced by a 740 g LiFePO₄ pack, which costs more and weighs a fifth as much — see [§1.2.4](build/01-bom-sourcing.md#7-8-11-12-14-what-to-actually-buy). Listing prices were **ex-VAT**; the figures here include it |
-| — | **Carriage** — not in this request at all | **₩20,100 so far**, and rising | **+20,100** | The request priced goods only. Battery ₩3,500 · charger ₩3,500 · UBEC ₩4,400 · Hall latches ₩2,700 · #14/#6d ₩6,000. #12's carriage was refunded with a cancelled line. Tracked as its own row in the [Order Log](order-log.md) so it cannot distort any item's unit price |
+| — | **Carriage** — not in this request at all | **₩23,100 so far**, and rising | **+23,100** | The request priced goods only. Battery ₩3,500 · charger ₩3,500 · UBEC ₩4,400 · Hall latches ₩2,700 · #14/#6d ₩6,000 · AS5600 ₩3,000. #12's carriage was refunded with a cancelled line. Tracked as its own row in the [Order Log](order-log.md) so it cannot distort any item's unit price |
 | 4 | Steering gearmotor + encoder, ₩48,000 | **Expected ₩0** — the delivered vehicle has a **stock steering gearmotor** | 0 *(pending)* | Confirmed 2026-10-01: all three steer under the parent remote, and the vehicle's rated **25 kg** occupant load against ~6 kg of added kit demonstrates the ≥ 2× torque margin without measurement. The design reuses the motor rather than adding one. **Still funded** against one residual risk: it was never specified for continuous closed-loop duty. Released at bench Stage 1 |
 | 13 | Steering coupler + magnet mount, ₩20,000 | **Partly unneeded** — no motor coupler required | 0 *(pending)* | The stock motor is already coupled to the linkage. The angle-sensor magnet mount is still required |
 | 8 | E-stop + contactor, ₩35,000 | Split into **8a** contactor ₩11,000 · **8b** button ₩11,924 = **₩22,924** | **−36,228** | The line hid two parts from two vendors on different dates. Both now ordered; the button came in well under the estimate |
@@ -161,16 +161,17 @@ agreed to. Divergences are listed here instead, and the live state of every item
 | 6a | Sensor, ₩14,000 × 3 = ₩42,000 | **₩17,160** — twenty `DRV5013BCELPEM` at the 10–25 tier | **−24,840** | Priced per vehicle; bought once, and bought deep. Six are fitted and fourteen are spare because the part is 반품 불가 and reversed `VCC`/`GND` destroys it. **No 해외구매 수수료 on this route** — Element14's ₩20,000 handling is specific to Element14 |
 | 14 | Mounts and print material, ₩41,000 × 3 = ₩123,000 | **₩35,600** — two 1 kg PETG rolls and 100 M3 heat-set inserts | **−87,400** | Bought once rather than per vehicle. One roll is yellow, which **ISO 13850 requires** for the E-stop backing plate. The 2020 extrusion is deliberately not bought: it is for the mast, and the mast is not designed |
 | 6d | Fasteners etc., ₩5,000 × 3 = ₩15,000 | **₩31,840** — grub screws, cyanoacrylate, IPA, threadlocker | **+16,840** | The estimate was written when this line was fasteners only. Adhesive and IPA were added on 2026-10-12 — the assembly procedure required them and nothing funded them — and priced at a guess |
-| | | **Net** | **−386,714** | |
+| 5 | Angle sensor, ₩27,000 × 3 = ₩81,000 | **₩12,500** — five AS5600 breakouts at ₩2,500 | **−68,500** | The estimate funded a sensor **and a separate diametric magnet**; every AS5600 breakout ships with one, because the module cannot work without it. So the line was paying twice for one part. Five rather than three: one is benched before any vehicle is built, leaving three fitted and one spare |
+| | | **Net** | **−452,214** | |
 
-**Projected total ₩3,534,766 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows.
+**Projected total ₩3,469,266 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows.
 
 > [!IMPORTANT]
 > **What was actually approved: a ceiling of ₩4,000,000, not this line-item schedule**
 >
 > The university approved a **total**. Individual items may move in price, be substituted, split,
 > or dropped **without further approval**. Only the total binds, and the live figure against it is
-> **₩3,534,766 projected, ₩465,234 of headroom**.
+> **₩3,469,266 projected, ₩530,734 of headroom**.
 >
 > So the amendments above are **not an approval trail** — nothing in them needed permission. They
 > exist for the reason this document already states: *"the estimates above will not match, and the
