@@ -4,8 +4,9 @@
   <desc>Left: plan view of the rejected single fore-aft rail, showing that laterally the post is
   held only by the 20 mm arms of its corner brackets. Centre: the adopted coplanar cross — a 250 mm
   fore-aft rail with two 115 mm lateral stubs butted to its sides at mid-length, giving a 250 mm
-  base in both directions and four corner brackets at the post foot instead of two. Right: the
-  revised cut list, one 1000 mm length plus one 200 mm length per vehicle.</desc>
+  base in both directions and four corner brackets at the post foot instead of two. Right: the cut
+  list, a 700 mm and a 600 mm length of T-slot profile per vehicle, with a warning that the same
+  seller's cheaper 앵글 DAB listing is an L-angle with no T-slot and cannot be used.</desc>
 
   <defs>
     <marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
@@ -72,7 +73,7 @@
     A 500 mm post on a 40 mm sideways base is a
   </text>
   <text x="44" y="496" font-size="11.5" fill="#7f1d1d">
-    <tspan font-weight="bold">25 : 1 lever.</tspan> It will wobble, and the wobble
+    <tspan font-weight="bold">25 : 1 lever.</tspan> It wobbles, and the wobble lands in the extrinsics.
   </text>
 
   <!-- ================= CENTRE : adopted ================= -->
@@ -117,43 +118,52 @@
   <text x="702" y="292" font-size="11.5" font-weight="bold" fill="#15803d">250</text>
   <text x="520" y="488" font-size="11.5" font-weight="bold" fill="#15803d">250 — the same</text>
 
-  <!-- ghost support -->
-  <rect x="534" y="124" width="30" height="330" fill="#94a3b8" fill-opacity="0.3" stroke="#64748b" stroke-width="1.4" stroke-dasharray="6 4"/>
-  <text x="390" y="146" font-size="10" fill="#475569">rail still sits over a chassis support</text>
+  <!-- ghosted pillars under the lid -->
+  <g fill="#bbf7d0" fill-opacity="0.65" stroke="#15803d" stroke-width="1.6" stroke-dasharray="5 3">
+    <circle cx="482" cy="222" r="12"/><circle cx="616" cy="222" r="12"/>
+    <circle cx="482" cy="356" r="12"/><circle cx="616" cy="356" r="12"/>
+  </g>
+  <text x="390" y="146" font-size="10" fill="#15803d">dashed = printed pillars on the spare battery holes,</text>
+  <text x="390" y="158" font-size="10" fill="#15803d">under the lid. Tie-downs land on THOSE — D11 sizes it.</text>
 
   <!-- ================= RIGHT : cut list ================= -->
   <rect x="742" y="76" width="334" height="430" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.8"/>
-  <text x="762" y="102" font-size="14" font-weight="bold" fill="#92400e">Revised cut list, per vehicle</text>
+  <text x="762" y="102" font-size="14" font-weight="bold" fill="#92400e">Cut list, per vehicle</text>
+  <text x="762" y="120" font-size="11" fill="#b45309">1130 mm of T-slot profile, from two pieces</text>
 
-  <text x="762" y="132" font-size="12" font-weight="bold" fill="#78350f">From one 1000 mm length:</text>
-  <rect x="762" y="144" width="290" height="26" fill="#e2e8f0" stroke="#334155" stroke-width="2"/>
-  <line x1="907" y1="138" x2="907" y2="176" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
-  <line x1="979" y1="138" x2="979" y2="176" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
-  <line x1="1012" y1="138" x2="1012" y2="176" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
-  <text x="800" y="162" font-size="11" font-weight="bold" fill="#0f172a">POST 500</text>
-  <text x="920" y="162" font-size="10" font-weight="bold" fill="#0f172a">RAIL 250</text>
-  <text x="982" y="162" font-size="8.5" fill="#0f172a">115</text>
-  <text x="1016" y="162" font-size="8.5" fill="#0f172a">115</text>
-  <text x="762" y="190" font-size="10.5" fill="#92400e">980 used, 20 spare. Three cuts.</text>
+  <text x="762" y="148" font-size="11.5" font-weight="bold" fill="#78350f">700 mm — ₩4,800</text>
+  <rect x="762" y="158" width="250" height="24" fill="#e2e8f0" stroke="#334155" stroke-width="2"/>
+  <line x1="940" y1="152" x2="940" y2="188" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
+  <line x1="994" y1="152" x2="994" y2="188" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
+  <text x="810" y="175" font-size="10.5" font-weight="bold" fill="#0f172a">POST 500</text>
+  <text x="946" y="175" font-size="9" font-weight="bold" fill="#0f172a">BOOM150</text>
+  <text x="998" y="175" font-size="8" fill="#15803d">50</text>
 
-  <text x="762" y="222" font-size="12" font-weight="bold" fill="#78350f">Plus one 200 mm length:</text>
-  <rect x="762" y="234" width="58" height="26" fill="#e2e8f0" stroke="#334155" stroke-width="2"/>
-  <line x1="806" y1="228" x2="806" y2="266" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
-  <text x="766" y="252" font-size="10" font-weight="bold" fill="#0f172a">BOOM 150</text>
-  <text x="836" y="252" font-size="10.5" fill="#92400e">one cut</text>
+  <text x="762" y="212" font-size="11.5" font-weight="bold" fill="#78350f">600 mm — ₩4,300</text>
+  <rect x="762" y="222" width="214" height="24" fill="#e2e8f0" stroke="#334155" stroke-width="2"/>
+  <line x1="851" y1="216" x2="851" y2="252" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
+  <line x1="892" y1="216" x2="892" y2="252" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
+  <line x1="933" y1="216" x2="933" y2="252" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
+  <text x="782" y="239" font-size="10" font-weight="bold" fill="#0f172a">RAIL 250</text>
+  <text x="855" y="239" font-size="8" fill="#0f172a">115</text>
+  <text x="896" y="239" font-size="8" fill="#0f172a">115</text>
+  <text x="940" y="239" font-size="8" fill="#15803d">120</text>
 
-  <text x="762" y="296" font-size="12" font-weight="bold" fill="#78350f">Why not one long bar?</text>
-  <text x="762" y="316" font-size="11" fill="#78350f">Because the price ladder is not linear:</text>
-  <text x="762" y="334" font-size="11" fill="#78350f">1000 mm is ₩6,460 and 900 mm is ₩6,900.</text>
-  <text x="762" y="352" font-size="11" fill="#78350f">Short pieces are worse still — 100 mm costs</text>
-  <text x="762" y="370" font-size="11" fill="#78350f">₩3,200 against ₩2,880 for 400 mm, so the</text>
-  <text x="762" y="388" font-size="11" fill="#78350f">stubs come out of the long bar, not the shelf.</text>
+  <rect x="762" y="268" width="290" height="92" rx="6" fill="#fee2e2" stroke="#ef4444" stroke-width="1.6"/>
+  <text x="776" y="290" font-size="12" font-weight="bold" fill="#991b1b">Buy only from the listing titled</text>
+  <text x="776" y="308" font-size="12" font-weight="bold" fill="#991b1b">DF2020 … 프로파일.</text>
+  <text x="776" y="328" font-size="11" fill="#7f1d1d">The same seller also lists 앵글 DAB 2020 —</text>
+  <text x="776" y="344" font-size="11" fill="#7f1d1d">an L-ANGLE. Cheaper, and <tspan font-weight="bold">useless here:</tspan> no</text>
+  <text x="776" y="356" font-size="11" fill="#7f1d1d" font-weight="bold">T-slot, so no T-nuts and no brackets.</text>
 
-  <rect x="762" y="406" width="290" height="84" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
-  <text x="776" y="428" font-size="11.5" font-weight="bold" fill="#92400e">Per vehicle: ₩6,460 + ₩1,690 = ₩8,150</text>
-  <text x="776" y="447" font-size="11" fill="#78350f">Fleet of three: ₩24,450 of extrusion.</text>
-  <text x="776" y="466" font-size="11" fill="#78350f">Brackets go 4 → 8 per vehicle: 24, ₩9,600.</text>
-  <text x="776" y="483" font-size="11" font-weight="bold" fill="#b45309">Whole fix costs ₩8,550 across the fleet.</text>
+  <text x="762" y="386" font-size="11" fill="#78350f">The profile ladder that is actually available:</text>
+  <text x="762" y="404" font-size="11" fill="#78350f">50 · 80 · 100 · 300 · 600 · 700 · 900 mm.</text>
+  <text x="762" y="422" font-size="11" fill="#78350f">200, 400, 500 and 1000 are <tspan font-style="italic">angle only</tspan>.</text>
+
+  <rect x="762" y="438" width="290" height="56" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+  <text x="776" y="458" font-size="11.5" font-weight="bold" fill="#92400e">₩9,100 per vehicle · ₩27,300 for three</text>
+  <text x="776" y="476" font-size="11" fill="#78350f">170 mm spare per vehicle — deliberate: the</text>
+  <text x="776" y="489" font-size="11" fill="#78350f">base size is still provisional on D11.</text>
 
   <!-- ================= FOOTER ================= -->
   <rect x="24" y="522" width="1052" height="156" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.6"/>

@@ -282,7 +282,7 @@ prints and 20 g of filament by designing to a hub diameter nobody had measured a
 | Order | Part | Made from | Gated on |
 |---:|---|---|---|
 | 1 | **Bay lid** — the equipment plate | 12 mm birch plywood, rim to rim, **vent opening over the controller** | V4 **D3** |
-| 2 | **Mast + base rail** | 2020 aluminium extrusion, on the lid | V4 **D2–D3** |
+| 2 | **Mast + base cross + 4 pillars** | 2020 T-slot profile on the lid; pillars printed PETG | V4 **D11**, **D12** |
 | 3 | **LiDAR mount** | printed PETG, clamps to the 2020 T-slot | V4 **S** |
 | 4 | **Camera mount** | printed PETG, clamps to the 2020 T-slot, ~10–15° down | V4 **S** |
 | 5 | **Two enclosures** | printed PETG, heat-set M3 inserts from [#14](../order-log.md) | V4 **E**, plus #7 and #8 in hand |
@@ -316,14 +316,31 @@ PWM harness out of the box students open every week.
 
 ![Sensor mast layout: a 500 mm 2020 post on a 250 mm fore-aft base rail bolted through the plywood plate, the LiDAR on a printed cap at the top of the post so the scan plane is clear of the mast, and the camera on a 150 mm forward boom pitched 12 degrees down; alongside, how one 900 mm length is cut into post, rail and boom, and why a post beside the LiDAR leaves a permanent blind sector](../images/sensor-mast-layout.svg)
 
-**One 1000 mm length plus one 200 mm length of 2020 per vehicle. Four cuts.**
+**A 700 mm and a 600 mm length of T-slot profile per vehicle. Three cuts, ₩9,100.**
 
-| Piece | Length | Job |
-|---|---:|---|
-| **Post** | 500 mm | vertical; carries everything |
-| **Fore-aft rail** | 250 mm | flat on the lid, over a chassis support, **T-slot up** |
-| **Lateral stubs ×2** | 115 mm | flat on the lid, **butted to the rail's sides at mid-length** |
-| **Camera boom** | 150 mm | horizontal, forward, at ~380 mm |
+| Piece | Length | From | Job |
+|---|---:|---|---|
+| **Post** | 500 mm | the 700 | vertical; carries everything |
+| **Camera boom** | 150 mm | the 700 | horizontal, forward, at ~380 mm |
+| **Fore-aft rail** | 250 mm | the 600 | flat on the lid, **T-slot up** |
+| **Lateral stubs ×2** | 115 mm | the 600 | flat on the lid, **butted to the rail's sides at mid-length** |
+
+That leaves **170 mm spare per vehicle, deliberately** — the base dimensions are provisional until
+D11 is measured, and a spare stub costs nothing while a second order costs a week.
+
+> [!CAUTION]
+> **Buy only from the listing titled `DF2020 … 프로파일`. The same seller also lists `앵글 DAB 2020`.**
+>
+> The second is an **L-angle**, not a T-slot extrusion. It is cheaper per millimetre, carries the
+> same `DF2020-xxxmm` part numbers, and appears in the same search results — and it is **useless
+> here**: no T-slot means no T-nuts, no sliding brackets, and no way to clamp the boom.
+>
+> **This caught us.** The first sourcing pass quoted ₩6,460 for 1000 mm and ₩1,690 for 200 mm and
+> built an argument on the "non-linear price ladder" those implied. Both were the angle. The ladder
+> was not irregular; it was **two different products read as one**.
+>
+> The profile lengths actually listed are **50 · 80 · 100 · 300 · 600 · 700 · 900 mm**. The 200, 400,
+> 500 and 1000 mm entries are **angle only**, which is why the cut list above uses 700 + 600.
 
 Aluminium 2020 cuts with a hacksaw and a mitre box. **File each cut square** — a post that meets
 the rail out of square puts the whole mast out of plumb, and the camera pitch is then wrong by
@@ -358,19 +375,30 @@ they bolt **down through the plywood into T-nuts** in their upward slots, four t
 which is both stronger and easier to move later. The LiDAR needs none either — a printed cap slides
 onto the post's top end and carries its bolt pattern.
 
-> [!NOTE]
-> **Put the fore-aft rail over a chassis support**
+> [!IMPORTANT]
+> **Stand the mast on the four spare battery-fixing holes**
 >
-> ![Bay interior as photographed: two fore-aft supports with the battery boxed between them, the controller cover at the right rear held by three bolts, and the lid plan over the same footprint with the base rail on a support and a louvred vent over the controller](../images/battery-bay-layout.svg)
+> ![Bay interior: the battery held by a strap that uses only one of the three screw holes moulded into each side, leaving four spare that form a rectangle; a section showing printed pillars standing on those holes and reaching the lid's underside, through-bolted so the load runs bolt, pillar, boss, chassis](../images/battery-bay-layout.svg)
 >
-> The bay is not an empty box. **Two fore-aft supports cross it**, with the battery boxed between
-> them. Land the rail **directly over one of them** and the mast's load goes into chassis structure
-> instead of into the middle of a plywood span. It costs nothing — it is a choice of where to drill.
+> *(An earlier revision of this section claimed the bay had two fore-aft supports. **It does not** —
+> that was misread from a photograph. What it has is better.)*
 >
-> **D11: do the supports reach the rim plane, or stop below it?** Flush, and the rail bears on them
-> directly. Below, and printed PETG packers make up the gap. Either answer is cheap; **guessing is
-> what is expensive**, because a rail bearing on nothing is the same defect as a plate rocking on
-> four bosses, moved eighty millimetres inboard.
+> **Three screw holes are moulded into each side of the battery recess, and the retaining strap uses
+> only one of them per side. Four are spare**, and they form a rectangle straddling the battery.
+>
+> **These are the only points inside the bay engineered to hold something against vehicle motion**,
+> and they sit where the mast actually stands. So use them: **printed PETG pillars rise from the
+> spare holes to the underside of the lid, and the base cross is through-bolted** — one bolt from
+> the top runs base cross → lid → pillar → boss. The load path becomes **bolt, pillar, boss,
+> chassis**, with the plywood merely in the sandwich rather than in the load path, and **the seat
+> bolts drop back to doing only what they are good for: holding a lid down.**
+>
+> **D11 — the four holes: thread size, and the rectangle they form.** This sizes the base cross, so
+> the 250 × 250 above is provisional. **D12 — depth from the rim plane to each boss face**: the
+> pillar heights, and they need not be equal. Measure all four.
+>
+> **Do not disturb the strap's own screw, and check the battery can still come out.** A pillar that
+> blocks the battery's lift-out path has traded one problem for a worse one.
 >
 > **Cover the vent opening with a printed louvre, not a bare hole.** This vehicle goes outdoors, and
 > the opening sits directly over the stock controller.

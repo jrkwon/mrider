@@ -1903,13 +1903,23 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 >
 > | | Chosen | Why not the alternative |
 > |---|---|---|
-> | **Mast** | **2020 aluminium extrusion**, ~0.7 m per vehicle | A 0.65 m printed tube delaminates along its layer lines under bending, and that flex lands in the camera↔LiDAR extrinsics. The **T-slot** also makes sensor height adjustable without reprinting a bracket |
+> | **Mast** | **2020 aluminium T-slot profile**, 700 + 600 mm per vehicle | A 0.65 m printed tube delaminates along its layer lines under bending, and that flex lands in the camera↔LiDAR extrinsics. The **T-slot** also makes sensor height adjustable without reprinting a bracket |
 > | **Plate** | **12 mm birch plywood**, cut to the seat footprint | A 30–40 cm span is past most printer beds, and a split print puts a glue joint under the mast base. Aluminium needs a cutting shop and a metal drill to move a hole; plywood needs a cordless drill, which is what thirteen students changing the layout actually need. It damps better than aluminium too, and [sensors.md §5](../design/sensors.md#5-mounting-mast-concept) makes vibration an IMU and camera problem |
 > | **Enclosures** | **two printed boxes** — power and logic | [safety.md §5](../design/safety.md#5-power-rail-isolation-and-brownout-protection)'s rail isolation is a claim in a document until two boxes make it visible. It also keeps a 30 A PWM harness out of the box students open weekly |
 >
 > **Buy per vehicle:** 2020 extrusion ~0.7 m, four corner brackets, M5 T-nuts and bolts, one
 > plywood blank. **The motor driver is enclosed by neither box** — the MDDS30 needs its heatsink in
 > open air, under a vented guard.
+>
+> [!CAUTION]
+> **`DF2020 … 프로파일` is the T-slot extrusion. `앵글 DAB 2020` is an L-angle.**
+>
+> One 쿠팡 seller lists both, **both carry `DF2020-xxxmm` part numbers**, and both come back from
+> the same search. The angle is cheaper per millimetre and **useless here** — no T-slot means no
+> T-nuts, no sliding brackets, no way to clamp the boom. The first sourcing pass quoted two angle
+> SKUs by mistake and then reasoned about why the price ladder looked irregular; it was not
+> irregular, it was **two products read as one**. Profile lengths that exist: **50 · 80 · 100 ·
+> 300 · 600 · 700 · 900 mm**. 200, 400, 500 and 1000 are angle only.
 >
 > **Nothing is cut until [V4](../order-log.md) is filled in.** The plate dimension comes from the
 > seat footprint and the mast anchoring depends on whether the seat bolts thread into **metal or
