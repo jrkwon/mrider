@@ -322,11 +322,12 @@ PWM harness out of the box students open every week.
 |---|---:|---|---|
 | **Post** | 500 mm | the 700 | vertical; carries everything |
 | **Camera boom** | 150 mm | the 700 | horizontal, forward, at ~380 mm |
-| **Fore-aft rail** | 250 mm | the 600 | flat on the lid, **T-slot up** |
-| **Lateral stubs ×2** | 115 mm | the 600 | flat on the lid, **butted to the rail's sides at mid-length** |
+| **Fore-aft rail** | 250 mm | the 600 | **continuous**; the post stands on it, **T-slot up** |
+| **Lateral stubs ×2** | 115 mm | the 600 | **butted against the rail's left and right faces** at mid-length |
 
 That leaves **170 mm spare per vehicle, deliberately** — the base dimensions are provisional until
-D11 is measured, and a spare stub costs nothing while a second order costs a week.
+D11 is measured, and a spare stub costs nothing while a second order costs a week. The 600 mm piece
+allows stubs up to about **145 mm** if D11 turns out to want a wider lateral span.
 
 > [!CAUTION]
 > **Buy only from the listing titled `DF2020 … 프로파일`. The same seller also lists `앵글 DAB 2020`.**
@@ -359,6 +360,28 @@ whatever the error is.
 > three pieces stay **coplanar** at 20 mm, so the post still stands on the rail and the two extra
 > corner brackets land on the stubs' top slots exactly as the fore-aft pair land on the rail's. The
 > base becomes **250 × 250 mm, four tie-downs, four brackets at the foot.**
+>
+> **115 is `(250 − 20) ÷ 2`** — the span, less the rail's own 20 mm width, halved.
+>
+> **One 250 and two 115s, not two 250s. That is not a shortfall in the cut list.** Two continuous
+> 20 × 20 bars **cannot occupy the same 20 mm layer where they cross** — they would have to be
+> stacked, which lifts the post 20 mm and strands the lower pair of brackets 20 mm below the post's
+> foot. **Exactly one of the two directions has to be split**, which is why the cut list reads
+> `250 · 115 · 115`.
+>
+> **So the base is symmetric in SPAN but not in CONSTRUCTION, and the softer direction is chosen
+> rather than inherited.** Both directions reach their tie-downs 125 mm from the post axis, so the
+> lever arms match. But fore-aft the post stands on **unbroken metal**, while sideways the load
+> passes through **two bracket joints**. The brackets are strong enough — 216 N through a pair of M5
+> is nothing — but a bolted joint is never quite as stiff as a continuous beam.
+>
+> **The continuous member goes fore-aft because that is where the loads are:** braking and kerb
+> strikes act front-to-back, and the camera boom overhangs forward, so its mass is a *standing*
+> fore-aft moment. Cornering is the only lateral case, and this vehicle corners at walking pace.
+>
+> **Four 115 mm arms would be perfectly symmetric — and strictly worse**, because then all four
+> joints are brackets. This arrangement makes two of them unbroken metal for the same part count
+> and the same price.
 >
 > **Symmetry is the point, not elegance.** This mast exists to hold the camera↔LiDAR geometry
 > still, and **vibration is omnidirectional** — a ride-on drivetrain buzzes in every axis at once.

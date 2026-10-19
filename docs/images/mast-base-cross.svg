@@ -1,12 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 700" width="1100" height="700"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 790" width="1120" height="790"
      font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
-  <title>The mast base is a coplanar cross, not a single rail</title>
-  <desc>Left: plan view of the rejected single fore-aft rail, showing that laterally the post is
-  held only by the 20 mm arms of its corner brackets. Centre: the adopted coplanar cross — a 250 mm
-  fore-aft rail with two 115 mm lateral stubs butted to its sides at mid-length, giving a 250 mm
-  base in both directions and four corner brackets at the post foot instead of two. Right: the cut
-  list, a 700 mm and a 600 mm length of T-slot profile per vehicle, with a warning that the same
-  seller's cheaper 앵글 DAB listing is an L-angle with no T-slot and cannot be used.</desc>
+  <title>The mast base: one continuous rail plus two butted stubs, because two crossing rails cannot share a plane</title>
+  <desc>Left: the rejected single fore-aft rail, which gives a 250 mm base front-to-back but only
+  the 40 mm of its corner-bracket arms side-to-side. Centre: the adopted base, drawn as three
+  separate pieces — one continuous 250 mm fore-aft rail with the post standing on it, and two
+  separate 115 mm stubs butted against its left and right faces — with the derivation of 115 from
+  250 minus the bar's own 20 mm width, halved. Right top: why one of the two directions must be
+  split, since two continuous 20 mm bars cannot occupy the same 20 mm layer where they cross. Right
+  bottom: the cut list mapped piece by piece. Footer: why the base is symmetric in span but not in
+  construction, and why the continuous member is placed fore-aft.</desc>
 
   <defs>
     <marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
@@ -24,165 +26,177 @@
     </pattern>
   </defs>
 
-  <rect width="1100" height="700" fill="#ffffff"/>
+  <rect width="1120" height="790" fill="#ffffff"/>
 
   <text x="24" y="34" font-size="19" font-weight="bold" fill="#0f172a">
-    One rail is stiff fore-aft and floppy sideways — so the base is a cross
+    The base is ONE continuous rail plus TWO butted stubs — not two crossing rails
   </text>
   <text x="24" y="56" font-size="13" fill="#475569">
-    Plan view of the mast foot, looking down on the lid. Vehicle front at the top.
+    Plan view of the mast foot on the lid, front at the top. Three separate pieces, all 20 mm tall, all in one plane.
   </text>
 
   <!-- ================= LEFT : rejected ================= -->
-  <rect x="24" y="76" width="330" height="430" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.8"/>
-  <text x="44" y="102" font-size="14" font-weight="bold" fill="#7f1d1d">✗ single fore-aft rail</text>
+  <rect x="24" y="76" width="306" height="430" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="44" y="102" font-size="14" font-weight="bold" fill="#7f1d1d">✗ a single rail on its own</text>
 
-  <rect x="64" y="124" width="250" height="330" rx="5" fill="url(#ply)" stroke="#a16207" stroke-width="1.6"/>
+  <rect x="58" y="124" width="238" height="320" rx="5" fill="url(#ply)" stroke="#a16207" stroke-width="1.6"/>
+  <rect x="160" y="160" width="34" height="250" rx="2" fill="#cbd5e1" stroke="#334155" stroke-width="2.2"/>
+  <rect x="160" y="268" width="34" height="34" fill="#e2e8f0" stroke="#334155" stroke-width="2.6"/>
+  <rect x="164" y="246" width="26" height="18" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+  <rect x="164" y="306" width="26" height="18" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+  <circle cx="177" cy="172" r="6" fill="#fecaca" stroke="#b91c1c" stroke-width="2"/>
+  <circle cx="177" cy="398" r="6" fill="#fecaca" stroke="#b91c1c" stroke-width="2"/>
 
-  <!-- rail -->
-  <rect x="172" y="164" width="34" height="250" rx="2" fill="#cbd5e1" stroke="#334155" stroke-width="2.2"/>
-  <!-- post -->
-  <rect x="172" y="272" width="34" height="34" fill="#e2e8f0" stroke="#334155" stroke-width="2.6"/>
-  <!-- brackets fore/aft -->
-  <rect x="176" y="250" width="26" height="18" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
-  <rect x="176" y="310" width="26" height="18" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
-  <!-- tie-downs -->
-  <circle cx="189" cy="176" r="6" fill="#fecaca" stroke="#b91c1c" stroke-width="2"/>
-  <circle cx="189" cy="402" r="6" fill="#fecaca" stroke="#b91c1c" stroke-width="2"/>
-
-  <!-- fore-aft span : good -->
   <g stroke="#15803d" stroke-width="1.5">
-    <line x1="232" y1="176" x2="232" y2="402"/>
-    <line x1="226" y1="176" x2="238" y2="176"/>
-    <line x1="226" y1="402" x2="238" y2="402"/>
+    <line x1="222" y1="172" x2="222" y2="398"/>
+    <line x1="216" y1="172" x2="228" y2="172"/>
+    <line x1="216" y1="398" x2="228" y2="398"/>
   </g>
-  <text x="244" y="286" font-size="11.5" font-weight="bold" fill="#15803d">250</text>
-  <text x="244" y="301" font-size="10.5" fill="#15803d">fore-aft ✓</text>
+  <text x="232" y="282" font-size="11.5" font-weight="bold" fill="#15803d">250</text>
+  <text x="232" y="296" font-size="10.5" fill="#15803d">fore-aft ✓</text>
 
-  <!-- lateral span : bad -->
   <g stroke="#b91c1c" stroke-width="1.5">
-    <line x1="172" y1="340" x2="206" y2="340"/>
-    <line x1="172" y1="334" x2="172" y2="346"/>
-    <line x1="206" y1="334" x2="206" y2="346"/>
+    <line x1="160" y1="340" x2="194" y2="340"/>
+    <line x1="160" y1="334" x2="160" y2="346"/>
+    <line x1="194" y1="334" x2="194" y2="346"/>
   </g>
-  <path d="M130,352 L168,342" stroke="#b91c1c" stroke-width="1.5" marker-end="url(#ar)"/>
-  <text x="76" y="368" font-size="11.5" font-weight="bold" fill="#b91c1c">~40 only</text>
-  <text x="76" y="383" font-size="10.5" fill="#b91c1c">bracket arms</text>
+  <path d="M118,352 L156,342" stroke="#b91c1c" stroke-width="1.5" marker-end="url(#ar)"/>
+  <text x="66" y="368" font-size="11.5" font-weight="bold" fill="#b91c1c">~40 only</text>
+  <text x="66" y="383" font-size="10.5" fill="#b91c1c">bracket arms</text>
 
-  <text x="44" y="480" font-size="11.5" fill="#7f1d1d">
-    A 500 mm post on a 40 mm sideways base is a
+  <text x="44" y="472" font-size="11.5" fill="#7f1d1d">
+    A 500 mm post on a 40 mm sideways
   </text>
-  <text x="44" y="496" font-size="11.5" fill="#7f1d1d">
-    <tspan font-weight="bold">25 : 1 lever.</tspan> It wobbles, and the wobble lands in the extrinsics.
+  <text x="44" y="488" font-size="11.5" fill="#7f1d1d">
+    base is a <tspan font-weight="bold">25 : 1 lever.</tspan>
   </text>
 
   <!-- ================= CENTRE : adopted ================= -->
-  <rect x="370" y="76" width="356" height="430" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.8"/>
-  <text x="390" y="102" font-size="14" font-weight="bold" fill="#14532d">✓ coplanar cross — all three pieces 20 mm tall</text>
+  <rect x="346" y="76" width="392" height="430" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="366" y="102" font-size="14" font-weight="bold" fill="#14532d">✓ three pieces, one plane</text>
 
-  <rect x="412" y="124" width="274" height="330" rx="5" fill="url(#ply)" stroke="#a16207" stroke-width="1.6"/>
+  <rect x="386" y="124" width="312" height="320" rx="5" fill="url(#ply)" stroke="#a16207" stroke-width="1.6"/>
 
-  <!-- fore-aft rail -->
-  <rect x="532" y="164" width="34" height="250" rx="2" fill="#cbd5e1" stroke="#334155" stroke-width="2.2"/>
-  <!-- lateral stubs, butted at mid-length -->
-  <rect x="432" y="272" width="100" height="34" rx="2" fill="#cbd5e1" stroke="#334155" stroke-width="2.2"/>
-  <rect x="566" y="272" width="100" height="34" rx="2" fill="#cbd5e1" stroke="#334155" stroke-width="2.2"/>
+  <!-- the ONE continuous rail -->
+  <rect x="525" y="160" width="34" height="250" rx="2" fill="#94a3b8" stroke="#1e293b" stroke-width="3"/>
+  <text x="566" y="148" font-size="11" font-weight="bold" fill="#1e293b">① RAIL 250 — continuous,</text>
+  <text x="578" y="161" font-size="11" font-weight="bold" fill="#1e293b">the post stands ON it</text>
+
+  <!-- TWO separate stubs, butted -->
+  <rect x="409" y="268" width="114" height="34" rx="2" fill="#cbd5e1" stroke="#1e293b" stroke-width="3"/>
+  <rect x="561" y="268" width="114" height="34" rx="2" fill="#cbd5e1" stroke="#1e293b" stroke-width="3"/>
+  <line x1="524" y1="263" x2="524" y2="307" stroke="#b91c1c" stroke-width="2.5"/>
+  <line x1="560" y1="263" x2="560" y2="307" stroke="#b91c1c" stroke-width="2.5"/>
+  <text x="392" y="256" font-size="11" font-weight="bold" fill="#1e293b">② STUB 115</text>
+  <text x="600" y="256" font-size="11" font-weight="bold" fill="#1e293b">③ STUB 115</text>
+  <text x="416" y="332" font-size="10" font-weight="bold" fill="#b91c1c">butted against the rail, not crossing it</text>
+
   <!-- post -->
-  <rect x="532" y="272" width="34" height="34" fill="#e2e8f0" stroke="#334155" stroke-width="2.8"/>
-  <circle cx="549" cy="289" r="6" fill="#334155"/>
+  <rect x="525" y="268" width="34" height="34" fill="#f1f5f9" stroke="#0f172a" stroke-width="3"/>
+  <circle cx="542" cy="285" r="6" fill="#0f172a"/>
 
   <!-- 4 brackets -->
-  <rect x="536" y="250" width="26" height="18" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
-  <rect x="536" y="310" width="26" height="18" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
-  <rect x="508" y="280" width="18" height="26" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
-  <rect x="572" y="280" width="18" height="26" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
-  <text x="604" y="246" font-size="11" font-weight="bold" fill="#15803d">4 brackets, not 2</text>
+  <rect x="529" y="246" width="26" height="18" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+  <rect x="529" y="306" width="26" height="18" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+  <rect x="501" y="276" width="18" height="26" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+  <rect x="565" y="276" width="18" height="26" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
 
   <!-- tie-downs -->
   <g fill="#fecaca" stroke="#b91c1c" stroke-width="2">
-    <circle cx="549" cy="176" r="6"/>
-    <circle cx="549" cy="402" r="6"/>
-    <circle cx="444" cy="289" r="6"/>
-    <circle cx="654" cy="289" r="6"/>
+    <circle cx="542" cy="172" r="6"/><circle cx="542" cy="398" r="6"/>
+    <circle cx="421" cy="285" r="6"/><circle cx="663" cy="285" r="6"/>
   </g>
 
   <!-- spans -->
   <g stroke="#15803d" stroke-width="1.5">
-    <line x1="700" y1="176" x2="700" y2="402"/>
-    <line x1="694" y1="176" x2="706" y2="176"/>
-    <line x1="694" y1="402" x2="706" y2="402"/>
-    <line x1="444" y1="470" x2="654" y2="470"/>
-    <line x1="444" y1="464" x2="444" y2="476"/>
-    <line x1="654" y1="464" x2="654" y2="476"/>
+    <line x1="421" y1="424" x2="663" y2="424"/>
+    <line x1="421" y1="418" x2="421" y2="430"/>
+    <line x1="663" y1="418" x2="663" y2="430"/>
   </g>
-  <text x="702" y="292" font-size="11.5" font-weight="bold" fill="#15803d">250</text>
-  <text x="520" y="488" font-size="11.5" font-weight="bold" fill="#15803d">250 — the same</text>
+  <text x="498" y="440" font-size="11.5" font-weight="bold" fill="#15803d">250 — the same both ways</text>
 
-  <!-- ghosted pillars under the lid -->
-  <g fill="#bbf7d0" fill-opacity="0.65" stroke="#15803d" stroke-width="1.6" stroke-dasharray="5 3">
-    <circle cx="482" cy="222" r="12"/><circle cx="616" cy="222" r="12"/>
-    <circle cx="482" cy="356" r="12"/><circle cx="616" cy="356" r="12"/>
-  </g>
-  <text x="390" y="146" font-size="10" fill="#15803d">dashed = printed pillars on the spare battery holes,</text>
-  <text x="390" y="158" font-size="10" fill="#15803d">under the lid. Tie-downs land on THOSE — D11 sizes it.</text>
+  <rect x="366" y="456" width="352" height="40" rx="5" fill="#dcfce7" stroke="#15803d" stroke-width="1.5"/>
+  <text x="380" y="473" font-size="12" font-weight="bold" fill="#14532d">Stub length = (250 − 20) ÷ 2 = 115</text>
+  <text x="380" y="489" font-size="11" fill="#166534">the span, less the rail's own 20 mm width, halved</text>
 
-  <!-- ================= RIGHT : cut list ================= -->
-  <rect x="742" y="76" width="334" height="430" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.8"/>
-  <text x="762" y="102" font-size="14" font-weight="bold" fill="#92400e">Cut list, per vehicle</text>
-  <text x="762" y="120" font-size="11" fill="#b45309">1130 mm of T-slot profile, from two pieces</text>
+  <!-- ================= RIGHT TOP ================= -->
+  <rect x="754" y="76" width="342" height="248" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.8"/>
+  <text x="774" y="102" font-size="14" font-weight="bold" fill="#92400e">Why one direction must be split</text>
+  <text x="774" y="126" font-size="11.5" fill="#78350f">Two continuous bars crossing IS impossible:</text>
 
-  <text x="762" y="148" font-size="11.5" font-weight="bold" fill="#78350f">700 mm — ₩4,800</text>
-  <rect x="762" y="158" width="250" height="24" fill="#e2e8f0" stroke="#334155" stroke-width="2"/>
-  <line x1="940" y1="152" x2="940" y2="188" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
-  <line x1="994" y1="152" x2="994" y2="188" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
-  <text x="810" y="175" font-size="10.5" font-weight="bold" fill="#0f172a">POST 500</text>
-  <text x="946" y="175" font-size="9" font-weight="bold" fill="#0f172a">BOOM150</text>
-  <text x="998" y="175" font-size="8" fill="#15803d">50</text>
+  <rect x="860" y="142" width="28" height="118" rx="2" fill="#cbd5e1" stroke="#334155" stroke-width="2"/>
+  <rect x="814" y="187" width="120" height="28" rx="2" fill="#cbd5e1" stroke="#334155" stroke-width="2"/>
+  <rect x="860" y="187" width="28" height="28" fill="#fecaca" stroke="#b91c1c" stroke-width="3"/>
+  <path d="M962,201 L896,201" stroke="#b91c1c" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="966" y="193" font-size="11" font-weight="bold" fill="#b91c1c">two bars,</text>
+  <text x="966" y="207" font-size="11" font-weight="bold" fill="#b91c1c">one 20 mm</text>
+  <text x="966" y="221" font-size="11" font-weight="bold" fill="#b91c1c">layer</text>
 
-  <text x="762" y="212" font-size="11.5" font-weight="bold" fill="#78350f">600 mm — ₩4,300</text>
-  <rect x="762" y="222" width="214" height="24" fill="#e2e8f0" stroke="#334155" stroke-width="2"/>
-  <line x1="851" y1="216" x2="851" y2="252" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
-  <line x1="892" y1="216" x2="892" y2="252" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
-  <line x1="933" y1="216" x2="933" y2="252" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
-  <text x="782" y="239" font-size="10" font-weight="bold" fill="#0f172a">RAIL 250</text>
-  <text x="855" y="239" font-size="8" fill="#0f172a">115</text>
-  <text x="896" y="239" font-size="8" fill="#0f172a">115</text>
-  <text x="940" y="239" font-size="8" fill="#15803d">120</text>
+  <text x="774" y="288" font-size="11.5" fill="#78350f">
+    They would have to be stacked, which lifts the
+  </text>
+  <text x="774" y="304" font-size="11.5" fill="#78350f">
+    post 20 mm and strands the brackets. <tspan font-weight="bold">So split one.</tspan>
+  </text>
 
-  <rect x="762" y="268" width="290" height="92" rx="6" fill="#fee2e2" stroke="#ef4444" stroke-width="1.6"/>
-  <text x="776" y="290" font-size="12" font-weight="bold" fill="#991b1b">Buy only from the listing titled</text>
-  <text x="776" y="308" font-size="12" font-weight="bold" fill="#991b1b">DF2020 … 프로파일.</text>
-  <text x="776" y="328" font-size="11" fill="#7f1d1d">The same seller also lists 앵글 DAB 2020 —</text>
-  <text x="776" y="344" font-size="11" fill="#7f1d1d">an L-ANGLE. Cheaper, and <tspan font-weight="bold">useless here:</tspan> no</text>
-  <text x="776" y="356" font-size="11" fill="#7f1d1d" font-weight="bold">T-slot, so no T-nuts and no brackets.</text>
+  <!-- ================= RIGHT BOTTOM ================= -->
+  <rect x="754" y="340" width="342" height="166" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.8"/>
+  <text x="774" y="366" font-size="14" font-weight="bold" fill="#0f172a">The 600 mm piece gives all three</text>
 
-  <text x="762" y="386" font-size="11" fill="#78350f">The profile ladder that is actually available:</text>
-  <text x="762" y="404" font-size="11" fill="#78350f">50 · 80 · 100 · 300 · 600 · 700 · 900 mm.</text>
-  <text x="762" y="422" font-size="11" fill="#78350f">200, 400, 500 and 1000 are <tspan font-style="italic">angle only</tspan>.</text>
+  <rect x="774" y="382" width="214" height="26" fill="#e2e8f0" stroke="#334155" stroke-width="2"/>
+  <line x1="863" y1="376" x2="863" y2="414" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
+  <line x1="904" y1="376" x2="904" y2="414" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
+  <line x1="945" y1="376" x2="945" y2="414" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
+  <text x="792" y="400" font-size="10" font-weight="bold" fill="#0f172a">① 250</text>
+  <text x="868" y="400" font-size="9" font-weight="bold" fill="#0f172a">② 115</text>
+  <text x="909" y="400" font-size="9" font-weight="bold" fill="#0f172a">③ 115</text>
+  <text x="952" y="400" font-size="9" fill="#15803d">120</text>
 
-  <rect x="762" y="438" width="290" height="56" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
-  <text x="776" y="458" font-size="11.5" font-weight="bold" fill="#92400e">₩9,100 per vehicle · ₩27,300 for three</text>
-  <text x="776" y="476" font-size="11" fill="#78350f">170 mm spare per vehicle — deliberate: the</text>
-  <text x="776" y="489" font-size="11" fill="#78350f">base size is still provisional on D11.</text>
+  <text x="774" y="434" font-size="11.5" fill="#334155">
+    One 250 is <tspan font-weight="bold">correct, not short</tspan> — only the
+  </text>
+  <text x="774" y="450" font-size="11.5" fill="#334155">
+    fore-aft member is continuous. The 700 mm
+  </text>
+  <text x="774" y="466" font-size="11.5" fill="#334155">
+    piece separately gives post 500 + boom 150.
+  </text>
+  <text x="774" y="490" font-size="11" font-weight="bold" fill="#b45309">
+    120 spare = one more stub if a cut goes wrong.
+  </text>
 
   <!-- ================= FOOTER ================= -->
-  <rect x="24" y="522" width="1052" height="156" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.6"/>
-  <text x="44" y="548" font-size="13" font-weight="bold" fill="#0f172a">
-    Why symmetry, and not just "a bit better sideways"
+  <rect x="24" y="522" width="1072" height="246" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.6"/>
+  <text x="44" y="548" font-size="13.5" font-weight="bold" fill="#0f172a">
+    The honest part: the base is symmetric in SPAN, not in CONSTRUCTION — and the softer direction is chosen, not inherited
   </text>
-  <text x="44" y="572" font-size="12" fill="#334155">
-    The mast's job is to hold the camera↔LiDAR geometry still. <tspan font-weight="bold">Vibration is omnidirectional</tspan> — a ride-on drivetrain
+  <text x="44" y="574" font-size="12" fill="#334155">
+    Both directions reach their tie-downs 125 mm from the post axis, so the lever arms are equal. But <tspan font-weight="bold">fore-aft the post stands on a</tspan>
   </text>
   <text x="44" y="592" font-size="12" fill="#334155">
-    buzzes in every axis at once — so a base that is stiff in one plane and soft in the other does not halve the problem.
+    <tspan font-weight="bold">continuous beam</tspan>, while <tspan font-weight="bold">sideways the load passes through two bracket joints.</tspan> Brackets are strong enough — 216 N through an M5 pair is
   </text>
-  <text x="44" y="612" font-size="12" fill="#334155">
-    It <tspan font-weight="bold">hides</tspan> it: the image smears more in one direction than the other, which reads as a lens or a calibration fault rather
+  <text x="44" y="610" font-size="12" fill="#334155">
+    nothing — but a bolted joint is never quite as stiff as unbroken metal.
   </text>
-  <text x="44" y="632" font-size="12" fill="#334155">
-    than as a loose mast, and that is a miserable thing for a student to debug in week eleven.
+
+  <text x="44" y="640" font-size="12" font-weight="bold" fill="#15803d">
+    The continuous member goes fore-aft because that is where the loads are:
   </text>
-  <text x="44" y="660" font-size="12" font-weight="bold" fill="#15803d">
-    Equal stiffness in both planes is not elegance. It makes the failure legible when it comes.
+  <text x="58" y="660" font-size="12" fill="#166534">
+    ■ braking and kerb strikes act front-to-back   ■ the camera boom overhangs forward, so its mass is a standing fore-aft moment
+  </text>
+  <text x="58" y="678" font-size="12" fill="#166534">
+    ■ cornering is the only lateral case, and this vehicle corners at walking pace
+  </text>
+
+  <text x="44" y="708" font-size="12" fill="#334155">
+    <tspan font-weight="bold">Four 115 mm arms would be perfectly symmetric</tspan> — and strictly worse: all four joints would then be brackets, where this
+  </text>
+  <text x="44" y="726" font-size="12" fill="#334155">
+    arrangement makes two of them unbroken metal, for the same part count and the same price.
+  </text>
+  <text x="44" y="752" font-size="12" font-weight="bold" fill="#b45309">
+    Cut nothing yet. D11 — the spare battery holes' rectangle — sets the real span, and the 600 mm piece allows stubs up to ~145.
   </text>
 </svg>
