@@ -638,6 +638,27 @@ Measure **every** candidate mounting shaft, not just the intended one.
 >
 > **The footwell keeps one job:** the **MDDS30**. It wants open air, it is awkward to enclose
 > anywhere, and the footwell is flat, low and otherwise empty.
+>
+> **ANSWERED 2026-10-19 — all three, and all three simplify the lid.**
+>
+> **D8 — there is an external charge port**, on the wall between the bay and the footwell. **D9 —
+> no breaker or switch inside.** Together those close the one question that could have moved the
+> mast: **the bay needs no routine opening, so the mast on the lid is confirmed.** It also turns
+> consequence 2 from a requirement into good practice — connectors rather than splices still earn
+> their place, but nothing now forces the lid off on a schedule.
+>
+> **And D8 is a constraint on the lid, not just an answer.** The port is only reachable while
+> nothing covers it, so **the lid must stop AT the rim on every edge** — overhang the footwell edge
+> and the charge port is buried under a plate with a mast bolted to it. The same applies in the
+> footwell: **the MDDS30 must not sit in the plug's approach.**
+>
+> **D10 is the useful one.** The battery has spare depth above it, so that half needs no thought.
+> **The controller's top is flat and flush with the rim** — which would be a problem, because a lid
+> bearing on the rim would also land on the controller, and a controller is an electronic part, not
+> a structural one. **It is not a problem, because the vent opening the bay already needs goes
+> exactly there.** One cut gives clearance over the controller *and* puts the venting where the heat
+> is actually made. Keep the **base rail over the battery side**, so no load path reaches the
+> controller at all.
 
 | Field | Value |
 |---|---|
@@ -649,9 +670,9 @@ Measure **every** candidate mounting shaft, not just the intended one.
 | **D5** — harness anchors: thread, and metal or moulded boss? | |
 | **D6** — step height, footwell floor → plinth top (mm) | |
 | **D7** — footwell floor → top of the side walls (mm) — caps the power box height | |
-| **D8** — **external charge port, or must the bay open to charge?** | |
-| **D9** — **resettable breaker or switch inside the bay that must stay reachable?** | |
-| **D10** — free depth inside the bay above the battery and controller (mm) — the lid must not foul them | |
+| **D8** — **external charge port, or must the bay open to charge?** | **ANSWERED 2026-10-19 — there is an external port**, on the wall between the bay and the footwell. **The bay does not open to charge, provided the lid stops at the rim.** |
+| **D9** — **resettable breaker or switch inside the bay that must stay reachable?** | **ANSWERED 2026-10-19 — none.** With D8 this means the bay needs no routine opening at all |
+| **D10** — free depth inside the bay above the battery and controller (mm) — the lid must not foul them | **ANSWERED 2026-10-19 — battery has spare depth; the controller's top is FLAT and FLUSH with the rim.** That one fact places the vent opening |
 | **Do those bolts thread into a METAL frame or into the PLASTIC body?** | **PLASTIC — answered 2026-10-19.** See the consequence below; it changed the mast base and the post length |
 | Obstruction heights around the area — seat back, wheel arches, column (mm, and which side) | |
 | Clear height above the deck before the body line interferes (mm) | |

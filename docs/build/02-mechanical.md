@@ -254,16 +254,23 @@ mechanically, it just needs a secure, ventilated place to sit.
 > **Keep the 250 mm base rail.** The rim fixes the anchoring; the rail stops the post foot crushing
 > a local patch of 12 mm plywood, and it is already part of the 900 mm cut.
 >
-> **Three things come with covering the bay, and none is optional.**
+> **Three rules, from what the bay turned out to contain.** *(D8, D9 and D10, answered 2026-10-19.)*
 >
-> 1. **It is now a thermal enclosure.** The battery and the stock controller both dissipate in
->    there. **Cut vent slots.** They cost nothing in plywood; the omission costs a battery.
-> 2. **The mast rides on a removable panel** — acceptable, and actually good, *if* servicing means
->    pulling two connectors and lifting one assembly off. **Build the loom with connectors, not
->    splices.** [§2.8](#28-confirm-reversibility) already forbids cut stock wiring, so this is free.
-> 3. **D8 and D9 decide whether the mast may live there at all** — whether there is an external
->    charge port, and whether a resettable breaker inside has to stay reachable. If the bay must be
->    opened weekly, **the mast moves to the footwell** and the lid carries electronics only.
+> 1. **The lid stops AT the rim on every edge — no overhang.** There is an **external charge port
+>    on the wall between the bay and the footwell**, so the bay never has to be opened to charge —
+>    *as long as nothing covers that port*. Overhang the footwell edge and the charge port ends up
+>    buried under a plate with a mast bolted to it. The same applies on the floor: **do not park the
+>    MDDS30 in the plug's approach.**
+> 2. **Put the vent opening directly over the controller.** The bay is now a thermal enclosure and
+>    needs venting anyway — and the **controller's top is flat and flush with the rim**, which would
+>    otherwise mean the lid lands on it. A controller is an electronic part, not a structural one.
+>    **One cut solves both**, and it puts the venting exactly where the heat is made. The battery
+>    has spare depth above it and needs nothing. **Keep the base rail over the battery side**, so no
+>    load path reaches the controller at all.
+> 3. **Build the loom with connectors, not splices.** There is **no breaker or switch inside the
+>    bay**, so with the charge port external the bay needs no routine opening and **the mast on the
+>    lid is confirmed**. This is now good practice rather than a requirement — but
+>    [§2.8](#28-confirm-reversibility) already forbids cut stock wiring, so it costs nothing.
 >
 > **The footwell keeps one job: the MDDS30.** 102 × 97 × 42 mm, 260 g, wants open air, and is
 > awkward to enclose anywhere — while the footwell is flat, low and otherwise empty.
@@ -274,7 +281,7 @@ prints and 20 g of filament by designing to a hub diameter nobody had measured a
 
 | Order | Part | Made from | Gated on |
 |---:|---|---|---|
-| 1 | **Bay lid** — the equipment plate | 12 mm birch plywood, rim to rim, **vent slots cut** | V4 **D3**, **D8–D10** |
+| 1 | **Bay lid** — the equipment plate | 12 mm birch plywood, rim to rim, **vent opening over the controller** | V4 **D3** |
 | 2 | **Mast + base rail** | 2020 aluminium extrusion, on the lid | V4 **D2–D3** |
 | 3 | **LiDAR mount** | printed PETG, clamps to the 2020 T-slot | V4 **S** |
 | 4 | **Camera mount** | printed PETG, clamps to the 2020 T-slot, ~10–15° down | V4 **S** |
