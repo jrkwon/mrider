@@ -1,0 +1,169 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 740" width="1060" height="740"
+     font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+  <title>Battery bay interior, and the lid plan that follows from it</title>
+  <desc>Left: the bay as photographed from above with the seat removed — two fore-aft supports with
+  the battery boxed between them, the stock controller's cover at the right rear held by three
+  bolts, the harness and connector, and the external charge port on the front wall. Right: the
+  plywood lid drawn over the same footprint, with the mast base rail placed directly over one of the
+  fore-aft supports, a louvred vent opening over the controller cover, the hold-down bolts at the
+  seat mount points, and the front edge stopping at the rim so the charge port stays reachable.
+  Below: what the supports change, and the one measurement they add.</desc>
+
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#334155"/>
+    </marker>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#b91c1c"/>
+    </marker>
+    <marker id="ag" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#15803d"/>
+    </marker>
+    <pattern id="ply" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#fde8c8"/>
+      <line x1="0" y1="3" x2="6" y2="3" stroke="#d9a259" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1060" height="740" fill="#ffffff"/>
+
+  <text x="24" y="34" font-size="19" font-weight="bold" fill="#0f172a">
+    Inside the bay — and the one thing in there that the mast should stand on
+  </text>
+  <text x="24" y="56" font-size="13" fill="#475569">
+    From the 2026-10-19 photograph. Positions as seen; every dimension is still D3 / D11. Front at the top.
+  </text>
+
+  <!-- ================= PANEL A : the bay as photographed ================= -->
+  <rect x="24" y="76" width="446" height="640" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="44" y="102" font-size="14.5" font-weight="bold" fill="#0f172a">A · The bay, seat removed</text>
+
+  <!-- rim -->
+  <rect x="70" y="136" width="360" height="520" rx="8" fill="#fde68a" stroke="#b45309" stroke-width="2.5"/>
+  <text x="208" y="128" font-size="11" font-weight="bold" fill="#b45309">continuous rim</text>
+  <!-- interior -->
+  <rect x="88" y="154" width="324" height="484" rx="5" fill="#1f2937" stroke="#111827" stroke-width="2"/>
+
+  <!-- charge port on the front wall -->
+  <rect x="178" y="136" width="36" height="18" rx="3" fill="#fecaca" stroke="#b91c1c" stroke-width="2.4"/>
+  <text x="222" y="150" font-size="10.5" font-weight="bold" fill="#b91c1c">charge port</text>
+
+  <!-- seat mount bosses -->
+  <g fill="#fca5a5" stroke="#b91c1c" stroke-width="2">
+    <circle cx="106" cy="172" r="7"/>
+    <circle cx="394" cy="172" r="7"/>
+    <circle cx="106" cy="620" r="7"/>
+    <circle cx="394" cy="620" r="7"/>
+  </g>
+  <text x="96" y="194" font-size="9.5" font-weight="bold" fill="#fca5a5">seat mounts — D2</text>
+
+  <!-- fore-aft supports -->
+  <rect x="148" y="162" width="22" height="468" fill="#6b7280" stroke="#d1d5db" stroke-width="2"/>
+  <rect x="300" y="162" width="22" height="468" fill="#6b7280" stroke="#d1d5db" stroke-width="2"/>
+  <text x="112" y="300" font-size="11" font-weight="bold" fill="#e5e7eb" transform="rotate(-90 112 300)">fore-aft support</text>
+  <text x="344" y="300" font-size="11" font-weight="bold" fill="#e5e7eb" transform="rotate(-90 344 300)">fore-aft support</text>
+
+  <!-- battery -->
+  <rect x="180" y="238" width="112" height="170" rx="4" fill="#374151" stroke="#9ca3af" stroke-width="2"/>
+  <text x="206" y="328" font-size="12" font-weight="bold" fill="#e5e7eb">battery</text>
+  <text x="188" y="346" font-size="9.5" fill="#9ca3af">spare depth above</text>
+
+  <!-- harness -->
+  <path d="M236,236 q4,-30 30,-40 q26,-10 40,-26" fill="none" stroke="#ef4444" stroke-width="2.6"/>
+  <rect x="300" y="160" width="26" height="14" rx="3" fill="#ef4444"/>
+  <text x="332" y="186" font-size="10" font-weight="bold" fill="#fca5a5">connector</text>
+
+  <!-- controller cover : polygon, 3 bolts -->
+  <path d="M330,432 L394,432 L406,448 L406,596 L330,596 Z"
+        fill="#4b5563" stroke="#e5e7eb" stroke-width="2.2"/>
+  <g fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.6">
+    <circle cx="344" cy="446" r="5"/>
+    <circle cx="396" cy="470" r="5"/>
+    <circle cx="368" cy="584" r="5"/>
+  </g>
+  <text x="336" y="512" font-size="11" font-weight="bold" fill="#f3f4f6">controller</text>
+  <text x="336" y="528" font-size="11" font-weight="bold" fill="#f3f4f6">cover</text>
+  <text x="330" y="546" font-size="9.5" fill="#d1d5db">3 bolts · top</text>
+  <text x="330" y="560" font-size="9.5" fill="#d1d5db">FLUSH with rim</text>
+
+  <text x="92" y="684" font-size="10.5" font-style="italic" fill="#475569">
+    The supports are the only structure crossing the bay. That matters — see B.
+  </text>
+
+  <!-- ================= PANEL B : the lid plan ================= -->
+  <rect x="486" y="76" width="550" height="408" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.8"/>
+  <text x="506" y="102" font-size="14.5" font-weight="bold" fill="#92400e">B · The lid, on the same footprint</text>
+
+  <!-- lid -->
+  <rect x="560" y="128" width="306" height="332" rx="6" fill="url(#ply)" stroke="#a16207" stroke-width="2.6"/>
+
+  <!-- ghosted supports -->
+  <rect x="626" y="128" width="20" height="332" fill="#94a3b8" fill-opacity="0.45" stroke="#64748b" stroke-width="1.6" stroke-dasharray="6 4"/>
+  <rect x="756" y="128" width="20" height="332" fill="#94a3b8" fill-opacity="0.45" stroke="#64748b" stroke-width="1.6" stroke-dasharray="6 4"/>
+
+  <!-- base rail over the left support -->
+  <rect x="622" y="236" width="28" height="118" rx="2" fill="#cbd5e1" stroke="#334155" stroke-width="2.4"/>
+  <circle cx="636" cy="295" r="16" fill="#e2e8f0" stroke="#334155" stroke-width="2.6"/>
+  <circle cx="636" cy="295" r="5" fill="#334155"/>
+  <path d="M560,295 L616,295" stroke="#15803d" stroke-width="2" marker-end="url(#ag)"/>
+  <text x="496" y="282" font-size="11.5" font-weight="bold" fill="#15803d">base rail sits</text>
+  <text x="496" y="296" font-size="11.5" font-weight="bold" fill="#15803d">OVER a support</text>
+  <text x="496" y="312" font-size="10.5" fill="#15803d">— free, and the best</text>
+  <text x="496" y="326" font-size="10.5" fill="#15803d">structural move available</text>
+
+  <!-- louvre over the controller -->
+  <rect x="786" y="404" width="76" height="0" fill="none"/>
+  <path d="M790,404 L852,404 L862,418 L862,452 L790,452 Z" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2.4"/>
+  <g stroke="#1d4ed8" stroke-width="2">
+    <line x1="798" y1="414" x2="854" y2="414"/>
+    <line x1="798" y1="424" x2="856" y2="424"/>
+    <line x1="798" y1="434" x2="856" y2="434"/>
+    <line x1="798" y1="444" x2="856" y2="444"/>
+  </g>
+  <path d="M900,420 L868,424" stroke="#1d4ed8" stroke-width="1.8" marker-end="url(#a)"/>
+  <text x="880" y="398" font-size="11" font-weight="bold" fill="#1d4ed8">printed louvre,</text>
+  <text x="880" y="412" font-size="11" font-weight="bold" fill="#1d4ed8">not a bare hole</text>
+  <text x="880" y="432" font-size="10" fill="#1d4ed8">this car goes outdoors</text>
+
+  <!-- hold-down bolts -->
+  <g fill="#fecaca" stroke="#b91c1c" stroke-width="2">
+    <circle cx="576" cy="146" r="6"/>
+    <circle cx="850" cy="146" r="6"/>
+    <circle cx="576" cy="442" r="6"/>
+    <circle cx="850" cy="442" r="6"/>
+  </g>
+  <text x="586" y="170" font-size="10" font-weight="bold" fill="#b91c1c">hold-down at the seat mounts</text>
+
+  <!-- front edge rule -->
+  <line x1="560" y1="128" x2="866" y2="128" stroke="#b91c1c" stroke-width="4"/>
+  <text x="596" y="120" font-size="11" font-weight="bold" fill="#b91c1c">front edge STOPS at the rim — charge port</text>
+
+  <text x="506" y="476" font-size="11.5" fill="#78350f">
+    One rectangle. One louvre. Four hold-down bolts. The rail lands on a support, so the mast does not load bare plywood.
+  </text>
+
+  <!-- ================= PANEL C ================= -->
+  <rect x="486" y="500" width="550" height="216" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="506" y="526" font-size="14.5" font-weight="bold" fill="#14532d">C · What the supports change, and the one question they add</text>
+
+  <text x="506" y="554" font-size="12" fill="#166534">
+    The lid was going to be a panel carried only at its edges. It is not: <tspan font-weight="bold">two fore-aft supports</tspan>
+  </text>
+  <text x="506" y="571" font-size="12" fill="#166534">
+    cross the bay. Put the mast's base rail <tspan font-weight="bold">directly over one of them</tspan> and the mast's load goes
+  </text>
+  <text x="506" y="588" font-size="12" fill="#166534">
+    straight into chassis structure instead of into the middle of a plywood span. <tspan font-weight="bold">It costs nothing.</tspan>
+  </text>
+
+  <rect x="506" y="602" width="510" height="44" rx="6" fill="#dcfce7" stroke="#15803d" stroke-width="1.6"/>
+  <text x="520" y="622" font-size="12" font-weight="bold" fill="#14532d">D11 — do the supports reach the rim plane, or stop below it?</text>
+  <text x="520" y="639" font-size="11" fill="#166534">Flush → the rail bears on them directly. Below → printed PETG packers make up the gap.</text>
+
+  <text x="506" y="672" font-size="11.5" fill="#15803d">
+    Either answer is fine and neither is expensive. <tspan font-weight="bold">Guessing is what is expensive</tspan> — a rail that bears on
+  </text>
+  <text x="506" y="689" font-size="11.5" fill="#15803d">
+    nothing is the same defect as a plate rocking on four bosses, moved eighty millimetres inboard.
+  </text>
+</svg>

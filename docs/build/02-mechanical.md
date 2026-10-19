@@ -316,24 +316,64 @@ PWM harness out of the box students open every week.
 
 ![Sensor mast layout: a 500 mm 2020 post on a 250 mm fore-aft base rail bolted through the plywood plate, the LiDAR on a printed cap at the top of the post so the scan plane is clear of the mast, and the camera on a 150 mm forward boom pitched 12 degrees down; alongside, how one 900 mm length is cut into post, rail and boom, and why a post beside the LiDAR leaves a permanent blind sector](../images/sensor-mast-layout.svg)
 
-**One 900 mm length of 2020 per vehicle, cut into three. Two cuts, no offcut.**
+**One 1000 mm length plus one 200 mm length of 2020 per vehicle. Four cuts.**
 
 | Piece | Length | Job |
 |---|---:|---|
 | **Post** | 500 mm | vertical; carries everything |
-| **Base rail** | 250 mm | flat on the plate, fore-aft, **T-slot facing up** |
+| **Fore-aft rail** | 250 mm | flat on the lid, over a chassis support, **T-slot up** |
+| **Lateral stubs ×2** | 115 mm | flat on the lid, **butted to the rail's sides at mid-length** |
 | **Camera boom** | 150 mm | horizontal, forward, at ~380 mm |
 
-Aluminium 2020 cuts with a hacksaw and a mitre box in about two minutes. **File the cut square** —
-a post that meets the rail out of square puts the whole mast out of plumb, and the camera pitch is
-then wrong by whatever the error is.
+Aluminium 2020 cuts with a hacksaw and a mitre box. **File each cut square** — a post that meets
+the rail out of square puts the whole mast out of plumb, and the camera pitch is then wrong by
+whatever the error is.
 
-**The four corner brackets each have a job.** Two at the post foot, **front and rear**, because
-braking and kerb strikes load the mast fore-and-aft and that is the plane that needs the triangle.
-Two at the boom joint, above and below, which is what stops the camera drooping and twisting. The
-base rail needs none — it bolts **down through the plywood into T-nuts** in its upward slot, which
-is both stronger and easier to move later. The LiDAR needs none either: a printed cap slides onto
-the post's top end and carries its bolt pattern.
+> [!IMPORTANT]
+> **The base is a cross, not a rail — because one rail is stiff fore-aft and floppy sideways**
+>
+> ![Plan comparison: a single fore-aft rail gives a 250 mm base front-to-back but only the 40 mm of its corner-bracket arms side-to-side, against a coplanar cross of one 250 mm rail plus two 115 mm stubs that gives 250 mm in both directions, with four corner brackets at the post foot instead of two](../images/mast-base-cross.svg)
+>
+> A single rail ties the post to the lid at two points **250 mm apart fore-and-aft** — a proper
+> base. Sideways it ties it to nothing: the post is held only by the **~20 mm arms of its corner
+> brackets**, which against a 500 mm post is a **25 : 1 lever**.
+>
+> **The fix is two 115 mm stubs butted against the rail's left and right faces at mid-length.** All
+> three pieces stay **coplanar** at 20 mm, so the post still stands on the rail and the two extra
+> corner brackets land on the stubs' top slots exactly as the fore-aft pair land on the rail's. The
+> base becomes **250 × 250 mm, four tie-downs, four brackets at the foot.**
+>
+> **Symmetry is the point, not elegance.** This mast exists to hold the camera↔LiDAR geometry
+> still, and **vibration is omnidirectional** — a ride-on drivetrain buzzes in every axis at once.
+> A base stiff in one plane and soft in the other does not halve the problem, it **hides** it: the
+> image smears more in one direction than the other, which reads as a lens or calibration fault
+> rather than as a loose mast. That is a miserable thing to debug in week eleven.
+>
+> The whole fix costs **₩8,550 across three vehicles.**
+
+**Eight corner brackets per vehicle.** Four at the post foot — **front, rear, left and right** —
+two tying each lateral stub to the fore-aft rail, and two at the boom joint, above and below, which
+is what stops the camera drooping and twisting. The rail and the stubs need no brackets to the lid:
+they bolt **down through the plywood into T-nuts** in their upward slots, four tie-downs in all,
+which is both stronger and easier to move later. The LiDAR needs none either — a printed cap slides
+onto the post's top end and carries its bolt pattern.
+
+> [!NOTE]
+> **Put the fore-aft rail over a chassis support**
+>
+> ![Bay interior as photographed: two fore-aft supports with the battery boxed between them, the controller cover at the right rear held by three bolts, and the lid plan over the same footprint with the base rail on a support and a louvred vent over the controller](../images/battery-bay-layout.svg)
+>
+> The bay is not an empty box. **Two fore-aft supports cross it**, with the battery boxed between
+> them. Land the rail **directly over one of them** and the mast's load goes into chassis structure
+> instead of into the middle of a plywood span. It costs nothing — it is a choice of where to drill.
+>
+> **D11: do the supports reach the rim plane, or stop below it?** Flush, and the rail bears on them
+> directly. Below, and printed PETG packers make up the gap. Either answer is cheap; **guessing is
+> what is expensive**, because a rail bearing on nothing is the same defect as a plate rocking on
+> four bosses, moved eighty millimetres inboard.
+>
+> **Cover the vent opening with a printed louvre, not a bare hole.** This vehicle goes outdoors, and
+> the opening sits directly over the stock controller.
 
 > [!IMPORTANT]
 > **The LiDAR goes on TOP of the post, and the camera below it on the boom — the reverse of

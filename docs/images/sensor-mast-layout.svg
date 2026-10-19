@@ -1,10 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 830" width="1120" height="830"
      font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
-  <title>Sensor mast layout, the 900 mm cut plan, and why the LiDAR sits on top of the post</title>
+  <title>Sensor mast layout, the cut plan, and why the LiDAR sits on top of the post</title>
   <desc>Three panels. Left: a side elevation of the equipment plate and mast, with the LiDAR on a
   printed cap at the top of a 500 mm post and the camera on a 150 mm forward boom, dimensioned from
-  the plate surface. Top right: how one 900 mm length of 2020 extrusion is cut into a 500 mm post,
-  a 250 mm base rail and a 150 mm camera boom, and where the four corner brackets go. Bottom right:
+  the plate surface. Top right: how one 1000 mm length plus one 200 mm length of 2020 extrusion is
+  cut into a 500 mm post, a 250 mm fore-aft rail, two 115 mm lateral stubs and a 150 mm camera boom,
+  and where the eight corner brackets go. Bottom right:
   plan views comparing a post mounted beside the LiDAR, which leaves a permanent blind sector, with
   a post mounted under it, which leaves the scan plane clear. Footer: why the seat bolts threading
   into body plastic changes the base, with the arithmetic.</desc>
@@ -34,7 +35,7 @@
   <rect width="1120" height="830" fill="#ffffff"/>
 
   <text x="24" y="34" font-size="19" font-weight="bold" fill="#0f172a">
-    Sensor mast — one 900 mm length of 2020 per vehicle, cut into three
+    Sensor mast — 1000 mm + 200 mm of 2020 per vehicle, cut into five
   </text>
   <text x="24" y="56" font-size="13" fill="#475569">
     Vehicle front is to the right. Heights are from the TOP FACE of the plywood plate, which is the datum for every mount.
@@ -76,8 +77,8 @@
 
   <!-- base rail : 250 mm, flat, fore-aft -->
   <rect x="185" y="549" width="130" height="11" rx="1.5" fill="#cbd5e1" stroke="#475569" stroke-width="1.8"/>
-  <text x="96" y="528" font-size="11.5" font-weight="bold" fill="#334155">base rail 250 mm</text>
-  <text x="96" y="542" font-size="10.5" fill="#64748b">flat, fore-aft, T-slot UP</text>
+  <text x="96" y="528" font-size="11.5" font-weight="bold" fill="#334155">cross base 250 × 250</text>
+  <text x="96" y="542" font-size="10.5" fill="#64748b">rail + 2 stubs, coplanar</text>
   <!-- bolts up through plate into the rail -->
   <g stroke="#1d4ed8" stroke-width="2">
     <line x1="196" y1="572" x2="196" y2="552" marker-end="url(#a)"/>
@@ -92,8 +93,8 @@
   <!-- 2 corner brackets at the foot, front and rear -->
   <path d="M233,549 L233,528 L245,528" fill="none" stroke="#15803d" stroke-width="4.5" stroke-linejoin="round"/>
   <path d="M268,549 L268,528 L256,528" fill="none" stroke="#15803d" stroke-width="4.5" stroke-linejoin="round"/>
-  <text x="96" y="508" font-size="10.5" font-weight="bold" fill="#15803d">2 × corner bracket</text>
-  <text x="96" y="494" font-size="10.5" fill="#15803d">(fore + aft — the braking direction)</text>
+  <text x="96" y="508" font-size="10.5" font-weight="bold" fill="#15803d">4 × corner bracket</text>
+  <text x="96" y="494" font-size="10.5" fill="#15803d">(fore, aft, left, right — see the cross base)</text>
   <path d="M176,503 L231,524" stroke="#15803d" stroke-width="1.4" marker-end="url(#ag)"/>
 
   <!-- camera boom : 150 mm forward, at 380 -->
@@ -150,34 +151,31 @@
 
   <!-- ================= PANEL B : the cut plan ================= -->
   <rect x="556" y="76" width="540" height="316" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.8"/>
-  <text x="576" y="102" font-size="14.5" font-weight="bold" fill="#14532d">B · One 900 mm length → three pieces, two cuts</text>
-  <text x="576" y="121" font-size="11.5" fill="#15803d">Yes — it is cut. 2020 aluminium cuts with a hacksaw and a mitre box in about two minutes.</text>
+  <text x="576" y="102" font-size="14.5" font-weight="bold" fill="#14532d">B · Cut list — one 1000 mm length plus one 200 mm, per vehicle</text>
+  <text x="576" y="121" font-size="11.5" fill="#15803d">Yes, it is cut. 2020 aluminium cuts with a hacksaw and a mitre box; four cuts in all.</text>
 
-  <!-- the bar -->
-  <rect x="580" y="150" width="490" height="34" fill="#e2e8f0" stroke="#334155" stroke-width="2"/>
-  <line x1="852" y1="142" x2="852" y2="192" stroke="#b91c1c" stroke-width="2.5" stroke-dasharray="6 4"/>
-  <line x1="988" y1="142" x2="988" y2="192" stroke="#b91c1c" stroke-width="2.5" stroke-dasharray="6 4"/>
-  <text x="844" y="136" font-size="10.5" font-weight="bold" fill="#b91c1c">cut 1</text>
-  <text x="980" y="136" font-size="10.5" font-weight="bold" fill="#b91c1c">cut 2</text>
+  <rect x="580" y="148" width="420" height="30" fill="#e2e8f0" stroke="#334155" stroke-width="2"/>
+  <line x1="790" y1="142" x2="790" y2="184" stroke="#b91c1c" stroke-width="2.4" stroke-dasharray="6 4"/>
+  <line x1="895" y1="142" x2="895" y2="184" stroke="#b91c1c" stroke-width="2.4" stroke-dasharray="6 4"/>
+  <line x1="943" y1="142" x2="943" y2="184" stroke="#b91c1c" stroke-width="2.4" stroke-dasharray="6 4"/>
+  <text x="640" y="168" font-size="11.5" font-weight="bold" fill="#0f172a">POST 500</text>
+  <text x="810" y="168" font-size="10.5" font-weight="bold" fill="#0f172a">RAIL 250</text>
+  <text x="900" y="168" font-size="9" fill="#0f172a">115</text>
+  <text x="948" y="168" font-size="9" fill="#0f172a">115</text>
+  <text x="1008" y="168" font-size="10" fill="#15803d">20 spare</text>
+  <text x="580" y="198" font-size="11" fill="#166534">1000 mm — post, the fore-aft rail, and the two lateral stubs of the cross base</text>
 
-  <text x="640" y="172" font-size="12" font-weight="bold" fill="#0f172a">POST 500</text>
-  <text x="872" y="172" font-size="11.5" font-weight="bold" fill="#0f172a">RAIL 250</text>
-  <text x="1000" y="172" font-size="11" font-weight="bold" fill="#0f172a">BOOM 150</text>
+  <rect x="580" y="214" width="84" height="30" fill="#e2e8f0" stroke="#334155" stroke-width="2"/>
+  <line x1="643" y1="208" x2="643" y2="250" stroke="#b91c1c" stroke-width="2.4" stroke-dasharray="6 4"/>
+  <text x="590" y="234" font-size="10.5" font-weight="bold" fill="#0f172a">BOOM 150</text>
+  <text x="676" y="234" font-size="11" fill="#166534">200 mm — the camera boom</text>
 
-  <g stroke="#64748b" stroke-width="1.1" font-size="10.5" fill="#475569">
-    <line x1="580" y1="200" x2="1070" y2="200"/>
-    <line x1="580" y1="195" x2="580" y2="205"/>
-    <line x1="1070" y1="195" x2="1070" y2="205"/>
-    <text x="800" y="216" font-weight="bold">900 mm — exactly one length, no offcut</text>
-  </g>
-
-  <text x="580" y="248" font-size="12" font-weight="bold" fill="#14532d">The four corner brackets, per vehicle</text>
-  <text x="580" y="270" font-size="11.5" fill="#166534">■ 2 at the post foot, front and rear — this is the braking and kerb direction</text>
-  <text x="580" y="289" font-size="11.5" fill="#166534">■ 2 at the boom joint, above and below — stops the camera drooping and twisting</text>
-  <text x="580" y="314" font-size="11.5" fill="#15803d">The rail bolts <tspan font-weight="bold">down through the plywood into T-nuts</tspan> in its upward slot — no bracket there.</text>
-  <text x="580" y="333" font-size="11.5" fill="#15803d">The LiDAR needs no bracket either: a printed cap slides onto the post's top end.</text>
-  <text x="580" y="362" font-size="11.5" font-weight="bold" fill="#b91c1c">Why 900 and not the 700 first quoted:</text>
-  <text x="580" y="380" font-size="11.5" fill="#7f1d1d">700 leaves only an 80 mm base rail once the post and boom are taken out. ₩2,100 more per vehicle.</text>
+  <text x="580" y="278" font-size="12" font-weight="bold" fill="#14532d">Eight corner brackets per vehicle</text>
+  <text x="580" y="298" font-size="11.5" fill="#166534">■ <tspan font-weight="bold">4 at the post foot</tspan> — front, rear, left, right. Two planes, not one</text>
+  <text x="580" y="316" font-size="11.5" fill="#166534">■ 2 tying each lateral stub to the fore-aft rail</text>
+  <text x="580" y="334" font-size="11.5" fill="#166534">■ 2 at the boom joint, above and below</text>
+  <text x="580" y="360" font-size="11.5" fill="#15803d">The rail and stubs bolt <tspan font-weight="bold">down through the plywood into T-nuts</tspan>, four tie-downs in all.</text>
+  <text x="580" y="378" font-size="11.5" fill="#15803d">The LiDAR needs no bracket: a printed cap slides onto the post's top end.</text>
 
   <!-- ================= PANEL C : occlusion ================= -->
   <rect x="556" y="408" width="540" height="292" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
