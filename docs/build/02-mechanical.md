@@ -228,32 +228,45 @@ mechanically, it just needs a secure, ventilated place to sit.
 ### 2.7.1 What this stage actually builds
 
 > [!IMPORTANT]
-> **Build the plates first — and there are two of them, at two heights.**
+> **The seat is a lid over the battery bay. Build a better lid.**
 >
-> ![Cockpit plan view: a raised, moulded seat plinth at the rear carrying only the mast on four printed standoffs, and a flat low footwell at the front carrying the motor driver, battery and both enclosures](../images/cockpit-zones.svg)
+> ![Seat removed: the traction battery and stock controller sit in an open bay whose walls finish in a continuous flat rim; the plywood equipment plate becomes its lid, bearing on that rim rather than on four moulded bosses, with the mast on top and vent slots cut through](../images/cockpit-zones.svg)
 >
-> The cockpit photographs taken 2026-10-19 corrected an assumption this section started with — that
-> removing the seat leaves *one* flat area. It does not.
->
-> | Zone | What it is | What goes on it |
-> |---|---|---|
-> | **A — seat plinth**, rear | raised and **moulded**, not a flat pad | **the mast, and nothing else** |
-> | **B — footwell**, front | flat, low, under the rubber mat | motor driver, battery, **both enclosures** |
->
-> **The split is not tidiness, it is centre of gravity.** Zone B is the lowest already-flat surface
-> in the vehicle and it is load-bearing by design — a child stands on it. Every gram put there is a
-> gram not raising the centre of mass that the mast is already working against, and it is carried on
-> a floor rather than on four moulded bosses.
->
-> **Zone A's plate sits on four printed PETG standoffs, each cut to its own height** (D1), so it
-> finishes level in spite of the contour. A plate that rocks under a 500 mm mast is a plate that
-> works loose.
->
-
 > [vehicle.md §3](../design/vehicle.md) records that this chassis has **no flat deck** — the seat is
-> the only flat area, it comes out, and an **equipment plate** takes its place. The mast, both
-> enclosures, the IMU and the motor driver all land on that plate, so it is not an accessory to this
-> stage; it is the stage's first part.
+> the only flat area, it comes out, and an **equipment plate** takes its place. What it does not say
+> is what the seat was sitting *on*, and this section guessed twice before the teardown photograph
+> of 2026-10-19 settled it.
+>
+> **Lift the seat and the traction battery and the stock controller are sitting in an open bay whose
+> walls finish in a continuous flat rim.** The contour that looked like a moulded plinth belonged to
+> the seat pan, not to the vehicle.
+>
+> **So the equipment plate is simply that bay's lid — and that is both simpler and stronger.** One
+> rectangle, one cut, one measurement, and the four individually-measured printed standoffs
+> disappear, because the rim is already one flat plane.
+>
+> **The structural reason is the better one.** A plate carried on four moulded bosses takes the
+> whole mast moment as **pull-out on two of them**, which is the failure this chassis invites. A
+> plate **bearing on a continuous rim** takes one side of that moment as **compression along a
+> plastic edge — which is where plastic is strong** — and only the lifting side reaches a fastener
+> at all. Simpler and stronger at the same time is rare; take it.
+>
+> **Keep the 250 mm base rail.** The rim fixes the anchoring; the rail stops the post foot crushing
+> a local patch of 12 mm plywood, and it is already part of the 900 mm cut.
+>
+> **Three things come with covering the bay, and none is optional.**
+>
+> 1. **It is now a thermal enclosure.** The battery and the stock controller both dissipate in
+>    there. **Cut vent slots.** They cost nothing in plywood; the omission costs a battery.
+> 2. **The mast rides on a removable panel** — acceptable, and actually good, *if* servicing means
+>    pulling two connectors and lifting one assembly off. **Build the loom with connectors, not
+>    splices.** [§2.8](#28-confirm-reversibility) already forbids cut stock wiring, so this is free.
+> 3. **D8 and D9 decide whether the mast may live there at all** — whether there is an external
+>    charge port, and whether a resettable breaker inside has to stay reachable. If the bay must be
+>    opened weekly, **the mast moves to the footwell** and the lid carries electronics only.
+>
+> **The footwell keeps one job: the MDDS30.** 102 × 97 × 42 mm, 260 g, wants open air, and is
+> awkward to enclose anywhere — while the footwell is flat, low and otherwise empty.
 
 Five parts, in this order. **Nothing is cut or printed before
 [V4](../order-log.md) is filled in** — the drive encoder cost four wasted
@@ -261,9 +274,8 @@ prints and 20 g of filament by designing to a hub diameter nobody had measured a
 
 | Order | Part | Made from | Gated on |
 |---:|---|---|---|
-| 1 | **Plate A** (mast) + four standoffs | 12 mm plywood on printed PETG standoffs, on the seat plinth | V4 **D1–D3** |
-| 1 | **Plate B** (electronics) | 12 mm plywood, cut to the footwell floor | V4 **D4**, **D7** |
-| 2 | **Mast + base rail** | 2020 aluminium extrusion, on Plate A | V4 **D1–D3** |
+| 1 | **Bay lid** — the equipment plate | 12 mm birch plywood, rim to rim, **vent slots cut** | V4 **D3**, **D8–D10** |
+| 2 | **Mast + base rail** | 2020 aluminium extrusion, on the lid | V4 **D2–D3** |
 | 3 | **LiDAR mount** | printed PETG, clamps to the 2020 T-slot | V4 **S** |
 | 4 | **Camera mount** | printed PETG, clamps to the 2020 T-slot, ~10–15° down | V4 **S** |
 | 5 | **Two enclosures** | printed PETG, heat-set M3 inserts from [#14](../order-log.md) | V4 **E**, plus #7 and #8 in hand |
@@ -274,7 +286,8 @@ extrinsics the bullet above calls load-bearing. The T-slot earns its place twice
 becomes adjustable **without reprinting a bracket**, which matters over sixteen weeks.
 
 **The plate is plywood, not aluminium or print.** A 30–40 cm span is past most printer beds, and a
-split plate puts a glue joint directly under the mast base. Plywood is re-drillable on the bench
+split plate puts a glue joint directly under the mast base. Plywood also takes the **vent slots**
+the bay now needs with a jigsaw rather than a milling setup. Plywood is re-drillable on the bench
 with a cordless drill, which is what a cohort of thirteen moving the layout actually needs, and it
 damps better than aluminium — relevant because vibration is an IMU and camera problem here, not a
 comfort one.

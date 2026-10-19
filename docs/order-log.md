@@ -596,41 +596,62 @@ Measure **every** candidate mounting shaft, not just the intended one.
 **D — the deck.** *Blocks every other part of #14.*
 
 > [!IMPORTANT]
-> **Photographs 2026-10-19 — there is no single flat deck. There are TWO surfaces at two heights.**
+> **Teardown photograph 2026-10-19 — the seat was a LID over the battery bay, and the lid is the answer**
 >
-> This set of fields was written assuming *"remove the seat, one flat area, one plate."* The
-> cockpit photographs show otherwise, and the difference is worth more than any one dimension:
+> Two corrections in one photograph, and the second supersedes the first.
 >
-> | | |
-> |---|---|
-> | **Zone A — seat plinth**, rear | **Raised and MOULDED**, not a flat pad. The seat is a bucket sitting in contour. A flat plate laid on it would rock on the high spots |
-> | **Zone B — footwell**, front | **Genuinely flat and low**, under the rubber mat, and **load-bearing by design** — a child stands on it |
+> **The plinth is not a moulded pad.** Lift the seat and the **traction battery and the stock
+> controller** are sitting in an **open bay** whose walls finish in a **continuous flat rim**. What
+> looked like contour was the seat pan, not the vehicle.
 >
-> **So the plate is two plates, and the split does real work.** The **mast alone** goes on Zone A,
-> which is the high, moulded, plastic-anchored surface. **Every heavy item** — the MDDS30 at 260 g,
-> the LiFePO₄ pack, both enclosures — goes in Zone B, which is the lowest already-flat surface in
-> the vehicle. Mass down there is mass **not** raising the centre of gravity the mast is already
-> fighting, and it is on a floor engineered to be stood on rather than on four moulded bosses.
+> **So the equipment plate is simply a better lid — and that is both simpler and stronger.**
+> Simpler is obvious: one rectangle, one cut, one measurement, and the **four individually-measured
+> printed standoffs disappear** because the rim is already one flat plane. Stronger is the part
+> worth writing down:
 >
-> **Zone A's plate sits on four printed PETG standoffs, each cut to its own height**, so it ends up
-> level in spite of the contour. A plate that rocks under a 500 mm mast is a plate that works
-> loose. ([figure](images/cockpit-zones.svg))
+> **The pivot moves from a boss to the rim edge.** A plate carried on four bosses takes the whole
+> mast moment as **pull-out on two of them** — the failure mode the whole plastic-anchor discussion
+> was about. A plate **bearing on a continuous rim** takes one side of that moment as compression
+> along a plastic edge, which is where plastic is strong, and only the *lifting* side reaches a
+> fastener at all. **Simpler and stronger at the same time is rare; take it.**
 >
-> **One more thing the photographs surfaced: the five-point harness anchors.** Those are the only
-> points in this cockpit **engineered for pull-out load** — they exist to restrain a child. Whether
-> they land in metal or in a thicker boss is now **D5**, and if they are good they are a better
-> mast tie than the seat bolts are.
+> ![Seat removed: the traction battery and stock controller sit in an open bay with a continuous flat rim, and the plywood equipment plate becomes its lid, bearing on that rim rather than on four moulded bosses](images/cockpit-zones.svg)
+>
+> **Keep the 250 mm base rail anyway.** The rim fixes the anchoring; the rail stops the post foot
+> crushing a local patch of 12 mm plywood. It is already part of the 900 mm cut and costs nothing.
+>
+> **Three things come with covering the bay, and none is optional.**
+>
+> **1 — It is now a thermal enclosure.** The traction battery and the stock controller both
+> dissipate in there. **Cut vent slots in the plywood.** They cost nothing; discovering the
+> omission costs a battery.
+>
+> **2 — The mast now rides on a removable panel.** That is acceptable, and actually good, *if*
+> servicing means pulling two connectors and lifting one assembly off. **Build the loom so that is
+> true — connectors, not splices.** [§2.8 reversibility](build/02-mechanical.md) already requires
+> no cut stock wiring, so this costs nothing extra.
+>
+> **3 — Two new questions decide whether the mast may live there at all.** **D8**: is there an
+> **external charge port**, or must the bay be opened to charge? **D9**: is there a **resettable
+> breaker or switch inside** that has to stay reachable? *If either answer says the bay opens
+> weekly, the mast moves to the footwell and the lid carries electronics only.*
+>
+> **The footwell keeps one job:** the **MDDS30**. It wants open air, it is awkward to enclose
+> anywhere, and the footwell is flat, low and otherwise empty.
 
 | Field | Value |
 |---|---|
-| **D1** — plinth flat or contoured; height of each seat boss above one datum | *contoured, from the photographs — the four heights set the standoffs* |
+| ~~**D1** — standoff heights~~ | **Retired 2026-10-19.** The bay rim is already one flat plane; there are no standoffs |
 | **D2** — seat fixing bolts: count, thread size | |
 | **D2** — seat bolt pattern, centre-to-centre spacings (mm) | |
-| **D3** — usable land on the plinth with the seat out, L × W (mm) | |
+| **D3** — **the bay's rim-to-rim rectangle, L × W (mm)** — this is the lid, and it is now ONE number pair | |
 | **D4** — footwell floor under the mat, L × W (mm). Flat, or ribbed and drained? | |
 | **D5** — harness anchors: thread, and metal or moulded boss? | |
 | **D6** — step height, footwell floor → plinth top (mm) | |
 | **D7** — footwell floor → top of the side walls (mm) — caps the power box height | |
+| **D8** — **external charge port, or must the bay open to charge?** | |
+| **D9** — **resettable breaker or switch inside the bay that must stay reachable?** | |
+| **D10** — free depth inside the bay above the battery and controller (mm) — the lid must not foul them | |
 | **Do those bolts thread into a METAL frame or into the PLASTIC body?** | **PLASTIC — answered 2026-10-19.** See the consequence below; it changed the mast base and the post length |
 | Obstruction heights around the area — seat back, wheel arches, column (mm, and which side) | |
 | Clear height above the deck before the body line interferes (mm) | |
