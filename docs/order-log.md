@@ -595,15 +595,46 @@ Measure **every** candidate mounting shaft, not just the intended one.
 
 **D — the deck.** *Blocks every other part of #14.*
 
+> [!IMPORTANT]
+> **Photographs 2026-10-19 — there is no single flat deck. There are TWO surfaces at two heights.**
+>
+> This set of fields was written assuming *"remove the seat, one flat area, one plate."* The
+> cockpit photographs show otherwise, and the difference is worth more than any one dimension:
+>
+> | | |
+> |---|---|
+> | **Zone A — seat plinth**, rear | **Raised and MOULDED**, not a flat pad. The seat is a bucket sitting in contour. A flat plate laid on it would rock on the high spots |
+> | **Zone B — footwell**, front | **Genuinely flat and low**, under the rubber mat, and **load-bearing by design** — a child stands on it |
+>
+> **So the plate is two plates, and the split does real work.** The **mast alone** goes on Zone A,
+> which is the high, moulded, plastic-anchored surface. **Every heavy item** — the MDDS30 at 260 g,
+> the LiFePO₄ pack, both enclosures — goes in Zone B, which is the lowest already-flat surface in
+> the vehicle. Mass down there is mass **not** raising the centre of gravity the mast is already
+> fighting, and it is on a floor engineered to be stood on rather than on four moulded bosses.
+>
+> **Zone A's plate sits on four printed PETG standoffs, each cut to its own height**, so it ends up
+> level in spite of the contour. A plate that rocks under a 500 mm mast is a plate that works
+> loose. ([figure](images/cockpit-zones.svg))
+>
+> **One more thing the photographs surfaced: the five-point harness anchors.** Those are the only
+> points in this cockpit **engineered for pull-out load** — they exist to restrain a child. Whether
+> they land in metal or in a thicker boss is now **D5**, and if they are good they are a better
+> mast tie than the seat bolts are.
+
 | Field | Value |
 |---|---|
-| Flat area left with the seat removed — length × width (mm) | |
-| Is it actually flat, or humped / channelled / sloped? | |
-| Seat fixing bolts — count, thread size | |
-| Seat bolt pattern — centre-to-centre spacings (mm) | |
+| **D1** — plinth flat or contoured; height of each seat boss above one datum | *contoured, from the photographs — the four heights set the standoffs* |
+| **D2** — seat fixing bolts: count, thread size | |
+| **D2** — seat bolt pattern, centre-to-centre spacings (mm) | |
+| **D3** — usable land on the plinth with the seat out, L × W (mm) | |
+| **D4** — footwell floor under the mat, L × W (mm). Flat, or ribbed and drained? | |
+| **D5** — harness anchors: thread, and metal or moulded boss? | |
+| **D6** — step height, footwell floor → plinth top (mm) | |
+| **D7** — footwell floor → top of the side walls (mm) — caps the power box height | |
 | **Do those bolts thread into a METAL frame or into the PLASTIC body?** | **PLASTIC — answered 2026-10-19.** See the consequence below; it changed the mast base and the post length |
 | Obstruction heights around the area — seat back, wheel arches, column (mm, and which side) | |
 | Clear height above the deck before the body line interferes (mm) | |
+| Steering column keep-out in Zone B (mm) | *visible in the photographs; measure before placing the power box* |
 
 > **Why the metal-or-plastic question decides the design.** A 0.65 m mast is a lever: the sensors
 > are light, but braking and kerb strikes put a moment into its base. **Into steel, the mast base

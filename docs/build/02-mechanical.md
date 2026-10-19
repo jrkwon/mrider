@@ -228,8 +228,28 @@ mechanically, it just needs a secure, ventilated place to sit.
 ### 2.7.1 What this stage actually builds
 
 > [!IMPORTANT]
-> **Build the plate first. Everything else in this section bolts to it.**
+> **Build the plates first — and there are two of them, at two heights.**
 >
+> ![Cockpit plan view: a raised, moulded seat plinth at the rear carrying only the mast on four printed standoffs, and a flat low footwell at the front carrying the motor driver, battery and both enclosures](../images/cockpit-zones.svg)
+>
+> The cockpit photographs taken 2026-10-19 corrected an assumption this section started with — that
+> removing the seat leaves *one* flat area. It does not.
+>
+> | Zone | What it is | What goes on it |
+> |---|---|---|
+> | **A — seat plinth**, rear | raised and **moulded**, not a flat pad | **the mast, and nothing else** |
+> | **B — footwell**, front | flat, low, under the rubber mat | motor driver, battery, **both enclosures** |
+>
+> **The split is not tidiness, it is centre of gravity.** Zone B is the lowest already-flat surface
+> in the vehicle and it is load-bearing by design — a child stands on it. Every gram put there is a
+> gram not raising the centre of mass that the mast is already working against, and it is carried on
+> a floor rather than on four moulded bosses.
+>
+> **Zone A's plate sits on four printed PETG standoffs, each cut to its own height** (D1), so it
+> finishes level in spite of the contour. A plate that rocks under a 500 mm mast is a plate that
+> works loose.
+>
+
 > [vehicle.md §3](../design/vehicle.md) records that this chassis has **no flat deck** — the seat is
 > the only flat area, it comes out, and an **equipment plate** takes its place. The mast, both
 > enclosures, the IMU and the motor driver all land on that plate, so it is not an accessory to this
@@ -241,8 +261,9 @@ prints and 20 g of filament by designing to a hub diameter nobody had measured a
 
 | Order | Part | Made from | Gated on |
 |---:|---|---|---|
-| 1 | **Equipment plate** | 12 mm birch plywood, cut to the seat footprint | V4 **D** |
-| 2 | **Mast + base bracket** | 2020 aluminium extrusion; the base is printed PETG | V4 **D** |
+| 1 | **Plate A** (mast) + four standoffs | 12 mm plywood on printed PETG standoffs, on the seat plinth | V4 **D1–D3** |
+| 1 | **Plate B** (electronics) | 12 mm plywood, cut to the footwell floor | V4 **D4**, **D7** |
+| 2 | **Mast + base rail** | 2020 aluminium extrusion, on Plate A | V4 **D1–D3** |
 | 3 | **LiDAR mount** | printed PETG, clamps to the 2020 T-slot | V4 **S** |
 | 4 | **Camera mount** | printed PETG, clamps to the 2020 T-slot, ~10–15° down | V4 **S** |
 | 5 | **Two enclosures** | printed PETG, heat-set M3 inserts from [#14](../order-log.md) | V4 **E**, plus #7 and #8 in hand |

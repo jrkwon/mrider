@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 720" width="1100" height="720"
+     font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+  <title>Cockpit zones — the mast goes on the seat plinth, the heavy electronics go in the footwell</title>
+  <desc>Left: a plan view of the ride-on cockpit with the front at the top, showing two distinct
+  surfaces at different heights — the raised, contoured seat plinth at the rear and the flat, lower
+  footwell at the front — and which equipment belongs on each. Right: a side section showing the
+  two levels and the printed standoffs that let a flat plate sit level on a moulded plinth, plus
+  the list of measurements still outstanding.</desc>
+
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#334155"/>
+    </marker>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#b91c1c"/>
+    </marker>
+    <pattern id="mat" width="10" height="10" patternUnits="userSpaceOnUse">
+      <rect width="10" height="10" fill="#e8eef5"/>
+      <path d="M0,10 L5,5 L10,10" fill="none" stroke="#b8c6d6" stroke-width="1.2"/>
+    </pattern>
+    <pattern id="moul" width="9" height="9" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <rect width="9" height="9" fill="#f2e6f5"/>
+      <line x1="0" y1="0" x2="0" y2="9" stroke="#c9a6d4" stroke-width="2"/>
+    </pattern>
+    <pattern id="ply" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#fde8c8"/>
+      <line x1="0" y1="3" x2="6" y2="3" stroke="#d9a259" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1100" height="720" fill="#ffffff"/>
+
+  <text x="24" y="34" font-size="19" font-weight="bold" fill="#0f172a">
+    The cockpit has TWO surfaces at two heights, not one flat deck
+  </text>
+  <text x="24" y="56" font-size="13" fill="#475569">
+    From the 2026-10-19 photographs. Plan view, vehicle front at the top. No dimension here is measured yet — see the D-list.
+  </text>
+
+  <!-- ================= PANEL A : plan view ================= -->
+  <rect x="24" y="76" width="470" height="624" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="44" y="102" font-size="14.5" font-weight="bold" fill="#0f172a">A · Plan view of the cockpit</text>
+
+  <!-- body outline -->
+  <rect x="78" y="120" width="360" height="500" rx="18" fill="#ffffff" stroke="#475569" stroke-width="2.5"/>
+  <text x="228" y="112" font-size="11.5" font-weight="bold" fill="#475569">FRONT</text>
+  <path d="M258,116 L258,98" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- footwell zone -->
+  <rect x="96" y="138" width="324" height="196" rx="8" fill="url(#mat)" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="112" y="162" font-size="13" font-weight="bold" fill="#1e3a8a">ZONE B — footwell</text>
+  <text x="112" y="180" font-size="11" fill="#1d4ed8">flat, low, under the rubber mat</text>
+  <text x="112" y="206" font-size="11.5" font-weight="bold" fill="#1e3a8a">Heavy kit goes here:</text>
+  <text x="112" y="224" font-size="11" fill="#1d4ed8">■ MDDS30 102 × 97 × 42, 260 g — open air</text>
+  <text x="112" y="241" font-size="11" fill="#1d4ed8">■ LiFePO₄ pack</text>
+  <text x="112" y="258" font-size="11" fill="#1d4ed8">■ power box · logic box</text>
+  <text x="112" y="283" font-size="10.5" font-style="italic" fill="#1d4ed8">Lowest point in the vehicle that is already</text>
+  <text x="112" y="298" font-size="10.5" font-style="italic" fill="#1d4ed8">flat — every gram here is a gram not on the</text>
+  <text x="112" y="313" font-size="10.5" font-style="italic" fill="#1d4ed8">mast. It is also load-bearing by design:</text>
+  <text x="112" y="328" font-size="10.5" font-style="italic" fill="#1d4ed8">a child stands on it.</text>
+
+  <!-- steering column -->
+  <circle cx="290" cy="156" r="15" fill="none" stroke="#64748b" stroke-width="2.5"/>
+  <circle cx="290" cy="156" r="4" fill="#64748b"/>
+  <text x="312" y="152" font-size="10.5" fill="#64748b">column —</text>
+  <text x="312" y="165" font-size="10.5" fill="#64748b">keep clear</text>
+
+  <!-- seat plinth zone -->
+  <rect x="96" y="348" width="324" height="236" rx="8" fill="url(#moul)" stroke="#7e22ce" stroke-width="2.5"/>
+  <text x="112" y="372" font-size="13" font-weight="bold" fill="#581c87">ZONE A — seat plinth</text>
+  <text x="112" y="390" font-size="11" fill="#7e22ce">RAISED, and MOULDED — not a flat pad</text>
+
+  <!-- seat bolt bosses -->
+  <g>
+    <circle cx="140" cy="420" r="7" fill="#fecaca" stroke="#b91c1c" stroke-width="2"/>
+    <circle cx="376" cy="420" r="7" fill="#fecaca" stroke="#b91c1c" stroke-width="2"/>
+    <circle cx="140" cy="556" r="7" fill="#fecaca" stroke="#b91c1c" stroke-width="2"/>
+    <circle cx="376" cy="556" r="7" fill="#fecaca" stroke="#b91c1c" stroke-width="2"/>
+  </g>
+  <text x="128" y="410" font-size="9.5" font-weight="bold" fill="#b91c1c">D2</text>
+  <line x1="147" y1="420" x2="369" y2="420" stroke="#b91c1c" stroke-width="1" stroke-dasharray="4 3"/>
+  <line x1="140" y1="427" x2="140" y2="549" stroke="#b91c1c" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="236" y="414" font-size="10" fill="#b91c1c">? mm</text>
+  <text x="104" y="494" font-size="10" fill="#b91c1c">? mm</text>
+
+  <!-- harness anchors -->
+  <g>
+    <rect x="160" y="566" width="14" height="10" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+    <rect x="344" y="566" width="14" height="10" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+  </g>
+  <text x="186" y="576" font-size="10.5" font-weight="bold" fill="#15803d">harness anchors — D5</text>
+
+  <!-- mast base rail -->
+  <rect x="242" y="438" width="26" height="112" rx="2" fill="#cbd5e1" stroke="#334155" stroke-width="2.2"/>
+  <circle cx="255" cy="494" r="16" fill="#e2e8f0" stroke="#334155" stroke-width="2.5"/>
+  <circle cx="255" cy="494" r="5" fill="#334155"/>
+  <text x="280" y="476" font-size="11.5" font-weight="bold" fill="#0f172a">mast — base rail 250 mm</text>
+  <text x="280" y="492" font-size="10.5" fill="#475569">fore-aft, on plate A</text>
+  <text x="280" y="508" font-size="10.5" fill="#475569">post rises from here</text>
+
+  <text x="112" y="612" font-size="10.5" font-style="italic" fill="#7e22ce">Only the mast goes here — it is the high, moulded, plastic-anchored zone.</text>
+
+  <!-- ================= PANEL B : side section ================= -->
+  <rect x="510" y="76" width="566" height="300" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.8"/>
+  <text x="530" y="102" font-size="14.5" font-weight="bold" fill="#92400e">B · Side section — two levels, and how a flat plate sits on a moulded one</text>
+
+  <!-- footwell floor -->
+  <line x1="552" y1="300" x2="760" y2="300" stroke="#2563eb" stroke-width="3"/>
+  <text x="566" y="320" font-size="11" font-weight="bold" fill="#1e3a8a">footwell floor — flat</text>
+  <rect x="580" y="262" width="78" height="38" rx="3" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="590" y="286" font-size="10" fill="#1e3a8a">heavy kit</text>
+
+  <!-- plinth, moulded top -->
+  <path d="M760,300 L760,232 Q784,232 790,222 Q800,206 818,214 Q836,222 852,210 Q872,196 890,212 Q906,226 930,220 L1040,220 L1040,300 Z"
+        fill="url(#moul)" stroke="#7e22ce" stroke-width="2.2"/>
+  <text x="846" y="286" font-size="11" font-weight="bold" fill="#581c87">seat plinth — raised AND contoured</text>
+
+  <!-- standoffs -->
+  <rect x="792" y="176" width="16" height="36" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+  <rect x="886" y="176" width="16" height="32" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+  <rect x="978" y="176" width="16" height="44" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+  <text x="762" y="162" font-size="11" font-weight="bold" fill="#15803d">printed standoffs, each a different height — D1</text>
+
+  <!-- plate A -->
+  <rect x="770" y="168" width="250" height="9" fill="url(#ply)" stroke="#a16207" stroke-width="1.8"/>
+  <text x="826" y="150" font-size="11.5" font-weight="bold" fill="#92400e">plate A — level in spite of the moulding</text>
+
+  <!-- mast post -->
+  <rect x="888" y="118" width="11" height="50" fill="#e2e8f0" stroke="#334155" stroke-width="2"/>
+  <path d="M893,116 L893,104" stroke="#334155" stroke-width="2" marker-end="url(#a)"/>
+  <text x="906" y="116" font-size="10.5" fill="#334155">post, 500</text>
+
+  <text x="530" y="348" font-size="11.5" fill="#78350f">
+    <tspan font-weight="bold">Four standoffs, measured individually.</tspan> A single flat plate laid on a moulded plinth rocks on the
+  </text>
+  <text x="530" y="365" font-size="11.5" fill="#78350f">
+    high spots — and a rocking plate under a 500 mm mast is a plate that works loose. They print in PETG, from D1.
+  </text>
+
+  <!-- ================= PANEL C : measurements ================= -->
+  <rect x="510" y="392" width="566" height="308" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="530" y="418" font-size="14.5" font-weight="bold" fill="#14532d">C · What the photographs did NOT answer — V4 D, still open</text>
+
+  <text x="530" y="446" font-size="11.5" fill="#166534"><tspan font-weight="bold" fill="#14532d">D1</tspan>  Seat plinth: flat or contoured? Height of each seat boss above one datum</text>
+  <text x="558" y="463" font-size="10.5" font-style="italic" fill="#15803d">→ sets the four standoff heights, and nothing can be cut without it</text>
+  <text x="530" y="486" font-size="11.5" fill="#166534"><tspan font-weight="bold" fill="#14532d">D2</tspan>  Seat bolt pattern — count, thread, centre-to-centre spacings</text>
+  <text x="530" y="509" font-size="11.5" fill="#166534"><tspan font-weight="bold" fill="#14532d">D3</tspan>  Usable land on the plinth, L × W, with the seat out</text>
+  <text x="530" y="532" font-size="11.5" fill="#166534"><tspan font-weight="bold" fill="#14532d">D4</tspan>  Footwell floor under the mat — L × W. Flat, or ribbed and drained?</text>
+  <text x="530" y="555" font-size="11.5" fill="#166534"><tspan font-weight="bold" fill="#14532d">D5</tspan>  Harness anchors — thread, and do they land in metal or a thick boss?</text>
+  <text x="558" y="572" font-size="10.5" font-style="italic" fill="#15803d">→ the only points in this cockpit ENGINEERED for pull-out. Worth knowing.</text>
+  <text x="530" y="595" font-size="11.5" fill="#166534"><tspan font-weight="bold" fill="#14532d">D6</tspan>  Step height, footwell floor → plinth top</text>
+  <text x="530" y="618" font-size="11.5" fill="#166534"><tspan font-weight="bold" fill="#14532d">D7</tspan>  Footwell floor → top of the side walls (caps the power box height)</text>
+
+  <rect x="530" y="636" width="526" height="48" rx="6" fill="#dcfce7" stroke="#15803d" stroke-width="1.5"/>
+  <text x="544" y="657" font-size="11.5" font-weight="bold" fill="#14532d">The three metal lines can still be ordered now.</text>
+  <text x="544" y="674" font-size="11" fill="#166534">Extrusion length comes from the mast height, not from the deck. Plywood waits on D3 and D4.</text>
+</svg>
