@@ -796,8 +796,24 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 >
 > At `HUB_D = 62.7` it derives bore Ø63.9, outside **Ø77.9**, track 244.7 mm, pitch **13.60 mm**,
 > **sensor offset 6.80 mm**, 36 counts/rev → **15.8 mm/count**. Fasteners, per vehicle:
-> **3 × M3 × 8 grub screw** (cup or cone point — a cone point finds a
-> lobe gap on its own).
+> **3 × M3 × 8 grub screw**, **cup or cone point — prefer cone.**
+>
+> ![Four grub-screw point types in profile — flat, cup, cone and dog — and a developed view of the six-lobe hub showing a cone point dropping into a valley and locating itself while a flat point perches on a crest](../images/grub-screw-points.svg)
+>
+> **The point is what does the holding**, and on a *lobed* hub the choice stops being cosmetic.
+> **Flat** presses only; **cup** has a sharp rim that bites and is the usual default; **cone** drops
+> into a lobe valley and **locates itself**, keying against rotation as well as clamping. **Dog
+> point is wrong here** — its nose wants a matching hole.
+>
+> **Two reasons it matters more on this part than on a plain shaft.** The M3s **tap straight into
+> PETG, not metal**, so grip must come from the point rather than from torque: *lean on the wrench
+> and you strip the thread, not the hub*, while a seated cone holds at far less torque. And six
+> lobes at 60° against three screws at 120° is **exactly two lobe pitches**, so all three screws
+> share one phase — **seat one in a valley and all three are in valleys; get it wrong and all three
+> sit on crests.** There is no partial credit.
+>
+> **Assembly rule: rotate the ring until a screw drops in, then tighten. Never force one down on a
+> crest.**
 >
 > **Rendered and checked 2026-10-06.** CGAL reports `Simple: yes`, `Volumes: 2` — one connected
 > solid — and the **maximum swept radius measured off the STL is 38.950 mm, exactly `OD/2`**. That
