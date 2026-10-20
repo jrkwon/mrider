@@ -518,8 +518,18 @@ differed by 0.47 mm; a moulded opening will not be tighter than that.
 > **right fore-aft and 37 mm narrow on each side** — which is exactly what it looks like. If a
 > template ever comes out far from that, it is the template that is wrong.
 
-**Lid blank: 400 × 240 per vehicle.** Three come off one **450 × 750** board of 12 mm birch ply —
-a standard 쿠팡 목재재단 line at roughly ₩15,000 for the fleet.
+**Lid blank: 400 × 240 per vehicle.** Three use 400 × 720 of one **600 × 1200 × 12 mm** board of
+**무절 birch** — buy the board and cut it, rather than ordering cut-to-size. The outline is traced
+from a template anyway, so a factory rectangle buys nothing, and on a sixteen-week course with
+thirteen students the offcut is test pieces, enclosure backing and the lid someone ruins.
+
+> [!NOTE]
+> **Birch rather than plain plywood, and the reason is edge distance**
+>
+> The lid's hold-down screws sit about **10 mm from its edge**. **무절 birch has no voids**; a plain
+> veneer sheet can easily put one directly under a bolt, and a bolt bearing on a void is a bolt that
+> pulls through. Plain 합판 saves about ₩9,000 across the fleet — take it **only** if the hold-down
+> gets large penny washers or a steel strip to spread the bearing.
 
 **Mast centred, both ways — and the three reasons agree rather than compete.** Laterally centred
 puts the LiDAR on the vehicle centreline, so it is not a lateral offset in every transform forever.
