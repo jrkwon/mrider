@@ -796,7 +796,7 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 >
 > At `HUB_D = 62.7` it derives bore Ø63.9, outside **Ø77.9**, track 244.7 mm, pitch **13.60 mm**,
 > **sensor offset 6.80 mm**, 36 counts/rev → **15.8 mm/count**. Fasteners, per vehicle:
-> **3 × M3 × 8 grub screw, `DIN 914` (cone) — or `DIN 916` (cup). Not `DIN 913`.**
+> **3 × M3 × 8 grub screw, `DIN 916` cup (오목선단) — `DIN 914` cone if you can get it. Never `DIN 913` flat.**
 >
 > ![Four grub-screw point types in profile — flat, cup, cone and dog — and a developed view of the six-lobe hub showing a cone point dropping into a valley and locating itself while a flat point perches on a crest](../images/grub-screw-points.svg)
 >
@@ -812,8 +812,22 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > share one phase — **seat one in a valley and all three are in valleys; get it wrong and all three
 > sit on crests.** There is no partial credit.
 >
-> **Assembly rule: rotate the ring until a screw drops in, then tighten. Never force one down on a
-> crest.** *(Which is also why `DIN 913` is useless here — with a flat point nothing drops in.)*
+> **Assembly rule: rotate the ring so the screws sit in the lobe valleys, then tighten. Never
+> tighten one down on a crest.** With a **cone** you feel it drop in. **With a cup you do not** —
+> judge it by eye before tightening, because there is no detent to tell you you got it right. With
+> a flat point there is nothing to judge at all, which is why `DIN 913` is useless here.
+>
+> > [!TIP]
+> > **Buy it from MISUMI, not from a marketplace — `E-GMSSU3-8`**
+> >
+> > [경제형 무두볼트 오목선단 스테인리스](https://kr.misumi-ec.com/vona2/detail/110310926189/),
+> > SUS304 / A2-70, 형번 `E-GMSSU<M>-<L>`. **Sold 낱개, from one piece**, so nine fitted plus spares
+> > is an ordinary order rather than a 200-piece gamble. Same vendor as [#8b](../order-log.md).
+> >
+> > MISUMI's economy line carries **오목선단 (cup)** and **플랫선단 (flat)** only — no cone — so cup
+> > is what this build takes. That is a compromise, not a wash: a cone detents into a valley and a
+> > cup does not. But **cup is the industry default for this exact duty**, holding a collar on a
+> > shaft, and its sharp rim straddling a valley contacts both flanks.
 >
 > > [!CAUTION]
 > > **Order set screws by DIN number, never by an English adjective — learned 2026-10-20**
@@ -823,8 +837,13 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > > This page said *"cup or cone point"* and the screws that arrived were **flat**. The listing
 > > stated M3 and 8 mm and said **nothing** about the point, so a three-part specification got
 > > two-thirds verified and recorded as done. **A DIN number is something a seller either prints or
-> > does not** — it fails loudly instead of quietly. Of the Coupang results for M3 × 8 set screws,
-> > exactly one stated a point form, and it stated it as `DIN914`.
+> > does not** — it fails loudly instead of quietly.
+> >
+> > **But the stronger rule is about where you shop, not how you write the spec.** Of the Coupang
+> > results for M3 × 8 set screws, exactly one stated a point form — and that one turned out not to
+> > stock M3 × 8. **Buy spec-critical fasteners where the spec is a required field rather than a
+> > description.** MISUMI makes **선단 형상** a parameter you cannot order without choosing.
+> > *Structurally preventing the mistake beats remembering to check for it.*
 >
 > > [!WARNING]
 > > **Do not put threadlocker in these threads**
