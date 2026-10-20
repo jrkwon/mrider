@@ -322,12 +322,33 @@ PWM harness out of the box students open every week.
 |---|---:|---|---|
 | **Post** | 500 mm | the 700 | vertical; carries everything |
 | **Camera boom** | 150 mm | the 700 | horizontal, forward, at ~380 mm |
-| **Fore-aft rail** | 250 mm | the 600 | **continuous**; the post stands on it, **T-slot up** |
-| **Lateral stubs ×2** | 115 mm | the 600 | **butted against the rail's left and right faces** at mid-length |
+| **Fore-aft rail** | **210 mm** | the 600 | **continuous**; the post stands on it, **T-slot up** |
+| **Lateral stubs ×2** | **140 mm** | the 600 | **butted against the rail's left and right faces** at mid-length |
 
-That leaves **170 mm spare per vehicle, deliberately** — the base dimensions are provisional until
-D11 is measured, and a spare stub costs nothing while a second order costs a week. The 600 mm piece
-allows stubs up to about **145 mm** if D11 turns out to want a wider lateral span.
+That leaves **160 mm spare per vehicle** — 50 off the 700 and 110 off the 600, enough for a second
+stub if a cut goes wrong.
+
+> [!IMPORTANT]
+> **Fit check against the measured bay — the first numbers did not fit**
+>
+> ![The measured bay, 370 by 210, drawn to scale with the proposed 250 by 250 base ghosted over it showing 20 mm hanging off each fore-aft edge, and the corrected 210 by 300 base whose lateral tie-downs land exactly on the existing seat screws](../images/bay-fit-check.svg)
+>
+> **Measured 2026-10-20: the bay is 370 × 210 × 130 deep**, the body rim sits **130** above it, the
+> **seat screws are 300 apart laterally**, and the **spare battery holes 100 apart**.
+>
+> **A 250 mm fore-aft rail does not fit a 210 mm bay** — 20 mm hangs off each edge and the end bolts
+> land on nothing. **Rail 210, stubs 140: a 210 × 300 base.**
+>
+> **The rotation pays twice.** The lateral span goes **up** from 250 to 300, and at 140 the stubs
+> put their tie-down bolts **exactly on the existing seat screws** — no new holes in that direction.
+> The rail's ends then land on the bay rim, where the lid is supported anyway. **The purchase does
+> not change**; only the cuts move.
+>
+> **The lid was never oversized.** It is the size of the opening it covers, ~390 × 230 with the rim.
+>
+> **At these spans:** a 1 g kerb strike is **±13 N fore-aft, ±9 N lateral** — nothing. A 10 kgf lean
+> is **±257 N and ±180 N**. The short direction is also the loaded one, which is why the continuous
+> rail stays fore-aft — and why **NOT A HANDLE** still earns its label.
 
 > [!CAUTION]
 > **Buy only from the listing titled `DF2020 … 프로파일`. The same seller also lists `앵글 DAB 2020`.**
@@ -411,14 +432,19 @@ onto the post's top end and carries its bolt pattern.
 >
 > **These are the only points inside the bay engineered to hold something against vehicle motion**,
 > and they sit where the mast actually stands. So use them: **printed PETG pillars rise from the
-> spare holes to the underside of the lid, and the base cross is through-bolted** — one bolt from
-> the top runs base cross → lid → pillar → boss. The load path becomes **bolt, pillar, boss,
-> chassis**, with the plywood merely in the sandwich rather than in the load path, and **the seat
-> bolts drop back to doing only what they are good for: holding a lid down.**
+> spare holes to the underside of the lid, and the base rail is through-bolted** — one bolt from the
+> top runs rail → lid → pillar → boss.
 >
-> **D11 — the four holes: thread size, and the rectangle they form.** This sizes the base cross, so
-> the 250 × 250 above is provisional. **D12 — depth from the rim plane to each boss face**: the
-> pillar heights, and they need not be equal. Measure all four.
+> **But they are local support, not the mast's couple — corrected 2026-10-20.** The spare holes
+> measure **100 mm apart**, and a 54 N·m moment across 0.1 m is **540 N a side**, which would strip
+> a moulded boss. What the pillars actually buy is that **the lid cannot dish under the post** and
+> the post gets a hard footing straight onto chassis. **The couple that resists the mast is still
+> the rim in compression plus the perimeter bolts in lift** — which is what §2.7.1's lid-on-a-rim
+> argument said before the pillars were ever proposed. Claiming the load path ran through them was
+> wrong, and the measurement is what showed it.
+>
+> **D12 — depth from the rim plane to each boss face**: the pillar heights, and they need not be
+> equal. Measure all four.
 >
 > **Do not disturb the strap's own screw, and check the battery can still come out.** A pillar that
 > blocks the battery's lift-out path has traded one problem for a worse one.

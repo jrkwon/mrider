@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 790" width="1120" height="790"
      font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
   <title>The mast base: one continuous rail plus two butted stubs, because two crossing rails cannot share a plane</title>
-  <desc>Left: the rejected single fore-aft rail, which gives a 250 mm base front-to-back but only
-  the 40 mm of its corner-bracket arms side-to-side. Centre: the adopted base, drawn as three
-  separate pieces — one continuous 250 mm fore-aft rail with the post standing on it, and two
-  separate 115 mm stubs butted against its left and right faces — with the derivation of 115 from
-  250 minus the bar's own 20 mm width, halved. Right top: why one of the two directions must be
+  <desc>Left: the rejected single fore-aft rail, which gives a fore-aft base but only the 40 mm of
+  its corner-bracket arms side-to-side. Centre: the adopted base, drawn as three separate pieces —
+  one continuous 210 mm fore-aft rail with the post standing on it, and two separate 140 mm stubs
+  butted against its left and right faces — with the derivation of 140 from the 300 mm lateral span
+  less the bar's own 20 mm width, halved. Right top: why one of the two directions must be
   split, since two continuous 20 mm bars cannot occupy the same 20 mm layer where they cross. Right
   bottom: the cut list mapped piece by piece. Footer: why the base is symmetric in span but not in
   construction, and why the continuous member is placed fore-aft.</desc>
@@ -52,7 +52,7 @@
     <line x1="216" y1="172" x2="228" y2="172"/>
     <line x1="216" y1="398" x2="228" y2="398"/>
   </g>
-  <text x="232" y="282" font-size="11.5" font-weight="bold" fill="#15803d">250</text>
+  <text x="232" y="282" font-size="11.5" font-weight="bold" fill="#15803d">210</text>
   <text x="232" y="296" font-size="10.5" fill="#15803d">fore-aft ✓</text>
 
   <g stroke="#b91c1c" stroke-width="1.5">
@@ -78,17 +78,17 @@
   <rect x="386" y="124" width="312" height="320" rx="5" fill="url(#ply)" stroke="#a16207" stroke-width="1.6"/>
 
   <!-- the ONE continuous rail -->
-  <rect x="525" y="160" width="34" height="250" rx="2" fill="#94a3b8" stroke="#1e293b" stroke-width="3"/>
-  <text x="566" y="148" font-size="11" font-weight="bold" fill="#1e293b">① RAIL 250 — continuous,</text>
-  <text x="578" y="161" font-size="11" font-weight="bold" fill="#1e293b">the post stands ON it</text>
+  <rect x="525" y="194" width="34" height="183" rx="2" fill="#94a3b8" stroke="#1e293b" stroke-width="3"/>
+  <text x="566" y="182" font-size="11" font-weight="bold" fill="#1e293b">① RAIL 210 — continuous,</text>
+  <text x="578" y="195" font-size="11" font-weight="bold" fill="#1e293b">the post stands ON it</text>
 
   <!-- TWO separate stubs, butted -->
   <rect x="409" y="268" width="114" height="34" rx="2" fill="#cbd5e1" stroke="#1e293b" stroke-width="3"/>
   <rect x="561" y="268" width="114" height="34" rx="2" fill="#cbd5e1" stroke="#1e293b" stroke-width="3"/>
   <line x1="524" y1="263" x2="524" y2="307" stroke="#b91c1c" stroke-width="2.5"/>
   <line x1="560" y1="263" x2="560" y2="307" stroke="#b91c1c" stroke-width="2.5"/>
-  <text x="392" y="256" font-size="11" font-weight="bold" fill="#1e293b">② STUB 115</text>
-  <text x="600" y="256" font-size="11" font-weight="bold" fill="#1e293b">③ STUB 115</text>
+  <text x="392" y="256" font-size="11" font-weight="bold" fill="#1e293b">② STUB 140</text>
+  <text x="600" y="256" font-size="11" font-weight="bold" fill="#1e293b">③ STUB 140</text>
   <text x="416" y="332" font-size="10" font-weight="bold" fill="#b91c1c">butted against the rail, not crossing it</text>
 
   <!-- post -->
@@ -103,7 +103,7 @@
 
   <!-- tie-downs -->
   <g fill="#fecaca" stroke="#b91c1c" stroke-width="2">
-    <circle cx="542" cy="172" r="6"/><circle cx="542" cy="398" r="6"/>
+    <circle cx="542" cy="206" r="6"/><circle cx="542" cy="364" r="6"/>
     <circle cx="421" cy="285" r="6"/><circle cx="663" cy="285" r="6"/>
   </g>
 
@@ -113,11 +113,11 @@
     <line x1="421" y1="418" x2="421" y2="430"/>
     <line x1="663" y1="418" x2="663" y2="430"/>
   </g>
-  <text x="498" y="440" font-size="11.5" font-weight="bold" fill="#15803d">250 — the same both ways</text>
+  <text x="476" y="440" font-size="11.5" font-weight="bold" fill="#15803d">300 lateral · 210 fore-aft</text>
 
   <rect x="366" y="456" width="352" height="40" rx="5" fill="#dcfce7" stroke="#15803d" stroke-width="1.5"/>
-  <text x="380" y="473" font-size="12" font-weight="bold" fill="#14532d">Stub length = (250 − 20) ÷ 2 = 115</text>
-  <text x="380" y="489" font-size="11" fill="#166534">the span, less the rail's own 20 mm width, halved</text>
+  <text x="380" y="473" font-size="12" font-weight="bold" fill="#14532d">Stub length = (300 − 20) ÷ 2 = 140</text>
+  <text x="380" y="489" font-size="11" fill="#166534">the lateral span, less the rail's 20 mm width, halved</text>
 
   <!-- ================= RIGHT TOP ================= -->
   <rect x="754" y="76" width="342" height="248" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.8"/>
@@ -147,22 +147,22 @@
   <line x1="863" y1="376" x2="863" y2="414" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
   <line x1="904" y1="376" x2="904" y2="414" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
   <line x1="945" y1="376" x2="945" y2="414" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
-  <text x="792" y="400" font-size="10" font-weight="bold" fill="#0f172a">① 250</text>
-  <text x="868" y="400" font-size="9" font-weight="bold" fill="#0f172a">② 115</text>
-  <text x="909" y="400" font-size="9" font-weight="bold" fill="#0f172a">③ 115</text>
-  <text x="952" y="400" font-size="9" fill="#15803d">120</text>
+  <text x="792" y="400" font-size="10" font-weight="bold" fill="#0f172a">① 210</text>
+  <text x="866" y="400" font-size="9" font-weight="bold" fill="#0f172a">② 140</text>
+  <text x="907" y="400" font-size="9" font-weight="bold" fill="#0f172a">③ 140</text>
+  <text x="950" y="400" font-size="9" fill="#15803d">110</text>
 
   <text x="774" y="434" font-size="11.5" fill="#334155">
-    One 250 is <tspan font-weight="bold">correct, not short</tspan> — only the
+    One rail only is <tspan font-weight="bold">correct, not short</tspan> — just
   </text>
   <text x="774" y="450" font-size="11.5" fill="#334155">
-    fore-aft member is continuous. The 700 mm
+    the fore-aft member is continuous. The 700 mm
   </text>
   <text x="774" y="466" font-size="11.5" fill="#334155">
     piece separately gives post 500 + boom 150.
   </text>
   <text x="774" y="490" font-size="11" font-weight="bold" fill="#b45309">
-    120 spare = one more stub if a cut goes wrong.
+    110 spare = one more stub if a cut goes wrong.
   </text>
 
   <!-- ================= FOOTER ================= -->
@@ -171,7 +171,7 @@
     The honest part: the base is symmetric in SPAN, not in CONSTRUCTION — and the softer direction is chosen, not inherited
   </text>
   <text x="44" y="574" font-size="12" fill="#334155">
-    Both directions reach their tie-downs 125 mm from the post axis, so the lever arms are equal. But <tspan font-weight="bold">fore-aft the post stands on a</tspan>
+    Spans come from the measured bay: 210 fore-aft, 300 lateral on the existing seat screws. <tspan font-weight="bold">Fore-aft the post stands on a</tspan>
   </text>
   <text x="44" y="592" font-size="12" fill="#334155">
     <tspan font-weight="bold">continuous beam</tspan>, while <tspan font-weight="bold">sideways the load passes through two bracket joints.</tspan> Brackets are strong enough — 216 N through an M5 pair is
@@ -187,16 +187,16 @@
     ■ braking and kerb strikes act front-to-back   ■ the camera boom overhangs forward, so its mass is a standing fore-aft moment
   </text>
   <text x="58" y="678" font-size="12" fill="#166534">
-    ■ cornering is the only lateral case, and this vehicle corners at walking pace
+    ■ cornering is the only lateral case, this vehicle corners at walking pace — and lateral now has the longer 300 mm span anyway
   </text>
 
   <text x="44" y="708" font-size="12" fill="#334155">
-    <tspan font-weight="bold">Four 115 mm arms would be perfectly symmetric</tspan> — and strictly worse: all four joints would then be brackets, where this
+    <tspan font-weight="bold">Four equal arms would be perfectly symmetric</tspan> — and strictly worse: all four joints would then be brackets, where this
   </text>
   <text x="44" y="726" font-size="12" fill="#334155">
     arrangement makes two of them unbroken metal, for the same part count and the same price.
   </text>
   <text x="44" y="752" font-size="12" font-weight="bold" fill="#b45309">
-    Cut nothing yet. D11 — the spare battery holes' rectangle — sets the real span, and the 600 mm piece allows stubs up to ~145.
+    Spans fixed 2026-10-20 by the measured bay (370 × 210) and the seat screws at 300. The 600 mm piece still leaves 110 mm spare.
   </text>
 </svg>
