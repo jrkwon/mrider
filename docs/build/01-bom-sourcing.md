@@ -796,7 +796,7 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 >
 > At `HUB_D = 62.7` it derives bore Ø63.9, outside **Ø77.9**, track 244.7 mm, pitch **13.60 mm**,
 > **sensor offset 6.80 mm**, 36 counts/rev → **15.8 mm/count**. Fasteners, per vehicle:
-> **3 × M3 × 8 grub screw**, **cup or cone point — prefer cone.**
+> **3 × M3 × 8 grub screw, `DIN 914` (cone) — or `DIN 916` (cup). Not `DIN 913`.**
 >
 > ![Four grub-screw point types in profile — flat, cup, cone and dog — and a developed view of the six-lobe hub showing a cone point dropping into a valley and locating itself while a flat point perches on a crest](../images/grub-screw-points.svg)
 >
@@ -813,7 +813,30 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > sit on crests.** There is no partial credit.
 >
 > **Assembly rule: rotate the ring until a screw drops in, then tighten. Never force one down on a
-> crest.**
+> crest.** *(Which is also why `DIN 913` is useless here — with a flat point nothing drops in.)*
+>
+> > [!CAUTION]
+> > **Order set screws by DIN number, never by an English adjective — learned 2026-10-20**
+> >
+> > `DIN 913` flat · **`DIN 914` cone** · `DIN 915` dog · **`DIN 916` cup**
+> >
+> > This page said *"cup or cone point"* and the screws that arrived were **flat**. The listing
+> > stated M3 and 8 mm and said **nothing** about the point, so a three-part specification got
+> > two-thirds verified and recorded as done. **A DIN number is something a seller either prints or
+> > does not** — it fails loudly instead of quietly. Of the Coupang results for M3 × 8 set screws,
+> > exactly one stated a point form, and it stated it as `DIN914`.
+>
+> > [!WARNING]
+> > **Do not put threadlocker in these threads**
+> >
+> > [#6d](../order-log.md) buys 록타이트 243, and it was specified when the carrier's threads were
+> > **metal heat-set inserts**. They are now **tapped straight into PETG**. Anaerobic threadlocker
+> > is not intended for plastic threads — its cure relies on metal on the mating flanks, and some
+> > plastics stress-crack in contact with it. **On this joint the locking comes from the point form
+> > and the PETG's own thread friction, not from 243.**
+> >
+> > The 243 is not wasted: the mast's M5 bolts run into **steel T-nuts**, which is the joint it was
+> > always right for.
 >
 > **Rendered and checked 2026-10-06.** CGAL reports `Simple: yes`, `Volumes: 2` — one connected
 > solid — and the **maximum swept radius measured off the STL is 38.950 mm, exactly `OD/2`**. That
