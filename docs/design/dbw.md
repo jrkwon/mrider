@@ -56,9 +56,11 @@ The stock steering column is mechanically linked to the front wheels but has **n
 > **The residual risk is duty cycle, not torque.** A child steers in occasional slow sweeps; the
 > position loop makes the small, continuous, high-frequency corrections
 > [ADR B](#5-adr-b-steering-angle-encoding) describes, which the stock motor was never specified
-> for. The failure mode is thermal and wear. **[Stage 1](safety.md#6-bring-up-protocol-staged-wheels-off-first)
-> is the gate**: BOM #4 stays funded until a sustained closed-loop hold is shown not to overheat
-> the motor.
+> for. The failure mode is thermal and wear, so **the gate is a thermal test, and it cannot be run
+> on a bench**: steering load here is mostly tyre scrub, which exists only with the wheels on the
+> ground. **[Stage 5](safety.md#6-bring-up-protocol-staged-wheels-off-first) is the gate**, not
+> Stage 1 — see [§2.2.1](#221-the-duty-cycle-test-this-is-what-actually-releases-bom-4) for the
+> procedure and its pass criteria. BOM #4 stays funded until it passes.
 >
 > **A stock parent-remote gearmotor has no shaft encoder**, so reuse drops the incremental
 > encoder [ADR B](#5-adr-b-steering-angle-encoding) specifies as auxiliary. That costs FMEA
@@ -92,6 +94,46 @@ Torque required to steer an unmodified column is unknown and vehicle-specific (t
 4. Compute stall torque at the column: `τ_column = F × r`, where `r` is the lever radius (wheel rim radius, or the effective linkage arm).
 5. **Size the gearmotor for ≥ 2 × τ_column** at its rated (not stall) torque, referred through the chosen gear/coupling ratio. The 2× margin covers surface variation, aging friction, and dynamic loads.
 6. Record `F`, `r`, `τ_column`, chosen motor, and gear ratio in [calibration.md](calibration.md) and the [bom.md](bom.md) line item.
+
+#### 2.2.1 The duty-cycle test — this is what actually releases BOM #4
+
+> [!IMPORTANT]
+> **On the 2026 vehicle the torque question is closed and the duty question is not.** [#4](../order-log.md)
+> stays funded against one risk only: the stock motor was specified for a child's occasional slow
+> sweeps, not for the small, continuous, high-frequency corrections a position loop makes. **The
+> failure mode is thermal and wear, so the test is a thermal one** — a spring scale cannot answer it.
+
+**It cannot be run at bench Stage 1, and saying so is the point.** Steering torque on this class of
+vehicle is dominated by **tyre scrub**, which exists only with the wheels loaded on the ground. A
+motor spinning free on a bench, or a vehicle on stands, draws a fraction of the current and will
+pass a thermal test it would fail in service. **The gate therefore sits at
+[Stage 5](safety.md#6-bring-up-protocol-staged-wheels-off-first)**, on the ground, at full kit load,
+on the target surface.
+
+1. Vehicle **on the ground**, full load (laptop, LiDAR, mast, payload), on the surface it will be
+   driven on. Note the **ambient temperature** — every limit below is a rise above it.
+2. Tape a thermocouple to the motor can, or use an IR thermometer on the same marked spot each time.
+   **The same spot**: a 10 mm move on a small motor is several degrees.
+3. Run the **position loop**, not a step test. Command a realistic profile — slow sweeps with
+   **±5–10° corrections at 1–2 Hz superimposed** — which is what a path follower actually emits. A
+   step-and-hold understates the duty; continuous small reversals are the hot case.
+4. Run **20 minutes continuous**, longer than any single lab exercise. Record case temperature and
+   **M1 current** at `t = 0` and every 5 minutes.
+5. **Pass criterion is equilibrium, not a number.** If the temperature **plateaus** — under about
+   1 °C per 5 minutes by the end — the motor can run indefinitely at this duty. **If it is still
+   climbing at 20 minutes it cannot**, however comfortable the absolute reading looks.
+6. **Absolute ceiling: case ≤ 70 °C.** The limiting part is the **plastic gearbox, not the
+   windings** — nylon and POM gears soften and wear long before magnet wire is in trouble, and this
+   gearbox is the same family as the [drive gearbox](../order-log.md) the encoder clamps to.
+7. **Then measure wear, which is the half everyone forgets.** Re-take lock-to-lock travel and the
+   dead band immediately after the run and compare with the pre-run figures. **Growth in backlash is
+   a fail even if the temperature was fine** — it is the same defect arriving slowly.
+8. Record the steady-hold current against the driver's channel rating and against the
+   [logic-rail brownout check](safety.md#5-power-rail-isolation-and-brownout-protection).
+
+**Outcome.** Plateau below ceiling and no backlash growth → **release #4, do not buy a gearmotor.**
+Anything else → buy it, and the [§2.4 wiper fallback](#24-wiper-motor-fallback) is already
+pre-registered.
 
 > Rule of thumb from the ride-on ecosystem: a two-seater on carpet typically needs on the order of a few N·m at the column; a wiper motor (often 10–30 N·m stall) is comfortably oversized, which is why it is the safe fallback.
 

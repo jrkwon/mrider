@@ -157,6 +157,21 @@ No stage begins until the previous stage passes. **Bench before vehicle; wheels-
 
 **Stage 5 — ground, walking pace, operator alongside.** First on-ground manual DBW driving at ≤ walking speed. E-stop-on-the-move test (§4.4 step 4). Only after this passes does autonomy (SLAM/Nav2) engage — see [software.md](software.md).
 
+> [!IMPORTANT]
+> **Stage 5 also carries the BOM #4 release gate — and it has to, not Stage 1**
+>
+> [#4](../order-log.md) is funded against one residual risk: the stock steering motor was never
+> specified for **continuous closed-loop duty**. That is a thermal question, and **it cannot be
+> answered on a bench or on stands.** Steering load on this chassis is mostly **tyre scrub**, which
+> exists only with the wheels loaded on the ground — a motor that passes a thermal test off the
+> vehicle will still cook in service.
+>
+> The procedure and its pass criteria are
+> [dbw.md §2.2.1](dbw.md#221-the-duty-cycle-test-this-is-what-actually-releases-bom-4): twenty
+> minutes of realistic position-loop duty, **pass on thermal equilibrium rather than on an absolute
+> reading**, ceiling 70 °C at the case because the **plastic gearbox** is the limiting part, and a
+> **backlash re-check afterwards** — growth is a fail even if the temperature was fine.
+
 ---
 
 ## 7. FMEA (lightweight)
