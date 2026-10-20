@@ -489,64 +489,58 @@ onto the post's top end and carries its bolt pattern.
 
 ### 2.7.3 The lid
 
-![The lid drawn to scale over the measured bay: a traced outline bearing on a curved 10 to 20 mm rim, held by the four original seat screws at 300 by 190, with the mast base of a 190 mm fore-aft rail and two 140 mm lateral stubs reaching the screw lines, a louvred vent over the controller at the right rear, and an A4 sheet ghosted for scale](../images/lid-design.svg)
+![The lid drawn to scale at 320 by 215 mm with the two existing seat screws at 10,25 and 310,25, the mast base of a 165 mm fore-aft rail and two 125 mm lateral stubs, four bolts in the rail whose middle pair pass through into printed pillars on the spare battery bosses, and sections showing why two fixings along one edge let the lid hinge up at the other](../images/lid-design.svg)
+
+**The lid is a plain rectangle: 320 × 215 mm, 12 mm plywood.** The 370 × 210 measured earlier
+included the body's **curved raised ends**; excluding those, a 320 × 215 rectangle drops straight in
+and covers the opening. No template, no tracing — a saw cut.
+
+**Cut four, not three.** Thirteen students, sixteen weeks, and one lid will be ruined. Four stack in
+a 320 × 860 column of a 600 × 1200 board, so 280 × 1200 of offcut survives for enclosure backing and
+test pieces.
+
+> **If a cut comes out a millimetre proud, sand it.** A millimetre undersize is harmless — the rim
+> is 10–20 mm wide, so the lid still bears. **Oversize is the only error that stops it dropping in.**
+
+> [!WARNING]
+> **The vehicle gives only TWO fixings, and both are on one edge**
+>
+> They sit at **(10, 25)** and **(310, 25)** — 300 apart, along a single edge. That is **half a
+> hold-down**, and it matters because of how a lid on a rim actually works: it needs **compression
+> on one side and tension on the other**. The rim supplies compression everywhere. **Tension needs a
+> fastener**, and there are two, both at one end.
+>
+> Lean the mast **away** from them and the screws take it. Lean it **toward** them and the far edge
+> **hinges up with nothing there.**
+>
+> **The fix costs nothing: the two spare battery bosses become the second anchor pair.** The rail
+> takes **four bolts** — its **ends** into the lid, 165 apart, which is the couple that resists the
+> mast; and its **middle pair** down through the lid into printed PETG pillars standing on those
+> bosses, which is what stops the hinge. That finally gives the bosses a job their 100 mm spacing
+> can actually do: **holding a lid down, not resisting a moment.**
 
 > [!IMPORTANT]
-> **The outline is traced, not dimensioned — the rim is curved**
+> **Orientation is load-bearing: fit the lid with the two screws at the REAR**
 >
-> The bay's rim is **not a rectangle**, and its width runs **10 to 20 mm**. A plywood rectangle cut
-> to 390 × 230 would bear on the wide parts and bridge the narrow ones, so it would **rock** — which
-> is the one defect this whole design has been chasing since the seat came out.
+> The camera boom overhangs forward, so the mast carries a **permanent forward-tipping moment**.
+> Forward lean presses the front edge onto the rim and **lifts the rear** — which is exactly where
+> the two screws are. Fitted the other way round, that standing load rides on the pillars all day,
+> every day, instead of on steel-threaded fixings the vehicle already provides.
 
-**Five steps, one template, three vehicles.**
+**Base, re-fitted to the lid: rail 165, stubs 125 — a 165 × 270 base**, which keeps **25 mm of edge
+distance** for every bolt in 12 mm plywood. Penny washers under all of them.
 
-1. Tape two A4 sheets into an A3 and lay it over the opening.
-2. **Press along the rim edge** to crease the outline into the paper.
-3. Cut just outside the crease; trim until it drops onto the rim with about **2 mm clearance** all
-   round.
-4. **With the template still in place**, push a bradawl through it at each of the four seat screws.
-   **Never transfer those holes by measuring** — they are what hold the lid down.
-5. Trace onto plywood, cut with a jigsaw, sand the edge.
-
-**Make one template, then check it on all three vehicles.** Two drive hubs on this same chassis
-differed by 0.47 mm; a moulded opening will not be tighter than that.
-
-> [!TIP]
-> **A4 is the calibration you already have**
->
-> A4 landscape is **297 × 210**; the opening is **370 × 210**. So a sheet laid on the bay is
-> **right fore-aft and 37 mm narrow on each side** — which is exactly what it looks like. If a
-> template ever comes out far from that, it is the template that is wrong.
-
-**Lid blank: 400 × 240 per vehicle.** Three use 400 × 720 of one **600 × 1200 × 12 mm** board of
-**무절 birch** — buy the board and cut it, rather than ordering cut-to-size. The outline is traced
-from a template anyway, so a factory rectangle buys nothing, and on a sixteen-week course with
-thirteen students the offcut is test pieces, enclosure backing and the lid someone ruins.
+**Mast centred, both ways**, and the reasons still agree: laterally centred keeps the LiDAR on the
+vehicle centreline rather than as a lateral offset in every transform forever; fore-aft centred puts
+the rail over the battery bosses so the pillars have something to stand on; and it is clear of the
+controller at the right rear where the vent must go.
 
 > [!NOTE]
 > **Birch rather than plain plywood, and the reason is edge distance**
 >
-> The lid's hold-down screws sit about **10 mm from its edge**. **무절 birch has no voids**; a plain
-> veneer sheet can easily put one directly under a bolt, and a bolt bearing on a void is a bolt that
-> pulls through. Plain 합판 saves about ₩9,000 across the fleet — take it **only** if the hold-down
-> gets large penny washers or a steel strip to spread the bearing.
-
-**Mast centred, both ways — and the three reasons agree rather than compete.** Laterally centred
-puts the LiDAR on the vehicle centreline, so it is not a lateral offset in every transform forever.
-Fore-aft centred sits over the battery and the spare fixing holes, so the pillars have something to
-stand on and the camera boom still reaches forward over the footwell. And it is **clear of the
-controller at the right rear**, where the vent has to go. Worth noticing that they agree, rather
-than assuming it.
-
-**The mast base needs no new holes in the chassis.** It bolts to the lid; the lid bolts to the four
-seat screws and bears on the rim. Rail 190 and stubs 140 are chosen so **all four arm ends land on
-the seat-screw lines** rather than at arbitrary positions.
-
-> [!WARNING]
-> **One measurement still blocks the vent cut**
->
-> The **controller cover's footprint and its position relative to a lid corner.** Everything else
-> the lid needs is now known.
+> The hold-down screws sit **10 mm from the lid's edge** — the vehicle chose that, not us. **무절
+> birch has no voids**; a plain veneer sheet can easily put one directly under a bolt, and a bolt
+> bearing on a void is a bolt that pulls through. At 10 mm there is no margin to spend.
 
 ### 2.7.4 Before the first cut
 
