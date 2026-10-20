@@ -131,9 +131,30 @@ on the target surface.
 8. Record the steady-hold current against the driver's channel rating and against the
    [logic-rail brownout check](safety.md#5-power-rail-isolation-and-brownout-protection).
 
-**Outcome.** Plateau below ceiling and no backlash growth → **release #4, do not buy a gearmotor.**
-Anything else → buy it, and the [§2.4 wiper fallback](#24-wiper-motor-fallback) is already
-pre-registered.
+**Outcome.** Plateau below ceiling and no backlash growth → **nothing to do.** If it fails, work
+**down** the ladder below, not out to a new motor.
+
+#### 2.2.2 If the duty test fails — the ladder, cheapest first
+
+> [!IMPORTANT]
+> **Replacing the motor is the last rung, not the first — and on this chassis it is barely a rung
+> at all.** The stock steering gearmotor drives a **sealed gearbox** of the same family the drive
+> side refused an end-mounted magnet three times. Fitting a *different* motor means opening that
+> gearbox and matching a pinion to a 2 mm shaft, which is not a sixteen-week-course operation. The
+> [wiper fallback](#24-wiper-motor-fallback) avoids the gearbox but costs more than it buys — see
+> its withdrawal note. **So the money was never buying a usable option. The mitigations that work
+> are above it, and three of the four are free.**
+
+| | Mitigation | Cost | Why it works |
+|---|---|---|---|
+| **R1** | **Reduce the duty, not the motor** — dead band, rate limit, hysteresis, lower gain | **₩0, firmware** | The heat comes from the command profile, and the profile is a **choice**. A ±0.5° dead band stops the loop chattering at the setpoint and still clears [ADR E](#3-adr-e-steering-control-loop-location-the-key-dbw-decision)'s ≤ 1° gate with room to spare |
+| **R2** | **I²t limit in firmware** on M1 current, clamping command authority as the integral climbs | **₩0, firmware** | Makes the thermal limit explicit and observable instead of discovering it by smell. Also the honest way to publish a duty rating for the next cohort |
+| **R3** | **A spare of the STOCK motor** | small | Drops in. No gearbox work, no linkage work, no loss of reversibility — the only replacement on this chassis that is actually a replacement |
+| **R4** | A small fan on the motor can | trivial | Only if R1 and R2 land close to the ceiling rather than far from it |
+
+**R1 and R2 are not consolation prizes.** Limiting actuator duty in software is what a production
+drive-by-wire system does, and on a teaching vehicle it converts a hardware disappointment into the
+control-design exercise the course wants anyway. **Measure the duty, then design to it.**
 
 > Rule of thumb from the ride-on ecosystem: a two-seater on carpet typically needs on the order of a few N·m at the column; a wiper motor (often 10–30 N·m stall) is comfortably oversized, which is why it is the safe fallback.
 
@@ -142,6 +163,27 @@ pre-registered.
 The Sabertooth outputs a **bidirectional motor drive** (PWM-controlled H-bridge). The Teensy does not command "go to angle X" to the Sabertooth; it commands a **signed effort** that is the *output* of the Teensy's position loop. Angle regulation lives entirely in the Teensy (ADR E). This keeps the Sabertooth a dumb, fast power stage — exactly its role in mrover.
 
 ### 2.4 Wiper-motor fallback
+
+> [!CAUTION]
+> **Withdrawn for the 2026 chassis — 2026-10-20. Retained only for a vehicle with no stock steering motor.**
+>
+> This fallback was written for a column that had to be motorised from scratch. The delivered
+> vehicle already steers under its parent remote, and on *that* chassis the fallback costs more
+> than it buys:
+>
+> - **It cannot go through the stock gearbox**, so it must drive the linkage — which means
+>   **disconnecting the stock gearmotor first.** That breaks [§2.1](#21-actuator)'s rule that
+>   *"nothing is added to the linkage and no second actuator can fight the first"*, and it breaks
+>   [§2.8 reversibility](../build/02-mechanical.md#28-confirm-reversibility).
+> - **The worm drive is non-back-drivable**, as consequence (a) below already says. On a vehicle
+>   whose entire failsafe story is *"default = STOCK"*, an actuator that **locks the steering on
+>   power loss** is not a fallback — it is a new failure mode. You could not even push the vehicle
+>   off the road.
+>
+> **So it is not the answer to a failed duty test.** [§2.2.2](#222-if-the-duty-test-fails-the-ladder-cheapest-first)
+> is. Leaving this section listed as a live option was the more dangerous state: a documented
+> escape route that cannot be taken is worse than none, because it stops anyone looking for a real
+> one.
 
 If the encoder-gearmotor path is blocked at build time, substitute a wiper motor on driver M1. Consequences: (a) the wiper's internal worm gear is largely non-back-drivable, so on power loss the steering **holds** rather than freewheels — this changes the E-stop analysis and **must** be re-evaluated against [safety.md](safety.md); (b) wiper motors rarely have a usable shaft encoder, so the **absolute sensor becomes the sole angle source** and the motor-side incremental encoder (for stall/velocity) is lost — acceptable because ADR B already makes the absolute sensor authoritative.
 

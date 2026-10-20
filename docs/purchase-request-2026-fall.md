@@ -153,7 +153,7 @@ agreed to. Divergences are listed here instead, and the live state of every item
 | 12 | Wiring, connectors, fuses, ₩55,000 | **₩63,180** | **+24,540** | Wire and connectors came in above the estimate, which priced neither the AWG 22 multi-colour reels nor ten XT60 pairs |
 | 11 | Isolated logic rail, ₩60,000 | Split into **11a** battery + charger ₩66,000 · **11b** UBEC ×2 ₩23,518 · **11c** passives ₩5,000 est. = **₩94,518** | **+103,554** | The SLA was replaced by a 740 g LiFePO₄ pack, which costs more and weighs a fifth as much — see [§1.2.4](build/01-bom-sourcing.md#7-8-11-12-14-what-to-actually-buy). Listing prices were **ex-VAT**; the figures here include it |
 | — | **Carriage** — not in this request at all | **₩29,100 so far**, and rising | **+29,100** | The request priced goods only. Battery ₩3,500 · charger ₩3,500 · UBEC ₩4,400 · Hall latches ₩2,700 · #14/#6d ₩6,000 · AS5600 ₩3,000 · #14b mast ₩6,000. The plywood is 착불 and is not in this figure yet. #12's carriage was refunded with a cancelled line. Tracked as its own row in the [Order Log](order-log.md) so it cannot distort any item's unit price |
-| 4 | Steering gearmotor + encoder, ₩48,000 | **Expected ₩0** — the delivered vehicle has a **stock steering gearmotor** | 0 *(pending)* | Confirmed 2026-10-01: all three steer under the parent remote, and the vehicle's rated **25 kg** occupant load against ~6 kg of added kit demonstrates the ≥ 2× torque margin without measurement. The design reuses the motor rather than adding one. **Still funded** against one residual risk: it was never specified for continuous closed-loop duty. Released at bench Stage 1 |
+| 4 | Steering gearmotor + encoder, ₩48,000 | **Expected ₩0** — the delivered vehicle has a **stock steering gearmotor** | **−114,000** | Confirmed 2026-10-01: all three steer under the parent remote, and the vehicle's rated **25 kg** occupant load against ~6 kg of added kit demonstrates the ≥ 2× torque margin without measurement. The design reuses the motor rather than adding one. **Re-scoped 2026-10-20 from ₩144,000 to ₩30,000**: buying a *different* gearmotor was never executable — the stock gearbox is sealed and the wiper fallback is withdrawn — so the line becomes **one spare of the stock part**, and the duty risk is answered in firmware first ([dbw.md §2.2.2](design/dbw.md#222-if-the-duty-test-fails-the-ladder-cheapest-first)) |
 | 13 | Steering coupler + magnet mount, ₩20,000 | **Partly unneeded** — no motor coupler required | 0 *(pending)* | The stock motor is already coupled to the linkage. The angle-sensor magnet mount is still required |
 | 8 | E-stop + contactor, ₩35,000 | Split into **8a** contactor ₩11,000 · **8b** button ₩11,924 = **₩22,924** | **−36,228** | The line hid two parts from two vendors on different dates. Both now ordered; the button came in well under the estimate |
 | 6d | *(part of the ₩6,000 #6 line)* | **₩15,000** — fasteners **plus adhesive and IPA** | **+12,000** | The assembly procedure requires **thin cyanoacrylate** to lock the magnets into their pockets and **isopropyl alcohol** to degrease them first, and the line funded neither. Both are shared across the three vehicles. Same class of omission as **#6c**, caught before it reached a build rather than after |
@@ -163,16 +163,16 @@ agreed to. Divergences are listed here instead, and the live state of every item
 | 6d | Fasteners etc., ₩5,000 × 3 = ₩15,000 | **₩31,840** — grub screws, cyanoacrylate, IPA, threadlocker | **+16,840** | The estimate was written when this line was fasteners only. Adhesive and IPA were added on 2026-10-12 — the assembly procedure required them and nothing funded them — and priced at a guess |
 | 5 | Angle sensor, ₩27,000 × 3 = ₩81,000 | **₩12,500** — five AS5600 breakouts at ₩2,500 | **−68,500** | The estimate funded a sensor **and a separate diametric magnet**; every AS5600 breakout ships with one, because the module cannot work without it. So the line was paying twice for one part. Five rather than three: one is benched before any vehicle is built, leaving three fitted and one spare |
 | 14b | *(part of the ₩123,000 #14 line)* | **₩73,810** — 2020 extrusion mast, 12 mm plywood equipment plate, T-slot hardware | **+73,810** | The #14 line funded filament and never funded the **mast tube** or the **equipment plate that replaces the seat** — a part [vehicle.md §3](design/vehicle.md) requires and no line had ever carried. A printed 0.65 m mast delaminates under bending and that flex lands in the camera↔LiDAR extrinsics. Still ₩13,590 under the original #14 line once both halves are counted |
-| | | **Net** | **−372,404** | |
+| | | **Net** | **−486,404** | |
 
-**Projected total ₩3,549,076 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows.
+**Projected total ₩3,435,076 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows.
 
 > [!IMPORTANT]
 > **What was actually approved: a ceiling of ₩4,000,000, not this line-item schedule**
 >
 > The university approved a **total**. Individual items may move in price, be substituted, split,
 > or dropped **without further approval**. Only the total binds, and the live figure against it is
-> **₩3,549,076 projected, ₩450,924 of headroom**.
+> **₩3,435,076 projected, ₩564,924 of headroom**.
 >
 > So the amendments above are **not an approval trail** — nothing in them needed permission. They
 > exist for the reason this document already states: *"the estimates above will not match, and the
