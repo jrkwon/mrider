@@ -1,0 +1,171 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 800" width="1180" height="800"
+     font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+  <title>Lid design — traced from the opening, held by the four seat screws, mast centred</title>
+  <desc>Left: the lid drawn to scale over the measured bay, showing the curved rim it bears on, the
+  four original seat screws at 300 by 190 which hold it down, the mast base of a 190 mm fore-aft
+  rail and two 140 mm lateral stubs whose arms reach the lines through those screws, the vent
+  opening over the controller at the right rear, the charge-port keep-out along the front edge, and
+  an A4 sheet ghosted for scale. Right: why the outline is traced rather than dimensioned, the
+  five-step template procedure, and the plywood to order.</desc>
+
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#334155"/>
+    </marker>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#b91c1c"/>
+    </marker>
+    <marker id="ag" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#15803d"/>
+    </marker>
+    <pattern id="ply" width="7" height="7" patternUnits="userSpaceOnUse">
+      <rect width="7" height="7" fill="#fdecd2"/>
+      <line x1="0" y1="3.5" x2="7" y2="3.5" stroke="#d9a259" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1180" height="800" fill="#ffffff"/>
+
+  <text x="24" y="34" font-size="19" font-weight="bold" fill="#0f172a">
+    The lid — traced, not dimensioned; held by the four screws the seat already used
+  </text>
+  <text x="24" y="56" font-size="13" fill="#475569">
+    Drawn to scale from the 2026-10-20 measurements. Plan view, vehicle front at the bottom.
+  </text>
+
+  <!-- ================= PANEL A ================= -->
+  <rect x="24" y="76" width="602" height="700" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+
+  <!-- A4 ghost : 297 x 210 -->
+  <rect x="154" y="199" width="342" height="242" fill="#e2e8f0" fill-opacity="0.75"
+        stroke="#64748b" stroke-width="1.8" stroke-dasharray="8 5"/>
+  <text x="300" y="590" font-size="11" font-weight="bold" fill="#64748b" text-anchor="middle">A4 landscape, ghosted — 297 × 210</text>
+
+  <!-- the lid, traced outline with gentle curve -->
+  <path d="M90,196 Q300,182 510,196 L512,436 Q300,452 88,436 Z"
+        fill="url(#ply)" stroke="#a16207" stroke-width="3"/>
+
+  <!-- bay opening -->
+  <rect x="88" y="200" width="424" height="241" fill="none" stroke="#b45309" stroke-width="1.8" stroke-dasharray="6 4"/>
+  <text x="300" y="320" font-size="12" font-weight="bold" fill="#92400e" text-anchor="middle" opacity="0.55">bay opening 370 × 210</text>
+
+  <!-- rim indication -->
+  <text x="40" y="300" font-size="10.5" font-weight="bold" fill="#b45309">rim</text>
+  <text x="40" y="314" font-size="10.5" fill="#b45309">10–20,</text>
+  <text x="40" y="328" font-size="10.5" fill="#b45309">curved</text>
+  <path d="M72,320 L86,320" stroke="#b45309" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- vent opening over the controller : right rear -->
+  <rect x="392" y="214" width="104" height="92" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2.6"/>
+  <g stroke="#1d4ed8" stroke-width="2">
+    <line x1="402" y1="230" x2="486" y2="230"/><line x1="402" y1="246" x2="486" y2="246"/>
+    <line x1="402" y1="262" x2="486" y2="262"/><line x1="402" y1="278" x2="486" y2="278"/>
+    <line x1="402" y1="294" x2="486" y2="294"/>
+  </g>
+  <text x="512" y="236" font-size="11" font-weight="bold" fill="#1d4ed8">louvred vent,</text>
+  <text x="512" y="250" font-size="11" font-weight="bold" fill="#1d4ed8">over the controller</text>
+  <text x="512" y="266" font-size="10" fill="#1d4ed8">size still to measure</text>
+
+  <!-- charge-port keep-out : front edge -->
+  <rect x="176" y="414" width="112" height="26" rx="4" fill="#fee2e2" stroke="#b91c1c" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="166" y="462" font-size="10.5" font-weight="bold" fill="#b91c1c">front edge stops at the rim — charge port below</text>
+
+  <!-- mast base : rail 190 fore-aft, stubs 140 -->
+  <rect x="288" y="211" width="24" height="219" fill="#94a3b8" stroke="#1e293b" stroke-width="2.8"/>
+  <rect x="128" y="309" width="160" height="24" fill="#cbd5e1" stroke="#1e293b" stroke-width="2.8"/>
+  <rect x="312" y="309" width="160" height="24" fill="#cbd5e1" stroke="#1e293b" stroke-width="2.8"/>
+  <rect x="288" y="309" width="24" height="24" fill="#f1f5f9" stroke="#0f172a" stroke-width="3"/>
+  <circle cx="300" cy="321" r="6" fill="#0f172a"/>
+
+  <!-- base tie-downs -->
+  <g fill="#fde68a" stroke="#b45309" stroke-width="2.2">
+    <circle cx="300" cy="222" r="6"/><circle cx="300" cy="419" r="6"/>
+    <circle cx="139" cy="321" r="6"/><circle cx="461" cy="321" r="6"/>
+  </g>
+
+  <!-- seat screws : 300 x 190, at the corners -->
+  <g fill="#fecaca" stroke="#b91c1c" stroke-width="2.6">
+    <circle cx="128" cy="211" r="8"/><circle cx="472" cy="211" r="8"/>
+    <circle cx="128" cy="430" r="8"/><circle cx="472" cy="430" r="8"/>
+  </g>
+  <rect x="128" y="211" width="344" height="219" fill="none" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="7 4"/>
+  <text x="300" y="180" font-size="11.5" font-weight="bold" fill="#b91c1c" text-anchor="middle">the four seat screws — 300 × 190 — hold the lid down</text>
+
+  <!-- dimensions -->
+  <g stroke="#15803d" stroke-width="1.5">
+    <line x1="128" y1="510" x2="472" y2="510"/>
+    <line x1="128" y1="504" x2="128" y2="516"/><line x1="472" y1="504" x2="472" y2="516"/>
+  </g>
+  <text x="258" y="528" font-size="11.5" font-weight="bold" fill="#15803d">300</text>
+  <g stroke="#15803d" stroke-width="1.5">
+    <line x1="556" y1="211" x2="556" y2="430"/>
+    <line x1="550" y1="211" x2="562" y2="211"/><line x1="550" y1="430" x2="562" y2="430"/>
+  </g>
+  <text x="566" y="326" font-size="11.5" font-weight="bold" fill="#15803d">190</text>
+
+  <rect x="48" y="548" width="554" height="36" rx="5" fill="#dcfce7" stroke="#15803d" stroke-width="1.5"/>
+  <text x="62" y="571" font-size="12" font-weight="bold" fill="#14532d">
+    Rail 190 and stubs 140 put all four arm ends on the seat-screw lines. Nothing is arbitrary.
+  </text>
+
+  <rect x="48" y="606" width="554" height="152" rx="6" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.6"/>
+  <text x="62" y="628" font-size="12.5" font-weight="bold" fill="#92400e">Mast position: centred, both ways — three reasons, not one</text>
+  <text x="62" y="650" font-size="11.5" fill="#78350f">■ <tspan font-weight="bold">Laterally centred</tspan> puts the LiDAR on the vehicle centreline, which keeps the TF tree</text>
+  <text x="76" y="666" font-size="11.5" fill="#78350f">honest — an off-centre sensor is a lateral offset in every transform forever.</text>
+  <text x="62" y="688" font-size="11.5" fill="#78350f">■ <tspan font-weight="bold">Fore-aft centred</tspan> sits over the battery and the spare fixing holes, so the pillars have</text>
+  <text x="76" y="704" font-size="11.5" fill="#78350f">something to stand on, and the camera boom still reaches forward over the footwell.</text>
+  <text x="62" y="726" font-size="11.5" fill="#78350f">■ It is <tspan font-weight="bold">clear of the controller</tspan> at the right rear, where the vent has to go.</text>
+  <text x="62" y="748" font-size="11.5" font-weight="bold" fill="#b45309">The three constraints happen to agree. That is worth noticing, not assuming.</text>
+
+  <!-- ================= PANEL B ================= -->
+  <rect x="642" y="76" width="514" height="330" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="662" y="102" font-size="14.5" font-weight="bold" fill="#14532d">The outline is TRACED, because the rim is curved</text>
+
+  <text x="662" y="128" font-size="11.5" fill="#166534">
+    The rim is not a rectangle and its width runs <tspan font-weight="bold">10 to 20 mm</tspan>. A plywood
+  </text>
+  <text x="662" y="145" font-size="11.5" fill="#166534">
+    rectangle cut to 390 × 230 would bear unevenly and rock — and a lid
+  </text>
+  <text x="662" y="162" font-size="11.5" fill="#166534">
+    that rocks under a 500 mm mast is the defect this design keeps chasing.
+  </text>
+
+  <text x="662" y="192" font-size="12.5" font-weight="bold" fill="#14532d">Five steps, one template, three vehicles</text>
+  <text x="662" y="214" font-size="11.5" fill="#166534"><tspan font-weight="bold">1.</tspan> Tape two A4 sheets into an A3 and lay it over the opening.</text>
+  <text x="662" y="233" font-size="11.5" fill="#166534"><tspan font-weight="bold">2.</tspan> Press along the rim edge to crease the outline into the paper.</text>
+  <text x="662" y="252" font-size="11.5" fill="#166534"><tspan font-weight="bold">3.</tspan> Cut just outside the crease; trim until it drops onto the rim</text>
+  <text x="676" y="268" font-size="11.5" fill="#166534">with about 2 mm of clearance all round.</text>
+  <text x="662" y="288" font-size="11.5" fill="#166534"><tspan font-weight="bold">4.</tspan> <tspan font-weight="bold">With the template still in place</tspan>, push a bradawl through it at</text>
+  <text x="676" y="304" font-size="11.5" fill="#166534">each seat screw. Never transfer those four holes by measuring.</text>
+  <text x="662" y="324" font-size="11.5" fill="#166534"><tspan font-weight="bold">5.</tspan> Trace onto plywood, cut with a jigsaw, sand the edge.</text>
+
+  <rect x="662" y="338" width="474" height="52" rx="5" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+  <text x="676" y="358" font-size="11.5" font-weight="bold" fill="#92400e">Make one template — then check it on all three vehicles.</text>
+  <text x="676" y="376" font-size="11" fill="#78350f">The drive hub differed by 0.47 mm between two cars on the same chassis.</text>
+
+  <!-- ================= PANEL C ================= -->
+  <rect x="642" y="422" width="514" height="354" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.8"/>
+  <text x="662" y="448" font-size="14.5" font-weight="bold" fill="#0f172a">Numbers, and what to buy</text>
+
+  <text x="662" y="476" font-size="12" font-weight="bold" fill="#334155">A4 is the useful calibration</text>
+  <text x="662" y="496" font-size="11.5" fill="#475569">A4 landscape is <tspan font-weight="bold">297 × 210</tspan>. The opening is <tspan font-weight="bold">370 × 210</tspan>.</text>
+  <text x="662" y="514" font-size="11.5" fill="#475569">So the sheet is <tspan font-weight="bold">right fore-aft and 37 mm narrow on each side</tspan> —</text>
+  <text x="662" y="532" font-size="11.5" fill="#475569">which is exactly what the photograph shows.</text>
+
+  <line x1="662" y1="548" x2="1136" y2="548" stroke="#cbd5e1" stroke-width="1.4"/>
+
+  <text x="662" y="572" font-size="12" font-weight="bold" fill="#334155">Lid blank per vehicle: <tspan fill="#0f172a">400 × 240</tspan>, trimmed to the trace</text>
+  <text x="662" y="594" font-size="11.5" fill="#475569">Three fit on one board of <tspan font-weight="bold">450 × 750</tspan>, 12 mm birch ply.</text>
+  <text x="662" y="612" font-size="11.5" fill="#475569">Cut-to-size is a standard 쿠팡 목재재단 line, ~₩15,000.</text>
+
+  <line x1="662" y1="628" x2="1136" y2="628" stroke="#cbd5e1" stroke-width="1.4"/>
+
+  <text x="662" y="652" font-size="12" font-weight="bold" fill="#b91c1c">Still to measure before cutting the vent</text>
+  <text x="662" y="672" font-size="11.5" fill="#7f1d1d">The controller cover's <tspan font-weight="bold">footprint and position</tspan> relative to a</text>
+  <text x="662" y="690" font-size="11.5" fill="#7f1d1d">lid corner. Everything else the lid needs is now known.</text>
+
+  <rect x="662" y="706" width="474" height="54" rx="5" fill="#dcfce7" stroke="#15803d" stroke-width="1.5"/>
+  <text x="676" y="726" font-size="11.5" font-weight="bold" fill="#14532d">The mast base no longer needs new holes in the chassis.</text>
+  <text x="676" y="744" font-size="11" fill="#166534">It bolts to the lid; the lid bolts to the four seat screws and bears on the rim.</text>
+</svg>

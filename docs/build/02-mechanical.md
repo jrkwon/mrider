@@ -322,10 +322,10 @@ PWM harness out of the box students open every week.
 |---|---:|---|---|
 | **Post** | 500 mm | the 700 | vertical; carries everything |
 | **Camera boom** | 150 mm | the 700 | horizontal, forward, at ~380 mm |
-| **Fore-aft rail** | **210 mm** | the 600 | **continuous**; the post stands on it, **T-slot up** |
+| **Fore-aft rail** | **190 mm** | the 600 | **continuous**; the post stands on it, **T-slot up** |
 | **Lateral stubs ×2** | **140 mm** | the 600 | **butted against the rail's left and right faces** at mid-length |
 
-That leaves **160 mm spare per vehicle** — 50 off the 700 and 110 off the 600, enough for a second
+That leaves **180 mm spare per vehicle** — 50 off the 700 and 130 off the 600, enough for a second
 stub if a cut goes wrong.
 
 > [!IMPORTANT]
@@ -487,7 +487,58 @@ onto the post's top end and carries its bolt pattern.
 > under the plastic. Then the rule that follows from the second number: never lift, push, drag or
 > park the vehicle by the mast, and put a label on it saying so where a student will read it.
 
-### 2.7.3 Before the first cut
+### 2.7.3 The lid
+
+![The lid drawn to scale over the measured bay: a traced outline bearing on a curved 10 to 20 mm rim, held by the four original seat screws at 300 by 190, with the mast base of a 190 mm fore-aft rail and two 140 mm lateral stubs reaching the screw lines, a louvred vent over the controller at the right rear, and an A4 sheet ghosted for scale](../images/lid-design.svg)
+
+> [!IMPORTANT]
+> **The outline is traced, not dimensioned — the rim is curved**
+>
+> The bay's rim is **not a rectangle**, and its width runs **10 to 20 mm**. A plywood rectangle cut
+> to 390 × 230 would bear on the wide parts and bridge the narrow ones, so it would **rock** — which
+> is the one defect this whole design has been chasing since the seat came out.
+
+**Five steps, one template, three vehicles.**
+
+1. Tape two A4 sheets into an A3 and lay it over the opening.
+2. **Press along the rim edge** to crease the outline into the paper.
+3. Cut just outside the crease; trim until it drops onto the rim with about **2 mm clearance** all
+   round.
+4. **With the template still in place**, push a bradawl through it at each of the four seat screws.
+   **Never transfer those holes by measuring** — they are what hold the lid down.
+5. Trace onto plywood, cut with a jigsaw, sand the edge.
+
+**Make one template, then check it on all three vehicles.** Two drive hubs on this same chassis
+differed by 0.47 mm; a moulded opening will not be tighter than that.
+
+> [!TIP]
+> **A4 is the calibration you already have**
+>
+> A4 landscape is **297 × 210**; the opening is **370 × 210**. So a sheet laid on the bay is
+> **right fore-aft and 37 mm narrow on each side** — which is exactly what it looks like. If a
+> template ever comes out far from that, it is the template that is wrong.
+
+**Lid blank: 400 × 240 per vehicle.** Three come off one **450 × 750** board of 12 mm birch ply —
+a standard 쿠팡 목재재단 line at roughly ₩15,000 for the fleet.
+
+**Mast centred, both ways — and the three reasons agree rather than compete.** Laterally centred
+puts the LiDAR on the vehicle centreline, so it is not a lateral offset in every transform forever.
+Fore-aft centred sits over the battery and the spare fixing holes, so the pillars have something to
+stand on and the camera boom still reaches forward over the footwell. And it is **clear of the
+controller at the right rear**, where the vent has to go. Worth noticing that they agree, rather
+than assuming it.
+
+**The mast base needs no new holes in the chassis.** It bolts to the lid; the lid bolts to the four
+seat screws and bears on the rim. Rail 190 and stubs 140 are chosen so **all four arm ends land on
+the seat-screw lines** rather than at arbitrary positions.
+
+> [!WARNING]
+> **One measurement still blocks the vent cut**
+>
+> The **controller cover's footprint and its position relative to a lid corner.** Everything else
+> the lid needs is now known.
+
+### 2.7.4 Before the first cut
 
 - [ ] [V4 **D**](../order-log.md) — deck geometry, **and whether the seat bolts thread into metal or plastic**
 - [ ] [V4 **S**](../order-log.md) — LiDAR and camera bodies; both parts are already in hand
