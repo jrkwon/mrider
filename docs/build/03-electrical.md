@@ -245,6 +245,20 @@ two things at once:
 1. cuts traction power, and
 2. drops the MUX coil, reverting authority to STOCK.
 
+> [!WARNING]
+> **Put the button's two NC contacts on DIFFERENT contact blocks — one each**
+>
+> The `MRE-RR2R` ships as a head plus **loose stacked contact blocks**, so which contact sits on
+> which block is **your assembly decision, not the vendor's.** Confirmed on arrival 2026-10-20.
+>
+> The two tasks above are carried by the two NC contacts. **Put both on the same block and a single
+> loose terminal screw, or one cracked block, takes out both at once** — a common-cause failure in
+> the one device whose whole job is not to have one. Split across blocks, a block failure still
+> leaves one function intact.
+>
+> Label each block's terminals on the body in permanent marker as you assemble. You will be wiring
+> this weeks later, and a guess here is not a guess you find out about on the bench.
+
 **Relay MUX.** Two DPDT relays/contactors, one per motor circuit:
 
 - **NC (normally closed) contacts** → stock controller drives the motors. This is the state
