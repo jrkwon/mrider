@@ -41,16 +41,37 @@ Chassis traction pack
                                                                           ├─ M1 → steering gearmotor
                                                                           └─ M2 → paralleled drive motors
 
-12 V logic battery ──▶ DC-DC ──▶ ISOLATED LOGIC RAIL
-                                   ├─ Teensy 4.1 (5 V in, 3.3 V logic)
-                                   ├─ absolute angle sensor (3.3 V, I²C)
-                                   ├─ RC receiver
-                                   ├─ hardware RC signal MUX
-                                   ├─ motor driver signal logic
-                                   └─ MUX coil driver
+12 V logic battery ─┬─▶ UBEC A ─▶ 5 V ─▶ Teensy 4.1 VIN   (and nothing else)
+                    │                         └─▶ Teensy 3.3 V pin ─┬─▶ AS5600 (I²C)
+                    │                                               └─▶ 2 × Hall latch + pull-ups
+                    ├─▶ UBEC B ─▶ 5 V ─┬─▶ RC receiver
+                    │                  ├─▶ hardware RC signal MUX
+                    │                  └─▶ motor driver signal logic
+                    └─▶ 12 V direct ───┬─▶ relay MUX coils
+                                       └─▶ E-stop contactor coil
 
 Laptop ──▶ its own internal battery (NOT wired to traction in v1)
 ```
+
+
+> [!IMPORTANT]
+> **Two things that diagram fixes, both of which this page used to get wrong**
+>
+> ![The logic side of MRider: the logic battery feeding two UBECs and a direct 12 V tap, the Teensy's own 3.3 V pin feeding the AS5600 and the Hall latches, the Teensy and receiver both feeding the Pololu signal MUX into the motor driver, and the E-stop's two NC contacts breaking the contactor coil and the relay MUX coil separately](../images/logic-signal-wiring.svg)
+>
+> **1. There is no 3.3 V rail.** This page used to say the angle sensor takes *"3.3 V from the logic
+> rail"* — but **the logic rail is 5 V.** The 3.3 V comes from the **Teensy's own regulator**, which
+> is correct and also a budget: everything on it shares the Teensy's 3.3 V pin, so the AS5600, both
+> Hall latches and their pull-ups all draw from one source. None of them is hungry, but it has to be
+> counted rather than assumed.
+>
+> **2. The two UBECs are split by AUTHORITY LAYER, not by current.** **UBEC A carries the Teensy
+> alone. UBEC B carries the receiver, the signal MUX and the driver's signal logic.** The reason is
+> the whole justification for [D3](../design/dbw.md#112-hardware-rc-signal-mux-the-d3-condition):
+> the hardware override exists to survive the Teensy. **Put both on one regulator and a single UBEC
+> failure takes out the override and the thing it overrides at the same time.** Split this way, a
+> UBEC A failure leaves the receiver, the MUX and the driver alive — flip `SEL` to slave and drive
+> it off the field by hand.
 
 | Rail | Feeds | Dies when |
 |---|---|---|
@@ -245,6 +266,25 @@ two things at once:
 1. cuts traction power, and
 2. drops the MUX coil, reverting authority to STOCK.
 
+> [!IMPORTANT]
+> **The contactor coil runs off the LOGIC battery, not the traction pack**
+>
+> The obvious choice is the traction pack — the thing the contactor is cutting. **It is the wrong
+> one, and the reason is brownout.** Under a stall the pack sags; if the coil hangs off it, the sag
+> drops the contactor, which cuts traction, which **removes the load and restores the voltage**,
+> which re-closes it. **That is a chatter loop, and it is worst exactly when the vehicle is in
+> trouble** — which is also when [§5 brownout](../design/safety.md#5-power-rail-isolation-and-brownout-protection)
+> is already watching.
+>
+> The logic battery does not sag with motor load, so the contactor holds or drops cleanly.
+>
+> **State the cost rather than hide it: with no logic battery the vehicle is dead, not a stock
+> toy.** The contactor is upstream of the relay MUX, so an unpowered coil means no traction at all
+> even though the MUX has correctly fallen back to STOCK. For a vehicle thirteen students handle
+> that reads as a feature — **it cannot be driven with the DBW system unpowered.** Returning it to
+> factory condition means unbolting the contactor, which is one connector and is already what
+> [§2.8](02-mechanical.md#28-confirm-reversibility) describes.
+
 > [!WARNING]
 > **Put the button's two NC contacts on DIFFERENT contact blocks — one each**
 >
@@ -259,7 +299,7 @@ two things at once:
 > Label each block's terminals on the body in permanent marker as you assemble. You will be wiring
 > this weeks later, and a guess here is not a guess you find out about on the bench.
 
-**Relay MUX.** Two DPDT relays/contactors, one per motor circuit:
+**Relay MUX — four 5-pin SPDT relays per vehicle, not two DPDT.** Two poles per motor circuit × two motor circuits. *(The design was written as "two DPDT"; [#7](../order-log.md) bought twelve 5-pin SPDT for three vehicles, which is the same function in the parts that are actually on the shelf. The count is what somebody wires, so the count is what this page states.)*
 
 - **NC (normally closed) contacts** → stock controller drives the motors. This is the state
   when the coil is de-energized, which is the **default**.
@@ -311,10 +351,10 @@ there and from the board's own manual, not from another board's table.
 | From | To | Notes |
 |---|---|---|
 | Teensy PWM out ×2 | RC signal MUX **master** inputs | Servo-style pulses — steering and throttle |
-| Absolute angle sensor | Teensy **I²C** (SDA/SCL) | 3.3 V from the logic rail. Pot fallback → an analog input instead |
-| Drive encoder A/B | Teensy **hardware quadrature decoder** pins | Not software interrupts — the Teensy has 4 dedicated QDC channels |
-| Steering motor encoder A/B | Teensy hardware quadrature decoder pins | Second QDC channel |
-| RC receiver **RC serial (i-BUS)** | Teensy hardware serial RX | Layer A override (closed-loop) |
+| Absolute angle sensor — **AS5600** | Teensy **I²C** (SDA/SCL) | **3.3 V from the Teensy's own pin, not from the logic rail** — the logic rail is 5 V and the AS5600 is a 3.3 V part. Address is fixed at `0x36`, which is fine because the drive side went to Hall latches, leaving one per bus |
+| Drive encoder A/B — **2 × DRV5013 Hall latch** | Teensy **hardware quadrature decoder** pins | Not software interrupts — the Teensy has 4 dedicated QDC channels. **The latches are OPEN-DRAIN: each output needs a pull-up to 3.3 V.** Without them the decoder sees a line that never rises, which looks exactly like a dead sensor |
+| ~~Steering motor encoder A/B~~ | — | **There is none.** The stock steering gearmotor has no shaft encoder ([dbw.md §2.1](../design/dbw.md#21-actuator)), so the auxiliary incremental channel ADR B specifies does not exist on this vehicle and stall detection moves to the absolute sensor |
+| RC receiver **RC serial (i-BUS)** | Teensy hardware serial RX | Layer A override (closed-loop). **The Teensy 4.1 is NOT 5 V tolerant — meter the i-BUS idle level before it touches a serial pin.** The receiver runs on 5 V; if its signal swings to 5 V it needs a divider or a level shifter. One wire, one meter, one minute, and the alternative is a dead pin on a board that is soldered in |
 | RC receiver **MUX channel** | Hardware RC signal MUX select | Layer B override — see below |
 | RC receiver PWM out ×2 | RC signal MUX **slave** inputs | Emergency path |
 | Signal MUX outputs ×2 | Motor driver **S1** and **S2** | Whichever source the MUX selects |
