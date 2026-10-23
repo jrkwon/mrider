@@ -146,7 +146,29 @@ N_SET        = 3;           // three points centre the ring; four can skew it
 // hole leaves 1.75 mm. The inserts are not wasted: #14 bought them for the
 // enclosures, which is what that line always said they were for.
 SET_TAP_D    = 2.5;         // M3 tap drill, through the whole wall
-SET_SCREW_L  = 8.0;         // M3 x this, cup or cone point, no head — see below
+SET_SCREW_L  = 8.0;         // M3 x this, no head — THE SCREWS SEAT ON LOBE CRESTS
+//
+// CRESTS, NOT VALLEYS — and that is what sets this length.
+//
+// HUB_D is measured ACROSS OPPOSITE LOBE CRESTS (see "fitting" below), so every
+// span figure derived from it is a distance to a CREST. SPAN_MAX = 7.85 is the
+// wall plus the largest radial gap AT A CREST. A valley sits deeper by the lobe
+// depth, which NOBODY HAS MEASURED, so an M3 x 8 cannot be assumed to reach one
+// and must not be asked to.
+//
+//   seated on a crest   -> screw stands 0.15-0.65 mm PROUD of the OD (= PROUD)
+//   winding in past that without going tight -> it is heading down a flank or
+//   into a valley. BACK IT OUT, ROTATE THE RING, TRY AGAIN.
+//
+// The flank is the case that actually bites: a screw part-way down one DOES
+// clamp, but at a smaller radius, so three screws sharing the lobe phase push
+// the ring OFF CENTRE together. An eccentric ring is a varying air gap, which
+// is how a Hall latch starts dropping out over part of a revolution.
+//
+// Point form: FLAT is acceptable here precisely because the seat is convex. A
+// flat face on a crest makes a line contact running axially; a cone would make
+// a single point on the apex and want to slide off it. Cup is better still --
+// its rim straddles the ridge -- but it is an upgrade, not a prerequisite.
 
 /* [Index mark] */
 MARK_W       = 1.6;         // groove width, mm

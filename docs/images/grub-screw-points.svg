@@ -1,11 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 740" width="1000" height="740"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 760" width="1020" height="760"
      font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
-  <title>Grub-screw point types, and why a cone point suits a lobed hub</title>
-  <desc>Top: the four set-screw point types in profile — flat, cup, cone and dog — with what each
-  does. Bottom left: a developed view of the six-lobe hub surface with the carrier wall above it,
-  showing a cone point dropping into a lobe valley and locating itself, against a flat point
-  perched on a crest with nothing stopping it sliding off. Bottom right: why the choice carries
-  further on this build than on a plain round shaft.</desc>
+  <title>Grub-screw point types against the seat they actually land on — a convex lobe crest</title>
+  <desc>Top: the four set-screw point types in profile — flat, cup, cone and dog. Bottom left: the
+  carrier wall over the six-lobe hub, drawn with the screws seating on crests as the length
+  calculation assumes, showing a flat face making an axial line contact, a cup rim straddling the
+  ridge, and a cone perched on the apex where it wants to slide off; and the flank, which is the
+  seat that actually causes trouble. Bottom right: why the seat decides the point form, the
+  seating check in millimetres, and the witness mark.</desc>
 
   <defs>
     <marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
@@ -23,128 +24,120 @@
     </pattern>
   </defs>
 
-  <rect width="1000" height="740" fill="#ffffff"/>
+  <rect width="1020" height="760" fill="#ffffff"/>
 
   <text x="24" y="34" font-size="19" font-weight="bold" fill="#0f172a">
-    Grub-screw point types — the business end, not the head
+    The seat decides the point form — and here the seat is a CONVEX CREST
   </text>
   <text x="24" y="56" font-size="13" fill="#475569">
-    A set screw is all thread; the socket is at one end and the <tspan font-weight="bold">point</tspan> at the other. The point is what does the holding.
+    <tspan font-weight="bold">HUB_D is measured across opposite lobe crests</tspan>, so every span in the model is a distance to a crest. M3 × 8 is a crest length.
   </text>
 
-  <!-- ================= PANEL A : the four types ================= -->
-  <rect x="24" y="76" width="952" height="252" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <!-- ================= PANEL A ================= -->
+  <rect x="24" y="76" width="972" height="236" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
 
   <g stroke="#334155" stroke-width="2.2" fill="#e2e8f0">
-    <!-- FLAT -->
-    <path d="M128,110 L172,110 L172,222 L128,222 Z"/>
-    <!-- CUP -->
-    <path d="M358,110 L402,110 L402,222 Q380,200 358,222 Z"/>
-    <!-- CONE -->
-    <path d="M588,110 L632,110 L632,196 L610,228 L588,196 Z"/>
-    <!-- DOG -->
-    <path d="M818,110 L862,110 L862,200 L852,200 L852,228 L828,228 L828,200 L818,200 Z"/>
+    <path d="M128,106 L172,106 L172,214 L128,214 Z"/>
+    <path d="M358,106 L402,106 L402,214 Q380,192 358,214 Z"/>
+    <path d="M588,106 L632,106 L632,188 L610,220 L588,188 Z"/>
+    <path d="M818,106 L862,106 L862,192 L852,192 L852,220 L828,220 L828,192 L818,192 Z"/>
   </g>
-  <!-- hex sockets -->
   <g fill="#94a3b8" stroke="#334155" stroke-width="1.6">
-    <circle cx="150" cy="122" r="9"/><circle cx="380" cy="122" r="9"/>
-    <circle cx="610" cy="122" r="9"/><circle cx="840" cy="122" r="9"/>
+    <circle cx="150" cy="118" r="9"/><circle cx="380" cy="118" r="9"/>
+    <circle cx="610" cy="118" r="9"/><circle cx="840" cy="118" r="9"/>
   </g>
-  <!-- thread ticks -->
   <g stroke="#94a3b8" stroke-width="1.3">
-    <line x1="128" y1="146" x2="172" y2="152"/><line x1="128" y1="166" x2="172" y2="172"/><line x1="128" y1="186" x2="172" y2="192"/>
-    <line x1="358" y1="146" x2="402" y2="152"/><line x1="358" y1="166" x2="402" y2="172"/><line x1="358" y1="186" x2="402" y2="192"/>
-    <line x1="588" y1="146" x2="632" y2="152"/><line x1="588" y1="166" x2="632" y2="172"/><line x1="588" y1="186" x2="632" y2="192"/>
-    <line x1="818" y1="146" x2="862" y2="152"/><line x1="818" y1="166" x2="862" y2="172"/><line x1="818" y1="186" x2="862" y2="192"/>
+    <line x1="128" y1="142" x2="172" y2="148"/><line x1="128" y1="162" x2="172" y2="168"/><line x1="128" y1="182" x2="172" y2="188"/>
+    <line x1="358" y1="142" x2="402" y2="148"/><line x1="358" y1="162" x2="402" y2="168"/><line x1="358" y1="182" x2="402" y2="188"/>
+    <line x1="588" y1="142" x2="632" y2="148"/><line x1="588" y1="162" x2="632" y2="168"/><line x1="588" y1="182" x2="632" y2="188"/>
+    <line x1="818" y1="142" x2="862" y2="148"/><line x1="818" y1="162" x2="862" y2="168"/><line x1="818" y1="182" x2="862" y2="188"/>
   </g>
 
-  <text x="150" y="254" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">평면 · FLAT</text>
-  <text x="380" y="254" font-size="13" font-weight="bold" fill="#15803d" text-anchor="middle">컵 · CUP</text>
-  <text x="610" y="254" font-size="13" font-weight="bold" fill="#15803d" text-anchor="middle">콘 · CONE</text>
-  <text x="840" y="254" font-size="13" font-weight="bold" fill="#b91c1c" text-anchor="middle">돌출 · DOG</text>
+  <text x="150" y="246" font-size="13" font-weight="bold" fill="#15803d" text-anchor="middle">평면 · FLAT  DIN 913</text>
+  <text x="380" y="246" font-size="13" font-weight="bold" fill="#15803d" text-anchor="middle">컵 · CUP  DIN 916</text>
+  <text x="610" y="246" font-size="13" font-weight="bold" fill="#b45309" text-anchor="middle">콘 · CONE  DIN 914</text>
+  <text x="840" y="246" font-size="13" font-weight="bold" fill="#b91c1c" text-anchor="middle">돌출 · DOG  DIN 915</text>
 
-  <text x="150" y="276" font-size="11" fill="#64748b" text-anchor="middle">presses only — least grip,</text>
-  <text x="150" y="291" font-size="11" fill="#64748b" text-anchor="middle">for parts you re-adjust often</text>
-  <text x="380" y="276" font-size="11" fill="#166534" text-anchor="middle">hollow end with a sharp rim</text>
-  <text x="380" y="291" font-size="11" fill="#166534" text-anchor="middle">that bites in. The default.</text>
-  <text x="610" y="276" font-size="11" fill="#166534" text-anchor="middle">a point that drops into a</text>
-  <text x="610" y="291" font-size="11" fill="#166534" text-anchor="middle">valley and locates itself</text>
-  <text x="840" y="276" font-size="11" fill="#7f1d1d" text-anchor="middle">a nose that needs a matching</text>
-  <text x="840" y="291" font-size="11" fill="#7f1d1d" text-anchor="middle">hole. <tspan font-weight="bold">Wrong here.</tspan></text>
+  <text x="150" y="270" font-size="11.5" fill="#166534" text-anchor="middle">line contact along the crest</text>
+  <text x="150" y="286" font-size="11.5" font-weight="bold" fill="#15803d" text-anchor="middle">✓ adequate — and in hand</text>
+  <text x="380" y="270" font-size="11.5" fill="#166534" text-anchor="middle">rim straddles the ridge</text>
+  <text x="380" y="286" font-size="11.5" font-weight="bold" fill="#15803d" text-anchor="middle">✓ better — an upgrade</text>
+  <text x="610" y="270" font-size="11.5" fill="#78350f" text-anchor="middle">one point on the apex</text>
+  <text x="610" y="286" font-size="11.5" font-weight="bold" fill="#b45309" text-anchor="middle">△ wants to slide off</text>
+  <text x="840" y="270" font-size="11.5" fill="#7f1d1d" text-anchor="middle">needs a matching hole</text>
+  <text x="840" y="286" font-size="11.5" font-weight="bold" fill="#b91c1c" text-anchor="middle">✗ wrong anywhere here</text>
 
-  <text x="248" y="313" font-size="11" fill="#475569">✗</text>
-  <text x="478" y="313" font-size="11" fill="#15803d">✓ acceptable</text>
-  <text x="708" y="313" font-size="11" font-weight="bold" fill="#15803d">✓ best on this hub</text>
-
-  <!-- ================= PANEL B : on the lobed hub ================= -->
-  <rect x="24" y="344" width="588" height="372" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.8"/>
-  <text x="44" y="370" font-size="14.5" font-weight="bold" fill="#14532d">B · On a SIX-LOBE hub, not a round shaft</text>
-  <text x="44" y="388" font-size="11.5" fill="#15803d">surface rolled out flat; the carrier wall sits above it</text>
+  <!-- ================= PANEL B ================= -->
+  <rect x="24" y="328" width="600" height="408" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="44" y="354" font-size="14.5" font-weight="bold" fill="#14532d">B · Section — the screws land on crests</text>
 
   <!-- carrier wall -->
-  <rect x="56" y="404" width="528" height="86" fill="url(#petg)" stroke="#0284c7" stroke-width="2.4"/>
-  <text x="66" y="424" font-size="11" font-weight="bold" fill="#075985">carrier wall — 7 mm of PETG, threads tapped straight into it</text>
+  <rect x="56" y="370" width="540" height="74" fill="url(#petg)" stroke="#0284c7" stroke-width="2.4"/>
+  <text x="66" y="390" font-size="11" font-weight="bold" fill="#075985">carrier wall 7 mm — M3 tapped straight into PETG</text>
 
-  <!-- lobed hub surface -->
-  <path d="M56,560 Q100,516 144,560 Q188,604 232,560 Q276,516 320,560 Q364,604 408,560 Q452,516 496,560 Q540,604 584,560"
+  <!-- hub surface -->
+  <path d="M56,536 Q112,480 168,536 Q224,592 280,536 Q336,480 392,536 Q448,592 504,536 Q560,480 596,512"
         fill="none" stroke="#1e293b" stroke-width="4"/>
-  <path d="M56,560 Q100,516 144,560 Q188,604 232,560 Q276,516 320,560 Q364,604 408,560 Q452,516 496,560 Q540,604 584,560 L584,640 L56,640 Z"
+  <path d="M56,536 Q112,480 168,536 Q224,592 280,536 Q336,480 392,536 Q448,592 504,536 Q560,480 596,512 L596,610 L56,610 Z"
         fill="#cbd5e1" stroke="none" opacity="0.75"/>
-  <text x="66" y="632" font-size="11" font-weight="bold" fill="#334155">gearbox output hub — crest, valley, crest …</text>
+  <text x="66" y="602" font-size="11" font-weight="bold" fill="#334155">hub — crest · flank · valley · flank · crest …</text>
 
-  <!-- cone screw into a valley -->
-  <g stroke="#15803d" stroke-width="2.2" fill="#bbf7d0">
-    <path d="M166,404 L210,404 L210,560 L188,592 L166,560 Z"/>
-  </g>
-  <text x="222" y="440" font-size="11.5" font-weight="bold" fill="#15803d">CONE</text>
-  <text x="222" y="456" font-size="11" fill="#166534">slides down the slope into</text>
-  <text x="222" y="471" font-size="11" fill="#166534">the valley and <tspan font-weight="bold">stops there</tspan></text>
-  <path d="M188,604 L188,620" stroke="#15803d" stroke-width="2" marker-end="url(#ag)"/>
-  <path d="M166,596 L152,610" stroke="#15803d" stroke-width="1.6"/>
-  <path d="M210,596 L224,610" stroke="#15803d" stroke-width="1.6"/>
-  <text x="120" y="628" font-size="10" font-weight="bold" fill="#15803d">keys against rotation too</text>
+  <!-- flat on crest -->
+  <rect x="90" y="370" width="44" height="124" fill="#bbf7d0" stroke="#15803d" stroke-width="2.2"/>
+  <line x1="90" y1="494" x2="134" y2="494" stroke="#15803d" stroke-width="4"/>
+  <text x="142" y="404" font-size="11.5" font-weight="bold" fill="#15803d">FLAT on a crest</text>
+  <text x="142" y="419" font-size="11" fill="#166534">line contact, running axially</text>
 
-  <!-- flat screw on a crest -->
-  <g stroke="#b91c1c" stroke-width="2.2" fill="#fecaca">
-    <path d="M430,404 L474,404 L474,538 L430,538 Z"/>
-  </g>
-  <text x="488" y="440" font-size="11.5" font-weight="bold" fill="#b91c1c">FLAT</text>
-  <text x="488" y="456" font-size="11" fill="#7f1d1d">perches on a crest,</text>
-  <text x="488" y="471" font-size="11" fill="#7f1d1d">touching on a sliver</text>
-  <path d="M452,524 L500,508" stroke="#b91c1c" stroke-width="2" marker-end="url(#ar)"/>
-  <text x="372" y="506" font-size="10" font-weight="bold" fill="#b91c1c">walks off under load</text>
+  <!-- cup on crest -->
+  <path d="M258,370 L302,370 L302,494 Q280,474 258,494 Z" fill="#bbf7d0" stroke="#15803d" stroke-width="2.2"/>
+  <circle cx="259" cy="494" r="3.6" fill="#15803d"/><circle cx="301" cy="494" r="3.6" fill="#15803d"/>
+  <text x="312" y="404" font-size="11.5" font-weight="bold" fill="#15803d">CUP on a crest</text>
+  <text x="312" y="419" font-size="11" fill="#166534">rim straddles the ridge — two</text>
+  <text x="312" y="434" font-size="11" fill="#166534">contacts either side of the apex</text>
 
-  <text x="44" y="672" font-size="11.5" fill="#166534">
-    On a plain round shaft the point type barely matters. <tspan font-weight="bold">A lobed hub has somewhere to drop into</tspan>,
-  </text>
-  <text x="44" y="690" font-size="11.5" fill="#166534">
-    so a cone stops being just friction and becomes <tspan font-weight="bold">location</tspan>.
-  </text>
+  <!-- cone on crest -->
+  <path d="M370,370 L414,370 L414,460 L392,494 L370,460 Z" fill="#fef3c7" stroke="#b45309" stroke-width="2.2"/>
+  <path d="M392,500 L368,516" stroke="#b45309" stroke-width="2" marker-end="url(#a)"/>
+  <path d="M392,500 L416,516" stroke="#b45309" stroke-width="2" marker-end="url(#a)"/>
+  <text x="424" y="470" font-size="11.5" font-weight="bold" fill="#b45309">CONE</text>
+  <text x="424" y="485" font-size="11" fill="#78350f">one point — slides</text>
+
+  <!-- the flank, the dangerous one -->
+  <rect x="456" y="370" width="44" height="142" fill="#fecaca" stroke="#b91c1c" stroke-width="2.4"/>
+  <path d="M478,520 L512,544" stroke="#b91c1c" stroke-width="2.4" marker-end="url(#ar)"/>
+  <text x="430" y="652" font-size="12" font-weight="bold" fill="#b91c1c">The FLANK is the seat that bites →</text>
+
+  <rect x="48" y="664" width="552" height="58" rx="6" fill="#fee2e2" stroke="#ef4444" stroke-width="1.6"/>
+  <text x="62" y="684" font-size="11.5" fill="#7f1d1d">A screw part-way down a flank <tspan font-weight="bold">does</tspan> clamp — at a smaller radius. And six lobes at 60°</text>
+  <text x="62" y="701" font-size="11.5" fill="#7f1d1d">against three screws at 120° is two lobe pitches, so <tspan font-weight="bold">all three share the phase and push the</tspan></text>
+  <text x="62" y="716" font-size="11.5" fill="#7f1d1d"><tspan font-weight="bold">ring off centre together.</tspan> Eccentric ring → varying air gap → the Hall latch drops out.</text>
 
   <!-- ================= PANEL C ================= -->
-  <rect x="628" y="344" width="348" height="372" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.8"/>
-  <text x="648" y="370" font-size="14.5" font-weight="bold" fill="#92400e">C · Why it carries further here</text>
+  <rect x="640" y="328" width="356" height="408" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.8"/>
+  <text x="660" y="354" font-size="14.5" font-weight="bold" fill="#92400e">C · How you know it seated</text>
 
-  <text x="648" y="398" font-size="12" font-weight="bold" fill="#78350f">The threads are in PLASTIC</text>
-  <text x="648" y="416" font-size="11.5" fill="#78350f">These M3s tap straight into PETG, not</text>
-  <text x="648" y="432" font-size="11.5" fill="#78350f">into metal. Grip has to come from the</text>
-  <text x="648" y="448" font-size="11.5" fill="#78350f">point rather than from torque — <tspan font-weight="bold">lean on</tspan></text>
-  <text x="648" y="464" font-size="11.5" fill="#78350f"><tspan font-weight="bold">the wrench and you strip the thread,</tspan></text>
-  <text x="648" y="480" font-size="11.5" fill="#78350f">not the hub. A cone that has <tspan font-style="italic">seated</tspan></text>
-  <text x="648" y="496" font-size="11.5" fill="#78350f">needs far less torque to hold.</text>
+  <text x="660" y="382" font-size="12" fill="#78350f">From numbers already in the model:</text>
+  <rect x="660" y="394" width="316" height="62" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="1.6"/>
+  <text x="674" y="416" font-size="12" font-weight="bold" fill="#92400e">Tight on a crest → the screw stands</text>
+  <text x="674" y="434" font-size="12" font-weight="bold" fill="#92400e">0.15–0.65 mm PROUD of the OD.</text>
+  <text x="674" y="450" font-size="11" fill="#78350f">(= SET_SCREW_L − SPAN, both in the SCAD)</text>
 
-  <line x1="648" y1="512" x2="956" y2="512" stroke="#fcd34d" stroke-width="1.5"/>
+  <text x="660" y="482" font-size="12" font-weight="bold" fill="#b91c1c">Winds in past that and still loose?</text>
+  <text x="660" y="500" font-size="11.5" fill="#7f1d1d">It is on a flank or over a valley.</text>
+  <text x="660" y="517" font-size="11.5" font-weight="bold" fill="#7f1d1d">Back it out, rotate the ring, retry.</text>
 
-  <text x="648" y="536" font-size="12" font-weight="bold" fill="#78350f">All three screws share one phase</text>
-  <text x="648" y="554" font-size="11.5" fill="#78350f">Six lobes at 60° against three screws</text>
-  <text x="648" y="570" font-size="11.5" fill="#78350f">at 120° is <tspan font-weight="bold">exactly two lobe pitches</tspan>, so</text>
-  <text x="648" y="586" font-size="11.5" fill="#78350f">all three land on the same part of the</text>
-  <text x="648" y="602" font-size="11.5" fill="#78350f">profile. <tspan font-weight="bold">Seat one in a valley and all</tspan></text>
-  <text x="648" y="618" font-size="11.5" fill="#78350f"><tspan font-weight="bold">three are in valleys.</tspan> Get it wrong and</text>
-  <text x="648" y="634" font-size="11.5" fill="#78350f">all three are on crests — there is no</text>
-  <text x="648" y="650" font-size="11.5" fill="#78350f">partial credit.</text>
+  <line x1="660" y1="534" x2="976" y2="534" stroke="#fcd34d" stroke-width="1.5"/>
 
-  <rect x="648" y="664" width="308" height="38" rx="5" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
-  <text x="660" y="680" font-size="11" font-weight="bold" fill="#92400e">Rotate the ring until a screw drops in,</text>
-  <text x="660" y="695" font-size="11" font-weight="bold" fill="#92400e">then tighten. Do not force it on a crest.</text>
+  <text x="660" y="558" font-size="12" font-weight="bold" fill="#92400e">An M3 × 8 cannot reach a valley</text>
+  <text x="660" y="576" font-size="11.5" fill="#78350f">The span is 7.85 mm <tspan font-style="italic">to a crest</tspan>. A valley</text>
+  <text x="660" y="593" font-size="11.5" fill="#78350f">is deeper by the lobe depth — <tspan font-weight="bold">which has</tspan></text>
+  <text x="660" y="610" font-size="11.5" fill="#78350f"><tspan font-weight="bold">never been measured.</tspan> Caliper across two</text>
+  <text x="660" y="627" font-size="11.5" fill="#78350f">opposite valleys and record it.</text>
+
+  <line x1="660" y1="644" x2="976" y2="644" stroke="#fcd34d" stroke-width="1.5"/>
+
+  <rect x="660" y="658" width="316" height="62" rx="6" fill="#dcfce7" stroke="#15803d" stroke-width="1.6"/>
+  <text x="674" y="678" font-size="12" font-weight="bold" fill="#14532d">Draw a witness mark across the</text>
+  <text x="674" y="695" font-size="12" font-weight="bold" fill="#14532d">ring-to-hub joint.</text>
+  <text x="674" y="712" font-size="11" fill="#166534">A slip then shows at a glance, whatever is fitted.</text>
 </svg>

@@ -796,66 +796,61 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 >
 > At `HUB_D = 62.7` it derives bore Ø63.9, outside **Ø77.9**, track 244.7 mm, pitch **13.60 mm**,
 > **sensor offset 6.80 mm**, 36 counts/rev → **15.8 mm/count**. Fasteners, per vehicle:
-> **3 × M3 × 8 grub screw, `DIN 916` cup (오목선단) — `DIN 914` cone if you can get it. Never `DIN 913` flat.**
+> **3 × M3 × 8 grub screw. The screws seat on lobe CRESTS, and that decides both the length and the point form.**
 >
-> ![Four grub-screw point types in profile — flat, cup, cone and dog — and a developed view of the six-lobe hub showing a cone point dropping into a valley and locating itself while a flat point perches on a crest](../images/grub-screw-points.svg)
+> ![Four grub-screw point types in profile — flat, cup, cone and dog — and a section through the carrier wall and the six-lobe hub showing a flat face making a line contact on a crest, a cup rim straddling the ridge, and a cone perched on the apex where it wants to slide off](../images/grub-screw-points.svg)
 >
-> **The point is what does the holding**, and on a *lobed* hub the choice stops being cosmetic.
-> **Flat** presses only; **cup** has a sharp rim that bites and is the usual default; **cone** drops
-> into a lobe valley and **locates itself**, keying against rotation as well as clamping. **Dog
-> point is wrong here** — its nose wants a matching hole.
+> **The point is what does the holding**, and what it should be depends entirely on **what it lands
+> on**. Here that is a **convex lobe crest**, not a flat or a valley. **Flat** makes a line contact
+> running axially — adequate. **Cup** straddles the ridge on its rim — better. **Cone** touches the
+> apex at a single point and wants to slide off it — **worse here, despite being the stronger choice
+> on a flat seat.** **Dog** needs a matching hole and is wrong anywhere on this part.
 >
-> **Two reasons it matters more on this part than on a plain shaft.** The M3s **tap straight into
-> PETG, not metal**, so grip must come from the point rather than from torque: *lean on the wrench
-> and you strip the thread, not the hub*, while a seated cone holds at far less torque. And six
-> lobes at 60° against three screws at 120° is **exactly two lobe pitches**, so all three screws
-> share one phase — **seat one in a valley and all three are in valleys; get it wrong and all three
-> sit on crests.** There is no partial credit.
+> [!IMPORTANT]
+> **Crests, not valleys — and that is what sets the length**
 >
-> **Assembly rule: rotate the ring so the screws sit in the lobe valleys, then tighten. Never
-> tighten one down on a crest.** With a **cone** you feel it drop in. **With a cup you do not** —
-> judge it by eye before tightening, because there is no detent to tell you you got it right. With
-> a flat point there is nothing to judge at all, which is why `DIN 913` is useless here.
+> `HUB_D = 62.7` is measured **across opposite lobe crests**, so **every span figure derived from it
+> is a distance to a crest.** `SPAN_MAX = 7.85 mm` is the wall plus the largest radial gap **at a
+> crest**. A valley sits deeper by the lobe depth, **which nobody has measured**, so an M3 × 8
+> cannot be assumed to reach one and must not be asked to.
 >
-> > [!TIP]
-> > **Buy it from MISUMI, not from a marketplace — `E-GMSSU3-8`**
-> >
-> > [경제형 무두볼트 오목선단 스테인리스](https://kr.misumi-ec.com/vona2/detail/110310926189/),
-> > SUS304 / A2-70, 형번 `E-GMSSU<M>-<L>`. **Sold 낱개, from one piece**, so nine fitted plus spares
-> > is an ordinary order rather than a 200-piece gamble. Same vendor as [#8b](../order-log.md).
-> >
-> > MISUMI's economy line carries **오목선단 (cup)** and **플랫선단 (flat)** only — no cone — so cup
-> > is what this build takes. That is a compromise, not a wash: a cone detents into a valley and a
-> > cup does not. But **cup is the industry default for this exact duty**, holding a collar on a
-> > shaft, and its sharp rim straddling a valley contacts both flanks.
+> **Assembly rule: tighten on a crest.** Seated there, the screw stands **0.15–0.65 mm proud of the
+> OD**. If one winds in past that without going tight, it is heading **down a flank or into a
+> valley** — back it out, rotate the ring, try again.
 >
-> > [!CAUTION]
-> > **Order set screws by DIN number, never by an English adjective — learned 2026-10-20**
-> >
-> > `DIN 913` flat · **`DIN 914` cone** · `DIN 915` dog · **`DIN 916` cup**
-> >
-> > This page said *"cup or cone point"* and the screws that arrived were **flat**. The listing
-> > stated M3 and 8 mm and said **nothing** about the point, so a three-part specification got
-> > two-thirds verified and recorded as done. **A DIN number is something a seller either prints or
-> > does not** — it fails loudly instead of quietly.
-> >
-> > **But the stronger rule is about where you shop, not how you write the spec.** Of the Coupang
-> > results for M3 × 8 set screws, exactly one stated a point form — and that one turned out not to
-> > stock M3 × 8. **Buy spec-critical fasteners where the spec is a required field rather than a
-> > description.** MISUMI makes **선단 형상** a parameter you cannot order without choosing.
-> > *Structurally preventing the mistake beats remembering to check for it.*
+> **The flank is the case that bites.** A screw part-way down one **does** clamp, but at a smaller
+> radius — and because six lobes at 60° against three screws at 120° is exactly two lobe pitches,
+> **all three share the phase and push the ring off centre together.** An eccentric ring is a
+> varying air gap, which is how a Hall latch starts dropping out over part of a revolution.
 >
-> > [!WARNING]
-> > **Do not put threadlocker in these threads**
-> >
-> > [#6d](../order-log.md) buys 록타이트 243, and it was specified when the carrier's threads were
-> > **metal heat-set inserts**. They are now **tapped straight into PETG**. Anaerobic threadlocker
-> > is not intended for plastic threads — its cure relies on metal on the mating flanks, and some
-> > plastics stress-crack in contact with it. **On this joint the locking comes from the point form
-> > and the PETG's own thread friction, not from 243.**
-> >
-> > The 243 is not wasted: the mast's M5 bolts run into **steel T-nuts**, which is the joint it was
-> > always right for.
+> **Point form, with the seat understood: `DIN 913` flat is acceptable.** On a **convex** crest a
+> flat face makes a **line contact running axially**; a **cone (`DIN 914`) would make a single point
+> on the apex and want to slide off it.** `DIN 916` cup is better still, because its rim straddles
+> the ridge — but it is an **upgrade, not a prerequisite**.
+>
+> *This page said "cup or cone, never flat" for ten days, and escalated the sourcing twice on the
+> strength of it, without checking the claim against the length calculation already in the file.
+> The seat decides the point form; the point form does not decide itself.*
+
+> [!TIP]
+> **Draw a witness mark across the ring-to-hub joint**
+>
+> The worry a better screw was meant to address was never grip for its own sake — it was that a
+> **slipped ring produces silently wrong odometry.** A paint-pen line across the joint makes any
+> slip visible at a glance, whatever is fitted. **Detection beats a stronger grip**, because it also
+> catches the failures the grip was never the cause of.
+
+> [!WARNING]
+> **Do not put threadlocker in these threads**
+>
+> [#6d](../order-log.md) buys 록타이트 243, and it was specified when the carrier's threads were
+> **metal heat-set inserts**. They are now **tapped straight into PETG**. Anaerobic threadlocker is
+> not intended for plastic threads — its cure relies on metal on the mating flanks, and some
+> plastics stress-crack in contact with it. **On this joint the locking comes from the point form
+> and the PETG's own thread friction, not from 243.**
+>
+> The 243 is not wasted: the mast's M5 bolts run into **steel T-nuts**, which is the joint it was
+> always right for.
 >
 > **Rendered and checked 2026-10-06.** CGAL reports `Simple: yes`, `Volumes: 2` — one connected
 > solid — and the **maximum swept radius measured off the STL is 38.950 mm, exactly `OD/2`**. That
