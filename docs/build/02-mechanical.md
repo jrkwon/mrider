@@ -322,8 +322,21 @@ PWM harness out of the box students open every week.
 |---|---:|---|---|
 | **Post** | 500 mm | the 700 | vertical; carries everything |
 | **Camera boom** | 150 mm | the 700 | horizontal, forward, at ~380 mm |
-| **Fore-aft rail** | **190 mm** | the 600 | **continuous**; the post stands on it, **T-slot up** |
-| **Lateral stubs ×2** | **140 mm** | the 600 | **butted against the rail's left and right faces** at mid-length |
+| **Fore-aft rail** | **165 mm** | the 600 | **continuous**; the post stands on it, **T-slot up** |
+| **Lateral stubs ×2** | **125 mm** | the 600 | **butted against the rail's left and right faces** at mid-length |
+
+> [!IMPORTANT]
+> **Re-derived for the 320 × 215 lid — do not cut to the older 190/140 figures**
+>
+> Those were sized when the seat screws were believed to be a **300 × 190 rectangle**. They are not:
+> there are **two fixings, both at one edge**, at (10, 25) and (310, 25). So the base is set by the
+> **lid's edges** instead, at **25 mm of edge distance for every bolt** in 12 mm plywood:
+>
+> - lateral: bolts at **±135** → span **270** → stub = (270 − 20) ÷ 2 = **125**
+> - fore-aft: bolts at **±82.5** → rail = **165**
+>
+> **±82.5 lands the rail's ends on the same line as the two seat screws**, which is luck rather
+> than design, but take it. **415 mm of the 600 is used; 185 spare.**
 
 That leaves **180 mm spare per vehicle** — 50 off the 700 and 130 off the 600, enough for a second
 stub if a cut goes wrong.
