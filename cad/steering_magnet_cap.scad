@@ -43,8 +43,8 @@ HEAD_H       = 5.3;
 HEAD_CLEAR   = 100.0;
 
 /* [Magnet — DIAMETRICALLY magnetised, not axial] */
-MAG_D        = 4.0;         // disc diameter, mm — MEASURED 4.04 on 2026-10-26
-MAG_T        = 2.5;         // disc thickness, mm — STILL A PLACEHOLDER, do not print yet
+MAG_D        = 4.04;        // disc diameter, mm — MEASURED 2026-10-26
+MAG_T        = 1.63;        // disc thickness, mm — MEASURED 2026-10-26
 //
 // The AS5600 kit shipped a Ø4 disc, not the Ø6 this file first assumed, and it is
 // DIAMETRIC: the poles are on the rim, checked 2026-10-26. That was the one failure
@@ -59,7 +59,14 @@ MAG_T        = 2.5;         // disc thickness, mm — STILL A PLACEHOLDER, do no
 // close, railed high means too weak or too far. Check MD/ML/MH at the same time. Tune
 // the gap until AGC sits mid-range, then RECORD THE GAP: that is the number the other
 // two vehicles are built to.
-MAG_CLEAR    = -0.1;        // NEGATIVE = press fit
+MAG_CLEAR    = 0.1;         // POSITIVE = slip fit, bonded with thin CA
+//
+// The carrier uses -0.1 and presses its magnets in. This part does not, and the
+// reason is the disc: 4.04 x 1.63 is both small and THIN, and neodymium is brittle.
+// Pressing a 1.63 mm disc into an interference pocket is how you chip the one
+// magnet the kit gave you. A 0.1 mm slip fit leaves 0.05 mm of radial float, and
+// the AS5600's concentricity budget is +/-0.25 -- five times that. Bond it with the
+// same thin CA as the carrier, degreased with IPA first.
 MAG_BACK     = 1.2;         // floor under the magnet, mm
 
 /* [Cap] */
