@@ -1316,7 +1316,7 @@ separately replaceable.
 > | Relay | resistive | usable, inductive | vs the 30 A drive branch |
 > |---|---:|---:|---|
 > | 40 A | 40 A | **20–24 A** | **insufficient** |
-> | 80 A | 80 A | 40–48 A | 1.3–1.6× — adequate |
+> | ~~80 A~~ **70 A — as marked on the body, 2026-10-26** | 70 A | **35–42 A** | 1.2–1.4× — adequate |
 >
 > This matters because the MUX does **not** only switch a parked vehicle. A brownout or an E-stop
 > drops the coils **while the motors are running**, so these contacts break motor current under
@@ -1479,6 +1479,19 @@ floating gate can partially enhance.
 >
 > **It still cannot be confirmed per-variant from any listing**, which is the point: design so it
 > does not have to be.
+>
+> **ANSWERED 2026-10-26, by reading the relay instead of the listing.** The 5-pin body is marked
+> **`COIL:12VDC · 70A/14VDC · 40A/28VDC`** (`KKA B8`, `0121Z23`). So **neither figure on the page
+> was right**: the title said 80 A, the shared boilerplate said NO 40 A, and the part is **70 A at
+> 14 V** — and it halves at 28 V, which is why a single number was never going to settle it.
+>
+> **The design still holds, which was the whole point of constraining it.** 70 A inductive-derated
+> is **35–42 A against a 20 A limit — 1.75–2.1×.** The 4-pin is marked **`NO 40A 14VDC`**
+> (`KKA V4`, `012-1H-12`), exactly as its listing said, and the resistive-break argument below is
+> unaffected.
+>
+> *The lesson is small and repeatable: three listings could not answer this and one photograph of
+> the moulding did. **Read the part, not the page.***
 >
 > Chasing it is the wrong move. **Constrain the system instead**, so any rating in this class is
 > sufficient:

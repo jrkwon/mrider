@@ -43,8 +43,22 @@ HEAD_H       = 5.3;
 HEAD_CLEAR   = 100.0;
 
 /* [Magnet — DIAMETRICALLY magnetised, not axial] */
-MAG_D        = 6.0;         // disc diameter, mm
-MAG_T        = 2.5;         // disc thickness, mm
+MAG_D        = 4.0;         // disc diameter, mm — MEASURED 4.04 on 2026-10-26
+MAG_T        = 2.5;         // disc thickness, mm — STILL A PLACEHOLDER, do not print yet
+//
+// The AS5600 kit shipped a Ø4 disc, not the Ø6 this file first assumed, and it is
+// DIAMETRIC: the poles are on the rim, checked 2026-10-26. That was the one failure
+// that would have presented as a dead sensor rather than as a wrong part.
+//
+// A Ø4 is small for an AS5600 — AMS's reference is Ø6 x 2.5 — so the field is weaker,
+// the usable air gap is narrower, and the +/-0.25 mm concentricity matters MORE, not
+// less. Do not treat the smaller magnet as a smaller problem.
+//
+// Acceptance is a register read, not a guess: with the magnet fitted, read AGC (0x1A).
+// At 3.3 V it runs 0-128 and MID-SCALE IS CORRECT -- railed low means too strong or too
+// close, railed high means too weak or too far. Check MD/ML/MH at the same time. Tune
+// the gap until AGC sits mid-range, then RECORD THE GAP: that is the number the other
+// two vehicles are built to.
 MAG_CLEAR    = -0.1;        // NEGATIVE = press fit
 MAG_BACK     = 1.2;         // floor under the magnet, mm
 

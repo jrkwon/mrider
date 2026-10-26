@@ -147,7 +147,7 @@ agreed to. Divergences are listed here instead, and the live state of every item
 | 16 | ₩155,430 | **₩0** | −466,290 | Already held before approval; never purchased |
 | 18 | ₩41,800 | ₩45,980 | +12,540 | The approved figure was **ex-VAT**; every other line was VAT-inclusive |
 | 3 | *(same line, 4th unit)* | **4 units ordered, 3 + 1 spare** | **+143,440** | The Δ column is ×3 by construction and cannot express a spare. Recorded here so this request and the [Order Log](order-log.md) reconcile |
-| 7 | Relay MUX, ₩34,000 | **₩57,300** — 4× 80 A SPDT @₩12,100 plus shared passives | **+69,900** | The estimate assumed generic 40 A relays. Both motor conductors must break, and the throttle poles carry an inductive load that derates a 40 A contact to 20–24 A — under the branch. 80 A is the smallest part that clears it |
+| 7 | Relay MUX, ₩34,000 | **₩57,300** — 4× **70 A** SPDT @₩12,100 plus shared passives | **+69,900** | The estimate assumed generic 40 A relays. Both motor conductors must break, and the throttle poles carry an inductive load that derates a 40 A contact to 20–24 A — under the branch. 80 A is the smallest part that clears it |
 | 17 | Camera, ₩41,000 | **₩24,800** | **−48,600** | ₩35,800 list less an ₩11,000 discount |
 | 11c | *(part of the ₩60,000 above)* | **₩0** — capacitors and fuses bought on the #12 order | **−15,000** | Counted where the receipt puts them. Splitting an invoice to populate a row makes the log disagree with the invoice |
 | 12 | Wiring, connectors, fuses, ₩55,000 | **₩63,180** | **+24,540** | Wire and connectors came in above the estimate, which priced neither the AWG 22 multi-colour reels nor ten XT60 pairs |
