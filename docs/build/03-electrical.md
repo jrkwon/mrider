@@ -447,10 +447,18 @@ box, which is the same split as the enclosures and for the same reason.
 > MOSFETs, resistors and diodes and stopped there.** Nothing here is expensive and all of it stops
 > work on the day it is missed:
 >
-> **만능기판 ×6+** · **screw terminal blocks, 5 mm pitch, 2- and 3-way, ~8 per vehicle** ·
-> **female headers 2.54 mm, two 24-way rows per Teensy** · **a breadboard and jumper set for the
-> bench** · **heatshrink** (the [#8a](../order-log.md) pigtail splice needs it) · **1 nF ceramics**
-> and **4.7 kΩ** if the 30-value kit does not carry them.
+> **One 디바이스마트 order covers all of it**, which matters more than any single part number: six
+> Coupang sellers would be six carriages on ₩50,000 of goods, and [#6a](../order-log.md) already
+> proved this route at ₩2,700 with no fees.
+>
+> | | |
+> |---|---|
+> | **만능기판** | 거상인 **`[GA2] 80 × 80 양면` ₩4,300** (signal board — a Teensy 4.1 is 61 mm long, so 50 × 80 is tight once terminals are on) and **`[GA6] 50 × 80 양면` ₩3,500** (relay driver). **Four of each** — a perfboard is the part a student ruins |
+> | **Terminal blocks** | EM Tech **`2EDGK+2EDGRC-5.08`**, 2-pin ₩600 / 3-pin ₩900, sold in tens. **Pluggable, not plain screw** — the harness unplugs whole, so a sensor or a box comes out without a screwdriver inside the bay |
+> | **Headers** | search `핀소켓` / `암핀헤더` 2.54 mm — two 24-way rows per Teensy |
+> | **Bench** | `브레드보드` + `점퍼케이블 세트` |
+> | **Splicing** | `열수축튜브 세트` — the [#8a](../order-log.md) pigtail needs it |
+> | **Passives** | `세라믹 콘덴서 1nF`, `저항 4.7k` — **only if the 30-value kit does not already carry them. Check first.** |
 
 ### 3.5.1 Hardware RC signal MUX — wire this, it is not optional
 
