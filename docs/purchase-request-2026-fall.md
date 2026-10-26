@@ -162,18 +162,18 @@ agreed to. Divergences are listed here instead, and the live state of every item
 | 14 | Mounts and print material, ₩41,000 × 3 = ₩123,000 | **₩35,600** — two 1 kg PETG rolls and 100 M3 heat-set inserts | **−87,400** | Bought once rather than per vehicle. One roll is yellow, which **ISO 13850 requires** for the E-stop backing plate. The 2020 extrusion is deliberately not bought: it is for the mast, and the mast is not designed |
 | 6d | Fasteners etc., ₩5,000 × 3 = ₩15,000 | **₩31,840** — grub screws, cyanoacrylate, IPA, threadlocker | **+16,840** | The estimate was written when this line was fasteners only. Adhesive and IPA were added on 2026-10-12 — the assembly procedure required them and nothing funded them — and priced at a guess |
 | 5 | Angle sensor, ₩27,000 × 3 = ₩81,000 | **₩12,500** — five AS5600 breakouts at ₩2,500 | **−68,500** | The estimate funded a sensor **and a separate diametric magnet**; every AS5600 breakout ships with one, because the module cannot work without it. So the line was paying twice for one part. Five rather than three: one is benched before any vehicle is built, leaving three fitted and one spare |
-| 14b | *(part of the ₩123,000 #14 line)* | **₩86,670** — 2020 extrusion mast, 12 mm plywood equipment plate, T-slot hardware | **+86,670** | The #14 line funded filament and never funded the **mast tube** or the **equipment plate that replaces the seat** — a part [vehicle.md §3](design/vehicle.md) requires and no line had ever carried. A printed 0.65 m mast delaminates under bending and that flex lands in the camera↔LiDAR extrinsics. **₩730 left in the original #14 line** — effectively spent, so the penny washers still to buy will take it slightly over. Only the total binds once both halves are counted |
+| 14b | *(part of the ₩123,000 #14 line)* | **₩90,270** — 2020 extrusion mast, 12 mm plywood equipment plate, T-slot hardware | **+90,270** | The #14 line funded filament and never funded the **mast tube** or the **equipment plate that replaces the seat** — a part [vehicle.md §3](design/vehicle.md) requires and no line had ever carried. A printed 0.65 m mast delaminates under bending and that flex lands in the camera↔LiDAR extrinsics. **₩2,870 over the original #14 line**, before carriage — the penny washers tipped it, where and when the Order Log said they would. Only the total binds, and the headroom is 545,464 once both halves are counted |
 | 11b, 12 | *(spares were never budgeted)* | **₩0 — declined 2026-10-26** | 0 | The Order Log had recommended two UBEC spares and a 5 A fuse top-up; the owner declined both. Recorded rather than deleted: six UBECs with zero spares, and two spare fuses for a semester, are **accepted risks**, and the next cohort should read the decision rather than rediscover the gap |
-| | | **Net** | **−470,544** | |
+| | | **Net** | **−466,944** | |
 
-**Projected total ₩3,450,936 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows.
+**Projected total ₩3,454,536 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows.
 
 > [!IMPORTANT]
 > **What was actually approved: a ceiling of ₩4,000,000, not this line-item schedule**
 >
 > The university approved a **total**. Individual items may move in price, be substituted, split,
 > or dropped **without further approval**. Only the total binds, and the live figure against it is
-> **₩3,450,936 projected, ₩549,064 of headroom**.
+> **₩3,454,536 projected, ₩545,464 of headroom**.
 >
 > So the amendments above are **not an approval trail** — nothing in them needed permission. They
 > exist for the reason this document already states: *"the estimates above will not match, and the
