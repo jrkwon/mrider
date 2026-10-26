@@ -370,6 +370,88 @@ there and from the board's own manual, not from another board's table.
 > a direct port, and log 30 minutes of session stability at
 > [bring-up Stage 0](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first).
 
+### 3.5.2 Sensor runs — both are long, both pass a motor, neither is 5 V
+
+![Two sensor runs to the Teensy: two Hall latches on the drive hub with 10 k pull-ups and 1 nF at the Teensy end, and the AS5600 on I2C at the kingpin with twisted pairs and 4.7 k pull-ups; below, the two-stage build of breadboard on the bench and soldered perfboard on the vehicle](../images/sensor-wiring-and-build.svg)
+
+**Four conductors each, and the sensors take their 3.3 V from the Teensy's own pin.**
+
+| | Drive | Steering |
+|---|---|---|
+| Part | 2 × `DRV5013` Hall latch | `AS5600` |
+| Mount | printed bracket clamping the **gearbox housing nose**, sensing radially | chassis bracket facing the **magnet cap on the kingpin bolt** |
+| Conductors | **3.3 V · GND · A · B** | **3.3 V · GND · SDA · SCL** |
+| At the Teensy | two pins of **one hardware QDC** | I²C, address fixed `0x36`, **one device on the bus** |
+| Must add | **10 kΩ pull-up on A and on B** | **4.7 kΩ pull-ups**, parallel to the breakout's own |
+
+> [!WARNING]
+> **The latch output is open-drain. Without a pull-up the line never rises — and that does not look
+> like a missing resistor, it looks like a dead sensor.**
+>
+> Put both pull-ups **at the Teensy**, not at the sensor. Add **1 nF from each output to ground**
+> there as well — **not 100 nF**: with 10 kΩ that is a 1 ms corner, and a count at walking pace is
+> only about 11 ms, so it would round the edges the quadrature decoder depends on. **1 nF gives
+> 10 µs** — enough to kill PWM pickup, fast enough to keep the edge square.
+
+**Cable treatment, and all three are free.** **Twist each signal with a ground return** — A with
+GND, B with GND, SDA with GND, SCL with GND — because the return path is what makes a long logic
+run quiet, and a loose bundle beside a motor lead is an antenna. **Route away from the motor leads**
+and cross at 90° where they must meet. **Ground at the star point only**: the sensor grounds go back
+to the driver's star, not to a convenient chassis screw.
+
+> [!TIP]
+> **I²C is the link that will misbehave first — and the escape hatch is inside the chip**
+>
+> I²C was designed as a *board-level* bus. This run is about a metre, from a front kingpin to a box
+> in the bay, past a motor. **Run it at 100 kHz, not 400.**
+>
+> If it proves flaky, the AS5600's **`OUT` pin can be configured as a PWM output** instead of
+> analog: one wire, timing-based, and far more robust over a metre of cable — **a corrupted bit
+> becomes a slightly wrong angle rather than a hung bus.**
+>
+> **Bench it on I²C and keep PWM in reserve.** Switching it over is an I²C register write, so the
+> bus has to work on the desk first. You need it exactly once — to turn itself off.
+
+### 3.5.3 Build the circuit twice, and not for the reason it sounds like
+
+**Yes, use a solderless breadboard — on the bench.** This page warned against breadboard *on the
+vehicle* and said nothing about the bench, which are different claims and only one of them is true.
+
+**On the bench it earns its place:** prove the pull-ups and the QDC counts before anything is
+soldered, find the AS5600 on the bus and tune its AGC with the magnet in a vice, and **try pin
+assignments freely** — they are not fixed yet, and changing a soldered board costs an evening where
+changing a breadboard costs nothing.
+
+**What it must never carry, even on the bench: relay coil current and the MOSFET gate pulldown.**
+600 mA through spring clips is at their limit, and an intermittent contact on that pulldown floats
+the gate — which chatters the relays between STOCK and DBW. **So bench the *signal* side on a
+breadboard and the *authority* side on the perfboard you will actually fit.** Build that one first.
+
+**Three rules for the board that goes in.**
+
+1. **The Teensy sits in female headers, not soldered down.** Thirteen students, one bricked
+   bootloader, ₩74,250 a board.
+2. **Every off-board wire lands on a screw terminal.** A sensor then swaps without a soldering iron,
+   and cable movement pulls on a terminal instead of on a solder joint — which is how joints crack.
+3. **Pull-ups and the 1 nF live on the board beside the Teensy** — not at the sensor end, not
+   spliced into the middle of a loom.
+
+**Two boards, not one:** the signal board in the logic box and the relay-driver board in the power
+box, which is the same split as the enclosures and for the same reason.
+
+> [!CAUTION]
+> **The assembly consumables were specified in one document and bought in neither**
+>
+> [§1.2.4](01-bom-sourcing.md#7-8-11-12-14-what-to-actually-buy) calls for perfboard, screw
+> terminals and an enclosure for the relay-driver board. **[#7](../order-log.md) bought relays,
+> MOSFETs, resistors and diodes and stopped there.** Nothing here is expensive and all of it stops
+> work on the day it is missed:
+>
+> **만능기판 ×6+** · **screw terminal blocks, 5 mm pitch, 2- and 3-way, ~8 per vehicle** ·
+> **female headers 2.54 mm, two 24-way rows per Teensy** · **a breadboard and jumper set for the
+> bench** · **heatshrink** (the [#8a](../order-log.md) pigtail splice needs it) · **1 nF ceramics**
+> and **4.7 kΩ** if the 30-value kit does not carry them.
+
 ### 3.5.1 Hardware RC signal MUX — wire this, it is not optional
 
 > [!CAUTION]
