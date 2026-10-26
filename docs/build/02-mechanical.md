@@ -425,6 +425,36 @@ whatever the error is.
 >
 > The whole fix costs **₩8,550 across three vehicles.**
 
+#### Fastener schedule — the whole mast, per vehicle
+
+**The AL brackets never touch the plywood.** They join **profile to profile**; the profile is bolted
+to the lid **directly**, through a T-nut in its own bottom slot. Those are two different joints with
+two different bolts, and conflating them is what the question below kept catching.
+
+| Joint | Fastener | Into | Qty |
+|---|---|---|---:|
+| Post ↔ rail / stubs — **4 corner brackets** | **M5 × 10** | T-nut in each slot | 8 |
+| Stub ↔ rail — **2 brackets** | **M5 × 10** | T-nut | 4 |
+| Boom ↔ post — **2 brackets** | **M5 × 10** | T-nut | 4 |
+| **Rail and stub ends → lid**, from below | **M5 × 20** | T-nut in the profile's **bottom** slot | 4 |
+| **Lid → pillars**, from above | **M5 × 20** | nut captive in the printed pillar | 2 |
+| | | **T-nuts in slots** | **20** |
+| | | **M5 × 10** | **16** |
+| | | **M5 × 20** | **6** |
+
+**The ×10s come out of the set already bought** — its M5 bolts are fine, only its nuts were the
+wrong family. **Only the ×20s had to be ordered**, because that set stops at 12 mm.
+
+> [!TIP]
+> **If the blind nut annoys you, brackets are the alternative at the lid too**
+>
+> Bolting from below into a T-nut means **driving a bolt into a nut you cannot see**, because the
+> rail is sitting on the lid. It is standard practice and a screwdriver through the hole lines the
+> nut up — but **four more brackets per vehicle (₩1,600) makes both ends of that joint visible**:
+> one leg into the profile's side slot, the other flat on the lid with a nut on top.
+>
+> It costs ~20 mm of lid width beside each rail end. **Decide it at the first build, not on paper.**
+
 > [!NOTE]
 > **Every bolt on the mast base is M5 × 20 — and the length is counted, not guessed**
 >
