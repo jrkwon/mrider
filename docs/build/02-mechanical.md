@@ -425,6 +425,23 @@ whatever the error is.
 >
 > The whole fix costs **₩8,550 across three vehicles.**
 
+> [!NOTE]
+> **Every bolt on the mast base is M5 × 20 — and the length is counted, not guessed**
+>
+> Measured **under the head**: penny washer ~1.5 + plywood 12 + the profile's slot lip ~2 + nut
+> engagement ~2 = **17.5 mm**. ×20 leaves 2.5 mm protruding into a slot cavity ~10 mm deep, so it
+> cannot bottom out. **A ×12 does not even cross the lid.**
+>
+> **The pillar bolts are the same length, because the pillars stand BESIDE the rail.** The battery's
+> spare fixing holes are three per *side*, so the bolt drops from **above** — through the lid into a
+> nut captive in the pillar's printed top, 12 + 4 = 16 mm. *An earlier note here worried about a
+> 100 mm run through rail, lid and pillar; that only existed because the pillars were drawn under
+> the rail, where no bolt could have reached them from either direction. The geometry was wrong,
+> not the fastener.*
+>
+> **Six per vehicle:** four tie-downs at the rail and stub ends, driven from below, and two pillar
+> bolts driven from above.
+
 > [!TIP]
 > **Load spare T-nuts into every slot at assembly — they are ₩40 each**
 >
