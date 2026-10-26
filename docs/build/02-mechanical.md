@@ -425,6 +425,17 @@ whatever the error is.
 >
 > The whole fix costs **₩8,550 across three vehicles.**
 
+> [!TIP]
+> **Load spare T-nuts into every slot at assembly — they are ₩40 each**
+>
+> A slide-in nut slides freely along its slot once it is in. **That is the adjustability this build
+> bought extrusion for**: raising the camera is *loosen, slide the bracket with its captive nuts,
+> re-tighten* — no new nut is ever introduced. **But a nut cannot be added to an assembled joint**,
+> so put in more than the drawing needs: **about 30 per vehicle against the ~20 in use.**
+>
+> **And a loose nut in a vertical slot falls out of the bottom.** Load the post's nuts, then
+> immediately snug the lowest bracket to trap them.
+
 **Eight corner brackets per vehicle.** Four at the post foot — **front, rear, left and right** —
 two tying each lateral stub to the fore-aft rail, and two at the boom joint, above and below, which
 is what stops the camera drooping and twisting. The rail and the stubs need no brackets to the lid:
