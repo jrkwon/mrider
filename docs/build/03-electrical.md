@@ -476,14 +476,34 @@ breadboard and the *authority* side on the perfboard you will actually fit.** Bu
 
 #### The bench layout, hole by hole
 
-![Two half-size breadboards: the upper carries the Teensy 4.1 straddling the centre channel with 10k pull-ups and 1nF capacitors on pins 0 and 1 and 4.7k pull-ups on 18 and 19; the lower carries two TO-92 Hall latches and the AS5600 breakout; six jumpers link them](../images/breadboard-layout.svg)
+![Three half-size breadboards: board A with the Teensy straddling the centre channel, its 3V3 pin feeding the lower plus rail and rail-bridge jumpers carrying it to the upper rails, 10k pull-ups and 1nF on the quadrature columns and 4.7k on the I2C columns; board B with the two Hall latches; board C with the AS5600](../images/breadboard-layout.svg)
 
-**Board A holds five component pairs and nothing else:** `2 × 10 kΩ` from pins 0 and 1 up to the
-`+` rail, `2 × 1 nF` from the same pins down to the `−` rail, and `2 × 4.7 kΩ` from pins 18 and 19
-to `+`. **The 3.3 V rail is fed from the Teensy's own 3V3 pin** — there is no separate 3.3 V supply
-and none is needed.
+**Board A holds three component pairs and nothing else:** `2 × 10 kΩ` from the pin-0 and pin-1
+columns up to the `+` rail, `2 × 1 nF` from the same columns down to `−`, and `2 × 4.7 kΩ` from the
+pin-18 and pin-19 columns to `+`. **The 3.3 V comes from the Teensy's own 3V3 pin** — there is no
+other 3.3 V source in this build, and everything on it shares that one pin's budget.
 
-**Six jumpers run to board B:** `+3.3 V`, `GND`, the two latch outputs, and `SDA`/`SCL`.
+> [!CAUTION]
+> **Fit the two rail bridges, or the pull-ups do nothing**
+>
+> A breadboard's **upper and lower rail pairs are separate strips.** The Teensy's `3V3` and `GND`
+> pins are on its lower edge and therefore feed only the **lower** rails — but the 10 kΩ pull-ups
+> sit in the upper half and reach for the **upper** `+` rail, which has no source at all.
+>
+> **Two jumpers fix it:** upper `+` to lower `+`, upper `−` to lower `−`. Without them the latch
+> outputs float, and **a floating open-drain output reads exactly like a dead sensor** — the same
+> failure the pull-ups exist to prevent.
+>
+> *Caught in review on 2026-10-27; the first version of this figure had the bridges missing.*
+
+**Three boards, not two — drive and steering get their own.** They become **two harnesses at two
+ends of the vehicle**, a rear hub and a front kingpin, so splitting them on the bench means each
+board transfers to its own section of perfboard. It also lets two people work in parallel, one
+waving a magnet past the latches and one rotating one in front of the AS5600.
+
+**Nothing extra had to be bought for it:** **nine breadboards is three stations × three boards**,
+which is what the order carries, and **five AS5600s covers it because the bench unit is the one you
+then fit to that vehicle** — which is better practice anyway, since AGC is tuned per part.
 
 > [!CAUTION]
 > **The TO-92 pin order is not guessable, and reversed `V`<tspan></tspan>`CC`/`GND` destroys the part**
@@ -517,9 +537,13 @@ code can be blamed for it.
 > [!IMPORTANT]
 > **Cut `VUSB`–`VIN` before the first bench session that involves a UBEC**
 >
-> After the cut, **USB carries data only and the board will not run on it** — so the bench needs
-> the same 5 V feed the vehicle has, which is the point. Two supplies fighting is exactly what the
-> cut prevents, and *"we'll do it later"* is how they meet.
+> After the cut the laptop **still programs the board and still carries micro-ROS — it just cannot
+> power it.** 5 V comes from a UBEC into `VIN`, on the bench and on the vehicle alike, which is the
+> point: the cut exists so the laptop's 5 V and the UBEC's 5 V never meet and push current into each
+> other through the Teensy. *"We'll do it later"* is how they meet.
+>
+> **A Teensy that seems dead on USB after the cut is working correctly.** Tape a note inside the
+> parts box — somebody will meet this at eleven at night.
 >
 > **Beep the two boards' `−` rails together before powering up.** A missing ground reads as a dead
 > sensor, and on the vehicle this same joint becomes the star at the motor driver.
