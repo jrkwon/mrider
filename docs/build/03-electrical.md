@@ -607,6 +607,23 @@ adjacent pads crack on a vehicle that vibrates.
 > **Test it with the Teensy out anyway, for shorts.** Meter 3.3 V bus ↔ GND and 5 V ↔ GND. A solder
 > bridge found then costs nothing; found later it is being driven by the Teensy's own regulator.
 
+> [!NOTE]
+> **Add a 100 nF across each Hall latch's own `VCC` and `GND`, at the bracket**
+>
+> TI's `DRV5013` datasheet asks for a bypass capacitor close to the device, and **a sensor on the
+> end of a metre of cable beside a PWM'd motor is exactly the case it exists for.** Six are needed,
+> two per vehicle.
+>
+> **Soldered at the bracket, not at the board end** — a capacitor at the far end of the cable does
+> nothing for the sensor's own supply.
+>
+> **The 1 nF already bought is not a substitute.** 1 nF across the *signal* line filters pickup;
+> 100 nF across the *supply* is a local reservoir. Different jobs, both wanted.
+>
+> **Specify `0.1 µF / 50 V / 104` and nothing further** — tolerance, dielectric and brand are all
+> irrelevant here. The one thing that matters is that it is a **ceramic**: a 마일러 (polyester film)
+> part turns up in the same search at a similar price and is the wrong family.
+
 **Four things the breadboard could not teach.** **Pin assignment freezes here** — on a breadboard
 you move a wire, on perfboard you desolder, so **finalise the pins at the bench and write them into
 [04-firmware](04-firmware.md) before soldering anything.** **Strain relief:** cable movement must
