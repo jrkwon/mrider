@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 2160" width="1180" height="2160" font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 2190" width="1180" height="2190" font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
 <title>Bench breadboard layout, drawn to a real 400-point half-size board</title>
 <desc>Three 400-point half-size breadboards, 30 columns by 10 rows plus four power rails. Board A carries the Teensy 4.1 straddling the centre channel, with rail-bridge jumpers taking its 3V3 supply to the upper rails, 10k pull-ups and 1nF on the quadrature columns and 4.7k on the I2C columns. Board B carries the two Hall latches, board C the AS5600.</desc>
-<rect width="1180" height="2160" fill="#ffffff"/>
+<rect width="1180" height="2190" fill="#ffffff"/>
 <text x="24" y="34" font-size="20" font-weight="bold" fill="#0f172a">Bench layout — drawn to a real 400-point half-size board</text>
 <text x="24" y="58" font-size="12.5" fill="#475569">30 columns × 10 rows + four rails = 400 tie points, which is the <tspan font-weight="bold">SZH-BBAD-005</tspan> that was ordered. A <tspan font-weight="bold">pale band</tspan> = one node. A <tspan font-weight="bold">gap</tspan> = passes over, not into.</text>
 <rect x="150" y="150" width="640" height="380" rx="6" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
@@ -1344,24 +1344,75 @@
 <text x="100" y="248" font-size="11" font-weight="bold" fill="#15803d">pin 1 → Hall B OUT</text>
 <text x="806" y="700" font-size="11" font-weight="bold" fill="#15803d">pin 19 → SCL</text>
 <text x="828" y="760" font-size="11" font-weight="bold" fill="#15803d">pin 18 → SDA</text>
-<text x="260" y="742" font-size="11" font-weight="bold" fill="#1e3a8a" text-anchor="middle">Hall A</text>
-<text x="260" y="800" font-size="10.5" font-weight="bold" fill="#15803d" text-anchor="middle">OUT → pin 0</text>
-<text x="400" y="742" font-size="11" font-weight="bold" fill="#1e3a8a" text-anchor="middle">Hall B</text>
-<text x="400" y="800" font-size="10.5" font-weight="bold" fill="#15803d" text-anchor="middle">OUT → pin 1</text>
-<text x="240" y="784" font-size="9" fill="#64748b" text-anchor="middle">VCC</text>
-<text x="260" y="784" font-size="9" fill="#64748b" text-anchor="middle">GND</text>
-<text x="280" y="784" font-size="9" fill="#64748b" text-anchor="middle">OUT</text>
-<text x="380" y="784" font-size="9" fill="#64748b" text-anchor="middle">VCC</text>
-<text x="400" y="784" font-size="9" fill="#64748b" text-anchor="middle">GND</text>
-<text x="420" y="784" font-size="9" fill="#64748b" text-anchor="middle">OUT</text>
-<text x="470" y="724" font-size="10.5" fill="#475569">1 = VCC  2 = GND  3 = OUT —</text>
-<text x="470" y="739" font-size="10.5" font-weight="bold" fill="#b91c1c">assumed. Check the datasheet.</text>
+<text x="260" y="710" font-size="11.5" font-weight="bold" fill="#1e3a8a" text-anchor="middle">Hall A · OUT → pin 0</text>
+<text x="400" y="710" font-size="11.5" font-weight="bold" fill="#1e3a8a" text-anchor="middle">Hall B · OUT → pin 1</text>
+<circle cx="240" cy="782" r="8.5" fill="#ffffff" stroke="#0f172a" stroke-width="1.4"/>
+<text x="240" y="786" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">1</text>
+<text x="240" y="806" font-size="9.5" font-weight="bold" fill="#334155" text-anchor="middle">VCC</text>
+<circle cx="260" cy="782" r="8.5" fill="#ffffff" stroke="#0f172a" stroke-width="1.4"/>
+<text x="260" y="786" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">2</text>
+<text x="260" y="806" font-size="9.5" font-weight="bold" fill="#334155" text-anchor="middle">GND</text>
+<circle cx="280" cy="782" r="8.5" fill="#ffffff" stroke="#0f172a" stroke-width="1.4"/>
+<text x="280" y="786" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">3</text>
+<text x="280" y="806" font-size="9.5" font-weight="bold" fill="#334155" text-anchor="middle">OUT</text>
+<circle cx="380" cy="782" r="8.5" fill="#ffffff" stroke="#0f172a" stroke-width="1.4"/>
+<text x="380" y="786" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">1</text>
+<text x="380" y="806" font-size="9.5" font-weight="bold" fill="#334155" text-anchor="middle">VCC</text>
+<circle cx="400" cy="782" r="8.5" fill="#ffffff" stroke="#0f172a" stroke-width="1.4"/>
+<text x="400" y="786" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">2</text>
+<text x="400" y="806" font-size="9.5" font-weight="bold" fill="#334155" text-anchor="middle">GND</text>
+<circle cx="420" cy="782" r="8.5" fill="#ffffff" stroke="#0f172a" stroke-width="1.4"/>
+<text x="420" y="786" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">3</text>
+<text x="420" y="806" font-size="9.5" font-weight="bold" fill="#334155" text-anchor="middle">OUT</text>
+<text x="470" y="770" font-size="10.5" fill="#475569">1 = VCC  2 = GND  3 = OUT —</text>
+<text x="470" y="785" font-size="10.5" font-weight="bold" fill="#b91c1c">assumed. Check the datasheet.</text>
 <text x="580" y="1234" font-size="9.5" fill="#64748b" text-anchor="middle">VCC</text>
 <text x="620" y="1234" font-size="9.5" fill="#64748b" text-anchor="middle">GND</text>
 <text x="660" y="1234" font-size="9.5" fill="#64748b" text-anchor="middle">SDA</text>
 <text x="700" y="1234" font-size="9.5" fill="#64748b" text-anchor="middle">SCL</text>
 <text x="660" y="1252" font-size="10.5" font-weight="bold" fill="#15803d" text-anchor="middle">→ pin 18</text>
 <text x="700" y="1270" font-size="10.5" font-weight="bold" fill="#15803d" text-anchor="middle">→ pin 19</text>
-<text x="200" y="1300" font-size="12" fill="#0f766e">The AS5600 breakout may carry its own pull-ups. If it does, the 4.7 kΩ on board A are in parallel — fine.</text>
-<text x="200" y="1320" font-size="12" fill="#0f766e">Rows A–E of every board are left unused here. That is normal; a half-size board has far more holes than this needs.</text>
+<text x="180" y="1300" font-size="12" fill="#0f766e">The AS5600 breakout may carry its own pull-ups. If it does, the 4.7 kΩ on board A are in parallel — fine.</text>
+<text x="180" y="1320" font-size="12" fill="#0f766e">Rows A–E of every board are left unused here. That is normal; a half-size board has far more holes than this needs.</text>
+<rect x="24" y="1360" width="566" height="250" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+<text x="44" y="1388" font-size="14.5" font-weight="bold" fill="#14532d">Three boards per station — and nothing more to order</text>
+<text x="44" y="1414" font-size="12" fill="#166534"><tspan font-weight="bold">9 breadboards</tspan> = 3 stations × 3 boards. Exactly what was ordered.</text>
+<text x="44" y="1433" font-size="12" fill="#166534"><tspan font-weight="bold">AS5600 ×5</tspan> covers it, because the bench unit is <tspan font-weight="bold">the one you then fit</tspan></text>
+<text x="58" y="1452" font-size="12" fill="#166534">to that vehicle — better anyway, since AGC is tuned per part.</text>
+<text x="44" y="1471" font-size="12" fill="#166534"><tspan font-weight="bold">The drive board needs no AS5600; the steering board needs no latches.</tspan></text>
+<text x="44" y="1490" font-size="12" fill="#166534">Splitting them costs one breadboard and buys a harness-shaped bench.</text>
+<text x="44" y="1509" font-size="12" fill="#166534">Jumper sets ×3 — one per station — is also right.</text>
+<text x="44" y="1528" font-size="12" fill="#166534"><tspan font-weight="bold">Nothing on these boards may carry coil current.</tspan> No relay, no MOSFET,</text>
+<text x="58" y="1547" font-size="12" fill="#166534">no 12 V. Signal on breadboard, authority on soldered perfboard.</text>
+<rect x="614" y="1360" width="542" height="250" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+<text x="634" y="1388" font-size="14.5" font-weight="bold" fill="#92400e">After the VUSB–VIN cut: USB is data only</text>
+<text x="634" y="1414" font-size="12" fill="#78350f"><tspan font-weight="bold">Yes.</tspan> The laptop still programs the board and still carries</text>
+<text x="634" y="1433" font-size="12" fill="#78350f">micro-ROS. <tspan font-weight="bold">It just cannot power it.</tspan> 5 V comes from a UBEC</text>
+<text x="634" y="1452" font-size="12" fill="#78350f">into VIN, on the bench and on the vehicle alike.</text>
+<text x="634" y="1471" font-size="12" fill="#78350f">The cut exists so <tspan font-weight="bold">the laptop's 5 V and the UBEC's 5 V</tspan></text>
+<text x="634" y="1490" font-size="12" fill="#78350f"><tspan font-weight="bold">never meet</tspan> and push current into each other through</text>
+<text x="634" y="1509" font-size="12" fill="#78350f">the Teensy.</text>
+<text x="634" y="1528" font-size="12" fill="#78350f"><tspan font-weight="bold">A Teensy that seems dead on USB after the cut is</tspan></text>
+<text x="634" y="1547" font-size="12" fill="#78350f"><tspan font-weight="bold">working correctly.</tspan> Tape a note inside the parts box.</text>
+<rect x="24" y="1640" width="1132" height="300" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<text x="44" y="1668" font-size="14.5" font-weight="bold" fill="#0f172a">Prove it in this order — each step fails for a different reason</text>
+<text x="44" y="1694" font-size="12.5" fill="#334155"><tspan font-weight="bold">1 · Power only.</tspan> 5 V at VIN. Meter the + rail on <tspan font-weight="bold">board C</tspan>, the far end of the chain: 3.3 V there proves the 3V3 pin, both rail</text>
+<text x="58" y="1716" font-size="12.5" fill="#334155">bridges and both board-to-board feeds in one reading. Not there → a wire, not a sensor.</text>
+<text x="44" y="1738" font-size="12.5" fill="#334155"><tspan font-weight="bold">2 · Latches, on a meter, before any code.</tspan> Probe each OUT against GND and pass a magnet by. It must snap between <tspan font-weight="bold">0 V</tspan></text>
+<text x="58" y="1760" font-size="12.5" fill="#334155"><tspan font-weight="bold">and 3.3 V and stay there</tspan> when the magnet leaves — that is what makes it a <tspan font-style="italic">latch</tspan>. Falls back on its own → it is a switch, and</text>
+<text x="58" y="1782" font-size="12.5" fill="#334155">the whole quadrature scheme is wrong. <tspan font-weight="bold">Flip the magnet to reset it.</tspan></text>
+<text x="44" y="1804" font-size="12.5" fill="#334155"><tspan font-weight="bold">3 · I²C scan.</tspan> <tspan font-weight="bold">0x36</tspan> must appear, and nothing else — one device per bus is the design.</text>
+<text x="44" y="1826" font-size="12.5" fill="#334155"><tspan font-weight="bold">4 · AGC.</tspan> Read <tspan font-weight="bold">0x1A</tspan> at the working gap, tune to mid-scale, and <tspan font-weight="bold">write the gap down</tspan> — it is the number the other two</text>
+<text x="58" y="1848" font-size="12.5" fill="#334155">vehicles are built to.</text>
+<text x="44" y="1870" font-size="12.5" fill="#334155"><tspan font-weight="bold">5 · Counts last.</tspan> Bring up the decoder and move a magnet past both latches in sequence. Up one way and down the other</text>
+<text x="58" y="1892" font-size="12.5" fill="#334155">is the <tspan font-weight="bold">first proof the (n + ½) spacing is right</tspan> — cheap here, expensive on a wheel.</text>
+<text x="44" y="1914" font-size="12.5" fill="#334155"><tspan font-weight="bold" fill="#15803d">Steps 1–3 need no firmware beyond a scan sketch. If something is wrong, it is wrong before code can be blamed.</tspan></text>
+<rect x="24" y="1970" width="1132" height="186" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+<text x="44" y="1998" font-size="14.5" font-weight="bold" fill="#991b1b">Before a single wire goes in</text>
+<text x="44" y="2024" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">The TO-92 pin order is not guessable.</tspan> Reversed V<tspan font-size="9">CC</tspan>/GND destroys the part — that is what the fourteen spares are for, and it is</text>
+<text x="58" y="2046" font-size="12.5" fill="#7f1d1d">a far cheaper lesson on a breadboard than on a soldered board. <tspan font-weight="bold">Bend the legs out to 2.54 mm</tspan> before inserting.</text>
+<text x="44" y="2068" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">Keep them in the labelled bag until each one is fitted.</tspan> TI marks a TO-92 body with an abbreviated code, so loose parts are</text>
+<text x="58" y="2090" font-size="12.5" fill="#7f1d1d">unidentifiable and <tspan font-weight="bold">BC looks exactly like AG</tspan>.</text>
+<text x="44" y="2112" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">Beep the three boards' − rails together before powering up.</tspan> A missing ground reads as a dead sensor, and on the vehicle</text>
+<text x="58" y="2134" font-size="12.5" fill="#7f1d1d">this same joint becomes the star ground at the motor driver.</text>
 </svg>
