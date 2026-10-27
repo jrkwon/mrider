@@ -392,6 +392,13 @@ there and from the board's own manual, not from another board's table.
 > there as well — **not 100 nF**: with 10 kΩ that is a 1 ms corner, and a count at walking pace is
 > only about 11 ms, so it would round the edges the quadrature decoder depends on. **1 nF gives
 > 10 µs** — enough to kill PWM pickup, fast enough to keep the edge square.
+>
+> **What the 1 nF is actually for.** A 10 kΩ pull-up on an open-drain output is a **high-impedance
+> node**, and this one runs a metre alongside leads carrying PWM'd motor current. Capacitive
+> coupling puts spikes on it, and **the quadrature decoder cannot tell a spike from an edge** — it
+> counts it. The counts then drift in a way that looks like wheel slip or a mechanical fault, which
+> is the expensive way to find a missing ₩4 capacitor. **Any 0.5–1.5 nF part does the job**, so
+> tolerance and voltage rating are irrelevant; fit them from the start rather than waiting to see.
 
 **Cable treatment, and all three are free.** **Twist each signal with a ground return** — A with
 GND, B with GND, SDA with GND, SCL with GND — because the return path is what makes a long logic
@@ -455,10 +462,10 @@ box, which is the same split as the enclosures and for the same reason.
 > |---|---|
 > | **만능기판** | 거상인 **`[GA2] 80 × 80 양면` ₩4,300** (signal board — a Teensy 4.1 is 61 mm long, so 50 × 80 is tight once terminals are on) and **`[GA6] 50 × 80 양면` ₩3,500** (relay driver). **Four of each** — a perfboard is the part a student ruins |
 > | **Terminal blocks** | EM Tech **`2EDGK+2EDGRC-5.08`**, 2-pin ₩600 / 3-pin ₩900, sold in tens. **Pluggable, not plain screw** — the harness unplugs whole, so a sensor or a box comes out without a screwdriver inside the bay |
-> | **Headers** | search `핀소켓` / `암핀헤더` 2.54 mm — two 24-way rows per Teensy |
-> | **Bench** | `브레드보드` + `점퍼케이블 세트` |
-> | **Splicing** | `열수축튜브 세트` — the [#8a](../order-log.md) pigtail needs it |
-> | **Passives** | `세라믹 콘덴서 1nF`, `저항 4.7k` — **only if the 30-value kit does not already carry them. Check first.** |
+> | **Headers** | CONNFLY **`핀헤더소켓 Single 1x40 Straight (2.54mm)` ₩530**. A Teensy 4.1 is **24 pins a side**, so one strip cuts a row with 16 to spare — **two per Teensy**. *Not the `적층형` at ₩1,000: its 9.1 mm legs are for stacking shields and only raise the board in the box* |
+> | **Bench** | `브레드보드` + `점퍼케이블 세트`. **Half-size is 30 columns and a Teensy 4.1 occupies 24 of them** — clip two together per bench station |
+> | **Splicing** | **`NT-DIY 열수축튜브 328세트` ₩3,900.** The [#8a](../order-log.md) splice joins **0.75 mm² (OD ~2.5 mm) to AWG 14 silicone (OD ~4 mm)**, so the tube must shrink from **≥ 6 mm to under 2.5 mm**; 8 sizes bracket that |
+> | **Passives** | **`DONGIL HV(E) Ceramic 1000pF` ₩40 / 10** — 1000 pF *is* 1 nF, and it is **through-hole**. The chip parts a search returns are SMD and unusable on perfboard. **4.7 kΩ is already in the 30-value kit** |
 
 ### 3.5.1 Hardware RC signal MUX — wire this, it is not optional
 
