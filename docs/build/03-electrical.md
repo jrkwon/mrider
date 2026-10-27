@@ -419,6 +419,46 @@ to the driver's star, not to a convenient chassis screw.
 > **Bench it on I²C and keep PWM in reserve.** Switching it over is an I²C register write, so the
 > bus has to work on the desk first. You need it exactly once — to turn itself off.
 
+#### Terminal-block and breadboard count — worked out rather than estimated
+
+**Terminal blocks, per vehicle. Count WAYS, not blocks.**
+
+| Board | Connection | Ways |
+|---|---|---:|
+| Signal | Drive sensor — 3.3 V · GND · A · B | 2 × 2-pin |
+| Signal | Steering sensor — 3.3 V · GND · SDA · SCL | 2 × 2-pin |
+| Signal | 5 V power in | 1 × 2-pin |
+| Relay | Gate + GND from the Teensy | 1 × 2-pin |
+| Relay | 12 V + GND in | 1 × 2-pin |
+| Relay | Four relay coils, a pair each | 4 × 2-pin |
+| | **Per vehicle** | **11 × 2-pin** |
+| | **Fleet** | **33 × 2-pin** |
+
+> **The 3-pin is the less useful part, which is the opposite of what the first estimate assumed.**
+> Both sensor cables carry **four** conductors, and four does not fit a 3-way — so they take two
+> 2-pin blocks each. **3-pin only earns its place where three wires genuinely travel together**,
+> and on this build that is the servo-style runs to the signal MUX, which use pin headers instead.
+>
+> **The PWM outputs and the i-BUS line do not get terminal blocks at all** — they are servo
+> connectors and belong on 3-pin headers, which is what the receiver and the Pololu MUX already
+> expect.
+
+**Breadboards: two half-size per bench station, and none ever goes on a vehicle.**
+
+| Where | What sits on it |
+|---|---|
+| **Teensy end** | The Teensy, the two 10 kΩ pull-ups, the two 1 nF, the 4.7 kΩ I²C pair |
+| **Sensor end** | Both TO-92 Hall latches and the AS5600 breakout, so magnets can be waved and rotated **away from the Teensy** |
+
+> **One board is enough at the Teensy end.** A half-size board is 30 columns and a Teensy 4.1
+> occupies 24 — but **each pin column still has four free holes**, which is where the pull-ups,
+> capacitors and jumpers go. *An earlier note here said to clip two together; that was
+> over-cautious and the second board is better spent at the sensor end.*
+>
+> **A third board per station is worth it if drive and steering are to be bench-tested in
+> parallel** rather than one after the other. With thirteen students on three stations, that is
+> usually what happens.
+
 ### 3.5.3 Build the circuit twice, and not for the reason it sounds like
 
 **Yes, use a solderless breadboard — on the bench.** This page warned against breadboard *on the
@@ -461,9 +501,9 @@ box, which is the same split as the enclosures and for the same reason.
 > | | |
 > |---|---|
 > | **만능기판** | 거상인 **`[GA2] 80 × 80 양면` ₩4,300** (signal board — a Teensy 4.1 is 61 mm long, so 50 × 80 is tight once terminals are on) and **`[GA6] 50 × 80 양면` ₩3,500** (relay driver). **Four of each** — a perfboard is the part a student ruins |
-> | **Terminal blocks** | EM Tech **`2EDGK+2EDGRC-5.08`**, 2-pin ₩600 / 3-pin ₩900, sold in tens. **Pluggable, not plain screw** — the harness unplugs whole, so a sensor or a box comes out without a screwdriver inside the bay |
+> | **Terminal blocks** | EM Tech **`2EDGK+2EDGRC-5.08`**, 2-pin ₩600 / 3-pin ₩900. **Pluggable, not plain screw** — the harness unplugs whole, so a sensor or a box comes out without a screwdriver inside the bay. **Count below: 11 × 2-pin per vehicle, and 3-pin is the *less* useful of the two** |
 > | **Headers** | CONNFLY **`핀헤더소켓 Single 1x40 Straight (2.54mm)` ₩530**. A Teensy 4.1 is **24 pins a side**, so one strip cuts a row with 16 to spare — **two per Teensy**. *Not the `적층형` at ₩1,000: its 9.1 mm legs are for stacking shields and only raise the board in the box* |
-> | **Bench** | `브레드보드` + `점퍼케이블 세트`. **Half-size is 30 columns and a Teensy 4.1 occupies 24 of them** — clip two together per bench station |
+> | **Bench** | `브레드보드` + `점퍼케이블 세트`. **Two half-size boards per bench station** — one at the Teensy, one at the sensor end. See the count below |
 > | **Splicing** | **`NT-DIY 열수축튜브 328세트` ₩3,900.** The [#8a](../order-log.md) splice joins **0.75 mm² (OD ~2.5 mm) to AWG 14 silicone (OD ~4 mm)**, so the tube must shrink from **≥ 6 mm to under 2.5 mm**; 8 sizes bracket that |
 > | **Passives** | **`DONGIL HV(E) Ceramic 1000pF` ₩40 / 10** — 1000 pF *is* 1 nF, and it is **through-hole**. The chip parts a search returns are SMD and unusable on perfboard. **4.7 kΩ is already in the 30-value kit** |
 
