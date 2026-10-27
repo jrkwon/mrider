@@ -105,6 +105,8 @@ Laptop ──▶ its own internal battery (NOT wired to traction in v1)
 logic rail must not follow. Use adequate hold-up capacitance and put the undervoltage monitor
 on the **logic** rail.
 
+![Power wiring in detail: the traction pack through a 25 A fuse, the E-stop contactor and the four-pole relay MUX to either the stock ECU or the motor driver; and separately the LiFePO4 logic pack through a 5 A fuse to two UBECs and a direct coil tap feeding every relay coil; with the single star ground where the two rails meet](../images/power-wiring.svg)
+
 ## 3.2 Per-rail fuse and gauge table
 
 Fuse for the **stall** current, not the nominal draw, and size wire for the fuse.
@@ -705,6 +707,58 @@ box, which is the same split as the enclosures and for the same reason.
 > | **Passives** | **`DONGIL HV(E) Ceramic 1000pF` ₩40 / 10** — 1000 pF *is* 1 nF, and it is **through-hole**. The chip parts a search returns are SMD and unusable on perfboard. **4.7 kΩ is already in the 30-value kit** |
 
 ### 3.5.1 Hardware RC signal MUX — wire this, it is not optional
+
+![FlySky FS-iA6B feeding the Teensy over i-BUS, the Pololu 2806 signal MUX slave inputs and its select channel; the Teensy feeding the master inputs; the MUX outputs driving S1 and S2; and below, the E-stop's two NC contacts breaking the contactor and relay MUX coils while not touching the signal MUX at all](../images/rc-mux-estop.svg)
+
+**The receiver does three separate jobs at once**, which is the thing most people miss:
+
+| From the FS-iA6B | To | Why |
+|---|---|---|
+| **i-BUS pad** | Teensy serial RX | Layer 1 — closed-loop RC override, commands an *angle* |
+| **CH1 · CH2** servo out | signal MUX **SLAVE** | Layer 2 — the raw-effort emergency path |
+| **CH5** servo out | signal MUX **SEL** | chooses between them, in hardware |
+
+The **Teensy's two PWM outputs go to the MASTER inputs**, and the **MUX's two outputs go to the
+driver's `S1` and `S2`**. The MUX and the receiver both sit on **UBEC B**, and **all three grounds —
+receiver, MUX, driver — reference the same star**: a servo pulse is a voltage *against ground*, and
+two grounds means the driver reads a different number than the one that was sent.
+
+> [!CAUTION]
+> **The E-stop does not connect to the signal MUX, and that is deliberate**
+>
+> There are **two muxes** in this vehicle and conversation calls both of them "the MUX":
+>
+> | | what it switches | E-stop |
+> |---|---|---|
+> | **Relay MUX** | motor **power**, 70 A contacts, 12 V coils | **drops it** |
+> | **Signal MUX** (Pololu) | **servo pulses**, logic rail, selected by an RC channel | **does not touch it** |
+>
+> The E-stop's two NC contacts break the **contactor coil** (traction power cut) and the **relay MUX
+> coils** (authority back to STOCK). The signal MUX stays powered and keeps whatever state it was
+> in — **which is correct, because with traction cut and the relay MUX dropped it is driving
+> nothing.** Say which mux you mean, every time.
+>
+> **De-energise-to-safe falls out of this for free.** Both coils are fed through NC contacts from
+> the logic battery, so **pressing the button, a dead logic battery, and a broken wire all do the
+> same thing.** There is no state in which something must *work* for the E-stop to work — which is
+> why the button is wired to coils rather than to anything clever.
+
+> [!IMPORTANT]
+> **Open: the two NO contacts are unassigned, and the firmware is blind to the E-stop**
+>
+> The `MRE-RR2R` is **2a2b** and the design uses only the two NC. **So nothing tells the Teensy the
+> E-stop has been pressed** — it sees its outputs stop having any effect and cannot say why, and
+> neither can the laptop nor the log.
+>
+> **Proposal: wire `NO ①` to a Teensy input** — 3.3 V through the contact, pulled down at the pin,
+> pressed = high. One wire and one GPIO, and the firmware can then **latch into `ESTOP`
+> deliberately, publish it, and stop fighting a loop it cannot win.**
+>
+> **It is a diagnostic, never a safety function.** The safety lives in the NC contacts and the
+> coils, which work with the Teensy dead. This input only lets the system *explain itself*, and a
+> sensed input must never become the thing that is relied on.
+>
+> *Raised 2026-10-27, not yet adopted. Decide it before §3.4 is built. `NO ②` stays spare.*
 
 > [!CAUTION]
 > **This is the condition on which the architecture was adopted**

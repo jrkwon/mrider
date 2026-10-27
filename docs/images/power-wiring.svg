@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1260 1180" width="1260" height="1180"
+     font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+  <title>Power wiring in detail — two rails, two fuses, and every coil on the logic side</title>
+  <desc>The traction path from pack through a 25 A fuse, the E-stop contactor and the four-pole
+  relay MUX to either the stock ECU or the motor driver; and the logic path from the LiFePO4 pack
+  through a 5 A fuse to two UBECs and a direct 12 V tap that feeds every relay coil in the vehicle.
+  Wire gauges, fuse values and the single star ground are marked.</desc>
+
+  <defs>
+    <marker id="k" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#334155"/></marker>
+    <marker id="kr" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#b91c1c"/></marker>
+  </defs>
+
+  <rect width="1260" height="1180" fill="#ffffff"/>
+
+  <text x="24" y="36" font-size="20" font-weight="bold" fill="#0f172a">Power wiring — two rails that touch at exactly one point</text>
+  <text x="24" y="60" font-size="12.5" fill="#475569">
+    <tspan font-weight="bold" fill="#b91c1c">Thick red/black = traction, AWG 14.</tspan>
+    <tspan font-weight="bold" fill="#b45309">  Thin amber = logic, AWG 18–20.</tspan>
+    <tspan font-weight="bold" fill="#7e22ce">  Purple = coil circuits.</tspan>
+    The only shared node is the star ground.
+  </text>
+
+  <!-- ============ TRACTION ============ -->
+  <rect x="24" y="86" width="1212" height="372" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+  <text x="44" y="114" font-size="15" font-weight="bold" fill="#991b1b">TRACTION — stock pack, 25 A, AWG 14 end to end</text>
+
+  <rect x="48" y="140" width="130" height="68" rx="5" fill="#fecaca" stroke="#b91c1c" stroke-width="2.4"/>
+  <text x="113" y="168" font-size="13" font-weight="bold" fill="#7f1d1d" text-anchor="middle">Traction pack</text>
+  <text x="113" y="188" font-size="11.5" fill="#7f1d1d" text-anchor="middle">stock, in the bay</text>
+
+  <rect x="222" y="150" width="96" height="48" rx="5" fill="#ffffff" stroke="#b91c1c" stroke-width="2.4"/>
+  <text x="270" y="170" font-size="12.5" font-weight="bold" fill="#991b1b" text-anchor="middle">25 A</text>
+  <text x="270" y="188" font-size="11" fill="#7f1d1d" text-anchor="middle">blade fuse</text>
+  <text x="270" y="130" font-size="11" font-weight="bold" fill="#b91c1c" text-anchor="middle">AT the pack</text>
+
+  <rect x="362" y="140" width="150" height="68" rx="5" fill="#fef3c7" stroke="#b45309" stroke-width="2.4"/>
+  <text x="437" y="166" font-size="12.5" font-weight="bold" fill="#92400e" text-anchor="middle">E-stop contactor</text>
+  <text x="437" y="184" font-size="11" fill="#78350f" text-anchor="middle">#8a · 40 A · 30→87</text>
+  <text x="437" y="199" font-size="10.5" font-weight="bold" fill="#b45309" text-anchor="middle">coil on the LOGIC rail</text>
+
+  <rect x="556" y="132" width="168" height="84" rx="5" fill="#e9d5ff" stroke="#7e22ce" stroke-width="2.4"/>
+  <text x="640" y="158" font-size="12.5" font-weight="bold" fill="#581c87" text-anchor="middle">RELAY MUX</text>
+  <text x="640" y="176" font-size="11" fill="#6b21a8" text-anchor="middle">4 × SPDT 70 A</text>
+  <text x="640" y="192" font-size="11" fill="#6b21a8" text-anchor="middle">2 poles per motor circuit</text>
+  <text x="640" y="208" font-size="10.5" font-weight="bold" fill="#7e22ce" text-anchor="middle">de-energised = STOCK</text>
+
+  <rect x="800" y="112" width="200" height="54" rx="5" fill="#ffffff" stroke="#64748b" stroke-width="2"/>
+  <text x="900" y="134" font-size="12.5" font-weight="bold" fill="#334155" text-anchor="middle">NC → stock ECU</text>
+  <text x="900" y="152" font-size="11" fill="#64748b" text-anchor="middle">parent remote drives the car</text>
+
+  <rect x="800" y="182" width="200" height="54" rx="5" fill="#ede9fe" stroke="#6d28d9" stroke-width="2"/>
+  <text x="900" y="204" font-size="12.5" font-weight="bold" fill="#4c1d95" text-anchor="middle">NO → MDDS30 B+</text>
+  <text x="900" y="222" font-size="11" fill="#5b21b6" text-anchor="middle">M1 steering · M2 drive ×2</text>
+
+  <g stroke="#b91c1c" stroke-width="6" fill="none">
+    <path d="M178,174 L216,174"/>
+    <path d="M318,174 L356,174"/>
+    <path d="M512,174 L550,174"/>
+  </g>
+  <g stroke="#b91c1c" stroke-width="4" fill="none">
+    <path d="M724,152 L794,139" marker-end="url(#kr)"/>
+    <path d="M724,196 L794,209" marker-end="url(#kr)"/>
+  </g>
+
+  <rect x="1020" y="112" width="196" height="124" rx="5" fill="#fff1f2" stroke="#b91c1c" stroke-width="2"/>
+  <text x="1036" y="136" font-size="12" font-weight="bold" fill="#991b1b">Both ends matter</text>
+  <text x="1036" y="158" font-size="11.5" fill="#7f1d1d">The MUX breaks <tspan font-weight="bold">both</tspan></text>
+  <text x="1036" y="175" font-size="11.5" fill="#7f1d1d">motor conductors, which</text>
+  <text x="1036" y="192" font-size="11.5" fill="#7f1d1d">is why four poles and</text>
+  <text x="1036" y="209" font-size="11.5" fill="#7f1d1d">not two. One pole left</text>
+  <text x="1036" y="226" font-size="11.5" font-weight="bold" fill="#991b1b">closed is a live motor.</text>
+
+  <text x="44" y="268" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">The fuse goes AT the pack, not at the load.</tspan> It protects everything downstream and nothing upstream, so the unprotected stub is</text>
+  <text x="44" y="287" font-size="12.5" fill="#7f1d1d">a few centimetres of lead. <tspan font-weight="bold">Panel holder, labelled, location recorded</tspan> — a fuse nobody can find is a fuse nobody checks, and a blown</text>
+  <text x="44" y="306" font-size="12.5" fill="#7f1d1d">one then reads as a dead controller.</text>
+
+  <text x="44" y="338" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">No fuse on the motor branches, deliberately.</tspan> The driver's 20 A current limit <tspan font-weight="bold">clamps and recovers</tspan>; a fuse in the same place</text>
+  <text x="44" y="357" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">blows and stays blown.</tspan> A steering stall mid-lab would end in a field repair instead of a warm motor.</text>
+
+  <text x="44" y="389" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">The steering motor is on the traction rail on purpose</tspan> — so an E-stop de-energises it and the column freewheels. On the logic rail it</text>
+  <text x="44" y="408" font-size="12.5" fill="#7f1d1d">would brown out the Teensy on a stall, and leave a live actuator after an emergency stop. <tspan font-weight="bold">Do not "improve" this.</tspan></text>
+
+  <text x="44" y="440" font-size="12.5" font-weight="bold" fill="#991b1b">Everything above is AWG 14 / 2.5 mm². The 25 A fuse protects all of it, which is why no branch needs its own.</text>
+
+  <!-- ============ LOGIC ============ -->
+  <rect x="24" y="478" width="1212" height="330" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  <text x="44" y="506" font-size="15" font-weight="bold" fill="#92400e">LOGIC — LiFePO₄ 12.8 V, 5 A, and every coil in the vehicle hangs off it</text>
+
+  <rect x="48" y="532" width="130" height="68" rx="5" fill="#fef3c7" stroke="#b45309" stroke-width="2.4"/>
+  <text x="113" y="558" font-size="12.5" font-weight="bold" fill="#92400e" text-anchor="middle">LiFePO₄</text>
+  <text x="113" y="576" font-size="11.5" fill="#78350f" text-anchor="middle">12.8 V · 6 Ah</text>
+  <text x="113" y="592" font-size="10.5" fill="#78350f" text-anchor="middle">740 g, #11a</text>
+
+  <rect x="212" y="542" width="86" height="48" rx="5" fill="#ffffff" stroke="#b45309" stroke-width="2.4"/>
+  <text x="255" y="562" font-size="12.5" font-weight="bold" fill="#92400e" text-anchor="middle">5 A</text>
+  <text x="255" y="580" font-size="11" fill="#78350f" text-anchor="middle">at the pack</text>
+
+  <g stroke="#b45309" stroke-width="3.4" fill="none"><path d="M178,566 L206,566"/></g>
+
+  <rect x="346" y="516" width="180" height="48" rx="5" fill="#ffffff" stroke="#b45309" stroke-width="2.2"/>
+  <text x="436" y="536" font-size="12" font-weight="bold" fill="#92400e" text-anchor="middle">UBEC A → 5 V</text>
+  <text x="436" y="554" font-size="11" fill="#78350f" text-anchor="middle">Teensy VIN, and nothing else</text>
+
+  <rect x="346" y="576" width="180" height="48" rx="5" fill="#ffffff" stroke="#b45309" stroke-width="2.2"/>
+  <text x="436" y="596" font-size="12" font-weight="bold" fill="#92400e" text-anchor="middle">UBEC B → 5 V</text>
+  <text x="436" y="614" font-size="11" fill="#78350f" text-anchor="middle">receiver · signal MUX · driver logic</text>
+
+  <rect x="346" y="636" width="180" height="48" rx="5" fill="#f3e8ff" stroke="#7e22ce" stroke-width="2.4"/>
+  <text x="436" y="656" font-size="12" font-weight="bold" fill="#581c87" text-anchor="middle">12 V DIRECT</text>
+  <text x="436" y="674" font-size="11" fill="#6b21a8" text-anchor="middle">coils only — no UBEC involved</text>
+
+  <g stroke="#b45309" stroke-width="3" fill="none">
+    <path d="M298,566 L322,566 L322,540 L340,540"/>
+    <path d="M322,566 L322,600 L340,600"/>
+  </g>
+  <g stroke="#7e22ce" stroke-width="3" fill="none"><path d="M322,566 L322,660 L340,660"/></g>
+
+  <rect x="572" y="516" width="196" height="48" rx="5" fill="#f1f5f9" stroke="#0f172a" stroke-width="2"/>
+  <text x="670" y="544" font-size="12.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Teensy 4.1 → 3V3 → sensors</text>
+  <rect x="572" y="576" width="196" height="48" rx="5" fill="#f0fdf4" stroke="#15803d" stroke-width="2"/>
+  <text x="670" y="604" font-size="12.5" font-weight="bold" fill="#14532d" text-anchor="middle">FS-iA6B · Pololu MUX · MDDS30</text>
+
+  <rect x="572" y="630" width="196" height="30" rx="4" fill="#f3e8ff" stroke="#7e22ce" stroke-width="2"/>
+  <text x="670" y="650" font-size="12" font-weight="bold" fill="#581c87" text-anchor="middle">E-stop contactor coil</text>
+  <rect x="572" y="666" width="196" height="30" rx="4" fill="#f3e8ff" stroke="#7e22ce" stroke-width="2"/>
+  <text x="670" y="686" font-size="12" font-weight="bold" fill="#581c87" text-anchor="middle">4 × relay MUX coils</text>
+
+  <g stroke="#b45309" stroke-width="2.6" fill="none">
+    <path d="M526,540 L566,540" marker-end="url(#k)"/>
+    <path d="M526,600 L566,600" marker-end="url(#k)"/>
+  </g>
+  <g stroke="#7e22ce" stroke-width="2.6" fill="none">
+    <path d="M526,660 L548,660 L548,645 L566,645" marker-end="url(#k)"/>
+    <path d="M548,660 L548,681 L566,681" marker-end="url(#k)"/>
+  </g>
+
+  <rect x="800" y="516" width="416" height="180" rx="6" fill="#f3e8ff" stroke="#7e22ce" stroke-width="2"/>
+  <text x="818" y="542" font-size="13" font-weight="bold" fill="#581c87">Why every coil is on the LOGIC battery</text>
+  <text x="818" y="566" font-size="12" fill="#6b21a8"><tspan font-weight="bold">Not the traction pack, and the reason is chatter.</tspan></text>
+  <text x="818" y="586" font-size="12" fill="#6b21a8">Under a stall the pack sags → the contactor coil drops →</text>
+  <text x="818" y="604" font-size="12" fill="#6b21a8">traction is cut → the load disappears → <tspan font-weight="bold">the voltage comes</tspan></text>
+  <text x="818" y="622" font-size="12" fill="#6b21a8"><tspan font-weight="bold">back and it re-closes.</tspan> A loop, worst exactly when the</text>
+  <text x="818" y="640" font-size="12" fill="#6b21a8">vehicle is in trouble.</text>
+  <text x="818" y="664" font-size="12" fill="#6b21a8">The logic battery does not sag with motor load, so the</text>
+  <text x="818" y="682" font-size="12" font-weight="bold" fill="#581c87">contactor holds or drops cleanly.</text>
+
+  <text x="44" y="732" font-size="12.5" fill="#78350f"><tspan font-weight="bold">The cost, stated rather than hidden: with no logic battery the vehicle is dead, not a stock toy.</tspan> The contactor is upstream of the relay</text>
+  <text x="44" y="751" font-size="12.5" fill="#78350f">MUX, so an unpowered coil means no traction at all even though the MUX has correctly fallen back to STOCK. For a vehicle thirteen</text>
+  <text x="44" y="770" font-size="12.5" fill="#78350f">students handle that reads as a feature — <tspan font-weight="bold">it cannot be driven with the DBW system unpowered.</tspan></text>
+  <text x="44" y="794" font-size="12.5" font-weight="bold" fill="#b45309">Returning it to stock means unbolting the contactor: one connector, which is what §2.8 reversibility already describes.</text>
+
+  <!-- ============ GROUND ============ -->
+  <rect x="24" y="828" width="1212" height="330" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+  <text x="44" y="856" font-size="15" font-weight="bold" fill="#0f172a">The one place the two rails touch: the star ground at the motor driver</text>
+
+  <circle cx="300" cy="960" r="26" fill="#0f172a"/>
+  <text x="300" y="1006" font-size="12.5" font-weight="bold" fill="#0f172a" text-anchor="middle">STAR — at the MDDS30</text>
+
+  <g stroke="#334155" stroke-width="3" fill="none">
+    <path d="M300,934 L300,898"/><path d="M274,960 L170,960"/><path d="M326,960 L430,960"/><path d="M300,986 L300,1022"/>
+    <path d="M281,941 L205,900"/><path d="M319,941 L395,900"/>
+  </g>
+  <text x="300" y="890" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">signal board GND</text>
+  <text x="162" y="964" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="end">Teensy</text>
+  <text x="438" y="964" font-size="11.5" font-weight="bold" fill="#334155">receiver</text>
+  <text x="300" y="1042" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">signal MUX</text>
+  <text x="196" y="892" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="end">logic −</text>
+  <text x="402" y="892" font-size="11.5" font-weight="bold" fill="#334155">traction −</text>
+
+  <text x="540" y="886" font-size="12.5" fill="#334155"><tspan font-weight="bold">One point, one wire each.</tspan> A second path between any two of these is a ground loop, and a</text>
+  <text x="540" y="905" font-size="12.5" fill="#334155">loop between logic and a motor power stage produces <tspan font-weight="bold">erratic motor commands that look exactly</tspan></text>
+  <text x="540" y="924" font-size="12.5" fill="#334155"><tspan font-weight="bold">like a firmware bug</tspan> — FMEA row 5.</text>
+
+  <text x="540" y="956" font-size="12.5" fill="#334155"><tspan font-weight="bold">"Isolated" means the two POSITIVE rails never meet.</tspan> The grounds must meet, once, or there is no</text>
+  <text x="540" y="975" font-size="12.5" fill="#334155">common reference for a servo pulse and the driver reads noise. <tspan font-weight="bold">Isolation is about the supplies,</tspan></text>
+  <text x="540" y="994" font-size="12.5" fill="#334155"><tspan font-weight="bold">not the references</tspan> — this is the single most misread line in the whole power design.</text>
+
+  <text x="540" y="1026" font-size="12.5" fill="#334155"><tspan font-weight="bold">Do not use the chassis as a ground.</tspan> It is plastic in most places and paint everywhere else, and</text>
+  <text x="540" y="1045" font-size="12.5" fill="#334155">a "ground" that depends on a bolt's contact resistance is a fault waiting for a vibration.</text>
+
+  <rect x="44" y="1068" width="1172" height="72" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="1.8"/>
+  <text x="62" y="1092" font-size="12.5" font-weight="bold" fill="#92400e">Before any power: §3.6 continuity and isolation checks — and one of them is the test for this whole page.</text>
+  <text x="62" y="1114" font-size="12.5" fill="#78350f">Meter <tspan font-weight="bold">traction + to logic +</tspan>: must read open. Meter <tspan font-weight="bold">traction − to logic −</tspan>: must read a short, through the star and nowhere else.</text>
+  <text x="62" y="1132" font-size="12.5" font-weight="bold" fill="#b45309">If the first reads short, something has bridged the rails. If the second reads open, nothing shares a reference and nothing will work.</text>
+</svg>

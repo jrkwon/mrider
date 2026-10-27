@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1260 1240" width="1260" height="1240"
+     font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+  <title>FlySky to Pololu signal MUX to driver — and where the E-stop actually goes</title>
+  <desc>Top: the FS-iA6B receiver feeding the Teensy over i-BUS, feeding the Pololu 2806 signal
+  multiplexer's slave inputs with two servo channels and its select input with a third, while the
+  Teensy feeds the master inputs; the multiplexer's two outputs drive the motor driver's S1 and S2.
+  Bottom: the E-stop's four contacts, showing that its two normally-closed contacts break the
+  contactor coil and the relay MUX coils and that it does not connect to the signal multiplexer at
+  all, plus a proposal for the two unassigned normally-open contacts.</desc>
+
+  <defs>
+    <marker id="m" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#1d4ed8"/></marker>
+    <marker id="mg" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#15803d"/></marker>
+    <marker id="mp" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#7e22ce"/></marker>
+  </defs>
+
+  <rect width="1260" height="1240" fill="#ffffff"/>
+
+  <text x="24" y="36" font-size="20" font-weight="bold" fill="#0f172a">FlySky → Pololu signal MUX → driver, and where the E-stop really goes</text>
+  <text x="24" y="60" font-size="12.5" fill="#475569">The receiver feeds <tspan font-weight="bold">three different things at once</tspan>, and the E-stop touches <tspan font-weight="bold">none</tspan> of them. Both facts surprise people.</text>
+
+  <!-- ===== PART 1 ===== -->
+  <rect x="24" y="84" width="1212" height="460" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+  <text x="44" y="112" font-size="15.5" font-weight="bold" fill="#14532d">1 · The receiver has three separate jobs</text>
+
+  <rect x="48" y="134" width="186" height="178" rx="6" fill="#ffffff" stroke="#15803d" stroke-width="2.4"/>
+  <text x="141" y="160" font-size="13.5" font-weight="bold" fill="#14532d" text-anchor="middle">FS-iA6B</text>
+  <text x="141" y="178" font-size="11" fill="#166534" text-anchor="middle">on UBEC B, 5 V</text>
+  <text x="60" y="206" font-size="11.5" font-weight="bold" fill="#0f172a">i-BUS pad</text>
+  <text x="60" y="232" font-size="11.5" font-weight="bold" fill="#0f172a">CH1 · CH2</text>
+  <text x="60" y="258" font-size="11.5" font-weight="bold" fill="#0f172a">CH5 (spare)</text>
+  <text x="60" y="288" font-size="10.5" fill="#166534">every channel is a</text>
+  <text x="60" y="302" font-size="10.5" fill="#166534">3-pin servo header</text>
+
+  <!-- job 1 -->
+  <path d="M234,202 L430,202" stroke="#1d4ed8" stroke-width="3" marker-end="url(#m)"/>
+  <rect x="434" y="176" width="230" height="52" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2.2"/>
+  <text x="549" y="198" font-size="12.5" font-weight="bold" fill="#1e3a8a" text-anchor="middle">Teensy serial RX</text>
+  <text x="549" y="216" font-size="11" fill="#1d4ed8" text-anchor="middle">Layer 1 — closed-loop RC override</text>
+  <text x="300" y="194" font-size="11" font-weight="bold" fill="#1d4ed8">i-BUS</text>
+
+  <!-- job 2 -->
+  <path d="M234,236 L430,264" stroke="#15803d" stroke-width="3" marker-end="url(#mg)"/>
+  <!-- job 3 -->
+  <path d="M234,262 L430,318" stroke="#b45309" stroke-width="3" marker-end="url(#mg)"/>
+
+  <rect x="434" y="244" width="230" height="156" rx="6" fill="#ffffff" stroke="#15803d" stroke-width="2.4"/>
+  <text x="549" y="270" font-size="13.5" font-weight="bold" fill="#14532d" text-anchor="middle">Pololu #2806</text>
+  <text x="549" y="288" font-size="11" fill="#166534" text-anchor="middle">4-ch RC servo MUX · UBEC B</text>
+  <text x="448" y="312" font-size="11.5" fill="#0f172a"><tspan font-weight="bold">SLAVE</tspan> ← CH1, CH2</text>
+  <text x="448" y="334" font-size="11.5" fill="#0f172a"><tspan font-weight="bold">MASTER</tspan> ← Teensy PWM ×2</text>
+  <text x="448" y="356" font-size="11.5" fill="#0f172a"><tspan font-weight="bold">SEL</tspan> ← CH5</text>
+  <text x="448" y="378" font-size="11.5" fill="#0f172a"><tspan font-weight="bold">OUT</tspan> → S1, S2</text>
+
+  <path d="M434,334 L370,334 L370,420 L549,420 L549,404" fill="none" stroke="#6d28d9" stroke-width="3" marker-end="url(#mp)"/>
+  <rect x="330" y="432" width="220" height="44" rx="5" fill="#f1f5f9" stroke="#0f172a" stroke-width="2"/>
+  <text x="440" y="459" font-size="12.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Teensy PWM ×2 — the master</text>
+
+  <path d="M664,322 L740,322" stroke="#6d28d9" stroke-width="3.4" marker-end="url(#mp)"/>
+  <rect x="744" y="290" width="212" height="64" rx="5" fill="#ede9fe" stroke="#6d28d9" stroke-width="2.4"/>
+  <text x="850" y="314" font-size="13" font-weight="bold" fill="#4c1d95" text-anchor="middle">MDDS30</text>
+  <text x="850" y="332" font-size="11.5" fill="#5b21b6" text-anchor="middle">S1 → M1 steering</text>
+  <text x="850" y="348" font-size="11.5" fill="#5b21b6" text-anchor="middle">S2 → M2 drive ×2</text>
+
+  <rect x="980" y="134" width="238" height="166" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+  <text x="996" y="158" font-size="12.5" font-weight="bold" fill="#991b1b">FAILMODE jumper</text>
+  <text x="996" y="180" font-size="11.5" font-weight="bold" fill="#7f1d1d">Leave it DISCONNECTED.</text>
+  <text x="996" y="200" font-size="11.5" fill="#7f1d1d">Master keeps control if the</text>
+  <text x="996" y="217" font-size="11.5" fill="#7f1d1d">SEL signal is lost.</text>
+  <text x="996" y="239" font-size="11.5" fill="#7f1d1d">Losing SEL means the RC link</text>
+  <text x="996" y="256" font-size="11.5" fill="#7f1d1d">is gone, and the Teensy has its</text>
+  <text x="996" y="273" font-size="11.5" fill="#7f1d1d">own RC-loss failsafe. Let the</text>
+  <text x="996" y="290" font-size="11.5" font-weight="bold" fill="#991b1b">designed response run.</text>
+
+  <rect x="980" y="312" width="238" height="128" rx="6" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  <text x="996" y="336" font-size="12.5" font-weight="bold" fill="#92400e">Three grounds, one point</text>
+  <text x="996" y="358" font-size="11.5" fill="#78350f">Receiver, MUX and driver all</text>
+  <text x="996" y="375" font-size="11.5" fill="#78350f">reference the <tspan font-weight="bold">same star</tspan>. A servo</text>
+  <text x="996" y="392" font-size="11.5" fill="#78350f">pulse is a voltage <tspan font-style="italic">against ground</tspan>;</text>
+  <text x="996" y="409" font-size="11.5" fill="#78350f">two grounds means the driver</text>
+  <text x="996" y="426" font-size="11.5" font-weight="bold" fill="#92400e">reads a different number.</text>
+
+  <text x="44" y="508" font-size="12.5" fill="#166534"><tspan font-weight="bold">The MUX switches servo PULSES and nothing else.</tspan> That is why §4 went back to R/C PWM mode: no RC multiplexer can select between</text>
+  <text x="44" y="527" font-size="12.5" fill="#166534">a serial stream and RC PWM, so packetized serial and this MUX are <tspan font-weight="bold">mutually exclusive</tspan> — and the MUX is the condition D3 was adopted on.</text>
+
+  <!-- ===== PART 2 ===== -->
+  <rect x="24" y="564" width="1212" height="400" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+  <text x="44" y="592" font-size="15.5" font-weight="bold" fill="#991b1b">2 · The E-stop does NOT connect to the signal MUX — it works a layer below it</text>
+
+  <rect x="48" y="612" width="206" height="196" rx="6" fill="#fecaca" stroke="#b91c1c" stroke-width="2.6"/>
+  <text x="151" y="638" font-size="13.5" font-weight="bold" fill="#7f1d1d" text-anchor="middle">MRE-RR2R</text>
+  <text x="151" y="656" font-size="11" fill="#7f1d1d" text-anchor="middle">push-lock / turn-reset</text>
+  <rect x="64" y="670" width="174" height="30" rx="4" fill="#ffffff" stroke="#b91c1c" stroke-width="2"/>
+  <text x="151" y="690" font-size="11.5" font-weight="bold" fill="#991b1b" text-anchor="middle">NC ① — block 1</text>
+  <rect x="64" y="706" width="174" height="30" rx="4" fill="#ffffff" stroke="#b91c1c" stroke-width="2"/>
+  <text x="151" y="726" font-size="11.5" font-weight="bold" fill="#991b1b" text-anchor="middle">NC ② — block 2</text>
+  <rect x="64" y="742" width="174" height="26" rx="4" fill="#f1f5f9" stroke="#64748b" stroke-width="1.8" stroke-dasharray="5 3"/>
+  <text x="151" y="760" font-size="11" fill="#475569" text-anchor="middle">NO ① — unassigned</text>
+  <rect x="64" y="772" width="174" height="26" rx="4" fill="#f1f5f9" stroke="#64748b" stroke-width="1.8" stroke-dasharray="5 3"/>
+  <text x="151" y="790" font-size="11" fill="#475569" text-anchor="middle">NO ② — unassigned</text>
+
+  <path d="M254,685 L380,662" stroke="#7e22ce" stroke-width="3.4" marker-end="url(#mp)"/>
+  <path d="M254,721 L380,744" stroke="#7e22ce" stroke-width="3.4" marker-end="url(#mp)"/>
+
+  <rect x="384" y="636" width="256" height="52" rx="5" fill="#f3e8ff" stroke="#7e22ce" stroke-width="2.4"/>
+  <text x="512" y="658" font-size="12.5" font-weight="bold" fill="#581c87" text-anchor="middle">E-stop contactor COIL</text>
+  <text x="512" y="676" font-size="11" fill="#6b21a8" text-anchor="middle">drops → traction power cut</text>
+
+  <rect x="384" y="718" width="256" height="52" rx="5" fill="#f3e8ff" stroke="#7e22ce" stroke-width="2.4"/>
+  <text x="512" y="740" font-size="12.5" font-weight="bold" fill="#581c87" text-anchor="middle">4 × relay MUX COILS</text>
+  <text x="512" y="758" font-size="11" fill="#6b21a8" text-anchor="middle">drop → authority back to STOCK</text>
+
+  <rect x="672" y="636" width="234" height="134" rx="6" fill="#ffffff" stroke="#64748b" stroke-width="2" stroke-dasharray="7 4"/>
+  <text x="789" y="662" font-size="13" font-weight="bold" fill="#475569" text-anchor="middle">Pololu signal MUX</text>
+  <text x="789" y="684" font-size="12" font-weight="bold" fill="#b91c1c" text-anchor="middle">NO CONNECTION</text>
+  <text x="689" y="708" font-size="11.5" fill="#475569">It stays powered and keeps</text>
+  <text x="689" y="725" font-size="11.5" fill="#475569">whatever state it was in — and</text>
+  <text x="689" y="742" font-size="11.5" fill="#475569">that is <tspan font-weight="bold">correct</tspan>, because with</text>
+  <text x="689" y="759" font-size="11.5" fill="#475569">traction cut it drives nothing.</text>
+
+  <rect x="930" y="612" width="288" height="196" rx="6" fill="#fff1f2" stroke="#b91c1c" stroke-width="2"/>
+  <text x="946" y="638" font-size="13" font-weight="bold" fill="#991b1b">Two muxes, and only one is</text>
+  <text x="946" y="656" font-size="13" font-weight="bold" fill="#991b1b">in the E-stop's path</text>
+  <text x="946" y="680" font-size="11.5" fill="#7f1d1d"><tspan font-weight="bold">RELAY MUX</tspan> — power, 70 A contacts,</text>
+  <text x="946" y="697" font-size="11.5" fill="#7f1d1d">12 V coils. <tspan font-weight="bold">E-stop drops it.</tspan></text>
+  <text x="946" y="721" font-size="11.5" fill="#7f1d1d"><tspan font-weight="bold">SIGNAL MUX</tspan> — servo pulses, logic</text>
+  <text x="946" y="738" font-size="11.5" fill="#7f1d1d">rail, selected by an RC channel.</text>
+  <text x="946" y="755" font-size="11.5" fill="#7f1d1d"><tspan font-weight="bold">E-stop does not touch it.</tspan></text>
+  <text x="946" y="782" font-size="11" font-style="italic" fill="#b91c1c">Both are called "the MUX" in conversation.</text>
+  <text x="946" y="798" font-size="11" font-style="italic" fill="#b91c1c">Say which one, every time.</text>
+
+  <text x="44" y="838" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">Put the two NC on DIFFERENT contact blocks.</tspan> They are the two things the button has to do, and both on one block means a single</text>
+  <text x="44" y="857" font-size="12.5" fill="#7f1d1d">loose terminal screw takes out both — <tspan font-weight="bold">a common-cause failure in the one device whose whole job is not to have one.</tspan></text>
+
+  <text x="44" y="889" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">De-energise-to-safe falls out of this for free.</tspan> Both coils are fed through NC contacts from the logic battery, so <tspan font-weight="bold">pressing the button,</tspan></text>
+  <text x="44" y="908" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">a dead logic battery, and a broken wire all do the same thing</tspan> — the coils drop and the vehicle reverts. There is no state in which</text>
+  <text x="44" y="927" font-size="12.5" fill="#7f1d1d">something must work for the E-stop to work.</text>
+  <text x="44" y="950" font-size="12.5" font-weight="bold" fill="#991b1b">That is the whole design, and it is why the button is wired to coils rather than to anything clever.</text>
+
+  <!-- ===== PART 3 ===== -->
+  <rect x="24" y="984" width="1212" height="232" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="44" y="1012" font-size="15.5" font-weight="bold" fill="#1e3a8a">3 · A finding: the two NO contacts are unassigned, and the firmware is blind to the E-stop</text>
+
+  <text x="44" y="1042" font-size="12.5" fill="#1d4ed8">The button is <tspan font-weight="bold">2a2b</tspan> — two NC and two NO — and the design uses only the two NC. <tspan font-weight="bold">So nothing tells the Teensy the E-stop has been</tspan></text>
+  <text x="44" y="1061" font-size="12.5" fill="#1d4ed8"><tspan font-weight="bold">pressed.</tspan> It sees its outputs stop having any effect and cannot say why, and neither can the laptop or the log.</text>
+
+  <text x="44" y="1093" font-size="12.5" fill="#1d4ed8"><tspan font-weight="bold">Proposal: wire NO ① to a Teensy input</tspan> — 3.3 V through the contact, pulled down at the pin. Pressed = high. It costs one wire and</text>
+  <text x="44" y="1112" font-size="12.5" fill="#1d4ed8">one GPIO, and the firmware can then <tspan font-weight="bold">latch into ESTOP deliberately, publish it, and stop fighting a loop it cannot win.</tspan></text>
+
+  <text x="44" y="1144" font-size="12.5" fill="#1d4ed8"><tspan font-weight="bold">It is a diagnostic, never a safety function.</tspan> The safety is in the NC contacts and the coils, which work with the Teensy dead. This</text>
+  <text x="44" y="1163" font-size="12.5" fill="#1d4ed8">input only lets the system <tspan font-style="italic">explain itself</tspan>, and a sensed input must never become the thing that is relied on.</text>
+  <text x="44" y="1190" font-size="12.5" font-weight="bold" fill="#1e40af">Not yet in the design docs — raised here, to be decided before §3.4 is built. NO ② stays spare; something always wants one.</text>
+</svg>
