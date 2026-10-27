@@ -14,9 +14,17 @@
 # limitations under the License.
 
 r"""
-Generate docs/images/breadboard-layout.svg.
+Generate the two bench-breadboard figures.
 
     python3 scripts/gen_breadboard_figure.py
+
+  docs/images/breadboard-layout.svg     - the wiring, three boards
+  docs/images/breadboard-procedure.svg  - counts, the VUSB rule, bring-up order
+
+They were one figure and it ran to 2190 px tall, which is unreadable on a
+screen and unprintable on a page. The split is along a real seam: the first
+is what you look at *while* wiring, the second is what you read *before* and
+*after*. Neither needs the other open.
 
 WHY A GENERATOR AND NOT HAND-WRITTEN SVG
 ----------------------------------------
@@ -41,7 +49,7 @@ CHANGING IT
 Edit the geometry block, re-run, and commit both this file and the SVG. Do
 not edit the SVG directly; it will be overwritten.
 """
-W,H=1180,2190
+W,H=1180,1470
 P=20; C0=180                      # 30 columns, 2.54mm pitch
 def col(i): return C0+i*P
 BX0,BX1=150,790                   # board rect
@@ -196,6 +204,23 @@ e(f'<text x="{col(26)}" y="1270" font-size="10.5" font-weight="bold" fill="#1580
 e('<text x="180" y="1300" font-size="12" fill="#0f766e">The AS5600 breakout may carry its own pull-ups. If it does, the 4.7 kΩ on board A are in parallel — fine.</text>')
 e('<text x="180" y="1320" font-size="12" fill="#0f766e">Rows A–E of every board are left unused here. That is normal; a half-size board has far more holes than this needs.</text>')
 
+e('</svg>')
+open(__import__('pathlib').Path(__file__).resolve().parent.parent/'docs'/'images'/'breadboard-layout.svg','w',encoding='utf-8').write('\n'.join(out))
+print('written')
+
+
+# ======================= FIGURE 2 =======================
+out=[]
+W2,H2=1180,980
+e(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W2} {H2}" width="{W2}" height="{H2}" font-family="DejaVu Sans, Helvetica, Arial, sans-serif">')
+e('<title>Bench bring-up — what to buy, what the VUSB cut does, and the order to prove things in</title>')
+e('<desc>Companion to the breadboard wiring figure. Panels covering the board and sensor counts, '
+  'what the VUSB to VIN cut does to USB power, the five-step bring-up order, and the checks to make '
+  'before any wire goes in.</desc>')
+e(f'<rect width="{W2}" height="{H2}" fill="#ffffff"/>')
+e('<text x="24" y="36" font-size="20" font-weight="bold" fill="#0f172a">Bench bring-up — read this before and after, not while wiring</text>')
+e('<text x="24" y="60" font-size="12.5" fill="#475569">Companion to <tspan font-style="italic">breadboard-layout</tspan>. That figure is the wiring; this one is the counts, the rules and the order.</text>')
+
 def panel(x,y,w,h,fill,stroke,title,tcol,lines,lcol,ls=19,fs=12):
     e(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="8" fill="{fill}" stroke="{stroke}" stroke-width="2"/>')
     e(f'<text x="{x+20}" y="{y+28}" font-size="14.5" font-weight="bold" fill="{tcol}">{title}</text>')
@@ -205,7 +230,7 @@ def panel(x,y,w,h,fill,stroke,title,tcol,lines,lcol,ls=19,fs=12):
         e(f'<text x="{x+20+ind}" y="{yy}" font-size="{fs}" fill="{lcol}">{ln.lstrip("~")}</text>')
         yy+=ls
 
-panel(24,1360,566,250,'#f0fdf4','#22c55e','Three boards per station — and nothing more to order','#14532d',[
+panel(24,96,566,250,'#f0fdf4','#22c55e','Three boards per station — and nothing more to order','#14532d',[
  '<tspan font-weight="bold">9 breadboards</tspan> = 3 stations × 3 boards. Exactly what was ordered.',
  '<tspan font-weight="bold">AS5600 ×5</tspan> covers it, because the bench unit is <tspan font-weight="bold">the one you then fit</tspan>',
  '~to that vehicle — better anyway, since AGC is tuned per part.',
@@ -216,7 +241,7 @@ panel(24,1360,566,250,'#f0fdf4','#22c55e','Three boards per station — and noth
  '~no 12 V. Signal on breadboard, authority on soldered perfboard.',
 ],'#166534')
 
-panel(614,1360,542,250,'#fffbeb','#f59e0b','After the VUSB–VIN cut: USB is data only','#92400e',[
+panel(614,96,542,250,'#fffbeb','#f59e0b','After the VUSB–VIN cut: USB is data only','#92400e',[
  '<tspan font-weight="bold">Yes.</tspan> The laptop still programs the board and still carries',
  'micro-ROS. <tspan font-weight="bold">It just cannot power it.</tspan> 5 V comes from a UBEC',
  'into VIN, on the bench and on the vehicle alike.',
@@ -227,7 +252,7 @@ panel(614,1360,542,250,'#fffbeb','#f59e0b','After the VUSB–VIN cut: USB is dat
  '<tspan font-weight="bold">working correctly.</tspan> Tape a note inside the parts box.',
 ],'#78350f')
 
-panel(24,1640,1132,300,'#f8fafc','#94a3b8','Prove it in this order — each step fails for a different reason','#0f172a',[
+panel(24,376,1132,300,'#f8fafc','#94a3b8','Prove it in this order — each step fails for a different reason','#0f172a',[
  '<tspan font-weight="bold">1 · Power only.</tspan> 5 V at VIN. Meter the + rail on <tspan font-weight="bold">board C</tspan>, the far end of the chain: 3.3 V there proves the 3V3 pin, both rail',
  '~bridges and both board-to-board feeds in one reading. Not there → a wire, not a sensor.',
  '<tspan font-weight="bold">2 · Latches, on a meter, before any code.</tspan> Probe each OUT against GND and pass a magnet by. It must snap between <tspan font-weight="bold">0 V</tspan>',
@@ -241,7 +266,7 @@ panel(24,1640,1132,300,'#f8fafc','#94a3b8','Prove it in this order — each step
  '<tspan font-weight="bold" fill="#15803d">Steps 1–3 need no firmware beyond a scan sketch. If something is wrong, it is wrong before code can be blamed.</tspan>',
 ],'#334155',ls=22,fs=12.5)
 
-panel(24,1970,1132,186,'#fef2f2','#ef4444','Before a single wire goes in','#991b1b',[
+panel(24,706,1132,186,'#fef2f2','#ef4444','Before a single wire goes in','#991b1b',[
  '<tspan font-weight="bold">The TO-92 pin order is not guessable.</tspan> Reversed V<tspan font-size="9">CC</tspan>/GND destroys the part — that is what the fourteen spares are for, and it is',
  '~a far cheaper lesson on a breadboard than on a soldered board. <tspan font-weight="bold">Bend the legs out to 2.54 mm</tspan> before inserting.',
  '<tspan font-weight="bold">Keep them in the labelled bag until each one is fitted.</tspan> TI marks a TO-92 body with an abbreviated code, so loose parts are',
@@ -250,6 +275,8 @@ panel(24,1970,1132,186,'#fef2f2','#ef4444','Before a single wire goes in','#991b
  '~this same joint becomes the star ground at the motor driver.',
 ],'#7f1d1d',ls=22,fs=12.5)
 
+
+
 e('</svg>')
-open(__import__('pathlib').Path(__file__).resolve().parent.parent/'docs'/'images'/'breadboard-layout.svg','w',encoding='utf-8').write('\n'.join(out))
-print('written')
+open(__import__('pathlib').Path(__file__).resolve().parent.parent/'docs'/'images'/'breadboard-procedure.svg','w',encoding='utf-8').write('\n'.join(out))
+print('written 2')

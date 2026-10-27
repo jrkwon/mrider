@@ -528,6 +528,8 @@ then fit to that vehicle** — which is better practice anyway, since AGC is tun
 > abbreviated code, so loose parts are unidentifiable and `BC` looks exactly like `AG`. And **bend
 > the legs out to 2.54 mm** — they leave the package closer together than a breadboard pitch.
 
+![Companion panel figure: board and AS5600 counts, what the VUSB to VIN cut does to USB power, the five-step bring-up order, and the checks to make before any wire goes in](../images/breadboard-procedure.svg)
+
 **Prove it in this order, because each step fails for a different reason.**
 
 1. **Power only.** 5 V at `VIN`, then meter the `+` rail **on board B**: 3.3 V. Not there → the
