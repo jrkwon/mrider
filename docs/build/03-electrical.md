@@ -619,6 +619,33 @@ adjacent pads crack on a vehicle that vibrates.
 >
 > **The 1 nF already bought is not a substitute.** 1 nF across the *signal* line filters pickup;
 > 100 nF across the *supply* is a local reservoir. Different jobs, both wanted.
+
+#### Why these capacitors, and why they sit where they sit
+
+![Three capacitors compared: 1000 microfarad across the whole logic rail, 100 nanofarad across one sensor's own supply at the bracket, and 1 nanofarad across one signal line at the Teensy — with what each is across, where it must sit, and what fails without it](../images/capacitor-roles.svg)
+
+**A capacitor is always the same thing — a low-impedance path for fast changes.** What it *does* is
+decided entirely by **what you put it across**, and this build uses three.
+
+| | Across | Must sit | Without it |
+|---|---|---|---|
+| **1000 µF** | the whole logic rail | anywhere on the rail | a current step sags the rail and the Teensy resets |
+| **100 nF** | **one sensor's own supply** | **at the bracket** | the latch's supply dips as it switches — a metre of wire cannot deliver fast |
+| **1 nF** | **one signal line** | **at the Teensy** | a motor-edge spike lands on a 10 kΩ node and the decoder **counts it** |
+
+**Only the 1 nF is about the signal.** The 100 nF is about the *supply*, and improves the signal
+only indirectly — by keeping the part that generates it properly fed. **That distinction is not
+academic: it is what decides which end of the cable each one is soldered to.**
+
+> [!NOTE]
+> **The circuit works without either of the small two — they are insurance, not function**
+>
+> What they buy is that the failure they prevent is **one of the hardest to diagnose on this
+> vehicle**: a count that is slightly wrong, only while the motor is running, and that looks exactly
+> like tyre slip.
+>
+> **Fit them from the start. Do not wait to see whether they are needed** — by then you are
+> debugging a vehicle instead of a bench.
 >
 > **Specify `0.1 µF / 50 V / 104` and nothing further** — tolerance, dielectric and brand are all
 > irrelevant here. The one thing that matters is that it is a **ceramic**: a 마일러 (polyester film)
