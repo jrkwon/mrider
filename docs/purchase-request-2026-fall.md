@@ -163,18 +163,18 @@ agreed to. Divergences are listed here instead, and the live state of every item
 | 6d | Fasteners etc., ₩5,000 × 3 = ₩15,000 | **₩31,840** — grub screws, cyanoacrylate, IPA, threadlocker | **+16,840** | The estimate was written when this line was fasteners only. Adhesive and IPA were added on 2026-10-12 — the assembly procedure required them and nothing funded them — and priced at a guess |
 | 5 | Angle sensor, ₩27,000 × 3 = ₩81,000 | **₩12,500** — five AS5600 breakouts at ₩2,500 | **−68,500** | The estimate funded a sensor **and a separate diametric magnet**; every AS5600 breakout ships with one, because the module cannot work without it. So the line was paying twice for one part. Five rather than three: one is benched before any vehicle is built, leaving three fitted and one spare |
 | 14b | *(part of the ₩123,000 #14 line)* | **₩90,270** — 2020 extrusion mast, 12 mm plywood equipment plate, T-slot hardware | **+90,270** | The #14 line funded filament and never funded the **mast tube** or the **equipment plate that replaces the seat** — a part [vehicle.md §3](design/vehicle.md) requires and no line had ever carried. A printed 0.65 m mast delaminates under bending and that flex lands in the camera↔LiDAR extrinsics. **₩2,870 over the original #14 line**, before carriage — the penny washers tipped it, where and when the Order Log said they would. Only the total binds, and the headroom is 545,464 once both halves are counted |
-| 11b, 12 | *(spares were never budgeted)* | **₩21,381** — two UBEC spares, on the #12b order | **+21,381** | Both spares were declined on 2026-10-26 and the **UBEC half was reversed on 10-27**, which is the sequence worth reading rather than a tidy single decision. The fuse top-up stays declined: two spare 5 A for a semester remains an **accepted risk** |
-| 12b | *(assembly consumables were never budgeted)* | **₩54,000 est.** — perfboard, screw terminals, headers, bench breadboard, heatshrink | **+54,000** | §1.2.4 has always specified perfboard and terminals for the relay-driver board; #7 bought relays and components and stopped there. Specified in one document and procured in neither. Also funds a **socketed** Teensy, which is a 74,250 board in front of thirteen students |
-| | | **Net** | **−391,563** | |
+| 11b, 12 | *(spares were never budgeted)* | **₩23,519** — two UBEC spares, on the #12b order | **+23,519** | Both spares were declined on 2026-10-26 and the **UBEC half was reversed on 10-27**, which is the sequence worth reading rather than a tidy single decision. The fuse top-up stays declined: two spare 5 A for a semester remains an **accepted risk** |
+| 12b | *(assembly consumables were never budgeted)* | **₩119,999** (quoted) — perfboard, screw terminals, headers, bench breadboard, heatshrink | **+119,999** | §1.2.4 has always specified perfboard and terminals for the relay-driver board; #7 bought relays and components and stopped there. Specified in one document and procured in neither. Also funds a **socketed** Teensy, which is a 74,250 board in front of thirteen students |
+| | | **Net** | **−323,425** | |
 
-**Projected total ₩3,529,917 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows.
+**Projected total ₩3,598,055 against ₩3,921,480 approved** — the same figure `order_status.py` computes from the Order Log's actual rows.
 
 > [!IMPORTANT]
 > **What was actually approved: a ceiling of ₩4,000,000, not this line-item schedule**
 >
 > The university approved a **total**. Individual items may move in price, be substituted, split,
 > or dropped **without further approval**. Only the total binds, and the live figure against it is
-> **₩3,529,917 projected, ₩470,083 of headroom**.
+> **₩3,598,055 projected, ₩401,945 of headroom**.
 >
 > So the amendments above are **not an approval trail** — nothing in them needed permission. They
 > exist for the reason this document already states: *"the estimates above will not match, and the

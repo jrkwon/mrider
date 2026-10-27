@@ -1,0 +1,281 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1260 1560" width="1260" height="1560"
+     font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+  <title>Bench breadboard layout — Teensy board and sensor board</title>
+  <desc>Two half-size breadboards wired for bench bring-up. The upper board carries the Teensy 4.1
+  straddling the centre channel, with 10k pull-ups and 1nF capacitors on the two quadrature inputs
+  and 4.7k pull-ups on the I2C pair. The lower board carries the two TO-92 Hall latches and the
+  AS5600 breakout. Six jumpers link the two boards. Below, the jumper list and the rules that make
+  the bench mirror the vehicle.</desc>
+
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#334155"/>
+    </marker>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#b91c1c"/>
+    </marker>
+  </defs>
+
+  <rect width="1260" height="1560" fill="#ffffff"/>
+
+  <text x="24" y="36" font-size="20" font-weight="bold" fill="#0f172a">
+    Bench layout — two breadboards, six jumpers between them
+  </text>
+  <text x="24" y="60" font-size="13" fill="#475569">
+    Pin numbers are <tspan font-weight="bold">provisional</tspan> — 04-firmware has not pinned them yet, which is exactly why this stage is on a breadboard.
+  </text>
+
+  <!-- ============================ BOARD A ============================ -->
+  <text x="24" y="100" font-size="15" font-weight="bold" fill="#14532d">BOARD A — the Teensy end</text>
+
+  <rect x="60" y="112" width="760" height="330" rx="6" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+
+  <!-- top rails -->
+  <line x1="80" y1="136" x2="800" y2="136" stroke="#dc2626" stroke-width="2.5"/>
+  <line x1="80" y1="156" x2="800" y2="156" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="824" y="140" font-size="11.5" font-weight="bold" fill="#dc2626">+ 3.3 V</text>
+  <text x="824" y="160" font-size="11.5" font-weight="bold" fill="#2563eb">− GND</text>
+
+  <!-- hole grid top A-D -->
+  <g fill="#cbd5e1">
+    <g id="rowsTop">
+      <!-- generated-ish: 30 cols x 4 rows -->
+    </g>
+  </g>
+  <g fill="#cbd5e1">
+    <circle cx="142" cy="186" r="3"/><circle cx="164" cy="186" r="3"/><circle cx="186" cy="186" r="3"/><circle cx="208" cy="186" r="3"/><circle cx="230" cy="186" r="3"/><circle cx="252" cy="186" r="3"/><circle cx="274" cy="186" r="3"/><circle cx="296" cy="186" r="3"/><circle cx="318" cy="186" r="3"/><circle cx="340" cy="186" r="3"/><circle cx="362" cy="186" r="3"/><circle cx="384" cy="186" r="3"/><circle cx="406" cy="186" r="3"/><circle cx="428" cy="186" r="3"/><circle cx="450" cy="186" r="3"/><circle cx="472" cy="186" r="3"/><circle cx="494" cy="186" r="3"/><circle cx="516" cy="186" r="3"/><circle cx="538" cy="186" r="3"/><circle cx="560" cy="186" r="3"/><circle cx="582" cy="186" r="3"/><circle cx="604" cy="186" r="3"/><circle cx="626" cy="186" r="3"/><circle cx="648" cy="186" r="3"/><circle cx="670" cy="186" r="3"/><circle cx="692" cy="186" r="3"/><circle cx="714" cy="186" r="3"/><circle cx="736" cy="186" r="3"/>
+    <circle cx="142" cy="206" r="3"/><circle cx="164" cy="206" r="3"/><circle cx="186" cy="206" r="3"/><circle cx="208" cy="206" r="3"/><circle cx="230" cy="206" r="3"/><circle cx="252" cy="206" r="3"/><circle cx="274" cy="206" r="3"/><circle cx="296" cy="206" r="3"/><circle cx="318" cy="206" r="3"/><circle cx="340" cy="206" r="3"/><circle cx="362" cy="206" r="3"/><circle cx="384" cy="206" r="3"/><circle cx="406" cy="206" r="3"/><circle cx="428" cy="206" r="3"/><circle cx="450" cy="206" r="3"/><circle cx="472" cy="206" r="3"/><circle cx="494" cy="206" r="3"/><circle cx="516" cy="206" r="3"/><circle cx="538" cy="206" r="3"/><circle cx="560" cy="206" r="3"/><circle cx="582" cy="206" r="3"/><circle cx="604" cy="206" r="3"/><circle cx="626" cy="206" r="3"/><circle cx="648" cy="206" r="3"/><circle cx="670" cy="206" r="3"/><circle cx="692" cy="206" r="3"/><circle cx="714" cy="206" r="3"/><circle cx="736" cy="206" r="3"/>
+    <circle cx="142" cy="226" r="3"/><circle cx="164" cy="226" r="3"/><circle cx="186" cy="226" r="3"/><circle cx="208" cy="226" r="3"/><circle cx="230" cy="226" r="3"/><circle cx="252" cy="226" r="3"/><circle cx="274" cy="226" r="3"/><circle cx="296" cy="226" r="3"/><circle cx="318" cy="226" r="3"/><circle cx="340" cy="226" r="3"/><circle cx="362" cy="226" r="3"/><circle cx="384" cy="226" r="3"/><circle cx="406" cy="226" r="3"/><circle cx="428" cy="226" r="3"/><circle cx="450" cy="226" r="3"/><circle cx="472" cy="226" r="3"/><circle cx="494" cy="226" r="3"/><circle cx="516" cy="226" r="3"/><circle cx="538" cy="226" r="3"/><circle cx="560" cy="226" r="3"/><circle cx="582" cy="226" r="3"/><circle cx="604" cy="226" r="3"/><circle cx="626" cy="226" r="3"/><circle cx="648" cy="226" r="3"/><circle cx="670" cy="226" r="3"/><circle cx="692" cy="226" r="3"/><circle cx="714" cy="226" r="3"/><circle cx="736" cy="226" r="3"/>
+  </g>
+
+  <!-- Teensy body -->
+  <rect x="150" y="248" width="540" height="76" rx="5" fill="#1e293b" stroke="#0f172a" stroke-width="2"/>
+  <rect x="150" y="268" width="34" height="36" rx="3" fill="#94a3b8"/>
+  <text x="153" y="291" font-size="9" fill="#0f172a">USB</text>
+  <text x="400" y="294" font-size="15" font-weight="bold" fill="#f1f5f9" text-anchor="middle">Teensy 4.1</text>
+
+  <!-- top-side pin labels -->
+  <g font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">
+    <text x="208" y="244">GND</text>
+    <text x="230" y="244">0</text>
+    <text x="252" y="244">1</text>
+  </g>
+  <g stroke="#475569" stroke-width="1">
+    <line x1="208" y1="228" x2="208" y2="248"/>
+    <line x1="230" y1="228" x2="230" y2="248"/>
+    <line x1="252" y1="228" x2="252" y2="248"/>
+  </g>
+
+  <!-- bottom-side pin labels -->
+  <g font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">
+    <text x="208" y="340">VIN</text>
+    <text x="230" y="340">GND</text>
+    <text x="252" y="340">3V3</text>
+    <text x="450" y="340">19</text>
+    <text x="472" y="340">18</text>
+  </g>
+  <g stroke="#475569" stroke-width="1">
+    <line x1="208" y1="324" x2="208" y2="346"/>
+    <line x1="230" y1="324" x2="230" y2="346"/>
+    <line x1="252" y1="324" x2="252" y2="346"/>
+    <line x1="450" y1="324" x2="450" y2="346"/>
+    <line x1="472" y1="324" x2="472" y2="346"/>
+  </g>
+
+  <!-- bottom hole rows -->
+  <g fill="#cbd5e1">
+    <circle cx="142" cy="360" r="3"/><circle cx="164" cy="360" r="3"/><circle cx="186" cy="360" r="3"/><circle cx="208" cy="360" r="3"/><circle cx="230" cy="360" r="3"/><circle cx="252" cy="360" r="3"/><circle cx="274" cy="360" r="3"/><circle cx="296" cy="360" r="3"/><circle cx="318" cy="360" r="3"/><circle cx="340" cy="360" r="3"/><circle cx="362" cy="360" r="3"/><circle cx="384" cy="360" r="3"/><circle cx="406" cy="360" r="3"/><circle cx="428" cy="360" r="3"/><circle cx="450" cy="360" r="3"/><circle cx="472" cy="360" r="3"/><circle cx="494" cy="360" r="3"/><circle cx="516" cy="360" r="3"/><circle cx="538" cy="360" r="3"/><circle cx="560" cy="360" r="3"/><circle cx="582" cy="360" r="3"/><circle cx="604" cy="360" r="3"/><circle cx="626" cy="360" r="3"/><circle cx="648" cy="360" r="3"/><circle cx="670" cy="360" r="3"/><circle cx="692" cy="360" r="3"/><circle cx="714" cy="360" r="3"/><circle cx="736" cy="360" r="3"/>
+    <circle cx="142" cy="380" r="3"/><circle cx="164" cy="380" r="3"/><circle cx="186" cy="380" r="3"/><circle cx="208" cy="380" r="3"/><circle cx="230" cy="380" r="3"/><circle cx="252" cy="380" r="3"/><circle cx="274" cy="380" r="3"/><circle cx="296" cy="380" r="3"/><circle cx="318" cy="380" r="3"/><circle cx="340" cy="380" r="3"/><circle cx="362" cy="380" r="3"/><circle cx="384" cy="380" r="3"/><circle cx="406" cy="380" r="3"/><circle cx="428" cy="380" r="3"/><circle cx="450" cy="380" r="3"/><circle cx="472" cy="380" r="3"/><circle cx="494" cy="380" r="3"/><circle cx="516" cy="380" r="3"/><circle cx="538" cy="380" r="3"/><circle cx="560" cy="380" r="3"/><circle cx="582" cy="380" r="3"/><circle cx="604" cy="380" r="3"/><circle cx="626" cy="380" r="3"/><circle cx="648" cy="380" r="3"/><circle cx="670" cy="380" r="3"/><circle cx="692" cy="380" r="3"/><circle cx="714" cy="380" r="3"/><circle cx="736" cy="380" r="3"/>
+  </g>
+
+  <!-- bottom rails -->
+  <line x1="80" y1="406" x2="800" y2="406" stroke="#2563eb" stroke-width="2.5"/>
+  <line x1="80" y1="426" x2="800" y2="426" stroke="#dc2626" stroke-width="2.5"/>
+  <text x="824" y="410" font-size="11.5" font-weight="bold" fill="#2563eb">− GND</text>
+  <text x="824" y="430" font-size="11.5" font-weight="bold" fill="#dc2626">+ 3.3 V</text>
+
+  <!-- ===== components on board A ===== -->
+  <!-- 10k on pin 0 : row A -> + rail -->
+  <rect x="222" y="178" width="16" height="16" rx="2" fill="#fde68a" stroke="#b45309" stroke-width="1.6"/>
+  <line x1="230" y1="178" x2="230" y2="136" stroke="#b45309" stroke-width="2"/>
+  <line x1="230" y1="194" x2="230" y2="226" stroke="#b45309" stroke-width="2"/>
+  <!-- 10k on pin 1 -->
+  <rect x="244" y="178" width="16" height="16" rx="2" fill="#fde68a" stroke="#b45309" stroke-width="1.6"/>
+  <line x1="252" y1="178" x2="252" y2="136" stroke="#b45309" stroke-width="2"/>
+  <line x1="252" y1="194" x2="252" y2="226" stroke="#b45309" stroke-width="2"/>
+  <text x="268" y="176" font-size="11" font-weight="bold" fill="#b45309">2 × 10 kΩ → + rail</text>
+
+  <!-- 1nF on pin 0/1 : row C -> - rail, drawn to the left -->
+  <rect x="178" y="198" width="14" height="14" rx="2" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.6"/>
+  <path d="M186,198 L186,156" stroke="#1d4ed8" stroke-width="2"/>
+  <path d="M186,212 L186,226 L230,226" stroke="#1d4ed8" stroke-width="2" fill="none"/>
+  <rect x="156" y="198" width="14" height="14" rx="2" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.6"/>
+  <path d="M164,198 L164,156" stroke="#1d4ed8" stroke-width="2"/>
+  <path d="M164,212 L164,236 L252,236 L252,226" stroke="#1d4ed8" stroke-width="2" fill="none"/>
+  <text x="84" y="206" font-size="11" font-weight="bold" fill="#1d4ed8">2 × 1 nF</text>
+  <text x="84" y="220" font-size="11" fill="#1d4ed8">→ − rail</text>
+
+  <!-- GND pin to - rail -->
+  <path d="M208,226 L208,166 L196,166 L196,156" stroke="#2563eb" stroke-width="2.4" fill="none"/>
+
+  <!-- 3V3 pin to + rail (bottom), GND pin to - rail (bottom) -->
+  <path d="M252,360 L252,426" stroke="#dc2626" stroke-width="2.4"/>
+  <path d="M230,360 L230,406" stroke="#2563eb" stroke-width="2.4"/>
+  <text x="268" y="398" font-size="11" font-weight="bold" fill="#0f172a">3V3 and GND feed the rails — the 3.3 V comes from the Teensy itself</text>
+
+  <!-- VIN from UBEC -->
+  <path d="M208,360 L208,392 L120,392 L120,460" stroke="#dc2626" stroke-width="3" fill="none" marker-end="url(#ar)"/>
+  <text x="60" y="478" font-size="11.5" font-weight="bold" fill="#b91c1c">5 V from a UBEC — see rule 1</text>
+
+  <!-- 4.7k on 19/18 -->
+  <rect x="442" y="364" width="16" height="16" rx="2" fill="#fde68a" stroke="#b45309" stroke-width="1.6"/>
+  <line x1="450" y1="380" x2="450" y2="426" stroke="#b45309" stroke-width="2"/>
+  <rect x="464" y="364" width="16" height="16" rx="2" fill="#fde68a" stroke="#b45309" stroke-width="1.6"/>
+  <line x1="472" y1="380" x2="472" y2="426" stroke="#b45309" stroke-width="2"/>
+  <text x="494" y="374" font-size="11" font-weight="bold" fill="#b45309">2 × 4.7 kΩ → + rail</text>
+
+  <!-- jumper exits -->
+  <g stroke="#15803d" stroke-width="2.6" fill="none">
+    <path d="M230,186 L880,186"/>
+    <path d="M252,206 L880,206"/>
+  </g>
+  <g stroke="#15803d" stroke-width="2.6" fill="none">
+    <path d="M450,360 L900,360 L900,470"/>
+    <path d="M472,380 L920,380 L920,470"/>
+  </g>
+  <text x="890" y="182" font-size="11.5" font-weight="bold" fill="#15803d">A</text>
+  <text x="890" y="210" font-size="11.5" font-weight="bold" fill="#15803d">B</text>
+  <text x="932" y="420" font-size="11.5" font-weight="bold" fill="#15803d">SCL · SDA</text>
+
+  <!-- ============================ BOARD B ============================ -->
+  <text x="24" y="534" font-size="15" font-weight="bold" fill="#1e3a8a">BOARD B — the sensor end, far enough away to wave a magnet</text>
+
+  <rect x="60" y="546" width="620" height="300" rx="6" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+  <line x1="80" y1="570" x2="660" y2="570" stroke="#dc2626" stroke-width="2.5"/>
+  <line x1="80" y1="590" x2="660" y2="590" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="684" y="574" font-size="11.5" font-weight="bold" fill="#dc2626">+ 3.3 V</text>
+  <text x="684" y="594" font-size="11.5" font-weight="bold" fill="#2563eb">− GND</text>
+
+  <g fill="#cbd5e1">
+    <circle cx="142" cy="626" r="3"/><circle cx="164" cy="626" r="3"/><circle cx="186" cy="626" r="3"/><circle cx="208" cy="626" r="3"/><circle cx="230" cy="626" r="3"/><circle cx="252" cy="626" r="3"/><circle cx="274" cy="626" r="3"/><circle cx="296" cy="626" r="3"/><circle cx="318" cy="626" r="3"/><circle cx="340" cy="626" r="3"/><circle cx="362" cy="626" r="3"/><circle cx="384" cy="626" r="3"/><circle cx="406" cy="626" r="3"/><circle cx="428" cy="626" r="3"/><circle cx="450" cy="626" r="3"/><circle cx="472" cy="626" r="3"/><circle cx="494" cy="626" r="3"/><circle cx="516" cy="626" r="3"/><circle cx="538" cy="626" r="3"/><circle cx="560" cy="626" r="3"/><circle cx="582" cy="626" r="3"/><circle cx="604" cy="626" r="3"/>
+    <circle cx="142" cy="646" r="3"/><circle cx="164" cy="646" r="3"/><circle cx="186" cy="646" r="3"/><circle cx="208" cy="646" r="3"/><circle cx="230" cy="646" r="3"/><circle cx="252" cy="646" r="3"/><circle cx="274" cy="646" r="3"/><circle cx="296" cy="646" r="3"/><circle cx="318" cy="646" r="3"/><circle cx="340" cy="646" r="3"/><circle cx="362" cy="646" r="3"/><circle cx="384" cy="646" r="3"/><circle cx="406" cy="646" r="3"/><circle cx="428" cy="646" r="3"/><circle cx="450" cy="646" r="3"/><circle cx="472" cy="646" r="3"/><circle cx="494" cy="646" r="3"/><circle cx="516" cy="646" r="3"/><circle cx="538" cy="646" r="3"/><circle cx="560" cy="646" r="3"/><circle cx="582" cy="646" r="3"/><circle cx="604" cy="646" r="3"/>
+    <circle cx="142" cy="690" r="3"/><circle cx="164" cy="690" r="3"/><circle cx="186" cy="690" r="3"/><circle cx="208" cy="690" r="3"/><circle cx="230" cy="690" r="3"/><circle cx="252" cy="690" r="3"/><circle cx="274" cy="690" r="3"/><circle cx="296" cy="690" r="3"/><circle cx="318" cy="690" r="3"/><circle cx="340" cy="690" r="3"/><circle cx="362" cy="690" r="3"/><circle cx="384" cy="690" r="3"/><circle cx="406" cy="690" r="3"/><circle cx="428" cy="690" r="3"/><circle cx="450" cy="690" r="3"/><circle cx="472" cy="690" r="3"/><circle cx="494" cy="690" r="3"/><circle cx="516" cy="690" r="3"/><circle cx="538" cy="690" r="3"/><circle cx="560" cy="690" r="3"/><circle cx="582" cy="690" r="3"/><circle cx="604" cy="690" r="3"/>
+  </g>
+
+  <line x1="80" y1="792" x2="660" y2="792" stroke="#2563eb" stroke-width="2.5"/>
+  <line x1="80" y1="812" x2="660" y2="812" stroke="#dc2626" stroke-width="2.5"/>
+
+  <!-- Hall latch 1 -->
+  <path d="M142,626 L142,600 Q164,578 186,600 L186,626 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.6" transform="translate(0,-28)"/>
+  <text x="164" y="588" font-size="10" font-weight="bold" fill="#f1f5f9" text-anchor="middle">DRV</text>
+  <g font-size="9.5" fill="#0f172a" text-anchor="middle">
+    <text x="142" y="616">1</text><text x="164" y="616">2</text><text x="186" y="616">3</text>
+  </g>
+  <text x="164" y="672" font-size="11" font-weight="bold" fill="#1e3a8a" text-anchor="middle">Hall A</text>
+
+  <!-- Hall latch 2 -->
+  <path d="M274,626 L274,600 Q296,578 318,600 L318,626 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.6" transform="translate(0,-28)"/>
+  <text x="296" y="588" font-size="10" font-weight="bold" fill="#f1f5f9" text-anchor="middle">DRV</text>
+  <g font-size="9.5" fill="#0f172a" text-anchor="middle">
+    <text x="274" y="616">1</text><text x="296" y="616">2</text><text x="318" y="616">3</text>
+  </g>
+  <text x="296" y="672" font-size="11" font-weight="bold" fill="#1e3a8a" text-anchor="middle">Hall B</text>
+
+  <!-- AS5600 breakout -->
+  <rect x="418" y="596" width="180" height="60" rx="4" fill="#0f766e" stroke="#115e59" stroke-width="2"/>
+  <text x="508" y="632" font-size="13" font-weight="bold" fill="#ecfeff" text-anchor="middle">AS5600</text>
+  <g font-size="9.5" fill="#0f172a" text-anchor="middle">
+    <text x="428" y="672">VCC</text><text x="472" y="672">GND</text><text x="516" y="672">SDA</text><text x="560" y="672">SCL</text>
+  </g>
+
+  <!-- wiring on B -->
+  <path d="M142,626 L142,570" stroke="#dc2626" stroke-width="2.2"/>
+  <path d="M164,626 L164,590" stroke="#2563eb" stroke-width="2.2"/>
+  <path d="M274,626 L274,570" stroke="#dc2626" stroke-width="2.2"/>
+  <path d="M296,626 L296,590" stroke="#2563eb" stroke-width="2.2"/>
+  <path d="M186,646 L186,720 L740,720 L740,186" stroke="#15803d" stroke-width="2.6" fill="none"/>
+  <path d="M318,646 L318,740 L760,740 L760,206" stroke="#15803d" stroke-width="2.6" fill="none"/>
+  <path d="M428,656 L428,690 L408,690 L408,570" stroke="#dc2626" stroke-width="2.2" fill="none"/>
+  <path d="M472,656 L472,700 L386,700 L386,590" stroke="#2563eb" stroke-width="2.2" fill="none"/>
+  <path d="M516,656 L516,760 L920,760 L920,470" stroke="#15803d" stroke-width="2.6" fill="none"/>
+  <path d="M560,656 L560,780 L900,780 L900,470" stroke="#15803d" stroke-width="2.6" fill="none"/>
+
+  <!-- rail feed from A -->
+  <path d="M80,570 L40,570 L40,426 L80,426" stroke="#dc2626" stroke-width="3" fill="none"/>
+  <path d="M80,590 L22,590 L22,406 L80,406" stroke="#2563eb" stroke-width="3" fill="none"/>
+  <text x="46" y="506" font-size="11" font-weight="bold" fill="#0f172a" transform="rotate(-90 46 506)">rails fed from board A</text>
+
+  <rect x="704" y="546" width="534" height="300" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="724" y="574" font-size="13.5" font-weight="bold" fill="#991b1b">Before you push a single wire in</text>
+  <text x="724" y="600" font-size="12" fill="#7f1d1d"><tspan font-weight="bold">The TO-92 pin order is not guessable.</tspan> Legs 1-2-3 are</text>
+  <text x="724" y="617" font-size="12" fill="#7f1d1d">drawn here as VCC · GND · OUT, which is the common</text>
+  <text x="724" y="634" font-size="12" fill="#7f1d1d">arrangement — <tspan font-weight="bold">read the DRV5013 datasheet and</tspan></text>
+  <text x="724" y="651" font-size="12" fill="#7f1d1d"><tspan font-weight="bold">confirm it.</tspan> Reversed V<tspan font-size="9">CC</tspan>/GND destroys the part, which</text>
+  <text x="724" y="668" font-size="12" fill="#7f1d1d">is why fourteen are spare.</text>
+  <text x="724" y="698" font-size="12" fill="#7f1d1d"><tspan font-weight="bold">Keep them in the labelled bag until fitted.</tspan> TI marks a</text>
+  <text x="724" y="715" font-size="12" fill="#7f1d1d">TO-92 body with an abbreviated code, so loose parts are</text>
+  <text x="724" y="732" font-size="12" fill="#7f1d1d">unidentifiable and BC looks exactly like AG.</text>
+  <text x="724" y="762" font-size="12" fill="#7f1d1d"><tspan font-weight="bold">Bend the legs to 2.54 mm</tspan> before inserting — TO-92 legs</text>
+  <text x="724" y="779" font-size="12" fill="#7f1d1d">leave the package closer together than that.</text>
+  <text x="724" y="809" font-size="12" font-weight="bold" fill="#991b1b">The AS5600 breakout may have its own pull-ups fitted.</text>
+  <text x="724" y="826" font-size="12" fill="#7f1d1d">If it does, the 4.7 kΩ on board A are in parallel — fine.</text>
+
+  <!-- ============================ JUMPER LIST ============================ -->
+  <rect x="24" y="876" width="600" height="300" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+  <text x="44" y="904" font-size="15" font-weight="bold" fill="#14532d">The six jumpers between the boards</text>
+
+  <g font-size="12.5" fill="#166534">
+    <text x="44" y="936"><tspan font-weight="bold" fill="#dc2626">red</tspan>    + 3.3 V rail A  →  + rail B</text>
+    <text x="44" y="960"><tspan font-weight="bold" fill="#2563eb">blue</tspan>   − GND rail A  →  − rail B</text>
+    <text x="44" y="984"><tspan font-weight="bold" fill="#15803d">green</tspan>  Hall A out  →  Teensy <tspan font-weight="bold">0</tspan></text>
+    <text x="44" y="1008"><tspan font-weight="bold" fill="#15803d">green</tspan>  Hall B out  →  Teensy <tspan font-weight="bold">1</tspan></text>
+    <text x="44" y="1032"><tspan font-weight="bold" fill="#15803d">green</tspan>  AS5600 SDA  →  Teensy <tspan font-weight="bold">18</tspan></text>
+    <text x="44" y="1056"><tspan font-weight="bold" fill="#15803d">green</tspan>  AS5600 SCL  →  Teensy <tspan font-weight="bold">19</tspan></text>
+  </g>
+
+  <text x="44" y="1092" font-size="12.5" font-weight="bold" fill="#14532d">On board A, five components and nothing else</text>
+  <text x="44" y="1114" font-size="12" fill="#166534">2 × 10 kΩ — pins 0 and 1 up to the + rail</text>
+  <text x="44" y="1134" font-size="12" fill="#166534">2 × 1 nF — pins 0 and 1 down to the − rail</text>
+  <text x="44" y="1154" font-size="12" fill="#166534">2 × 4.7 kΩ — pins 18 and 19 to the + rail</text>
+
+  <!-- ============================ RULES ============================ -->
+  <rect x="648" y="876" width="590" height="300" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  <text x="668" y="904" font-size="15" font-weight="bold" fill="#92400e">Three rules that make the bench mirror the vehicle</text>
+
+  <text x="668" y="934" font-size="12.5" font-weight="bold" fill="#92400e">1 · Power VIN from a UBEC, not from USB</text>
+  <text x="668" y="954" font-size="12" fill="#78350f">Once <tspan font-weight="bold">VUSB–VIN is cut</tspan>, USB carries data only and the board</text>
+  <text x="668" y="971" font-size="12" fill="#78350f">will not run on it. Cut it <tspan font-weight="bold">before</tspan> the first bench session that</text>
+  <text x="668" y="988" font-size="12" fill="#78350f">involves a UBEC — two supplies fighting is the thing the cut</text>
+  <text x="668" y="1005" font-size="12" fill="#78350f">exists to prevent, and "we'll do it later" is how they meet.</text>
+
+  <text x="668" y="1038" font-size="12.5" font-weight="bold" fill="#92400e">2 · One ground, and check it with a meter</text>
+  <text x="668" y="1058" font-size="12" fill="#78350f">Both boards' − rails tied together, once. On the vehicle this</text>
+  <text x="668" y="1075" font-size="12" fill="#78350f">becomes the star at the motor driver. <tspan font-weight="bold">Beep the two − rails</tspan></text>
+  <text x="668" y="1092" font-size="12" fill="#78350f"><tspan font-weight="bold">before powering up</tspan> — a missing ground reads as a dead sensor.</text>
+
+  <text x="668" y="1125" font-size="12.5" font-weight="bold" fill="#92400e">3 · Nothing on these boards may carry coil current</text>
+  <text x="668" y="1145" font-size="12" fill="#78350f">No relay, no MOSFET, no 12 V. That circuit goes straight onto</text>
+  <text x="668" y="1162" font-size="12" fill="#78350f">soldered perfboard — 600 mA through spring clips, and a</text>
+  <text x="668" y="1179" font-size="12" fill="#78350f">floating gate chatters the relays. <tspan font-weight="bold">Signal here, authority there.</tspan></text>
+
+  <!-- ============================ FIRST TEST ============================ -->
+  <rect x="24" y="1198" width="1214" height="340" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+  <text x="44" y="1228" font-size="15" font-weight="bold" fill="#0f172a">What to prove here, in this order — each step fails for a different reason</text>
+
+  <text x="44" y="1262" font-size="12.5" fill="#334155"><tspan font-weight="bold">1 · Power only.</tspan> 5 V at VIN, then meter the + rail on <tspan font-weight="bold">board B</tspan>: 3.3 V. If it is not there, the fault is a jumper, not a sensor.</text>
+
+  <text x="44" y="1294" font-size="12.5" fill="#334155"><tspan font-weight="bold">2 · Hall latches, with a multimeter before any code.</tspan> Probe each OUT against GND and pass a magnet by. It should</text>
+  <text x="58" y="1313" font-size="12.5" fill="#334155">snap between <tspan font-weight="bold">0 V and 3.3 V and STAY there</tspan> when the magnet leaves — that is what makes it a <tspan font-style="italic">latch</tspan>. If it returns</text>
+  <text x="58" y="1332" font-size="12.5" fill="#334155">on its own you have a switch, not a latch, and the whole quadrature scheme is wrong. <tspan font-weight="bold">Flip the magnet to reset it.</tspan></text>
+
+  <text x="44" y="1364" font-size="12.5" fill="#334155"><tspan font-weight="bold">3 · I²C scan.</tspan> Address <tspan font-weight="bold">0x36</tspan> must appear. Nothing else should — one device per bus is the design.</text>
+
+  <text x="44" y="1396" font-size="12.5" fill="#334155"><tspan font-weight="bold">4 · AGC.</tspan> Read register <tspan font-weight="bold">0x1A</tspan> with the magnet at its working gap and tune until it sits mid-scale, then</text>
+  <text x="58" y="1415" font-size="12.5" fill="#334155"><tspan font-weight="bold">write that gap down</tspan> — it is the number the other two vehicles get built to.</text>
+
+  <text x="44" y="1447" font-size="12.5" fill="#334155"><tspan font-weight="bold">5 · Counts last.</tspan> Only now bring up the quadrature decoder and move a magnet past both latches in sequence.</text>
+  <text x="58" y="1466" font-size="12.5" fill="#334155">Counting up one way and down the other is the <tspan font-weight="bold">first proof the (n + ½) spacing is right</tspan>, and it is cheap to check</text>
+  <text x="58" y="1485" font-size="12.5" fill="#334155">here and expensive to check on a wheel.</text>
+
+  <text x="44" y="1518" font-size="12.5" font-weight="bold" fill="#15803d">Steps 1–3 need no firmware beyond a scan sketch. If something is wrong, it is wrong before any code is blamed.</text>
+</svg>

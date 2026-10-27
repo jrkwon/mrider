@@ -474,6 +474,56 @@ changing a breadboard costs nothing.
 the gate — which chatters the relays between STOCK and DBW. **So bench the *signal* side on a
 breadboard and the *authority* side on the perfboard you will actually fit.** Build that one first.
 
+#### The bench layout, hole by hole
+
+![Two half-size breadboards: the upper carries the Teensy 4.1 straddling the centre channel with 10k pull-ups and 1nF capacitors on pins 0 and 1 and 4.7k pull-ups on 18 and 19; the lower carries two TO-92 Hall latches and the AS5600 breakout; six jumpers link them](../images/breadboard-layout.svg)
+
+**Board A holds five component pairs and nothing else:** `2 × 10 kΩ` from pins 0 and 1 up to the
+`+` rail, `2 × 1 nF` from the same pins down to the `−` rail, and `2 × 4.7 kΩ` from pins 18 and 19
+to `+`. **The 3.3 V rail is fed from the Teensy's own 3V3 pin** — there is no separate 3.3 V supply
+and none is needed.
+
+**Six jumpers run to board B:** `+3.3 V`, `GND`, the two latch outputs, and `SDA`/`SCL`.
+
+> [!CAUTION]
+> **The TO-92 pin order is not guessable, and reversed `V`<tspan></tspan>`CC`/`GND` destroys the part**
+>
+> The figure draws legs 1-2-3 as **VCC · GND · OUT**, which is the common arrangement — **read the
+> `DRV5013` datasheet and confirm it before inserting anything.** That is what the fourteen spares
+> are for, and it is a cheaper lesson here than on a soldered board.
+>
+> **Keep them in their labelled bag until each one is fitted.** TI marks a TO-92 body with an
+> abbreviated code, so loose parts are unidentifiable and `BC` looks exactly like `AG`. And **bend
+> the legs out to 2.54 mm** — they leave the package closer together than a breadboard pitch.
+
+**Prove it in this order, because each step fails for a different reason.**
+
+1. **Power only.** 5 V at `VIN`, then meter the `+` rail **on board B**: 3.3 V. Not there → the
+   fault is a jumper, not a sensor.
+2. **Latches, with a meter, before any code.** Probe each `OUT` against GND and pass a magnet by.
+   It must snap between **0 V and 3.3 V and stay there** when the magnet leaves — *that is what
+   makes it a latch*. If it falls back on its own you have a switch, and the whole quadrature
+   scheme is wrong. **Flip the magnet to reset it.**
+3. **I²C scan.** `0x36` must appear, and nothing else — one device per bus is the design.
+4. **AGC.** Read `0x1A` at the working gap, tune to mid-scale, and **write the gap down**: it is
+   the number the other two vehicles are built to.
+5. **Counts last.** Only now bring up the decoder and move a magnet past both latches in sequence.
+   Counting up one way and down the other is the **first proof the `(n + ½)` spacing is right**,
+   and it is cheap here and expensive on a wheel.
+
+**Steps 1–3 need no firmware beyond a scan sketch.** If something is wrong, it is wrong before any
+code can be blamed for it.
+
+> [!IMPORTANT]
+> **Cut `VUSB`–`VIN` before the first bench session that involves a UBEC**
+>
+> After the cut, **USB carries data only and the board will not run on it** — so the bench needs
+> the same 5 V feed the vehicle has, which is the point. Two supplies fighting is exactly what the
+> cut prevents, and *"we'll do it later"* is how they meet.
+>
+> **Beep the two boards' `−` rails together before powering up.** A missing ground reads as a dead
+> sensor, and on the vehicle this same joint becomes the star at the motor driver.
+
 **Three rules for the board that goes in.**
 
 1. **The Teensy sits in female headers, not soldered down.** Thirteen students, one bricked
