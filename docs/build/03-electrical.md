@@ -476,7 +476,19 @@ breadboard and the *authority* side on the perfboard you will actually fit.** Bu
 
 #### The bench layout, hole by hole
 
-![Three half-size breadboards: board A with the Teensy straddling the centre channel, its 3V3 pin feeding the lower plus rail and rail-bridge jumpers carrying it to the upper rails, 10k pull-ups and 1nF on the quadrature columns and 4.7k on the I2C columns; board B with the two Hall latches; board C with the AS5600](../images/breadboard-layout.svg)
+![Three 400-point half-size breadboards drawn at 30 columns by 10 rows: board A with the Teensy straddling the centre channel, rail-bridge jumpers taking its 3V3 supply to the upper rails, 10k pull-ups and 1nF on the quadrature columns and 4.7k on the I2C columns; board B with both Hall latches; board C with the AS5600](../images/breadboard-layout.svg)
+
+*Drawn to the board actually ordered — `SZH-BBAD-005`, **30 columns × 10 rows + four rails = 400
+tie points**. Rows A–E go unused; a half-size board has far more holes than this needs.*
+
+> [!NOTE]
+> **Both Hall latches are on the SAME hub — one wheel is instrumented, not two**
+>
+> The pair sits **6.80 mm apart on one carrier**, a quarter cycle out of step. **That is what gives
+> direction.** A single latch counts edges but cannot tell forward from reverse, and a vehicle that
+> cannot tell those apart has no odometry worth having.
+>
+> **`A` and `B` are two sensors on one wheel, not one sensor on each of two.**
 
 **Board A holds three component pairs and nothing else:** `2 × 10 kΩ` from the pin-0 and pin-1
 columns up to the `+` rail, `2 × 1 nF` from the same columns down to `−`, and `2 × 4.7 kΩ` from the
