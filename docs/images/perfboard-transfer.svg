@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 1360" width="1180" height="1360"
+     font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+  <title>Breadboard to perfboard — the three bench boards do not become three boards</title>
+  <desc>Top: a mapping showing that of the three bench breadboards, only the Teensy board becomes a
+  perfboard; the two sensor boards disappear because the sensors live at the hub and the kingpin on
+  the ends of cables, and a second perfboard, the relay driver, was never breadboarded at all.
+  Middle: the signal perfboard laid out with a socketed Teensy, two buses, passives beside the pins
+  they serve, and terminals at the edges. Bottom: build order and the mistakes that are specific to
+  hand-built board on a vehicle that vibrates.</desc>
+
+  <rect width="1180" height="1360" fill="#ffffff"/>
+
+  <text x="24" y="36" font-size="20" font-weight="bold" fill="#0f172a">
+    Breadboard → perfboard: three boards become one, and a board you never breadboarded appears
+  </text>
+  <text x="24" y="60" font-size="12.5" fill="#475569">
+    The bench had three boards for one reason — you have to wave a magnet at a sensor. The vehicle has no such need.
+  </text>
+
+  <!-- ============ MAPPING ============ -->
+  <rect x="24" y="82" width="1132" height="248" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+
+  <text x="60" y="112" font-size="13" font-weight="bold" fill="#475569">ON THE BENCH</text>
+  <text x="700" y="112" font-size="13" font-weight="bold" fill="#475569">ON THE VEHICLE</text>
+
+  <rect x="56" y="126" width="230" height="46" rx="5" fill="#f1f5f9" stroke="#64748b" stroke-width="2"/>
+  <text x="70" y="155" font-size="12.5" font-weight="bold" fill="#0f172a">Board A — Teensy</text>
+
+  <rect x="56" y="186" width="230" height="46" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="70" y="215" font-size="12.5" font-weight="bold" fill="#1e3a8a">Board B — Hall latches</text>
+
+  <rect x="56" y="246" width="230" height="46" rx="5" fill="#ccfbf1" stroke="#0f766e" stroke-width="2"/>
+  <text x="70" y="275" font-size="12.5" font-weight="bold" fill="#115e59">Board C — AS5600</text>
+
+  <path d="M292,149 L690,149" stroke="#15803d" stroke-width="3" marker-end="url(#g)"/>
+  <path d="M292,209 L430,209 L430,262 L690,262" fill="none" stroke="#1d4ed8" stroke-width="2.6" marker-end="url(#b)"/>
+  <path d="M292,269 L430,269 L430,276 L690,276" fill="none" stroke="#0f766e" stroke-width="2.6" marker-end="url(#t)"/>
+
+  <defs>
+    <marker id="g" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#15803d"/></marker>
+    <marker id="b" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#1d4ed8"/></marker>
+    <marker id="t" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#0f766e"/></marker>
+  </defs>
+
+  <rect x="694" y="126" width="420" height="46" rx="5" fill="#dcfce7" stroke="#15803d" stroke-width="2.4"/>
+  <text x="710" y="155" font-size="12.5" font-weight="bold" fill="#14532d">SIGNAL PERFBOARD — GA2 80 × 80, in the logic box</text>
+
+  <rect x="694" y="186" width="420" height="104" rx="5" fill="#f1f5f9" stroke="#64748b" stroke-width="2" stroke-dasharray="7 4"/>
+  <text x="710" y="212" font-size="12.5" font-weight="bold" fill="#334155">No board at all — the sensors are AT the hub and</text>
+  <text x="710" y="232" font-size="12.5" font-weight="bold" fill="#334155">the kingpin, on the ends of 1 m cables.</text>
+  <text x="710" y="256" font-size="11.5" fill="#64748b">Latches on a printed bracket, AS5600 on a chassis bracket.</text>
+  <text x="710" y="274" font-size="11.5" fill="#64748b">Their four wires land on terminals of the signal board.</text>
+
+  <rect x="694" y="302" width="420" height="0" fill="none"/>
+  <rect x="56" y="302" width="1058" height="0" fill="none"/>
+
+  <rect x="56" y="302" width="1058" height="18" rx="4" fill="#fef3c7"/>
+  <text x="70" y="316" font-size="12" font-weight="bold" fill="#92400e">
+    Plus a second board that was never on a breadboard: the RELAY DRIVER — GA6 50 × 80, in the power box. Built from the schematic, not from a bench rig.
+  </text>
+
+  <!-- ============ SIGNAL PERFBOARD ============ -->
+  <text x="24" y="370" font-size="16" font-weight="bold" fill="#14532d">The signal perfboard</text>
+
+  <rect x="56" y="386" width="420" height="420" rx="6" fill="#fdf6e3" stroke="#a16207" stroke-width="2.5"/>
+  <g fill="#e7dcc3">
+    <g id="pr"><circle cx="76" cy="406" r="2.3"/><circle cx="96" cy="406" r="2.3"/><circle cx="116" cy="406" r="2.3"/><circle cx="136" cy="406" r="2.3"/><circle cx="156" cy="406" r="2.3"/><circle cx="176" cy="406" r="2.3"/><circle cx="196" cy="406" r="2.3"/><circle cx="216" cy="406" r="2.3"/><circle cx="236" cy="406" r="2.3"/><circle cx="256" cy="406" r="2.3"/><circle cx="276" cy="406" r="2.3"/><circle cx="296" cy="406" r="2.3"/><circle cx="316" cy="406" r="2.3"/><circle cx="336" cy="406" r="2.3"/><circle cx="356" cy="406" r="2.3"/><circle cx="376" cy="406" r="2.3"/><circle cx="396" cy="406" r="2.3"/><circle cx="416" cy="406" r="2.3"/><circle cx="436" cy="406" r="2.3"/><circle cx="456" cy="406" r="2.3"/></g>
+    <use href="#pr" y="20"/><use href="#pr" y="40"/><use href="#pr" y="60"/><use href="#pr" y="80"/><use href="#pr" y="100"/>
+    <use href="#pr" y="120"/><use href="#pr" y="140"/><use href="#pr" y="160"/><use href="#pr" y="180"/><use href="#pr" y="200"/>
+    <use href="#pr" y="220"/><use href="#pr" y="240"/><use href="#pr" y="260"/><use href="#pr" y="280"/><use href="#pr" y="300"/>
+    <use href="#pr" y="320"/><use href="#pr" y="340"/><use href="#pr" y="360"/><use href="#pr" y="380"/>
+  </g>
+
+  <!-- mounting holes -->
+  <g fill="#ffffff" stroke="#a16207" stroke-width="2">
+    <circle cx="72" cy="402" r="6"/><circle cx="460" cy="402" r="6"/><circle cx="72" cy="790" r="6"/><circle cx="460" cy="790" r="6"/>
+  </g>
+
+  <!-- buses -->
+  <line x1="96" y1="446" x2="436" y2="446" stroke="#dc2626" stroke-width="5"/>
+  <line x1="96" y1="746" x2="436" y2="746" stroke="#2563eb" stroke-width="5"/>
+  <text x="104" y="438" font-size="11.5" font-weight="bold" fill="#dc2626">3.3 V BUS — built first, one continuous run</text>
+  <text x="104" y="766" font-size="11.5" font-weight="bold" fill="#2563eb">GND BUS — built first, one continuous run</text>
+
+  <!-- teensy sockets -->
+  <rect x="146" y="506" width="240" height="18" rx="3" fill="#475569"/>
+  <rect x="146" y="646" width="240" height="18" rx="3" fill="#475569"/>
+  <rect x="146" y="524" width="240" height="122" rx="4" fill="#1e293b" fill-opacity="0.18" stroke="#1e293b" stroke-width="1.6" stroke-dasharray="6 4"/>
+  <text x="266" y="592" font-size="13" font-weight="bold" fill="#334155" text-anchor="middle">Teensy 4.1</text>
+  <text x="266" y="610" font-size="11" fill="#475569" text-anchor="middle">plugs into female headers</text>
+  <text x="266" y="628" font-size="11" font-weight="bold" fill="#b91c1c" text-anchor="middle">never soldered down</text>
+
+  <!-- passives beside pins -->
+  <g stroke="#b45309" stroke-width="2.4" fill="none">
+    <path d="M176,506 L176,486 L170,482 L182,476 L170,470 L182,464 L176,460 L176,446"/>
+    <path d="M196,506 L196,486 L190,482 L202,476 L190,470 L202,464 L196,460 L196,446"/>
+  </g>
+  <g stroke="#1d4ed8" stroke-width="2.2" fill="none">
+    <path d="M216,506 L216,492 M210,492 L222,492 M210,486 L222,486 M216,486 L216,746"/>
+    <path d="M236,506 L236,492 M230,492 L242,492 M230,486 L242,486 M236,486 L236,746"/>
+  </g>
+  <text x="256" y="480" font-size="11" font-weight="bold" fill="#b45309">10 k ×2</text>
+  <text x="256" y="496" font-size="11" font-weight="bold" fill="#1d4ed8">1 nF ×2 — as close to the pin as they will go</text>
+
+  <g stroke="#b45309" stroke-width="2.4" fill="none">
+    <path d="M316,664 L316,684 L310,688 L322,694 L310,700 L322,706 L316,710 L316,726 L316,446"/>
+    <path d="M336,664 L336,684 L330,688 L342,694 L330,700 L342,706 L336,710 L336,726 L336,446"/>
+  </g>
+  <text x="352" y="700" font-size="11" font-weight="bold" fill="#b45309">4.7 k ×2 → 3.3 V bus</text>
+
+  <!-- terminals -->
+  <g fill="#bbf7d0" stroke="#15803d" stroke-width="2">
+    <rect x="62" y="470" width="30" height="40" rx="3"/>
+    <rect x="62" y="526" width="30" height="40" rx="3"/>
+    <rect x="62" y="582" width="30" height="40" rx="3"/>
+    <rect x="62" y="638" width="30" height="40" rx="3"/>
+    <rect x="62" y="694" width="30" height="40" rx="3"/>
+  </g>
+  <g fill="#fde68a" stroke="#b45309" stroke-width="2">
+    <rect x="440" y="470" width="30" height="40" rx="3"/>
+    <rect x="440" y="526" width="30" height="40" rx="3"/>
+    <rect x="440" y="582" width="30" height="40" rx="3"/>
+  </g>
+
+  <!-- ============ right text ============ -->
+  <rect x="504" y="386" width="652" height="200" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+  <text x="524" y="414" font-size="14.5" font-weight="bold" fill="#991b1b">The 3.3 V bus is dead until the Teensy is plugged in</text>
+  <text x="524" y="440" font-size="12.5" fill="#7f1d1d">It is fed by the <tspan font-weight="bold">Teensy's own 3V3 pin</tspan>, through the socket. So a board</text>
+  <text x="524" y="459" font-size="12.5" fill="#7f1d1d">powered up with the Teensy out reads 0 V on that bus and <tspan font-weight="bold">looks broken.</tspan></text>
+  <text x="524" y="483" font-size="12.5" fill="#7f1d1d">That is the same shape as the <tspan font-weight="bold">VUSB cut</tspan>: a correct board that looks dead.</text>
+  <text x="524" y="502" font-size="12.5" fill="#7f1d1d">Both belong on the note taped inside the parts box.</text>
+  <text x="524" y="530" font-size="12.5" font-weight="bold" fill="#991b1b">But test it with the Teensy OUT anyway — for SHORTS.</text>
+  <text x="524" y="549" font-size="12.5" fill="#7f1d1d">Meter 3.3 V bus ↔ GND and 5 V ↔ GND. A solder bridge found here costs</text>
+  <text x="524" y="568" font-size="12.5" fill="#7f1d1d">nothing; found later it is driven by the Teensy's own regulator.</text>
+
+  <rect x="504" y="600" width="652" height="206" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  <text x="524" y="628" font-size="14.5" font-weight="bold" fill="#92400e">Build order — and the first step is not a component</text>
+  <text x="524" y="654" font-size="12.5" fill="#78350f"><tspan font-weight="bold">1 ·</tspan> Solder the <tspan font-weight="bold">female headers</tspan>, with the Teensy plugged into them to hold</text>
+  <text x="538" y="672" font-size="12.5" fill="#78350f">them square. Tack two corners, check it sits flat, then do the rest.</text>
+  <text x="524" y="694" font-size="12.5" fill="#78350f"><tspan font-weight="bold">2 ·</tspan> Run the <tspan font-weight="bold">3.3 V and GND buses</tspan> as continuous bare wire. On a breadboard</text>
+  <text x="538" y="712" font-size="12.5" fill="#78350f">the rail is given to you; <tspan font-weight="bold">on perfboard an island that never got joined is</tspan></text>
+  <text x="538" y="730" font-size="12.5" fill="#78350f"><tspan font-weight="bold">the classic fault.</tspan></text>
+  <text x="524" y="752" font-size="12.5" fill="#78350f"><tspan font-weight="bold">3 ·</tspan> Passives, <tspan font-weight="bold">each beside the pin it serves</tspan>. <tspan font-weight="bold">4 ·</tspan> Terminals at the edges.</text>
+  <text x="524" y="774" font-size="12.5" fill="#78350f"><tspan font-weight="bold">5 ·</tspan> Continuity and short checks. <tspan font-weight="bold">6 ·</tspan> Only now fit the Teensy.</text>
+  <text x="524" y="796" font-size="12" font-style="italic" fill="#b45309">Point-to-point with insulated wire. Long solder-bridge runs crack on a vehicle that vibrates.</text>
+
+  <!-- ============ bottom cautions ============ -->
+  <rect x="24" y="826" width="1132" height="172" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+  <text x="44" y="854" font-size="14.5" font-weight="bold" fill="#14532d">Four things the breadboard could not teach you</text>
+  <text x="44" y="882" font-size="12.5" fill="#166534"><tspan font-weight="bold">Pin assignment freezes here.</tspan> On a breadboard you move a wire; on perfboard you desolder. <tspan font-weight="bold">Finalise the pins at the bench and write</tspan></text>
+  <text x="58" y="900" font-size="12.5" fill="#166534"><tspan font-weight="bold">them into 04-firmware before you solder anything.</tspan></text>
+  <text x="44" y="924" font-size="12.5" fill="#166534"><tspan font-weight="bold">Strain relief.</tspan> Cable movement must pull on a tie or a bracket, never on a terminal. This is what kills hand-built boards — not the</text>
+  <text x="58" y="942" font-size="12.5" fill="#166534">soldering, the five hundred times a loom gets tugged.</text>
+  <text x="44" y="966" font-size="12.5" fill="#166534"><tspan font-weight="bold">One ground wire off this board</tspan>, to the star at the motor driver. A second path is a loop, and a loop is FMEA row 5.</text>
+  <text x="44" y="990" font-size="12.5" fill="#166534"><tspan font-weight="bold">Standoffs, not loose.</tspan> Perfboard flexes, and a flexing board works a socketed Teensy loose. Four M3, and the board is rigid.</text>
+
+  <!-- ============ gaps found ============ -->
+  <rect x="24" y="1018" width="1132" height="186" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="44" y="1046" font-size="14.5" font-weight="bold" fill="#1e3a8a">Two things this exercise turned up about the parts already bought</text>
+  <text x="44" y="1074" font-size="12.5" fill="#1d4ed8"><tspan font-weight="bold">Terminal count, recounted properly: 12 × 2-way per vehicle, 36 for the fleet.</tspan> Signal board 6 — power in, two per sensor cable,</text>
+  <text x="58" y="1092" font-size="12.5" fill="#1d4ed8">gate out. Relay board 6 — 12 V in, gate in, a pair to each of four coils. <tspan font-weight="bold">30 two-pin were bought</tspan>, so the 10 three-pin make</text>
+  <text x="58" y="1110" font-size="12.5" fill="#1d4ed8">up the difference with one way spare on each. <tspan font-weight="bold">40 against 36 — it covers, but it is not generous.</tspan></text>
+  <text x="44" y="1138" font-size="12.5" fill="#1d4ed8"><tspan font-weight="bold">A supply bypass cap at each Hall latch was never bought.</tspan> TI's datasheet asks for one close to the device, and a sensor on</text>
+  <text x="58" y="1156" font-size="12.5" fill="#1d4ed8">the end of a metre of cable beside a PWM'd motor is exactly the case it is for. <tspan font-weight="bold">100 nF is standard; the 1 nF just bought is</tspan></text>
+  <text x="58" y="1174" font-size="12.5" fill="#1d4ed8"><tspan font-weight="bold">better than nothing but not the right value.</tspan> Check the lab drawer before ordering — every lab has 100 nF ceramics.</text>
+  <text x="44" y="1196" font-size="12" font-style="italic" fill="#1e40af">Soldered at the bracket, across the latch's own VCC and GND. Not at the board end, where it does nothing for the sensor.</text>
+
+  <!-- ============ relay board ============ -->
+  <rect x="24" y="1224" width="1132" height="118" rx="8" fill="#fef2f2" stroke="#b91c1c" stroke-width="2"/>
+  <text x="44" y="1252" font-size="14.5" font-weight="bold" fill="#991b1b">The relay-driver board has no bench version, and that was deliberate</text>
+  <text x="44" y="1280" font-size="12.5" fill="#7f1d1d">It carries 600 mA of coil current and the MOSFET gate pulldown, and <tspan font-weight="bold">neither may ever sit in a spring clip.</tspan> So it is built from</text>
+  <text x="44" y="1298" font-size="12.5" fill="#7f1d1d">the schematic straight onto perfboard — <tspan font-weight="bold">solder the 10 kΩ gate pulldown FIRST</tspan>, before the MOSFET, because a floating gate</text>
+  <text x="44" y="1316" font-size="12.5" fill="#7f1d1d">chatters the relays between STOCK and DBW. <tspan font-weight="bold">Then meter gate-to-GND for 10 kΩ before a single coil is connected.</tspan></text>
+  <text x="44" y="1334" font-size="12" font-style="italic" fill="#b91c1c">De-energise-to-safe is a property of that one resistor. Test it on its own, with nothing else able to confuse the reading.</text>
+</svg>

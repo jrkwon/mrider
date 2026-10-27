@@ -562,6 +562,71 @@ code can be blamed for it.
 > **Beep the two boards' `−` rails together before powering up.** A missing ground reads as a dead
 > sensor, and on the vehicle this same joint becomes the star at the motor driver.
 
+#### 3.5.4 Transferring to perfboard — three boards become one
+
+![Mapping from the three bench breadboards to what is actually built: only the Teensy board becomes a perfboard, the two sensor boards disappear because the sensors live on the ends of cables, and a relay-driver board that was never breadboarded appears; plus the signal perfboard layout, the build order, and the cautions](../images/perfboard-transfer.svg)
+
+> [!IMPORTANT]
+> **The three bench boards do not become three perfboards. Two of them disappear.**
+>
+> The bench had three boards for one reason — **you have to be able to wave a magnet at a sensor.**
+> The vehicle has no such need: the latches sit on a printed bracket at the hub and the AS5600 on a
+> chassis bracket at the kingpin, each on the end of a **1 m cable whose four wires land on a
+> terminal of the signal board.** There is nothing to put on a board at either end.
+>
+> | Bench | Vehicle |
+> |---|---|
+> | Board A — Teensy | **Signal perfboard**, `GA2 80 × 80`, in the logic box |
+> | Board B — Hall latches | *no board* — a bracket at the hub, on a cable |
+> | Board C — AS5600 | *no board* — a bracket at the kingpin, on a cable |
+> | *(never breadboarded)* | **Relay-driver perfboard**, `GA6 50 × 80`, in the power box |
+
+**Build order, and the first step is not a component.**
+
+1. **Female headers first**, with the Teensy plugged into them to hold them square. Tack two
+   corners, check it sits flat, then do the rest.
+2. **Run the 3.3 V and GND buses as continuous bare wire.** A breadboard gives you the rail; on
+   perfboard **an island that never got joined is the classic fault** — and it is the same mistake
+   the missing rail bridges were.
+3. **Passives, each beside the pin it serves.** A 1 nF at the far end of a 60 mm track is doing
+   much less than one at the pin.
+4. **Terminals at the edges**, oriented so each cable leaves towards where it is going.
+5. **Continuity and short checks.** 6. **Only now fit the Teensy.**
+
+**Point-to-point with insulated wire, soldered both ends.** Long solder-bridge runs between
+adjacent pads crack on a vehicle that vibrates.
+
+> [!CAUTION]
+> **The 3.3 V bus is dead until the Teensy is plugged in — and you should still test the board
+> without it**
+>
+> The bus is fed by the **Teensy's own 3V3 pin through the socket**, so a board powered up with the
+> Teensy out reads 0 V and **looks broken**. *Same shape as the `VUSB` cut: a correct board that
+> looks dead. Both belong on the note taped inside the parts box.*
+>
+> **Test it with the Teensy out anyway, for shorts.** Meter 3.3 V bus ↔ GND and 5 V ↔ GND. A solder
+> bridge found then costs nothing; found later it is being driven by the Teensy's own regulator.
+
+**Four things the breadboard could not teach.** **Pin assignment freezes here** — on a breadboard
+you move a wire, on perfboard you desolder, so **finalise the pins at the bench and write them into
+[04-firmware](04-firmware.md) before soldering anything.** **Strain relief:** cable movement must
+pull on a tie or a bracket, never on a terminal — *this is what kills hand-built boards, not the
+soldering but the five hundred tugs a loom gets.* **One ground wire off this board**, to the star
+at the motor driver; a second path is a loop and a loop is
+[FMEA row 5](../design/safety.md#7-fmea-lightweight). And **standoffs, not loose** — perfboard
+flexes, and a flexing board works a socketed Teensy loose.
+
+> [!WARNING]
+> **The relay-driver board has no bench version, and that was deliberate**
+>
+> It carries 600 mA of coil current and the MOSFET gate pulldown, and **neither may ever sit in a
+> spring clip.** So it goes from schematic straight onto perfboard — **solder the 10 kΩ gate
+> pulldown first, before the MOSFET**, because a floating gate chatters the relays between STOCK
+> and DBW. **Then meter gate-to-GND for 10 kΩ before a single coil is connected.**
+>
+> *De-energise-to-safe is a property of that one resistor. Test it on its own, with nothing else
+> able to confuse the reading.*
+
 **Three rules for the board that goes in.**
 
 1. **The Teensy sits in female headers, not soldered down.** Thirteen students, one bricked
