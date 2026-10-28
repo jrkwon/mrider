@@ -360,6 +360,7 @@ there and from the board's own manual, not from another board's table.
 | RC receiver **MUX channel** | Hardware RC signal MUX select | Layer B override — see below |
 | RC receiver PWM out ×2 | RC signal MUX **slave** inputs | Emergency path |
 | Signal MUX outputs ×2 | Motor driver **S1** and **S2** | Whichever source the MUX selects |
+| **E-stop sense** — divider off the coil supply | Teensy digital input | **Not a safety function; it is what makes the *resume* deliberate.** High = authority chain energised. Tap the node the button's NC contacts feed, through a divider to ≈2.3–3.0 V. See the caution below |
 | Teensy **USB** | Laptop | micro-ROS — carries **command *and* feedback** |
 
 > [!CAUTION]
@@ -744,21 +745,50 @@ two grounds means the driver reads a different number than the one that was sent
 > why the button is wired to coils rather than to anything clever.
 
 > [!IMPORTANT]
-> **Open: the two NO contacts are unassigned, and the firmware is blind to the E-stop**
+> **ADOPTED 2026-10-28 — the E-stop sense wire, because the state machine already required it**
 >
-> The `MRE-RR2R` is **2a2b** and the design uses only the two NC. **So nothing tells the Teensy the
-> E-stop has been pressed** — it sees its outputs stop having any effect and cannot say why, and
-> neither can the laptop nor the log.
+> [dbw.md §10.3](../design/dbw.md#103-safety-state-machine) has `E-stop` as a transition **into**
+> `ESTOP` and `E-stop released + RC arm` as the only way **out**. Both need the firmware to know,
+> and **no wire was ever specified.** Two arcs of a published state machine were unimplementable.
 >
-> **Proposal: wire `NO ①` to a Teensy input** — 3.3 V through the contact, pulled down at the pin,
-> pressed = high. One wire and one GPIO, and the firmware can then **latch into `ESTOP`
-> deliberately, publish it, and stop fighting a loop it cannot win.**
+> **The practical consequence is concrete.** Both coils are fed through the button's NC contacts, so
+> **turning the button to reset re-energises both at once.** The Teensy never noticed anything — it
+> has been closing a loop against a sensor that was not moving, **winding up its integrator** — so
+> the vehicle **resumes under whatever command was last in flight.**
 >
-> **It is a diagnostic, never a safety function.** The safety lives in the NC contacts and the
-> coils, which work with the Teensy dead. This input only lets the system *explain itself*, and a
-> sensed input must never become the thing that is relied on.
+> **Hardware owns stopping; firmware owns not restarting by accident.**
 >
-> *Raised 2026-10-27, not yet adopted. Decide it before §3.4 is built. `NO ②` stays spare.*
+> **Wire it as a tap on the COIL SUPPLY, not on a spare contact.** A divider on the node the NC
+> contacts feed, into a plain digital input:
+>
+> ```
+> E-stop NC ──┬──▶ contactor coil + relay MUX coils
+>             │
+>             └──[ 10 kΩ ]──┬──▶ Teensy digital in
+>                           │
+>                        [ 2.7 kΩ ]
+>                           │
+>                          GND  (the star)
+> ```
+>
+> | | sense reads |
+> |---|---|
+> | released, coils live | **high** |
+> | pressed | low |
+> | **broken wire · pulled connector · blown coil fuse · dead logic pack** | **low** |
+>
+> **Every failure reads "stopped", which is the conservative direction** — and it senses *whether
+> the authority chain is energised*, not merely whether a finger is on the button. **A spare `NO`
+> contact would be simpler and worse:** an open circuit would read *"not pressed"*, silently
+> restoring the instant-resume behaviour this exists to prevent. The `NO` pair stays spare.
+>
+> **Pick the divider so the output lands between 2.2 V and 3.1 V** across the pack's whole range —
+> **12.0 V flat to 14.6 V on charge.** `10 k / 2.7 k` gives 2.56 V and 3.11 V. **Then meter it
+> before the wire goes anywhere near the pin**, which makes the arithmetic moot: the Teensy 4.1 is
+> **not 5 V tolerant** and this node starts at pack voltage.
+>
+> **It must never become a safety function.** The safety is the NC contacts and the coils, which
+> work with the Teensy dead.
 
 > [!CAUTION]
 > **This is the condition on which the architecture was adopted**

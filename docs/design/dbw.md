@@ -465,6 +465,44 @@ Invariants:
 - RC override is honored from any state within 200 ms.
 - **These invariants are firmware, and firmware can hang.** They are the *inner* layer only; §11 provides the independent outer layers.
 
+> [!IMPORTANT]
+> **This state machine has always needed an E-stop input, and no wire was ever specified for it**
+>
+> Look at the arcs: **`E-stop` is a transition trigger into `ESTOP`**, and **`E-stop released + RC
+> arm` is the only way out.** Both require the firmware to *know*. Nothing in the wiring ever told
+> it — found 2026-10-27, while drawing the harness.
+>
+> **Without it, two arcs of a published state machine are unimplementable**, and the practical
+> consequence is concrete rather than theoretical: the contactor coil and the relay MUX coils are
+> both fed through the button's NC contacts, so **turning the button to reset re-energises both
+> immediately.** The Teensy never noticed anything — it has been running its loop against a sensor
+> that was not moving, **winding up its integrator** — so the vehicle **resumes under whatever
+> command was last in flight.** `E-stop released + RC arm` exists precisely to stop that, and it
+> cannot run.
+>
+> **The division of labour is the point. Hardware owns stopping; firmware owns not restarting by
+> accident.** The sense input does not make the stop safer — the coils drop whatever the firmware
+> thinks. It makes the **resume deliberate**.
+>
+> **How it is sensed — tap the coil supply, not the button.** A divider on the node the NC contacts
+> feed, read as a plain digital input:
+>
+> | | sense reads |
+> |---|---|
+> | button released, coils live | **high** — authority chain energised |
+> | button pressed | low |
+> | **broken wire, pulled connector, blown coil fuse, dead logic pack** | **low** |
+>
+> **Every failure reads as "stopped", which is the conservative direction** — and it senses what
+> actually matters, *whether the authority chain is energised*, rather than only whether a finger is
+> on the button. A spare `NO` contact would have been simpler and is **worse**: an open circuit
+> would read *"not pressed"*, so a broken sense wire would silently restore the instant-resume
+> behaviour this input exists to prevent.
+>
+> **It still must never be a safety function.** The safety is the NC contacts and the coils, which
+> work with the Teensy dead. *A sensed input that gets relied on is how a hardware interlock quietly
+> becomes a software one.*
+
 ---
 
 ## 11. Authority arbitration — relay MUX and hardware RC signal MUX

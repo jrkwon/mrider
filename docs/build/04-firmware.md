@@ -149,7 +149,35 @@ pio pkg list                     # platform + framework versions
 Corresponds to [safety.md Stage 0](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first).
 **Nothing is connected to the Sabertooth yet.**
 
-Wire only: absolute angle sensor (I²C), drive encoder, steering encoder, USB to laptop.
+Wire only: absolute angle sensor (I²C), drive encoder, **E-stop sense**, USB to laptop.
+
+> [!IMPORTANT]
+> **The E-stop sense input, and what the firmware must do with it**
+>
+> [dbw.md §10.3](../design/dbw.md#103-safety-state-machine) has `E-stop` as a transition **into**
+> `ESTOP` and `E-stop released + RC arm` as the only way **out**. Both need this input; it was
+> specified in the state machine and missing from the harness until 2026-10-28.
+>
+> **Read it as a plain digital input — high means the authority chain is energised.** Wiring and the
+> divider are in [§3.5](03-electrical.md#351-hardware-rc-signal-mux-wire-this-it-is-not-optional).
+>
+> **Three behaviours, and the second is the one that matters:**
+>
+> 1. **Low → enter `ESTOP`.** Zero throttle, centre steering, as the invariants already require.
+> 2. **Low → freeze the steering integrator and zero it on entry.** The loop has been commanding a
+>    wheel that cannot move; **without this the accumulated term slams the steering the moment the
+>    contactor re-closes.**
+> 3. **High again → stay in `ESTOP` until an RC arm.** Releasing the button must not be a *go*
+>    command. The hardware has already restored traction and authority; **the question "should we
+>    drive again?" is policy, and policy is firmware.**
+>
+> **Publish it in `/mitt/dbw/status`.** Thirteen students debugging three vehicles will otherwise
+> spend twenty minutes on what a flag answers in five seconds — and a behaviour-cloning dataset
+> captured through an E-stop event is garbage that nothing else marks.
+>
+> **It is never the thing that stops the vehicle.** The NC contacts and the coils do that, with the
+> Teensy dead. *A sensed input that gets relied on is how a hardware interlock quietly becomes a
+> software one.*
 
 ### Verify the angle sensor first, in isolation
 
