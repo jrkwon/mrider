@@ -36,10 +36,14 @@ MRider has exactly two power rails, and the split is safety-critical.
 ```
 Chassis traction pack
   │
-  └──▶ E-stop contactor (cuts TRACTION only) ──▶ Relay MUX ──┬──▶ STOCK: parent-remote receiver + ESC
-                                                             └──▶ DBW:   Motor driver B+
-                                                                          ├─ M1 → steering gearmotor
-                                                                          └─ M2 → paralleled drive motors
+  └──▶ 25 A fuse ──▶ E-stop contactor ──┬──▶ stock ECU  (through its own factory protector)
+       (cuts TRACTION only)             └──▶ Motor driver B+
+
+  The Relay MUX then switches the MOTOR LEADS — not either controller's supply:
+
+  stock ECU motor outputs ──▶ 87a (NC, default) ─┐
+                                                 ├─▶ 30 (COM) ─┬─▶ steering gearmotor
+  driver M1 / M2 outputs  ──▶ 87  (NO, DBW)     ─┘             └─▶ paralleled drive motors
 
 12 V logic battery ─┬─▶ UBEC A ─▶ 5 V ─▶ Teensy 4.1 VIN   (and nothing else)
                     │                         └─▶ Teensy 3.3 V pin ─┬─▶ AS5600 (I²C)
@@ -55,7 +59,7 @@ Laptop ──▶ its own internal battery (NOT wired to traction in v1)
 
 
 > [!IMPORTANT]
-> **Two things that diagram fixes, both of which this page used to get wrong**
+> **Three things that diagram fixes, all of which this page used to get wrong**
 >
 > ![The logic side of MRider: the logic battery feeding two UBECs and a direct 12 V tap, the Teensy's own 3.3 V pin feeding the AS5600 and the Hall latches, the Teensy and receiver both feeding the Pololu signal MUX into the motor driver, and the E-stop's two NC contacts breaking the contactor coil and the relay MUX coil separately](../images/logic-signal-wiring.svg)
 >
@@ -72,6 +76,24 @@ Laptop ──▶ its own internal battery (NOT wired to traction in v1)
 > failure takes out the override and the thing it overrides at the same time.** Split this way, a
 > UBEC A failure leaves the receiver, the MUX and the driver alive — flip `SEL` to slave and drive
 > it off the field by hand.
+>
+> **3. The relay MUX is in the MOTOR LEADS, not in the driver's `B+`.** *Corrected 2026-10-28.*
+> This diagram, the §3.2 gauge table and the §3.2 branch sketch all used to read
+> `… ▶ E-stop contactor ▶ relay MUX ▶ driver B+`, which is **a different circuit from the one the
+> rest of the build describes** — and [power-wiring.svg](../images/power-wiring.svg) drew it that
+> way while carrying a box of its own saying *"the MUX breaks **both** motor conductors, which is
+> why four poles and not two."* **The figure contradicted itself.**
+>
+> The number of poles settles it. **Switching a supply needs one pole; switching two motor circuits
+> at both ends needs four**, which is what [#7](../order-log.md) bought and what
+> [dbw.md §11.5](../design/dbw.md#115-3-tap-connector-spec-minimally-invasive) specifies — the
+> throttle and steering taps intercept *motor leads*, and the **power tap separately feeds `B+`**.
+>
+> **And the wrong version is not merely untidy, it is unsafe.** With the MUX in `B+`, the motor
+> leads are never broken, so **the stock ECU's output stage and the driver's output stage stay
+> connected to the same motor permanently.** Whichever is powered wins, and the unpowered one is a
+> back-feed path through its own H-bridge body diodes. *Breaking both conductors is the thing that
+> stops those two sources from ever meeting, and it is what the four poles are for.*
 
 | Rail | Feeds | Dies when |
 |---|---|---|
@@ -105,7 +127,7 @@ Laptop ──▶ its own internal battery (NOT wired to traction in v1)
 logic rail must not follow. Use adequate hold-up capacitance and put the undervoltage monitor
 on the **logic** rail.
 
-![Power wiring in detail: the traction pack through a 25 A fuse, the E-stop contactor and the four-pole relay MUX to either the stock ECU or the motor driver; and separately the LiFePO4 logic pack through a 5 A fuse to two UBECs and a direct coil tap feeding every relay coil; with the single star ground where the two rails meet](../images/power-wiring.svg)
+![Power wiring in detail, in two rows: the supply row runs the traction pack through a 25 A fuse and the E-stop contactor, then forks to the stock ECU and to the motor driver's B+ with the relay MUX in neither fork; the authority row puts the four-pole relay MUX in the motor leads, stock ECU outputs on 87a and driver M1/M2 on 87, COM out to the steering gearmotor and the paralleled drive motors; and separately the LiFePO4 logic pack through a 5 A fuse to two UBECs and a direct coil tap feeding every relay coil, with the single star ground where the two rails meet](../images/power-wiring.svg)
 
 ## 3.2 Per-rail fuse and gauge table
 
@@ -139,9 +161,9 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 
 | Rail / branch | What protects it | Wire | Fuse? |
 |---|---|---|:---:|
-| **Traction pack → E-stop → MUX → driver B+** | **25 A blade fuse, at the pack** | AWG 14 | **yes — 1** |
-| Driver M2 → paralleled drive motors | the driver's current limit, set to **20 A** | AWG 14 | no |
-| Driver M1 → steering gearmotor | same current limit | AWG 14 | no |
+| **Traction pack → E-stop contactor → driver B+** | **25 A blade fuse, at the pack** | AWG 14 | **yes — 1** |
+| Driver M2 → **MUX** → paralleled drive motors | the driver's current limit, set to **20 A** | AWG 14 | no |
+| Driver M1 → **MUX** → steering gearmotor | same current limit | AWG 14 | no |
 | **Logic pack → UBEC inputs + MUX coils** | **5 A blade fuse, at the pack** | AWG 18 | **yes — 1** |
 | UBEC → Teensy, sensor, RC RX, signal MUX | the UBEC's own 3 A limit | AWG 20 | no |
 
@@ -245,7 +267,7 @@ the manufacturer sized it for these motors, this pack, and this duty, and had it
 **One place does differ from stock**, and it is worth a sentence rather than a procedure:
 
 ```
-pack ──▶ power tap ──▶ E-stop contactor ──▶ relay MUX ──▶ driver B+
+pack ──▶ power tap ──▶ 25 A fuse ──▶ E-stop contactor ──▶ driver B+
 ```
 
 The stock ECU is capped at 20 A and sits behind a 10 A device; the motor driver will deliver **30 A
