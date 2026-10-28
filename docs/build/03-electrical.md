@@ -320,6 +320,55 @@ two things at once:
 > STOCK — you invert the entire failsafe analysis in
 > [safety.md](../design/safety.md). Check this twice.
 
+### Which relay is which — and wire by the numbers moulded on the body
+
+`K1`–`K4` are this page's designators and they appear nowhere on the hardware.
+**Write them on the sockets in permanent marker as you assemble**, the same rule as the E-stop
+contact blocks above, and for the same reason: twelve identical relays across three vehicles, and
+the person wiring them is not the person who read this table.
+
+| Relay | Carries | `30` COM | `87a` NC → STOCK | `87` NO → DBW |
+|---|---|---|---|---|
+| **K1** | steering tap, lead **A** | steering motor A | stock ECU steering A | driver `M1`, terminal A |
+| **K2** | steering tap, lead **B** | steering motor B | stock ECU steering B | driver `M1`, terminal B |
+| **K3** | throttle tap, lead **A** | drive motors A, paralleled | stock ECU throttle A | driver `M2`, terminal A |
+| **K4** | throttle tap, lead **B** | drive motors B, paralleled | stock ECU throttle B | driver `M2`, terminal B |
+
+All four coils sit on **one bus** — see the
+[relay-driver board](../images/relay-driver-board.svg) for the driver side: the four coils in
+parallel across the E-stop-fed logic feed and a single `IRLZ44N` pulling all four low sides. The
+coil is the same circuit on every relay; **only the contacts differ, and that is what this table
+is for.**
+
+`30 · 87 · 87a · 85 · 86` are **moulded into the relay body**, confirmed on arrival
+([#7](../order-log.md)). Wire to those numbers, not to pigtail colour: #7's `RV-90` sockets put
+visibly heavier wire on the contacts than on the coil pair, which is the right arrangement, but
+**which colour lands on which contact is the socket maker's choice and has to be rung out** with a
+meter rather than assumed. Terminal `A`/`B` on the driver is likewise whatever its silkscreen
+says — the pairing is what matters, not the letter.
+
+> [!WARNING]
+> **Do not cross a pair — and this is the fault that STOCK mode cannot show you**
+>
+> Both poles of a pair must keep the same motor lead on the same side. If `K1` carries lead A but
+> `K2` has its `87a` and `87` swapped, then **STOCK drives the motor one way and DBW drives it the
+> other.** Because the NC side is still wired straight through, **the parent remote keeps working
+> perfectly** — so every check that happens before the first DBW command passes.
+>
+> It surfaces as steering that runs *away* from the correction instead of toward it, on the first
+> closed loop, which is the worst possible moment to find a wiring error.
+>
+> It is recoverable by flipping a sign in firmware. **Do not.** The AS5600 sign convention, the
+> odometry sign and [§3.7](#37-relay-mux-bench-test-procedure)'s bench test all assume the two
+> modes agree about which way is forward. Fix the wire.
+
+**Coil polarity — pick one convention and hold it across all twelve.** Take **`86` to the
+E-stop-fed feed** and **`85` to the MOSFET drain**. A plain relay coil is not polarised, so either
+way energises it — **the `1N4007` across it is**, and a convention that drifts from relay to relay
+is exactly how one diode ends up reversed, which is a short across the logic battery.
+*Check the body for a diode symbol first: if the relay has an internal one, `85`/`86` are already
+fixed and the convention has to match the part.*
+
 ## 3.5 Signal wiring
 
 The motor driver runs in **independent R/C (PWM) mode**. Both signal lines come from the Teensy,
@@ -663,7 +712,7 @@ at the motor driver; a second path is a loop and a loop is
 [FMEA row 5](../design/safety.md#7-fmea-lightweight). And **standoffs, not loose** — perfboard
 flexes, and a flexing board works a socketed Teensy loose.
 
-![Relay-driver board schematic: 12 V through the E-stop NC contact to four relay coils in parallel, each with a 1N4007; the low sides joined to an IRLZ44N drain; gate driven through 100 ohms from a Teensy pin and held down by 10 kilohms; and the sense divider tapped off the coil feed](../images/relay-driver-board.svg)
+![Relay-driver board schematic: 12 V through the E-stop NC contact to four relay coils in parallel, each with a 1N4007; the low sides joined to an IRLZ44N drain; gate driven through 100 ohms from a Teensy pin and held down by 10 kilohms; and the sense divider tapped off the coil feed. Coils are labelled K1-K4 with the motor lead each one's contacts carry, and 85/86 marked; the contacts themselves are not on this board](../images/relay-driver-board.svg)
 
 > [!WARNING]
 > **The relay-driver board has no bench version, and that was deliberate**
