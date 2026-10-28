@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 980" width="1240" height="980"
+     font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+  <title>Relay-driver board schematic — one MOSFET, four coils, and the resistor the whole design rests on</title>
+  <desc>Schematic of the relay-driver perfboard: 12 V from the logic pack through the E-stop's NC
+  contact to the high side of four relay coils in parallel, each with a flyback diode; the low
+  sides joined to the drain of an IRLZ44N whose gate is driven from a Teensy pin through 100 ohms
+  and held down by 10 kilohms; and the sense tap that tells the firmware the chain is energised.</desc>
+
+  <rect width="1240" height="980" fill="#ffffff"/>
+
+  <text x="24" y="36" font-size="20" font-weight="bold" fill="#0f172a">Relay-driver board — one MOSFET, four coils, and one resistor the whole design rests on</text>
+  <text x="24" y="60" font-size="12.5" fill="#475569">GA6 50 × 80 perfboard, in the power box. <tspan font-weight="bold">Nothing on it is on the bench</tspan> — 600 mA and a gate pulldown may never sit in a spring clip.</text>
+
+  <!-- rails -->
+  <line x1="150" y1="128" x2="1120" y2="128" stroke="#dc2626" stroke-width="4"/>
+  <line x1="150" y1="668" x2="1120" y2="668" stroke="#2563eb" stroke-width="4"/>
+  <text x="1130" y="132" font-size="12" font-weight="bold" fill="#dc2626">12 V</text>
+  <text x="1130" y="672" font-size="12" font-weight="bold" fill="#2563eb">GND</text>
+
+  <!-- source -->
+  <rect x="40" y="104" width="96" height="48" rx="5" fill="#fef3c7" stroke="#b45309" stroke-width="2.2"/>
+  <text x="88" y="124" font-size="11.5" font-weight="bold" fill="#92400e" text-anchor="middle">LiFePO₄</text>
+  <text x="88" y="141" font-size="11" fill="#78350f" text-anchor="middle">via 5 A fuse</text>
+
+  <!-- E-stop NC in series -->
+  <g stroke="#b91c1c" stroke-width="3" fill="none">
+    <path d="M136,128 L196,128"/><path d="M244,128 L300,128"/>
+    <path d="M196,128 L240,112"/>
+  </g>
+  <circle cx="196" cy="128" r="4.5" fill="#b91c1c"/><circle cx="244" cy="128" r="4.5" fill="#b91c1c"/>
+  <text x="220" y="100" font-size="11.5" font-weight="bold" fill="#991b1b" text-anchor="middle">E-stop NC ②</text>
+  <text x="220" y="166" font-size="10.5" fill="#7f1d1d" text-anchor="middle">opens → every coil drops</text>
+
+  <!-- sense tap -->
+  <path d="M320,128 L320,196" stroke="#1d4ed8" stroke-width="2.6"/>
+  <path d="M320,196 L320,210 L312,216 L328,228 L312,240 L328,252 L320,258 L320,276" fill="none" stroke="#1d4ed8" stroke-width="2.6"/>
+  <text x="336" y="234" font-size="11" font-weight="bold" fill="#1d4ed8">10 kΩ</text>
+  <circle cx="320" cy="276" r="4.5" fill="#1d4ed8"/>
+  <path d="M320,276 L420,276" stroke="#1d4ed8" stroke-width="2.6"/>
+  <text x="428" y="272" font-size="11.5" font-weight="bold" fill="#1e3a8a">→ Teensy pin 14</text>
+  <text x="428" y="288" font-size="10.5" fill="#1d4ed8">E-stop sense, high = chain live</text>
+  <path d="M320,276 L320,294 L312,300 L328,312 L312,324 L328,336 L320,342 L320,668" fill="none" stroke="#1d4ed8" stroke-width="2.6"/>
+  <text x="336" y="318" font-size="11" font-weight="bold" fill="#1d4ed8">2.7 kΩ</text>
+
+  <!-- four coils -->
+  <g>
+    <g id="coilgrp"></g>
+  </g>
+  <g>
+    <!-- coil 1 -->
+    <rect x="520" y="236" width="44" height="86" rx="5" fill="#f3e8ff" stroke="#7e22ce" stroke-width="2.4"/>
+    <text x="542" y="286" font-size="11" font-weight="bold" fill="#581c87" text-anchor="middle">K1</text>
+    <path d="M542,128 L542,236" stroke="#dc2626" stroke-width="2.6"/>
+    <path d="M542,322 L542,430" stroke="#334155" stroke-width="2.6"/>
+    <!-- coil 2 -->
+    <rect x="632" y="236" width="44" height="86" rx="5" fill="#f3e8ff" stroke="#7e22ce" stroke-width="2.4"/>
+    <text x="654" y="286" font-size="11" font-weight="bold" fill="#581c87" text-anchor="middle">K2</text>
+    <path d="M654,128 L654,236" stroke="#dc2626" stroke-width="2.6"/>
+    <path d="M654,322 L654,430" stroke="#334155" stroke-width="2.6"/>
+    <!-- coil 3 -->
+    <rect x="744" y="236" width="44" height="86" rx="5" fill="#f3e8ff" stroke="#7e22ce" stroke-width="2.4"/>
+    <text x="766" y="286" font-size="11" font-weight="bold" fill="#581c87" text-anchor="middle">K3</text>
+    <path d="M766,128 L766,236" stroke="#dc2626" stroke-width="2.6"/>
+    <path d="M766,322 L766,430" stroke="#334155" stroke-width="2.6"/>
+    <!-- coil 4 -->
+    <rect x="856" y="236" width="44" height="86" rx="5" fill="#f3e8ff" stroke="#7e22ce" stroke-width="2.4"/>
+    <text x="878" y="286" font-size="11" font-weight="bold" fill="#581c87" text-anchor="middle">K4</text>
+    <path d="M878,128 L878,236" stroke="#dc2626" stroke-width="2.6"/>
+    <path d="M878,322 L878,430" stroke="#334155" stroke-width="2.6"/>
+  </g>
+
+  <!-- flyback diodes -->
+  <g>
+    <g stroke="#15803d" stroke-width="2.4" fill="none">
+      <path d="M586,128 L586,246"/><path d="M586,290 L586,322 L542,322"/>
+      <path d="M698,128 L698,246"/><path d="M698,290 L698,322 L654,322"/>
+      <path d="M810,128 L810,246"/><path d="M810,290 L810,322 L766,322"/>
+      <path d="M922,128 L922,246"/><path d="M922,290 L922,322 L878,322"/>
+    </g>
+    <g fill="#bbf7d0" stroke="#15803d" stroke-width="2.2">
+      <path d="M576,290 L596,290 L586,266 Z"/><path d="M688,290 L708,290 L698,266 Z"/>
+      <path d="M800,290 L820,290 L810,266 Z"/><path d="M912,290 L932,290 L922,266 Z"/>
+    </g>
+    <g stroke="#15803d" stroke-width="2.8">
+      <line x1="574" y1="266" x2="598" y2="266"/><line x1="686" y1="266" x2="710" y2="266"/>
+      <line x1="798" y1="266" x2="822" y2="266"/><line x1="910" y1="266" x2="934" y2="266"/>
+    </g>
+  </g>
+  <text x="952" y="262" font-size="11.5" font-weight="bold" fill="#15803d">4 × 1N4007</text>
+  <text x="952" y="278" font-size="10.5" fill="#166534">band (cathode) to +12 V</text>
+  <text x="952" y="294" font-size="10.5" font-weight="bold" fill="#b91c1c">backwards = dead short</text>
+
+  <!-- drain bus -->
+  <line x1="542" y1="430" x2="878" y2="430" stroke="#334155" stroke-width="3"/>
+  <path d="M542,430 L420,430" stroke="#334155" stroke-width="3"/>
+  <text x="700" y="452" font-size="11" fill="#475569" text-anchor="middle">all four low sides joined — one MOSFET switches the lot</text>
+
+  <!-- MOSFET -->
+  <rect x="332" y="470" width="88" height="96" rx="5" fill="#e2e8f0" stroke="#0f172a" stroke-width="2.4"/>
+  <text x="376" y="512" font-size="12" font-weight="bold" fill="#0f172a" text-anchor="middle">IRLZ44N</text>
+  <text x="376" y="530" font-size="10" fill="#334155" text-anchor="middle">logic-level N</text>
+  <text x="376" y="548" font-size="9.5" fill="#64748b" text-anchor="middle">tab = DRAIN</text>
+  <path d="M420,430 L420,494 L420,494" stroke="#334155" stroke-width="3" fill="none"/>
+  <path d="M420,494 L418,494" stroke="#334155" stroke-width="3"/>
+  <text x="432" y="486" font-size="10.5" font-weight="bold" fill="#334155">D</text>
+  <path d="M376,566 L376,668" stroke="#2563eb" stroke-width="3"/>
+  <text x="388" y="598" font-size="10.5" font-weight="bold" fill="#2563eb">S</text>
+
+  <!-- gate -->
+  <path d="M332,518 L300,518" stroke="#b45309" stroke-width="2.6"/>
+  <path d="M300,518 L288,518 L282,510 L270,526 L258,510 L246,526 L240,518 L212,518" fill="none" stroke="#b45309" stroke-width="2.6"/>
+  <text x="266" y="500" font-size="11" font-weight="bold" fill="#b45309" text-anchor="middle">100 Ω</text>
+  <path d="M212,518 L140,518" stroke="#b45309" stroke-width="2.6"/>
+  <text x="134" y="514" font-size="11.5" font-weight="bold" fill="#92400e" text-anchor="end">Teensy</text>
+  <text x="134" y="530" font-size="11.5" font-weight="bold" fill="#92400e" text-anchor="end">gate pin</text>
+
+  <circle cx="212" cy="518" r="4.5" fill="#b45309"/>
+  <path d="M212,518 L212,540 L204,546 L220,558 L204,570 L220,582 L212,588 L212,668" fill="none" stroke="#b91c1c" stroke-width="3"/>
+  <text x="228" y="566" font-size="12" font-weight="bold" fill="#b91c1c">10 kΩ</text>
+  <text x="228" y="582" font-size="11" font-weight="bold" fill="#b91c1c">PULLDOWN</text>
+
+  <!-- the one resistor box -->
+  <rect x="40" y="610" width="320" height="40" rx="6" fill="#fee2e2" stroke="#b91c1c" stroke-width="2"/>
+  <text x="54" y="626" font-size="11.5" font-weight="bold" fill="#991b1b">Solder this one FIRST, before the MOSFET.</text>
+  <text x="54" y="642" font-size="11" fill="#7f1d1d">De-energise-to-safe is a property of this resistor.</text>
+
+  <!-- notes -->
+  <rect x="24" y="700" width="596" height="256" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+  <text x="44" y="728" font-size="14.5" font-weight="bold" fill="#991b1b">Build and test order</text>
+  <text x="44" y="754" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">1 · 10 kΩ pulldown, gate to GND.</tspan> First, alone.</text>
+  <text x="44" y="774" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">2 · Meter gate-to-GND for 10 kΩ</tspan> with nothing else fitted — no</text>
+  <text x="58" y="792" font-size="12.5" fill="#7f1d1d">MOSFET to confuse the reading, no coil to be damaged by it.</text>
+  <text x="44" y="814" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">3 · MOSFET, 100 Ω, then the four diodes</tspan> — check every band</text>
+  <text x="58" y="832" font-size="12.5" fill="#7f1d1d">points at +12 V before power. <tspan font-weight="bold">One reversed diode is a short</tspan></text>
+  <text x="58" y="850" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">across the logic pack</tspan>, and it will not announce itself politely.</text>
+  <text x="44" y="872" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">4 · Terminals, then coils last.</tspan> Drive the gate from a bench 3.3 V</text>
+  <text x="58" y="890" font-size="12.5" fill="#7f1d1d">and listen for four clicks before anything is bolted into the car.</text>
+  <text x="44" y="916" font-size="12.5" font-weight="bold" fill="#991b1b">The tab of a TO-220 is the DRAIN, not ground.</text>
+  <text x="44" y="934" font-size="12.5" fill="#7f1d1d">Do not bolt it to a plate without an insulating kit. No heatsink is</text>
+  <text x="44" y="950" font-size="12.5" fill="#7f1d1d">needed — four coils is ~600 mA and under 0.1 W in the device.</text>
+
+  <rect x="644" y="700" width="572" height="256" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+  <text x="664" y="728" font-size="14.5" font-weight="bold" fill="#14532d">Why it is shaped like this</text>
+  <text x="664" y="754" font-size="12.5" fill="#166534"><tspan font-weight="bold">One MOSFET, four coils in parallel.</tspan> The four relays are one</text>
+  <text x="664" y="772" font-size="12.5" fill="#166534">decision — STOCK or DBW — so they must switch together. Four</text>
+  <text x="664" y="790" font-size="12.5" fill="#166534">drivers would let them disagree, and <tspan font-weight="bold">one pole left closed is a</tspan></text>
+  <text x="664" y="808" font-size="12.5" fill="#166534"><tspan font-weight="bold">live motor.</tspan></text>
+  <text x="664" y="834" font-size="12.5" fill="#166534"><tspan font-weight="bold">A diode across every coil, even ones with a built-in resistor.</tspan></text>
+  <text x="664" y="852" font-size="12.5" fill="#166534">A collapsing coil will reach for whatever voltage it needs to keep</text>
+  <text x="664" y="870" font-size="12.5" fill="#166534">current flowing, and the MOSFET is what it reaches through.</text>
+  <text x="664" y="896" font-size="12.5" fill="#166534"><tspan font-weight="bold">100 Ω in series with the gate</tspan> limits the current into the gate</text>
+  <text x="664" y="914" font-size="12.5" fill="#166534">capacitance on each edge, protecting the Teensy pin.</text>
+  <text x="664" y="940" font-size="12.5" font-weight="bold" fill="#14532d">The E-stop sits in the 12 V feed, so it drops all four at once.</text>
+</svg>

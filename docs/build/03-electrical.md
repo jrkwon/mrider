@@ -663,6 +663,8 @@ at the motor driver; a second path is a loop and a loop is
 [FMEA row 5](../design/safety.md#7-fmea-lightweight). And **standoffs, not loose** — perfboard
 flexes, and a flexing board works a socketed Teensy loose.
 
+![Relay-driver board schematic: 12 V through the E-stop NC contact to four relay coils in parallel, each with a 1N4007; the low sides joined to an IRLZ44N drain; gate driven through 100 ohms from a Teensy pin and held down by 10 kilohms; and the sense divider tapped off the coil feed](../images/relay-driver-board.svg)
+
 > [!WARNING]
 > **The relay-driver board has no bench version, and that was deliberate**
 >
