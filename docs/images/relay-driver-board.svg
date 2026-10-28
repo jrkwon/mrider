@@ -34,13 +34,14 @@
   <!-- sense tap -->
   <path d="M320,128 L320,196" stroke="#1d4ed8" stroke-width="2.6"/>
   <path d="M320,196 L320,210 L312,216 L328,228 L312,240 L328,252 L320,258 L320,276" fill="none" stroke="#1d4ed8" stroke-width="2.6"/>
-  <text x="336" y="234" font-size="11" font-weight="bold" fill="#1d4ed8">10 kΩ</text>
+  <text x="256" y="234" font-size="11" font-weight="bold" fill="#1d4ed8" text-anchor="end">10 kΩ</text>
   <circle cx="320" cy="276" r="4.5" fill="#1d4ed8"/>
-  <path d="M320,276 L420,276" stroke="#1d4ed8" stroke-width="2.6"/>
-  <text x="428" y="272" font-size="11.5" font-weight="bold" fill="#1e3a8a">→ Teensy pin 14</text>
-  <text x="428" y="288" font-size="10.5" fill="#1d4ed8">E-stop sense, high = chain live</text>
+  <path d="M320,276 L344,276" stroke="#1d4ed8" stroke-width="2.6"/>
+  <text x="352" y="272" font-size="11.5" font-weight="bold" fill="#1e3a8a">→ Teensy pin 20</text>
+  <text x="352" y="289" font-size="10.5" fill="#1d4ed8">E-stop sense</text>
+  <text x="352" y="304" font-size="10.5" fill="#1d4ed8">high = chain live</text>
   <path d="M320,276 L320,294 L312,300 L328,312 L312,324 L328,336 L320,342 L320,668" fill="none" stroke="#1d4ed8" stroke-width="2.6"/>
-  <text x="336" y="318" font-size="11" font-weight="bold" fill="#1d4ed8">2.7 kΩ</text>
+  <text x="256" y="318" font-size="11" font-weight="bold" fill="#1d4ed8" text-anchor="end">2.7 kΩ</text>
 
   <!-- four coils -->
   <g>

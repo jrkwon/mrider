@@ -108,8 +108,7 @@ board(1050,1430,Cc_t,Cc_b,C_A,C_F,'C','#0f766e')
 
 # node bands
 for x in (col(4),col(5)): e(f'<rect x="{x-9}" y="228" width="18" height="56" rx="4" fill="#fde68a" fill-opacity="0.6"/>')
-for x in (col(12),col(13)): e(f'<rect x="{x-9}" y="388" width="18" height="56" rx="4" fill="#fde68a" fill-opacity="0.6"/>')
-e(f'<rect x="{col(16)-9}" y="388" width="18" height="56" rx="4" fill="#fde68a" fill-opacity="0.6"/>')
+for x in (col(9),col(10),col(11)): e(f'<rect x="{x-9}" y="388" width="18" height="56" rx="4" fill="#fde68a" fill-opacity="0.6"/>')
 for x in (col(3),col(4),col(5),col(10),col(11),col(12)): e(f'<rect x="{x-9}" y="678" width="18" height="36" rx="4" fill="#fde68a" fill-opacity="0.6"/>')
 for x in (col(20),col(22),col(24),col(26)): e(f'<rect x="{x-9}" y="1128" width="18" height="36" rx="4" fill="#fde68a" fill-opacity="0.6"/>')
 
@@ -120,7 +119,7 @@ e('<text x="246" y="341" font-size="8.5" fill="#0f172a" text-anchor="middle">USB
 e('<text x="500" y="342" font-size="16" font-weight="bold" fill="#f1f5f9" text-anchor="middle">Teensy 4.1</text>')
 for x,t in ((col(3),'GND'),(col(4),'0'),(col(5),'1')):
     e(f'<text x="{x}" y="314" font-size="10.5" font-weight="bold" fill="#fde68a" text-anchor="middle" transform="rotate(-90 {x} 314)">{t}</text>')
-for x,t in ((col(3),'VIN'),(col(4),'GND'),(col(5),'3V3'),(col(12),'19'),(col(13),'18'),(col(16),'14')):
+for x,t in ((col(3),'VIN'),(col(4),'GND'),(col(5),'3V3'),(col(9),'20'),(col(10),'19'),(col(11),'18')):
     e(f'<text x="{x}" y="358" font-size="10.5" font-weight="bold" fill="#7dd3fc" text-anchor="middle" transform="rotate(-90 {x} 358)">{t}</text>')
 
 for cx,lbl in ((col(4),'Hall A'),(col(11),'Hall B')):
@@ -133,11 +132,11 @@ e('<text x="644" y="1203" font-size="13" font-weight="bold" fill="#ecfeff" text-
 zig(col(4),236,182); gap(col(4),202,"#b45309",2.6)
 zig(col(5),236,182); gap(col(5),202,"#b45309",2.6)
 cap(col(4),256,202); cap(col(5),276,202)
-zig(col(12),396,498); gap(col(12),476,"#b45309",2.6)
-zig(col(13),396,498); gap(col(13),476,"#b45309",2.6)
+zig(col(10),396,498); gap(col(10),476,"#b45309",2.6)
+zig(col(11),396,498); gap(col(11),476,"#b45309",2.6)
 # E-stop sense divider, kept entirely in the FREE bottom rows so nothing is drawn over the Teensy
-e(f'<path d="M{col(19)},416 L{col(19)-8},416 L{col(19)-14},408 L{col(19)-24},424 L{col(19)-34},408 L{col(19)-44},424 L{col(19)-52},412 L{col(16)},416" fill="none" stroke="#1d4ed8" stroke-width="2.8"/>')
-zig(col(16),436,476,"#1d4ed8")
+e(f'<path d="M{col(6)},416 L{col(6)+8},416 L{col(6)+14},408 L{col(6)+24},424 L{col(6)+34},408 L{col(6)+44},424 L{col(6)+50},412 L{col(9)},416" fill="none" stroke="#1d4ed8" stroke-width="2.8"/>')
+zig(col(9),436,476,"#1d4ed8")
 
 # ===== LAYER 4: wires =====
 e(f'<path d="M{col(3)},236 L{col(3)},202" stroke="#2563eb" stroke-width="3"/>')
@@ -164,10 +163,10 @@ e(f'<path d="M{col(22)},1136 L{col(22)},1102" stroke="#2563eb" stroke-width="2.6
 e(f'<path d="M{col(4)},276 L112,276 L112,706 L{col(5)},706" fill="none" stroke="#15803d" stroke-width="3"/>')
 e(f'<path d="M{col(5)},256 L90,256 L90,686 L{col(12)},686" fill="none" stroke="#15803d" stroke-width="3"/>')
 gap(col(4),256,"#15803d"); gap(col(3),686,"#15803d"); gap(col(4),686,"#15803d")
-e(f'<path d="M{col(12)},416 L795,416 L795,1136 L{col(26)},1136" fill="none" stroke="#15803d" stroke-width="3"/>')
-e(f'<path d="M{col(13)},436 L818,436 L818,1156 L{col(24)},1156" fill="none" stroke="#15803d" stroke-width="3"/>')
-gap(col(13),416,"#15803d")
-for x,y in ((col(4),276),(col(5),256),(col(5),706),(col(12),686),(col(12),416),(col(13),436),(col(26),1136),(col(24),1156)):
+e(f'<path d="M{col(10)},416 L795,416 L795,1136 L{col(26)},1136" fill="none" stroke="#15803d" stroke-width="3"/>')
+e(f'<path d="M{col(11)},436 L818,436 L818,1156 L{col(24)},1156" fill="none" stroke="#15803d" stroke-width="3"/>')
+gap(col(11),416,"#15803d")
+for x,y in ((col(4),276),(col(5),256),(col(5),706),(col(12),686),(col(10),416),(col(11),436),(col(26),1136),(col(24),1156)):
     e(f'<circle cx="{x}" cy="{y}" r="4.5" fill="#15803d"/>')
 
 # ===== LAYER 5: labels =====
@@ -180,18 +179,20 @@ e('<text x="352" y="196" font-size="11.5" font-weight="bold" fill="#b45309">2 ×
 e('<text x="150" y="238" font-size="11.5" font-weight="bold" fill="#1d4ed8" text-anchor="end">2 × 1 nF</text>')
 e('<text x="150" y="253" font-size="11.5" fill="#1d4ed8" text-anchor="end">→ upper − rail</text>')
 e('<text x="476" y="470" font-size="11.5" font-weight="bold" fill="#b45309">2 × 4.7 kΩ → lower + rail</text>')
-e(f'<text x="{col(17)+10}" y="400" font-size="10.5" font-weight="bold" fill="#1d4ed8" text-anchor="middle">10 kΩ</text>')
-e(f'<text x="{col(16)+14}" y="462" font-size="10.5" font-weight="bold" fill="#1d4ed8">2.7 kΩ</text>')
-e(f'<text x="{col(16)}" y="458" font-size="10" font-weight="bold" fill="#1d4ed8" text-anchor="middle">pin 14</text>')
-e(f'<path d="M{col(19)},436 L{col(19)},512 L930,512" fill="none" stroke="#1d4ed8" stroke-width="2.8" marker-end="url(#ab2)"/>')
-e('<text x="578" y="506" font-size="10.5" font-weight="bold" fill="#1d4ed8">from the E-stop COIL node — the NC side</text>')
-e('<rect x="1020" y="404" width="246" height="126" rx="7" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>')
-e('<text x="1032" y="428" font-size="13" font-weight="bold" fill="#1e3a8a">E-STOP SENSE → pin 14</text>')
-e('<text x="1032" y="450" font-size="11.5" fill="#1d4ed8">High while the authority chain is</text>')
-e('<text x="1032" y="467" font-size="11.5" fill="#1d4ed8">energised. Pressed, broken wire,</text>')
-e('<text x="1032" y="484" font-size="11.5" fill="#1d4ed8">blown coil fuse, dead logic pack</text>')
-e('<text x="1032" y="501" font-size="11.5" font-weight="bold" fill="#1e3a8a">all read low.</text>')
-e('<text x="1032" y="522" font-size="11" font-weight="bold" fill="#b91c1c">METER IT before it touches the pin.</text>')
+e(f'<text x="{col(7)+10}" y="400" font-size="10.5" font-weight="bold" fill="#1d4ed8" text-anchor="middle">10 kΩ</text>')
+e(f'<text x="{col(9)+13}" y="462" font-size="10.5" font-weight="bold" fill="#1d4ed8">2.7 kΩ</text>')
+e(f'<path d="M{col(6)},436 L{col(6)},512 L560,512" fill="none" stroke="#1d4ed8" stroke-width="2.8"/>')
+gap(col(6),476,"#1d4ed8",2.8,True); gap(col(6),498,"#1d4ed8",2.8,True)
+e('<text x="568" y="516" font-size="10.5" font-weight="bold" fill="#1d4ed8">from the E-stop COIL node — the NC side</text>')
+e('<rect x="884" y="150" width="290" height="162" rx="7" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>')
+e('<text x="898" y="176" font-size="13.5" font-weight="bold" fill="#1e3a8a">E-STOP SENSE → pin 20</text>')
+e('<text x="898" y="200" font-size="11.5" fill="#1d4ed8">10 kΩ from the coil node, 2.7 kΩ</text>')
+e('<text x="898" y="217" font-size="11.5" fill="#1d4ed8">on to GND. The junction is the pin.</text>')
+e('<text x="898" y="241" font-size="11.5" fill="#1d4ed8">High while the authority chain is</text>')
+e('<text x="898" y="258" font-size="11.5" fill="#1d4ed8">energised. Pressed, broken wire,</text>')
+e('<text x="898" y="275" font-size="11.5" fill="#1d4ed8">blown coil fuse, dead logic pack</text>')
+e('<text x="898" y="292" font-size="11.5" font-weight="bold" fill="#1e3a8a">all read low.</text>')
+e('<text x="898" y="307" font-size="11" font-weight="bold" fill="#b91c1c">METER IT before it touches the pin.</text>')
 e('<text x="98" y="452" font-size="11.5" font-weight="bold" fill="#b91c1c" text-anchor="end">5 V UBEC</text>')
 e('<text x="884" y="300" font-size="12" font-weight="bold" fill="#dc2626">RAIL</text>')
 e('<text x="884" y="316" font-size="12" font-weight="bold" fill="#dc2626">BRIDGES</text>')

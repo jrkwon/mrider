@@ -1234,9 +1234,9 @@
 </g>
 <rect x="251" y="228" width="18" height="56" rx="4" fill="#fde68a" fill-opacity="0.6"/>
 <rect x="271" y="228" width="18" height="56" rx="4" fill="#fde68a" fill-opacity="0.6"/>
-<rect x="411" y="388" width="18" height="56" rx="4" fill="#fde68a" fill-opacity="0.6"/>
-<rect x="431" y="388" width="18" height="56" rx="4" fill="#fde68a" fill-opacity="0.6"/>
-<rect x="491" y="388" width="18" height="56" rx="4" fill="#fde68a" fill-opacity="0.6"/>
+<rect x="351" y="388" width="18" height="56" rx="4" fill="#fde68a" fill-opacity="0.6"/>
+<rect x="371" y="388" width="18" height="56" rx="4" fill="#fde68a" fill-opacity="0.6"/>
+<rect x="391" y="388" width="18" height="56" rx="4" fill="#fde68a" fill-opacity="0.6"/>
 <rect x="231" y="678" width="18" height="36" rx="4" fill="#fde68a" fill-opacity="0.6"/>
 <rect x="251" y="678" width="18" height="36" rx="4" fill="#fde68a" fill-opacity="0.6"/>
 <rect x="271" y="678" width="18" height="36" rx="4" fill="#fde68a" fill-opacity="0.6"/>
@@ -1257,9 +1257,9 @@
 <text x="240" y="358" font-size="10.5" font-weight="bold" fill="#7dd3fc" text-anchor="middle" transform="rotate(-90 240 358)">VIN</text>
 <text x="260" y="358" font-size="10.5" font-weight="bold" fill="#7dd3fc" text-anchor="middle" transform="rotate(-90 260 358)">GND</text>
 <text x="280" y="358" font-size="10.5" font-weight="bold" fill="#7dd3fc" text-anchor="middle" transform="rotate(-90 280 358)">3V3</text>
-<text x="420" y="358" font-size="10.5" font-weight="bold" fill="#7dd3fc" text-anchor="middle" transform="rotate(-90 420 358)">19</text>
-<text x="440" y="358" font-size="10.5" font-weight="bold" fill="#7dd3fc" text-anchor="middle" transform="rotate(-90 440 358)">18</text>
-<text x="500" y="358" font-size="10.5" font-weight="bold" fill="#7dd3fc" text-anchor="middle" transform="rotate(-90 500 358)">14</text>
+<text x="360" y="358" font-size="10.5" font-weight="bold" fill="#7dd3fc" text-anchor="middle" transform="rotate(-90 360 358)">20</text>
+<text x="380" y="358" font-size="10.5" font-weight="bold" fill="#7dd3fc" text-anchor="middle" transform="rotate(-90 380 358)">19</text>
+<text x="400" y="358" font-size="10.5" font-weight="bold" fill="#7dd3fc" text-anchor="middle" transform="rotate(-90 400 358)">18</text>
 <path d="M239,766 L239,744 Q260,720 281,744 L281,766 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.8"/>
 <text x="260" y="756" font-size="9.5" font-weight="bold" fill="#f1f5f9" text-anchor="middle">DRV</text>
 <path d="M379,766 L379,744 Q400,720 421,744 L421,766 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.8"/>
@@ -1276,14 +1276,14 @@
 <path d="M245,228 L257,228 M245,221 L257,221 M251,221 L251,202" fill="none" stroke="#1d4ed8" stroke-width="2.4"/>
 <path d="M280,276 L271,270 L271,228" fill="none" stroke="#1d4ed8" stroke-width="2.4"/>
 <path d="M265,228 L277,228 M265,221 L277,221 M271,221 L271,202" fill="none" stroke="#1d4ed8" stroke-width="2.4"/>
-<path d="M420,396 L420,429.0 L413,435.0 L427,443.0 L413,451.0 L427,459.0 L420,465.0 L420,498" fill="none" stroke="#b45309" stroke-width="2.6"/>
-<circle cx="420" cy="476" r="6" fill="#ffffff"/>
-<path d="M414,476 a6,6 0 0 1 12,0" fill="none" stroke="#b45309" stroke-width="2.6"/>
-<path d="M440,396 L440,429.0 L433,435.0 L447,443.0 L433,451.0 L447,459.0 L440,465.0 L440,498" fill="none" stroke="#b45309" stroke-width="2.6"/>
-<circle cx="440" cy="476" r="6" fill="#ffffff"/>
-<path d="M434,476 a6,6 0 0 1 12,0" fill="none" stroke="#b45309" stroke-width="2.6"/>
-<path d="M560,416 L552,416 L546,408 L536,424 L526,408 L516,424 L508,412 L500,416" fill="none" stroke="#1d4ed8" stroke-width="2.8"/>
-<path d="M500,436 L500,438.0 L493,444.0 L507,452.0 L493,460.0 L507,468.0 L500,474.0 L500,476" fill="none" stroke="#1d4ed8" stroke-width="2.6"/>
+<path d="M380,396 L380,429.0 L373,435.0 L387,443.0 L373,451.0 L387,459.0 L380,465.0 L380,498" fill="none" stroke="#b45309" stroke-width="2.6"/>
+<circle cx="380" cy="476" r="6" fill="#ffffff"/>
+<path d="M374,476 a6,6 0 0 1 12,0" fill="none" stroke="#b45309" stroke-width="2.6"/>
+<path d="M400,396 L400,429.0 L393,435.0 L407,443.0 L393,451.0 L407,459.0 L400,465.0 L400,498" fill="none" stroke="#b45309" stroke-width="2.6"/>
+<circle cx="400" cy="476" r="6" fill="#ffffff"/>
+<path d="M394,476 a6,6 0 0 1 12,0" fill="none" stroke="#b45309" stroke-width="2.6"/>
+<path d="M300,416 L308,416 L314,408 L324,424 L334,408 L344,424 L350,412 L360,416" fill="none" stroke="#1d4ed8" stroke-width="2.8"/>
+<path d="M360,436 L360,438.0 L353,444.0 L367,452.0 L353,460.0 L367,468.0 L360,474.0 L360,476" fill="none" stroke="#1d4ed8" stroke-width="2.6"/>
 <path d="M240,236 L240,202" stroke="#2563eb" stroke-width="3"/>
 <path d="M280,396 L280,498" stroke="#dc2626" stroke-width="3"/>
 <circle cx="280" cy="476" r="6" fill="#ffffff"/>
@@ -1316,16 +1316,16 @@
 <path d="M234,686 a6,6 0 0 1 12,0" fill="none" stroke="#15803d" stroke-width="3"/>
 <circle cx="260" cy="686" r="6" fill="#ffffff"/>
 <path d="M254,686 a6,6 0 0 1 12,0" fill="none" stroke="#15803d" stroke-width="3"/>
-<path d="M420,416 L795,416 L795,1136 L700,1136" fill="none" stroke="#15803d" stroke-width="3"/>
-<path d="M440,436 L818,436 L818,1156 L660,1156" fill="none" stroke="#15803d" stroke-width="3"/>
-<circle cx="440" cy="416" r="6" fill="#ffffff"/>
-<path d="M434,416 a6,6 0 0 1 12,0" fill="none" stroke="#15803d" stroke-width="3"/>
+<path d="M380,416 L795,416 L795,1136 L700,1136" fill="none" stroke="#15803d" stroke-width="3"/>
+<path d="M400,436 L818,436 L818,1156 L660,1156" fill="none" stroke="#15803d" stroke-width="3"/>
+<circle cx="400" cy="416" r="6" fill="#ffffff"/>
+<path d="M394,416 a6,6 0 0 1 12,0" fill="none" stroke="#15803d" stroke-width="3"/>
 <circle cx="260" cy="276" r="4.5" fill="#15803d"/>
 <circle cx="280" cy="256" r="4.5" fill="#15803d"/>
 <circle cx="280" cy="706" r="4.5" fill="#15803d"/>
 <circle cx="420" cy="686" r="4.5" fill="#15803d"/>
-<circle cx="420" cy="416" r="4.5" fill="#15803d"/>
-<circle cx="440" cy="436" r="4.5" fill="#15803d"/>
+<circle cx="380" cy="416" r="4.5" fill="#15803d"/>
+<circle cx="400" cy="436" r="4.5" fill="#15803d"/>
 <circle cx="700" cy="1136" r="4.5" fill="#15803d"/>
 <circle cx="660" cy="1156" r="4.5" fill="#15803d"/>
 <text x="24" y="140" font-size="15" font-weight="bold" fill="#14532d">BOARD A — the Teensy end</text>
@@ -1337,18 +1337,23 @@
 <text x="150" y="238" font-size="11.5" font-weight="bold" fill="#1d4ed8" text-anchor="end">2 × 1 nF</text>
 <text x="150" y="253" font-size="11.5" fill="#1d4ed8" text-anchor="end">→ upper − rail</text>
 <text x="476" y="470" font-size="11.5" font-weight="bold" fill="#b45309">2 × 4.7 kΩ → lower + rail</text>
-<text x="530" y="400" font-size="10.5" font-weight="bold" fill="#1d4ed8" text-anchor="middle">10 kΩ</text>
-<text x="514" y="462" font-size="10.5" font-weight="bold" fill="#1d4ed8">2.7 kΩ</text>
-<text x="500" y="458" font-size="10" font-weight="bold" fill="#1d4ed8" text-anchor="middle">pin 14</text>
-<path d="M560,436 L560,512 L930,512" fill="none" stroke="#1d4ed8" stroke-width="2.8" marker-end="url(#ab2)"/>
-<text x="578" y="506" font-size="10.5" font-weight="bold" fill="#1d4ed8">from the E-stop COIL node — the NC side</text>
-<rect x="1020" y="404" width="246" height="126" rx="7" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
-<text x="1032" y="428" font-size="13" font-weight="bold" fill="#1e3a8a">E-STOP SENSE → pin 14</text>
-<text x="1032" y="450" font-size="11.5" fill="#1d4ed8">High while the authority chain is</text>
-<text x="1032" y="467" font-size="11.5" fill="#1d4ed8">energised. Pressed, broken wire,</text>
-<text x="1032" y="484" font-size="11.5" fill="#1d4ed8">blown coil fuse, dead logic pack</text>
-<text x="1032" y="501" font-size="11.5" font-weight="bold" fill="#1e3a8a">all read low.</text>
-<text x="1032" y="522" font-size="11" font-weight="bold" fill="#b91c1c">METER IT before it touches the pin.</text>
+<text x="330" y="400" font-size="10.5" font-weight="bold" fill="#1d4ed8" text-anchor="middle">10 kΩ</text>
+<text x="373" y="462" font-size="10.5" font-weight="bold" fill="#1d4ed8">2.7 kΩ</text>
+<path d="M300,436 L300,512 L560,512" fill="none" stroke="#1d4ed8" stroke-width="2.8"/>
+<circle cx="300" cy="476" r="6" fill="#ffffff"/>
+<path d="M300,470 a6,6 0 0 1 0,12" fill="none" stroke="#1d4ed8" stroke-width="2.8"/>
+<circle cx="300" cy="498" r="6" fill="#ffffff"/>
+<path d="M300,492 a6,6 0 0 1 0,12" fill="none" stroke="#1d4ed8" stroke-width="2.8"/>
+<text x="568" y="516" font-size="10.5" font-weight="bold" fill="#1d4ed8">from the E-stop COIL node — the NC side</text>
+<rect x="884" y="150" width="290" height="162" rx="7" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
+<text x="898" y="176" font-size="13.5" font-weight="bold" fill="#1e3a8a">E-STOP SENSE → pin 20</text>
+<text x="898" y="200" font-size="11.5" fill="#1d4ed8">10 kΩ from the coil node, 2.7 kΩ</text>
+<text x="898" y="217" font-size="11.5" fill="#1d4ed8">on to GND. The junction is the pin.</text>
+<text x="898" y="241" font-size="11.5" fill="#1d4ed8">High while the authority chain is</text>
+<text x="898" y="258" font-size="11.5" fill="#1d4ed8">energised. Pressed, broken wire,</text>
+<text x="898" y="275" font-size="11.5" fill="#1d4ed8">blown coil fuse, dead logic pack</text>
+<text x="898" y="292" font-size="11.5" font-weight="bold" fill="#1e3a8a">all read low.</text>
+<text x="898" y="307" font-size="11" font-weight="bold" fill="#b91c1c">METER IT before it touches the pin.</text>
 <text x="98" y="452" font-size="11.5" font-weight="bold" fill="#b91c1c" text-anchor="end">5 V UBEC</text>
 <text x="884" y="300" font-size="12" font-weight="bold" fill="#dc2626">RAIL</text>
 <text x="884" y="316" font-size="12" font-weight="bold" fill="#dc2626">BRIDGES</text>
