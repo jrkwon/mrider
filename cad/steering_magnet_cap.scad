@@ -28,6 +28,10 @@ HEAD_AF      = 13.3;
 // How deep the socket has to be: from the WASHER'S TOP FACE to the very top of
 // everything above it — the hex head plus the small raised pip on top of it.
 //
+// THIS IS THE KINGPIN BOLT, NOT THE MAGNET. The magnet's thickness is MAG_T
+// below and is already measured; STACK_H is the only one of the two still
+// outstanding, and it is the one that blocks the print.
+//
 // A caliper across the whole stack read 10.0 mm on 2026-10-16, but that span
 // INCLUDED THE WASHER, so it over-states this number by the washer's thickness.
 // 8.0 is that reading less a nominal 2 mm washer and is a placeholder. Measure
@@ -45,6 +49,13 @@ HEAD_CLEAR   = 100.0;
 /* [Magnet — DIAMETRICALLY magnetised, not axial] */
 MAG_D        = 4.04;        // disc diameter, mm — MEASURED 2026-10-26
 MAG_T        = 1.63;        // disc thickness, mm — MEASURED 2026-10-26
+// Restated as 1.61 on 2026-10-28. 0.02 mm is caliper repeatability, so there is
+// nothing to choose between the two readings — but the pocket is cut to this
+// number, and the error is NOT symmetric: a pocket cut for 1.63 takes a 1.61
+// disc and leaves it 0.02 deep, which the CA fillet absorbs. A pocket cut for
+// 1.61 leaves a 1.63 disc 0.02 PROUD of the face the sensor reads across.
+// Deeper is the safe direction, so this stays at 1.63 and does not need a
+// reprint. Re-measure only if a third reading disagrees by more than 0.1.
 //
 // The AS5600 kit shipped a Ø4 disc, not the Ø6 this file first assumed, and it is
 // DIAMETRIC: the poles are on the rim, checked 2026-10-26. That was the one failure

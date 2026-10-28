@@ -281,11 +281,11 @@ prints and 20 g of filament by designing to a hub diameter nobody had measured a
 
 | Order | Part | Made from | Gated on |
 |---:|---|---|---|
-| 1 | **Bay lid** — the equipment plate | 12 mm birch plywood, rim to rim, **vent opening over the controller** | V4 **D3** |
-| 2 | **Mast + base cross + 4 pillars** | 2020 T-slot profile on the lid; pillars printed PETG | V4 **D11**, **D12** |
-| 3 | **LiDAR mount** | printed PETG, clamps to the 2020 T-slot | V4 **S** |
-| 4 | **Camera mount** | printed PETG, clamps to the 2020 T-slot, ~10–15° down | V4 **S** |
-| 5 | **Two enclosures** | printed PETG, heat-set M3 inserts from [#14](../order-log.md) | V4 **E**, plus #7 and #8 in hand |
+| 1 | **Bay lid** — the equipment plate | 12 mm birch plywood, rim to rim, **vent opening over the controller** | V4 **D3**, **CC** |
+| 2 | **Mast + base cross + 4 pillars** | 2020 T-slot profile on the lid; pillars printed PETG | V4 **D2**, **D11a–c**, **D12**, **D13** |
+| 3 | **LiDAR mount** | printed PETG, clamps to the 2020 T-slot | V4 **L1–L3** |
+| 4 | **Camera mount** | printed PETG, clamps to the 2020 T-slot, ~10–15° down | V4 **C1–C3** |
+| 5 | **Two enclosures** | printed PETG, heat-set M3 inserts from [#14](../order-log.md) | V4 **E1–E8**, plus #7 and #8 in hand |
 
 **The mast is extrusion, not a print.** A 0.65 m printed tube delaminates along its layer lines
 under exactly the bending load a mast sees, and that flex lands straight in the camera↔LiDAR
@@ -615,9 +615,9 @@ controller at the right rear where the vent must go.
 
 ### 2.7.4 Before the first cut
 
-- [ ] [V4 **D**](../order-log.md) — deck geometry, **and whether the seat bolts thread into metal or plastic**
-- [ ] [V4 **S**](../order-log.md) — LiDAR and camera bodies; both parts are already in hand
-- [ ] [V4 **E**](../order-log.md) — every item destined for the two boxes, measured **and weighed**
+- [ ] [V4 **D2**, **D3**](../order-log.md) — the seat screw thread and the lid opening rim to rim. *Metal or plastic is already settled: moulded plastic, 2026-10-19 — what is missing is the thread size and the rim-to-rim rectangle*
+- [ ] [V4 **L1–L3**, **C1–C3**](../order-log.md) — LiDAR and camera bodies; both parts are already in hand. *`S1`/`S2` on the sheet are the STEERING rows, not these*
+- [ ] [V4 **E1–E8**](../order-log.md) — every item destined for the two boxes, measured **and weighed**
 - [ ] Build **vehicle 1 only**, fit it, drive it, then repeat for 2 and 3
 
 ## 2.8 Confirm reversibility
