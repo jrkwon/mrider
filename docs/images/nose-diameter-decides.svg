@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 1240" width="1240" height="1240"
+     font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+  <title>What the nose diameter decides — a clamp has no drawing without its own diameter</title>
+  <desc>Three panels. The first is a radial budget from the axle outward, marking the hub at radius 31.35 mm, the carrier bore at 31.95, the magnet track at 38.95, the sensor face at up to 41.95 and the sensor back at 45.95, with the two disagreeing nose readings shaded across it: diameter 72 to 75 falls inside the magnet track, diameter 85 to 90 falls outside it. The second panel draws both cases to scale as end views, showing that the bracket arm reaches outward in one case and inward in the other. The third panel shows the axial question: the bare length of the nose decides whether a clamp fits at all, and if it does not, the fallbacks are not concentric with the axle.</desc>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#0f172a"/></marker>
+    <marker id="arb" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#1d4ed8"/></marker>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#b91c1c"/></marker>
+    <pattern id="fixed" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="7" height="7" fill="#e2e8f0"/>
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#94a3b8" stroke-width="1.4"/>
+    </pattern>
+  </defs>
+  <rect width="1240" height="1240" fill="#ffffff"/>
+  <text x="24" y="38" font-size="21" font-weight="bold" fill="#0f172a">What the nose diameter decides — and why the bracket cannot be drawn without it</text>
+  <text x="24" y="62" font-size="12.5" fill="#475569">The clamp band <tspan font-weight="bold">is</tspan> a circle at this diameter. Everything else on the bracket hangs off where that circle sits relative to the magnet track.</text>
+  <rect x="24" y="86" width="1192" height="300" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+  <text x="44" y="114" font-size="15" font-weight="bold" fill="#0f172a">1 · The radial budget, measured from the axle. Every number here comes out of the carrier model.</text>
+  <rect x="840.0" y="190" width="30.0" height="92" fill="#bbf7d0" opacity="0.75"/>
+  <rect x="970.0" y="190" width="50.0" height="92" fill="#fecaca" opacity="0.75"/>
+  <line x1="899.0" y1="174" x2="899.0" y2="298" stroke="#7e22ce" stroke-width="3"/>
+  <line x1="120" y1="236" x2="1140" y2="236" stroke="#0f172a" stroke-width="2.4" marker-end="url(#ar)"/>
+  <line x1="120" y1="180" x2="120" y2="292" stroke="#0f172a" stroke-width="3"/>
+  <text x="120" y="312" font-size="11.5" font-weight="bold" fill="#0f172a" text-anchor="middle">axle</text>
+  <text x="120" y="327" font-size="11.5" font-weight="bold" fill="#0f172a" text-anchor="middle">centre</text>
+  <text x="1146" y="241" font-size="11.5" fill="#475569">radius, mm</text>
+  <line x1="747.0" y1="228" x2="747.0" y2="170" stroke="#b45309" stroke-width="1.8" stroke-dasharray="4 3"/>
+  <circle cx="747.0" cy="236" r="4.5" fill="#b45309"/>
+  <text x="747.0" y="150" font-size="12" font-weight="bold" fill="#b45309" text-anchor="middle">hub Ø62.7</text>
+  <text x="747.0" y="165" font-size="10.5" fill="#b45309" text-anchor="middle">R 31.35 · lobe crests</text>
+  <line x1="899.0" y1="244" x2="899.0" y2="302" stroke="#7e22ce" stroke-width="1.8" stroke-dasharray="4 3"/>
+  <circle cx="899.0" cy="236" r="4.5" fill="#7e22ce"/>
+  <text x="899.0" y="318" font-size="12" font-weight="bold" fill="#7e22ce" text-anchor="middle">magnet track Ø77.9</text>
+  <text x="899.0" y="333" font-size="10.5" fill="#7e22ce" text-anchor="middle">R 38.95 · carrier outside</text>
+  <line x1="959.0" y1="228" x2="959.0" y2="170" stroke="#1d4ed8" stroke-width="1.8" stroke-dasharray="4 3"/>
+  <circle cx="959.0" cy="236" r="4.5" fill="#1d4ed8"/>
+  <text x="959.0" y="150" font-size="12" font-weight="bold" fill="#1d4ed8" text-anchor="middle">sensor face</text>
+  <text x="959.0" y="165" font-size="10.5" fill="#1d4ed8" text-anchor="middle">R 41.95 · + up to 3 mm gap</text>
+  <line x1="1039.0" y1="244" x2="1039.0" y2="302" stroke="#1d4ed8" stroke-width="1.8" stroke-dasharray="4 3"/>
+  <circle cx="1039.0" cy="236" r="4.5" fill="#1d4ed8"/>
+  <text x="1039.0" y="318" font-size="12" font-weight="bold" fill="#1d4ed8" text-anchor="middle">sensor back</text>
+  <text x="1039.0" y="333" font-size="10.5" fill="#1d4ed8" text-anchor="middle">R 45.95 · + sensor + PCB</text>
+  <text x="855.0" y="182" font-size="12" font-weight="bold" fill="#14532d" text-anchor="middle">side view read Ø72–75</text>
+  <text x="995.0" y="298" font-size="12" font-weight="bold" fill="#991b1b" text-anchor="middle">end-on read Ø85–90</text>
+  <text x="44" y="362" font-size="13" font-weight="bold" fill="#0f172a">The two photographs do not merely disagree by 15 mm — they land on <tspan fill="#7e22ce">OPPOSITE SIDES of the magnet track</tspan>. That is a different bracket, not a different number.</text>
+  <rect x="24" y="400" width="1192" height="500" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+  <text x="44" y="428" font-size="15" font-weight="bold" fill="#0f172a">2 · Both readings are buildable. Neither can be drawn until you know which one it is. <tspan font-size="12" font-weight="normal" fill="#475569">End view, wheel off, drawn to scale.</tspan></text>
+  <circle cx="330" cy="668" r="112.6" fill="none" stroke="#cbd5e1" stroke-width="1.4" stroke-dasharray="3 4"/>
+  <circle cx="330" cy="668" r="91.9" fill="url(#fixed)" stroke="#15803d" stroke-width="2.6"/>
+  <circle cx="330" cy="668" r="88.2" fill="none" stroke="#15803d" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <circle cx="330" cy="668" r="95.4" fill="#f3e8ff" opacity="0.88" stroke="#7e22ce" stroke-width="2.6"/>
+  <circle cx="330" cy="668" r="78.3" fill="#ffffff" stroke="#7e22ce" stroke-width="1.6"/>
+  <circle cx="330" cy="668" r="76.8" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
+  <circle cx="330" cy="668" r="3.5" fill="#0f172a"/>
+  <path d="M237.8,641.6 A95.9,95.9 0 0 1 303.6,575.8" fill="none" stroke="#0f172a" stroke-width="7" stroke-linecap="round"/>
+  <line x1="262.2" y1="600.2" x2="257.3" y2="595.3" stroke="#0f172a" stroke-width="6" stroke-linecap="round"/>
+  <rect x="244.3" y="588.3" width="26" height="14" rx="2.5" fill="#1d4ed8" stroke="#1e3a8a" stroke-width="1.6" transform="rotate(-45 257.3 595.3)"/>
+  <text x="330" y="460" font-size="16" font-weight="bold" fill="#15803d" text-anchor="middle">CASE A — Ø72–75</text>
+  <text x="330" y="480" font-size="12.5" font-weight="bold" fill="#15803d" text-anchor="middle">nose INSIDE the track</text>
+  <text x="330" y="815" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">the arm reaches OUTWARD</text>
+  <line x1="330" y1="668" x2="466.6" y2="668" stroke="#64748b" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <circle cx="900" cy="668" r="112.6" fill="none" stroke="#cbd5e1" stroke-width="1.4" stroke-dasharray="3 4"/>
+  <circle cx="900" cy="668" r="110.3" fill="url(#fixed)" stroke="#b91c1c" stroke-width="2.6"/>
+  <circle cx="900" cy="668" r="104.1" fill="none" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <circle cx="900" cy="668" r="95.4" fill="#f3e8ff" opacity="0.88" stroke="#7e22ce" stroke-width="2.6"/>
+  <circle cx="900" cy="668" r="78.3" fill="#ffffff" stroke="#7e22ce" stroke-width="1.6"/>
+  <circle cx="900" cy="668" r="76.8" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
+  <circle cx="900" cy="668" r="3.5" fill="#0f172a"/>
+  <path d="M790.2,636.5 A114.3,114.3 0 0 1 868.5,558.2" fill="none" stroke="#0f172a" stroke-width="7" stroke-linecap="round"/>
+  <line x1="819.2" y1="587.2" x2="827.3" y2="595.3" stroke="#0f172a" stroke-width="6" stroke-linecap="round"/>
+  <rect x="814.3" y="588.3" width="26" height="14" rx="2.5" fill="#1d4ed8" stroke="#1e3a8a" stroke-width="1.6" transform="rotate(-45 827.3 595.3)"/>
+  <text x="900" y="460" font-size="16" font-weight="bold" fill="#b91c1c" text-anchor="middle">CASE B — Ø85–90</text>
+  <text x="900" y="480" font-size="12.5" font-weight="bold" fill="#b91c1c" text-anchor="middle">nose OUTSIDE the track</text>
+  <text x="900" y="815" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">the arm reaches INWARD</text>
+  <line x1="900" y1="668" x2="1036.6" y2="668" stroke="#64748b" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <rect x="538" y="508" width="124" height="118" rx="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.6"/>
+  <rect x="550" y="517" width="16" height="14" rx="2" fill="url(#fixed)" stroke="#94a3b8" stroke-width="1.4"/>
+  <text x="572" y="528" font-size="10.5" fill="#334155">nose · FIXED</text>
+  <rect x="550" y="543" width="16" height="14" rx="2" fill="#f3e8ff" stroke="#7e22ce" stroke-width="1.4"/>
+  <text x="572" y="554" font-size="10.5" fill="#334155">carrier · ROTATES</text>
+  <rect x="550" y="569" width="16" height="14" rx="2" fill="#fef3c7" stroke="#b45309" stroke-width="1.4"/>
+  <text x="572" y="580" font-size="10.5" fill="#334155">lobed hub</text>
+  <rect x="550" y="595" width="16" height="14" rx="2" fill="#1d4ed8" stroke="#1e3a8a" stroke-width="1.4"/>
+  <text x="572" y="606" font-size="10.5" fill="#334155">sensor pad</text>
+  <text x="44" y="866" font-size="13" fill="#0f172a"><tspan font-weight="bold">Read the two drawings as one question:</tspan> the clamp is black, and in A it sits under the carrier while in B it sits outside it. <tspan font-weight="bold">Same sensor position, mirrored bracket.</tspan></text>
+  <text x="44" y="886" font-size="12.5" fill="#475569">There is no shape that is right for both, and no average of the two that is right for either — which is why this is a measurement and not an assumption.</text>
+  <rect x="24" y="914" width="584" height="300" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  <text x="44" y="942" font-size="15" font-weight="bold" fill="#92400e">3 · N2 is a different kind of question: go or no-go</text>
+  <rect x="60" y="984" width="150" height="54" fill="url(#fixed)" stroke="#94a3b8" stroke-width="2"/>
+  <text x="135" y="1016" font-size="11.5" font-weight="bold" fill="#475569" text-anchor="middle">gearbox body</text>
+  <rect x="210" y="994" width="118" height="34" fill="url(#fixed)" stroke="#b45309" stroke-width="2.4"/>
+  <text x="269" y="978" font-size="11.5" font-weight="bold" fill="#92400e" text-anchor="middle">bare NOSE</text>
+  <line x1="210" y1="1040" x2="328" y2="1040" stroke="#b45309" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="269" y="1056" font-size="11.5" font-weight="bold" fill="#92400e" text-anchor="middle">N2 = ? mm</text>
+  <rect x="340" y="988" width="46" height="46" fill="#f3e8ff" stroke="#7e22ce" stroke-width="2.2"/>
+  <text x="363" y="978" font-size="11" font-weight="bold" fill="#581c87" text-anchor="middle">carrier</text>
+  <text x="363" y="1054" font-size="10.5" fill="#6b21a8" text-anchor="middle">8 mm slice</text>
+  <circle cx="64" cy="1074" r="5" fill="#15803d"/>
+  <text x="80" y="1078" font-size="12.5" font-weight="bold" fill="#15803d">N2 ≥ 6 mm, bare</text>
+  <text x="80" y="1096" font-size="11.5" fill="#334155">Clamp the nose. Concentric with the axle, so the air gap is a printed dimension.</text>
+  <circle cx="64" cy="1122" r="5" fill="#b91c1c"/>
+  <text x="80" y="1126" font-size="12.5" font-weight="bold" fill="#b91c1c">N2 &lt; 6 mm, or something sits on it</text>
+  <text x="80" y="1144" font-size="11.5" fill="#334155">Fallbacks: the housing's own assembly screws, or the chassis pocket. </text>
+  <text x="80" y="1172" font-size="11.5" font-weight="bold" fill="#991b1b">Neither fallback is concentric, so both hand the air gap back to the builder’s eye.</text>
+  <text x="80" y="1190" font-size="11.5" fill="#7f1d1d">That is what N2 is really asking: whether this design stands at all.</text>
+  <rect x="632" y="914" width="584" height="300" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+  <text x="652" y="942" font-size="15" font-weight="bold" fill="#991b1b">And this is not a blank parameter. The file does not exist.</text>
+  <text x="652" y="976" font-size="12.5" font-family="DejaVu Sans Mono, monospace" font-weight="bold" fill="#15803d">cad/drive_encoder_carrier.scad</text>
+  <text x="652" y="994" font-size="11.5" fill="#334155">the rotating ring. Finished — bore, track, pockets, grub screws.</text>
+  <text x="652" y="1024" font-size="12.5" font-family="DejaVu Sans Mono, monospace" font-weight="bold" fill="#15803d">cad/steering_magnet_cap.scad</text>
+  <text x="652" y="1042" font-size="11.5" fill="#334155">the kingpin cap. Finished except STACK_H.</text>
+  <text x="652" y="1072" font-size="12.5" font-family="DejaVu Sans Mono, monospace" font-weight="bold" fill="#b91c1c">cad/drive_encoder_bracket.scad</text>
+  <text x="652" y="1090" font-size="11.5" fill="#334155">DOES NOT EXIST. Nothing in cad/ contains a nose dimension.</text>
+  <text x="652" y="1132" font-size="12.5" font-weight="bold" fill="#991b1b">The carrier could be modelled because the hub was measured first.</text>
+  <text x="652" y="1152" font-size="11.5" fill="#7f1d1d">It still cost four wasted prints, because the first hub figure came off a wire</text>
+  <text x="652" y="1170" font-size="11.5" fill="#7f1d1d">wrap and was 2.3 mm high. N1 off a photograph would be the same mistake.</text>
+</svg>

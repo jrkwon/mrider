@@ -1036,6 +1036,20 @@ field and far enough not to be struck, and the first vehicle is where that gets 
 gap differs between A and B by the sagitta: `c²/8R = 6.80² / (8 × 38.95) = `**`0.148 mm`**. A flat
 two-up pad is therefore correct, not an approximation.
 
+![What the nose diameter decides: a radial budget from the axle marking the hub at R 31.35, the carrier bore at 31.95, the magnet track at 38.95, the sensor face at up to 41.95 and the sensor back at 45.95, with the two disagreeing nose readings shaded across it — Ø72–75 falls inside the magnet track and Ø85–90 falls outside it; then both cases drawn to scale as end views, showing the bracket arm reaching outward in one and inward in the other; and the axial question, where the bare nose length decides whether a clamp fits at all](../images/nose-diameter-decides.svg)
+
+**The two readings are not 15 mm apart, they are on opposite sides of the carrier.** The magnet
+track is **Ø77.9**, so **Ø72–75 puts the nose *inside* it** — the bracket clamps low and the arm
+reaches **outward** — while **Ø85–90 puts it *outside*** and the arm reaches **inward**.
+**Both are buildable, no average of the two is, and the clamp band is itself a circle at this
+diameter.** That is why this is one number and not a tolerance.
+
+**And it is not a blank parameter in an existing file.** `cad/` holds the carrier and the magnet
+cap; **there is no bracket model, and nothing in `cad/` contains a nose dimension.** The carrier
+could be modelled because the hub was measured first — and even then it cost four wasted prints,
+because the first hub figure came off a wire wrap and was 2.3 mm high. **A nose diameter read off a
+photograph is the same mistake with the same cost.**
+
 **What to measure now:**
 
 | | |
