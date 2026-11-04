@@ -92,9 +92,9 @@
 
     <text x="40" y="650" font-weight="bold">H1</text><text x="110" y="650">Hub <tspan font-weight="bold">valley</tspan> diameter — caliper across two opposite valleys</text>
     <line x1="700" y1="654" x2="880" y2="654" stroke="#94a3b8"/>
-    <text x="900" y="650" font-size="11" fill="#64748b">lobe depth = (62.7 − this) ÷ 2</text>
+    <text x="900" y="650" font-size="11" fill="#64748b">lobe depth = (62.82 − this) ÷ 2</text>
 
-    <text x="40" y="680" font-weight="bold">R1</text><text x="110" y="680">Radial room in the 8 mm slice — needs ≥ 45.95 mm</text>
+    <text x="40" y="680" font-weight="bold">R1</text><text x="110" y="680">Radial room in the 8 mm slice — needs ≥ 46.01 mm</text>
     <line x1="700" y1="684" x2="880" y2="684" stroke="#94a3b8"/>
     <text x="900" y="680" font-size="11" fill="#64748b">settled by fitting the gauge and turning the wheel</text>
 

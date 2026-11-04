@@ -636,12 +636,12 @@ This is the plan already in the BOM, made specific. Three choices decide whether
 
 **The hub measures 63.0 mm across opposite lobe crests (2026-10-08), and that settles the build.**
 
-![Hub and bore defined: left, the six-lobe rotating boss on the vehicle, whose Ø62.7 is measured across two opposite lobe crests and is not the smaller root diameter; middle, the printed carrier, whose Ø63.9 bore faces the hub while its Ø77.9 outside diameter is the magnet track; bottom, the two assembled with the deliberate 0.60 mm per-side clearance drawn magnified, and the three mistakes already made — taking the fixed grey collar for the hub, taking root Ø for crest Ø, and wrapping with something whose own thickness was never subtracted](../images/hub-and-bore.svg)
+![Hub and bore defined: left, the six-lobe rotating boss on the vehicle, whose Ø62.82 is measured across two opposite lobe crests and is not the smaller root diameter; middle, the printed carrier, whose Ø63.9 bore faces the hub while its Ø77.9 outside diameter is the magnet track; bottom, the two assembled with the deliberate 0.60 mm per-side clearance drawn magnified, and the three mistakes already made — taking the fixed grey collar for the hub, taking root Ø for crest Ø, and wrapping with something whose own thickness was never subtracted](../images/hub-and-bore.svg)
 
 **Two diameters near 63 mm, and they are not the same thing.** The **hub** is on the vehicle, it
 rotates, and you *measure* it — across two opposite lobe crests, which works because six is an even
 count. The **bore** is the hole in the printed carrier, and you *print* it. The carrier also has an
-**outside** diameter, Ø77.9, which is the magnet track and faces the sensor; the bore faces the hub.
+**outside** diameter, Ø78.02, which is the magnet track and faces the sensor; the bore faces the hub.
 **bore − hub = 1.2 mm, 0.60 mm a side, deliberately.**
 
 ![End view and axial section of the carrier: a one-piece printed ring slides onto the six-lobe hub and presents a plain cylinder carrying eighteen alternating magnets, held by three recessed grub screws, with two Hall sensors outside it half a pitch apart](../images/drive-encoder-carrier.svg)
@@ -677,10 +677,10 @@ count. The **bore** is the hole in the printed carrier, and you *print* it. The 
 
 | | |
 |---|---:|
-| Hub, lobe crest Ø | **62.7 mm** *(caliper, three positions, 2026-10-15)* |
-| Printed ring bore — **clearance, not a fit** | **Ø63.9 mm** |
-| Printed ring, 7 mm wall | **OD 77.9 mm** |
-| Magnet track circumference | **244.7 mm** |
+| Hub, lobe crest Ø | **62.82 mm** *(caliper, 2026-11-04, gearbox out of the vehicle — the cleanest access yet. 62.7 on 2026-10-15 and 62.23 on the steering gearbox; **the model takes the largest, because the bore has to clear it**)* |
+| Printed ring bore — **clearance, not a fit** | **Ø64.02 mm** |
+| Printed ring, 7 mm wall | **OD 78.02 mm** |
+| Magnet track circumference | **245.1 mm** |
 
 | magnets | pole pitch | **quadrature offset** | counts/rev | mm/count |
 |---:|---:|---:|---:|---:|
@@ -731,11 +731,13 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > have taken the sensor and its bracket off on the first turn of the wheel. **The wheel comes off**,
 > so the ring can simply be slid on.
 >
-> **The bore carries no load.** The hub measures **62.7 mm** and FDM holds a Ø64 bore to perhaps
+> **The bore carries no load.** The hub measures **62.82 mm** and FDM holds a Ø64 bore to perhaps
 > ±0.3 mm; a press fit needs both numbers to ±0.1, which is two significant figures out of reach —
 > and there are three hubs, not one. So the bore is deliberately **clear** of the hub, and three
-> recessed M3 grub screws take up whatever slack exists. Their points settle into the **gaps
-> between the hub's six lobes**, which is a form lock rather than friction.
+> recessed M3 grub screws take up whatever slack exists. **They seat on the lobe CRESTS**, which
+> is the seat the M3 × 8 length was derived for — see the crest rule below. *An earlier revision
+> of this paragraph said the points settle into the gaps between the lobes. They cannot be asked
+> to: a valley sits deeper by the lobe depth, which is still unmeasured (V4 **H1**).*
 >
 > | | |
 > |---|---|
@@ -794,8 +796,11 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > that tension lies *inside* the layer planes. Lay it with the **index groove facing up** — a
 > 0.8 mm recess in the top surface prints clean, on the bed it would bridge over nothing.
 >
-> At `HUB_D = 62.7` it derives bore Ø63.9, outside **Ø77.9**, track 244.7 mm, pitch **13.60 mm**,
-> **sensor offset 6.80 mm**, 36 counts/rev → **15.8 mm/count**. Fasteners, per vehicle:
+> At `HUB_D = 62.82` it derives bore Ø64.02, outside **Ø78.02**, track 245.1 mm, pitch 13.62 mm,
+> sensor offset 6.81 mm, 36 counts/rev → **15.8 mm/count**. *Build to the **round figures — pitch
+> 13.60, offset 6.80**. The 2026-11-04 hub reading moved them by 0.02 and 0.01 mm, which is an order
+> of magnitude under what a 0.2 mm layer or a hand-placed TO-92 can hold; carrying the extra digit
+> into a drawing would be false precision, and the figures deliberately keep 6.80.* Fasteners, per vehicle:
 > **3 × M3 × 8 grub screw. The screws seat on lobe CRESTS, and that decides both the length and the point form.**
 >
 > ![Four grub-screw point types in profile — flat, cup, cone and dog — and a section through the carrier wall and the six-lobe hub showing a flat face making a line contact on a crest, a cup rim straddling the ridge, and a cone perched on the apex where it wants to slide off](../images/grub-screw-points.svg)
@@ -809,12 +814,12 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > [!IMPORTANT]
 > **Crests, not valleys — and that is what sets the length**
 >
-> `HUB_D = 62.7` is measured **across opposite lobe crests**, so **every span figure derived from it
-> is a distance to a crest.** `SPAN_MAX = 7.85 mm` is the wall plus the largest radial gap **at a
+> `HUB_D = 62.82` is measured **across opposite lobe crests**, so **every span figure derived from it
+> is a distance to a crest.** `SPAN_MAX = 7.90 mm` is the wall plus the largest radial gap **at a
 > crest**. A valley sits deeper by the lobe depth, **which nobody has measured**, so an M3 × 8
 > cannot be assumed to reach one and must not be asked to.
 >
-> **Assembly rule: tighten on a crest.** Seated there, the screw stands **0.15–0.65 mm proud of the
+> **Assembly rule: tighten on a crest.** Seated there, the screw stands **0.10–0.70 mm proud of the
 > OD**. If one winds in past that without going tight, it is heading **down a flank or into a
 > valley** — back it out, rotate the ring, try again.
 >
@@ -902,6 +907,9 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > wire or strip thickness.***
 >
 > **Settled with a caliper, 2026-10-15: 62.7 mm**, three positions, no spread worth recording.
+> *Superseded 2026-11-04 by **62.82**, taken with the gearbox out of the vehicle. Not a correction
+> of the 62.7 — 0.12 mm apart is two readings of the same class of part — but the model takes the
+> largest, so it takes this one. [Three readings now: 62.23 · 62.7 · 62.82.](../order-log.md)*
 > That ends four indirect attempts, and the pattern in them is the lesson:
 >
 > | | reads | why it was off |
@@ -1036,10 +1044,10 @@ field and far enough not to be struck, and the first vehicle is where that gets 
 gap differs between A and B by the sagitta: `c²/8R = 6.80² / (8 × 38.95) = `**`0.148 mm`**. A flat
 two-up pad is therefore correct, not an approximation.
 
-![What the nose diameter decides: a radial budget from the axle marking the hub at R 31.35, the carrier bore at 31.95, the magnet track at 38.95, the sensor face at up to 41.95 and the sensor back at 45.95, with the two disagreeing nose readings shaded across it — Ø72–75 falls inside the magnet track and Ø85–90 falls outside it; then both cases drawn to scale as end views, showing the bracket arm reaching outward in one and inward in the other; and the axial question, where the bare nose length decides whether a clamp fits at all](../images/nose-diameter-decides.svg)
+![What the nose diameter decides: a radial budget from the axle marking the hub at R 31.41, the carrier bore at 32.01, the magnet track at 39.01, the sensor face at up to 42.01 and the sensor back at 46.01, with the two disagreeing nose readings shaded across it — Ø72–75 falls inside the magnet track and Ø85–90 falls outside it; then both cases drawn to scale as end views, showing the bracket arm reaching outward in one and inward in the other; and the axial question, where the bare nose length decides whether a clamp fits at all](../images/nose-diameter-decides.svg)
 
 **The two readings are not 15 mm apart, they are on opposite sides of the carrier.** The magnet
-track is **Ø77.9**, so **Ø72–75 puts the nose *inside* it** — the bracket clamps low and the arm
+track is **Ø78.02**, so **Ø72–75 puts the nose *inside* it** — the bracket clamps low and the arm
 reaches **outward** — while **Ø85–90 puts it *outside*** and the arm reaches **inward**.
 **Both are buildable, no average of the two is, and the clamp band is itself a circle at this
 diameter.** That is why this is one number and not a tolerance.
@@ -1073,7 +1081,7 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 | | |
 |---|---|
 | **Axial clearance, gearbox rotating part → wheel** | **≥ 8 mm** — *measured on the delivered vehicle and **this is what decided Branch C**. It was not written down at the time; recorded 2026-10-03.* |
-| **Smallest obstruction radius in that 8 mm slice** | **≥ 45.95 mm needed** — ring (38.95) + air gap (3) + sensor (4). *Open, but **do not measure it** — print the fit mule, refit the wheel and turn it. `RADIAL_ROOM` stays negative in the model until something settles it, and says so on every build.* |
+| **Smallest obstruction radius in that 8 mm slice** | **≥ 46.01 mm needed** — ring (39.01) + air gap (3) + sensor (4). *Open, but **do not measure it** — print the fit mule, refit the wheel and turn it. `RADIAL_ROOM` stays negative in the model until something settles it, and says so on every build.* |
 | Hub lobe-crest Ø, across opposite crests | **63.0 mm** *(2026-10-08, three positions).* **Three methods now disagree by about a millimetre:** wire wrap less its thickness **63.25**, tape across crests **63.00**, thin paper wrap less its thickness **61.97** (2026-10-12). The wraps err both ways — thickness pushes them high, chording across the six gaps pushes them low, and 35–40° gaps would account for the whole spread. **The across-crests figure has no chord term and is kept.** It does not reach the part: see below. |
 | Hub form | **Six broad lobes, narrow gaps** *(2026-10-06 photographs — not a fine spline, which is why no chord correction applies)* |
 | **Does the lobed boss stand clear of the housing end?** | **Yes — about 10 mm of it** *(2026-10-08 side view). This was the risk that could have killed Branch C: an end-on photograph made the hub look recessed inside the housing collar, and a Ø81 ring cannot reach a hub sunk inside a ~Ø72 bore. It is not sunk. The 6 mm ring goes on with room to spare — and therefore does not locate itself, so see the assembly note.* |

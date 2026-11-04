@@ -11,8 +11,8 @@ Why this is generated and not hand-written
 Every radius in it comes out of cad/drive_encoder_carrier.scad, and they have
 to agree with each other:
 
-    HUB_D 62.7  ->  BORE 63.9  ->  OD 77.9  ->  +gap  ->  +sensor
-      R 31.35       R 31.95       R 38.95     R 41.95   R 45.95
+    HUB_D 62.82 ->  BORE 64.02 ->  OD 78.02 ->  +gap  ->  +sensor
+      R 31.41       R 32.01       R 39.01     R 42.01   R 46.01
 
 A hand-drawn version of this is a drawing of numbers that are nearly right,
 and the last two figures this project drew by hand were both wrong in ways
@@ -22,7 +22,7 @@ the radii at a fixed scale, so the picture cannot disagree with the model.
 
 The two candidate nose diameters are the real open question: two photographs
 read Ø85-90 end-on and Ø72-75 from the side, and those land on OPPOSITE SIDES
-of the Ø77.9 magnet track. That is the whole point of the figure, so both are
+of the Ø78.02 magnet track. That is the whole point of the figure, so both are
 drawn to scale rather than described.
 
 Layers are emitted in order - plates, rings, arms, dimensions, labels - so a
@@ -32,9 +32,9 @@ label can never end up under a circle.
 import pathlib
 
 # ---- from cad/drive_encoder_carrier.scad ---------------------------------
-HUB_D = 62.7            # measured across opposite lobe crests, 2026-10-15
-BORE_D = 63.9           # HUB_D + BORE_CLEAR 1.2
-OD = 77.9               # BORE_D + 2 * WALL 7.0 -- the magnet track
+HUB_D = 62.82           # across opposite lobe crests, 2026-11-04, gearbox out
+BORE_D = 64.02          # HUB_D + BORE_CLEAR 1.2
+OD = 78.02              # BORE_D + 2 * WALL 7.0 -- the magnet track
 SENSOR_GAP = 3.0        # largest air gap the bracket will be set to
 SENSOR_T = 4.0          # sensor + PCB radial thickness
 AXIAL_GAP = 8.0         # the slice the carrier lives in
@@ -69,8 +69,8 @@ e(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" he
 e('     font-family="DejaVu Sans, Helvetica, Arial, sans-serif">')
 e('  <title>What the nose diameter decides — a clamp has no drawing without its own diameter</title>')
 e('  <desc>Three panels. The first is a radial budget from the axle outward, marking the hub at '
-  'radius 31.35 mm, the carrier bore at 31.95, the magnet track at 38.95, the sensor face at up to '
-  '41.95 and the sensor back at 45.95, with the two disagreeing nose readings shaded across it: '
+  'radius 31.41 mm, the carrier bore at 32.01, the magnet track at 39.01, the sensor face at up to '
+  '42.01 and the sensor back at 46.01, with the two disagreeing nose readings shaded across it: '
   'diameter 72 to 75 falls inside the magnet track, diameter 85 to 90 falls outside it. The second '
   'panel draws both cases to scale as end views, showing that the bracket arm reaches outward in '
   'one case and inward in the other. The third panel shows the axial question: the bare length of '
@@ -140,9 +140,9 @@ e(f'  <text x="{AX_X1+26}" y="{AX_Y+5}" font-size="11.5" fill="#475569">radius, 
 # ticks that matter, alternating above/below so labels never collide
 TICKS = [
     # keep the sub-labels SHORT: the two on each side sit at the same height,
-    # and 38.95 vs 45.95 is only 140 px apart on this axis.
-    (R_HUB,   "hub Ø62.7",          "#b45309", -1, "lobe crests"),
-    (R_TRACK, "magnet track Ø77.9", "#7e22ce", +1, "carrier outside"),
+    # and 39.01 vs 46.01 is only 140 px apart on this axis.
+    (R_HUB,   "hub Ø62.82",         "#b45309", -1, "lobe crests"),
+    (R_TRACK, "magnet track Ø78.02","#7e22ce", +1, "carrier outside"),
     (R_FACE,  "sensor face",        "#1d4ed8", -1, "+ up to 3 mm gap"),
     (R_OUT,   "sensor back",        "#1d4ed8", +1, "+ sensor + PCB"),
 ]

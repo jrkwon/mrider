@@ -119,7 +119,7 @@
   <text x="660" y="382" font-size="12" fill="#78350f">From numbers already in the model:</text>
   <rect x="660" y="394" width="316" height="62" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="1.6"/>
   <text x="674" y="416" font-size="12" font-weight="bold" fill="#92400e">Tight on a crest → the screw stands</text>
-  <text x="674" y="434" font-size="12" font-weight="bold" fill="#92400e">0.15–0.65 mm PROUD of the OD.</text>
+  <text x="674" y="434" font-size="12" font-weight="bold" fill="#92400e">0.10–0.70 mm PROUD of the OD.</text>
   <text x="674" y="450" font-size="11" fill="#78350f">(= SET_SCREW_L − SPAN, both in the SCAD)</text>
 
   <text x="660" y="482" font-size="12" font-weight="bold" fill="#b91c1c">Winds in past that and still loose?</text>
@@ -129,7 +129,7 @@
   <line x1="660" y1="534" x2="976" y2="534" stroke="#fcd34d" stroke-width="1.5"/>
 
   <text x="660" y="558" font-size="12" font-weight="bold" fill="#92400e">An M3 × 8 cannot reach a valley</text>
-  <text x="660" y="576" font-size="11.5" fill="#78350f">The span is 7.85 mm <tspan font-style="italic">to a crest</tspan>. A valley</text>
+  <text x="660" y="576" font-size="11.5" fill="#78350f">The span is 7.90 mm <tspan font-style="italic">to a crest</tspan>. A valley</text>
   <text x="660" y="593" font-size="11.5" fill="#78350f">is deeper by the lobe depth — <tspan font-weight="bold">which has</tspan></text>
   <text x="660" y="610" font-size="11.5" fill="#78350f"><tspan font-weight="bold">never been measured.</tspan> Caliper across two</text>
   <text x="660" y="627" font-size="11.5" fill="#78350f">opposite valleys and record it.</text>

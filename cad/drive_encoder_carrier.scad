@@ -21,9 +21,14 @@
 //   press fit needs both numbers to +-0.1, so it is two significant figures out
 //   of reach — and there are three hubs, not one. The bore is therefore
 //   deliberately LOOSE and carries no load. The three grub screws take up
-//   whatever slack exists and their points settle into the gaps between the
-//   hub's six lobes, which is
-//   a form lock rather than friction. A hub 0.5 mm off nominal changes nothing
+//   whatever slack exists and their points SEAT ON THE LOBE CRESTS, which is
+//   the seat SET_SCREW_L was derived for.
+//
+//   This block used to say the points settle into the GAPS between the lobes.
+//   They cannot: HUB_D is measured across crests, so every span derived from
+//   it reaches a crest, and a valley sits deeper by a lobe depth nobody has
+//   measured. The sentence survived here for two weeks after SET_SCREW_L was
+//   corrected, which is how one file ends up arguing with itself. A hub 0.5 mm off nominal changes nothing
 //   except how far the screws go in, so one print fits all three vehicles.
 //
 //   Nothing here needs a hard grip either: the carrier transmits no torque.
@@ -49,10 +54,14 @@ GAUGE_DELTA  = 0.0;
 /* [Measured on the vehicle] */
 // Crest diameter of the gearbox output hub, mm.
 //
-// MEASURED WITH A CALIPER, 2026-10-15: across two opposite lobe crests, three
-// positions round the hub, 62.7 every time with no spread worth recording.
-// This supersedes the 63.0 taken with a tape on 2026-10-08 — same method, finer
-// instrument, 0.3 mm lower. Six lobes is an EVEN count, so
+// MEASURED WITH A CALIPER, 2026-11-04: across two opposite lobe crests, with
+// the GEARBOX OUT OF THE VEHICLE and the hub unobstructed. 62.82.
+// A caliper read 62.7 on 2026-10-15 with the gearbox in place, and that
+// superseded a 63.0 taken with a tape on 2026-10-08 — same method, finer
+// instrument each time. Six lobes is an EVEN count — re-confirmed straight-on
+// on the 2026-11-04 photograph, after an angled shot had made it look like
+// ten. That mattered: an ODD count makes crest face valley and this whole
+// measurement method invalid. So
 // opposite crests face each other and a straight measurement reads the crest
 // circle. Do this. Do not wrap.
 //
@@ -90,7 +99,7 @@ GAUGE_DELTA  = 0.0;
 // And the Ø64.2 bore has already been printed and fitted, which outranks all
 // three numbers. Across the whole 62.0-63.6 band the screws close the gap with
 // at least 3x margin, so the millimetre does not reach the part.
-HUB_D        = 62.7;
+HUB_D        = 62.82;
 // How uncertain that measurement is, mm. A tape resolves about half a
 // millimetre and reads SHORT if it misses the centre, plus the spread across
 // three vehicles.
@@ -102,8 +111,19 @@ HUB_D        = 62.7;
 //
 // So 0.2 was measuring the instrument when the real variation is between PARTS.
 // HUB_D stays at the larger figure, because the bore has to clear the largest
-// hub it will meet, and 0.5 carries the spread downward. The other two vehicles'
-// drive hubs are still unmeasured and are what would settle this properly.
+// hub it will meet, and the tolerance carries the spread downward.
+//
+// 2026-11-04: a third reading, 62.82, taken with the gearbox OUT of the vehicle
+// and the hub unobstructed — the cleanest access anyone has had to it. It is
+// 0.12 ABOVE the HUB_D that was supposed to BE the largest hub, so the rule
+// this block states was being broken by its own data. HUB_D takes it, and the
+// tolerance goes to 0.6 to keep covering 62.23 at the bottom.
+//
+//   readings so far:  62.23  ·  62.7  ·  62.82        spread 0.59 mm
+//
+// Nothing reprints. The bore moves 63.90 -> 64.02 and the Ø64.2 ring already
+// printed clears both. What it costs is screw margin, and that is now the
+// number to watch — see SET_SCREW_L.
 //
 // The history is worth keeping. This was 1.0 while three indirect methods spread
 // 62.0-63.25, then 0.5 once the low one was explained as a paper wrap chording
@@ -113,7 +133,7 @@ HUB_D        = 62.7;
 //
 // BORE_CLEAR must stay larger than this or the bore can come out SMALLER than
 // the hub, which is the one failure the screws cannot rescue.
-HUB_TOL      = 0.5;
+HUB_TOL      = 0.6;
 // Axial room on the protruding lobed boss, mm. The 2026-10-08 side view reads
 // about 10 mm with the wheel off; this keeps the older, smaller "gearbox face
 // to wheel" figure because the wheel is what finally closes on it, and the fit
@@ -148,15 +168,27 @@ N_SET        = 3;           // three points centre the ring; four can skew it
 SET_TAP_D    = 2.5;         // M3 tap drill, through the whole wall
 SET_SCREW_L  = 8.0;         // M3 x this, no head — THE SCREWS SEAT ON LOBE CRESTS
 //
+// HOW MUCH LONGER THIS SCREW CAN COPE WITH, stated as a number so the next
+// reading can be checked against it rather than argued about:
+//
+//   SET_SCREW_L >= WALL + (BORE_CLEAR + HUB_TOL)/2   =>   HUB_TOL <= 0.8
+//   with HUB_D 62.82 that is a SMALLEST HUB OF 62.02 mm
+//
+// The lowest reading so far is 62.23, so there is 0.21 mm of headroom left.
+// A hub under 62.02 and the M3 x 8 no longer reaches it — and M3 x 10 is not
+// the answer, because #6d already rejected it for standing 1.9-2.7 mm proud of
+// the sensing surface. The fix then would be a thicker WALL or a smaller
+// BORE_CLEAR, both of which are reprints. MEASURE THE REMAINING HUBS.
+//
 // CRESTS, NOT VALLEYS — and that is what sets this length.
 //
 // HUB_D is measured ACROSS OPPOSITE LOBE CRESTS (see "fitting" below), so every
-// span figure derived from it is a distance to a CREST. SPAN_MAX = 7.85 is the
+// span figure derived from it is a distance to a CREST. SPAN_MAX = 7.90 is the
 // wall plus the largest radial gap AT A CREST. A valley sits deeper by the lobe
 // depth, which NOBODY HAS MEASURED, so an M3 x 8 cannot be assumed to reach one
 // and must not be asked to.
 //
-//   seated on a crest   -> screw stands 0.15-0.65 mm PROUD of the OD (= PROUD)
+//   seated on a crest   -> screw stands 0.10-0.70 mm PROUD of the OD (= PROUD)
 //   winding in past that without going tight -> it is heading down a flank or
 //   into a valley. BACK IT OUT, ROTATE THE RING, TRY AGAIN.
 //
@@ -395,10 +427,15 @@ else                 carrier();
 // threadlocker on the screws. Finally spin the wheel by hand and watch the air
 // gap: it should not visibly change through a revolution.
 //
-// FASTENERS, per vehicle: 3 x M3 x 8 grub screw, cup or cone point — a cone
-// point finds a lobe gap on its own. NOT M3 x 10: the screw has to cross the
-// 7 mm wall plus the gap, 7.35-7.85 mm, and anything longer stands proud of the
-// surface the sensor faces. No heat-set inserts: the thread is tapped into the
+// FASTENERS, per vehicle: 3 x M3 x 8 grub screw. FLAT POINT IS ACCEPTABLE and
+// is what is in hand — the seat is a convex CREST, where a flat face makes a
+// line contact and a cone would perch on the apex and slide off. (An earlier
+// revision of this block asked for cup or cone 'because a cone finds a lobe
+// gap on its own'. It is not looking for a gap. Third copy of that sentence
+// in this file; see SET_SCREW_L for the one that was corrected first.)
+// NOT M3 x 10: the screw has to cross the 7 mm wall plus the gap,
+// 7.30-7.90 mm, and anything longer stands proud of the surface the sensor
+// faces. No heat-set inserts: the thread is tapped into the
 // PETG, and the inserts bought on #14 are for the enclosures.
 //
 // SET THE SENSOR AIR GAP FROM THE SCREW ENDS, NOT FROM THE TRACK. The screws
