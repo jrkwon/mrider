@@ -121,6 +121,18 @@ HUB_D        = 62.82;
 //
 //   readings so far:  62.23  ·  62.7  ·  62.82        spread 0.59 mm
 //
+// CONFIRMED 2026-11-04: 62.82 is the SAME DRIVE HUB as the 62.7, re-measured.
+// So these are THREE READINGS OF TWO PARTS, not three parts, and that is the
+// worse reading of the data:
+//
+//   same part, two reads   0.12 mm   <- the instrument and the operator
+//   part to part           0.47 mm   <- drive vs steering
+//
+// HUB_TOL 0.6 is now absorbing BOTH, and the two remaining drive hubs are
+// still unmeasured — both of them, not one. A new hub that truly sits at
+// 62.23 could read 62.11 on a bad pass, which leaves ~0.09 mm against the
+// 62.02 floor rather than the 0.21 the raw numbers suggest.
+//
 // Nothing reprints. The bore moves 63.90 -> 64.02 and the Ø64.2 ring already
 // printed clears both. What it costs is screw margin, and that is now the
 // number to watch — see SET_SCREW_L.

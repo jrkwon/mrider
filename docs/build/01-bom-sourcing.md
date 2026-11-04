@@ -907,9 +907,11 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > wire or strip thickness.***
 >
 > **Settled with a caliper, 2026-10-15: 62.7 mm**, three positions, no spread worth recording.
-> *Superseded 2026-11-04 by **62.82**, taken with the gearbox out of the vehicle. Not a correction
-> of the 62.7 — 0.12 mm apart is two readings of the same class of part — but the model takes the
-> largest, so it takes this one. [Three readings now: 62.23 · 62.7 · 62.82.](../order-log.md)*
+> *Superseded 2026-11-04 by **62.82**, taken with the gearbox out of the vehicle. **Confirmed to be
+> the SAME drive hub re-measured**, not a third part — so the 0.12 mm is the instrument and the
+> operator, and the 0.47 mm drive-vs-steering gap is still the only part-to-part evidence there is.
+> The model takes the largest reading either way. **Both remaining drive hubs are still unmeasured.**
+> [Three readings, two parts: 62.23 · 62.7 · 62.82.](../order-log.md)*
 > That ends four indirect attempts, and the pattern in them is the lesson:
 >
 > | | reads | why it was off |
