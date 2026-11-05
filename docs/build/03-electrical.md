@@ -372,6 +372,26 @@ the laptop and the Teensy have both hung. It does two things at once:
 > **The button's second NC contact (`NC ②`) does the same job for the four relay MUX coils**, on a
 > *different contact block* — see the caution below.
 >
+> **How to actually make the tee.** It is the joint that carries the whole 25 A, so it has to be
+> one you can *look at* later.
+>
+> | | | |
+> |---|---|---|
+> | **Recommended** | a small **brass bus bar / power distribution block** — one stud in from `87`, two studs out | inspectable, re-openable, and the B+ branch unbolts to return the vehicle to stock |
+> | Acceptable | **one uninsulated butt barrel, three wires** — the `87` lead in, two AWG 14 out — ratchet-crimped and sealed with the 3:1 heatshrink already bought | it works, and **it can never be inspected again** |
+> | Avoid | **piggyback spades** stacked on the socket's `87` | the stack is the weak point, and it is carrying everything |
+>
+> **Build it at the PACK end, in the adapter lead, on the bench.** *Fuse, contactor and tee then
+> form one removable assembly:* the stock side keeps its connector, the new side is one branch to
+> `B+`, and the whole intervention comes out as a unit. **The tee must sit downstream of both the
+> fuse and the contact** — upstream of either and one branch is unprotected or uncut, which is the
+> defect [§3.3](#33-the-three-taps) corrected on the contactor's own placement.
+>
+> **No line in the [Order Log](../order-log.md) buys a bus bar or a distribution block.** *Same
+> shape as the terminal blocks and the bypass caps: a part specified by the wiring and procured by
+> nothing.* Check the lab drawer first — it is a few thousand won and the cheapest version of this
+> errand is not ordering it.
+>
 > **Check `85 · 86` on the body before assuming they are interchangeable.** A bare coil is not
 > polarised and either way round works; **a relay with an internal flyback diode is**, and the
 > markings say which. *Nothing drives this coil but a mechanical contact, so it needs no diode of
