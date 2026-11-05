@@ -716,10 +716,16 @@ adjacent pads crack on a vehicle that vibrates.
 > | **2 × 1 nF** | **those same two lines**, down to GND | a motor-edge spike on a 10 kΩ node is a count |
 > | **2 × 4.7 kΩ** | pull-up to 3.3 V on **SDA and SCL** | parallel to the AS5600 breakout's own |
 >
-> **The pin numbers are deliberately absent, and must stay absent until they are frozen.** *On a
-> breadboard you move a wire; on perfboard you desolder* — so the assignment is settled at the
-> bench and written into [`04-firmware.md`](04-firmware.md) **before anything is soldered.** A
-> figure that guessed a number now would be the thing somebody soldered to.
+> **The pin numbers are not here because they are somewhere else** —
+> [one table in `04-firmware.md`](04-firmware.md#the-pin-assignment-the-one-table-that-must-be-frozen-before-an-iron-is-hot),
+> which the bench layout and this board **both** use. *If the two differed, the bench would prove
+> nothing about the board.* **On a breadboard you move a wire; on perfboard you desolder**, so the
+> table is settled and frozen before anything is soldered.
+>
+> *Corrected 2026-11-05: this page previously said the numbers "do not exist yet". They did — a
+> provisional set had been in `breadboard-layout.svg` since it was drawn, and no document carried
+> them. That is the defect, not the silence: a number that lives in exactly one figure is a number
+> nobody can check.*
 
 > [!CAUTION]
 > **The 3.3 V bus is dead until the Teensy is plugged in — and you should still test the board

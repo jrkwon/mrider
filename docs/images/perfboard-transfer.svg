@@ -149,7 +149,7 @@
   <rect x="24" y="826" width="1132" height="172" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
   <text x="44" y="854" font-size="14.5" font-weight="bold" fill="#14532d">Four things the breadboard could not teach you</text>
   <text x="44" y="882" font-size="12.5" fill="#166534"><tspan font-weight="bold">Pin assignment freezes here.</tspan> On a breadboard you move a wire; on perfboard you desolder. <tspan font-weight="bold">Finalise the pins at the bench and write</tspan></text>
-  <text x="58" y="900" font-size="12.5" fill="#166534"><tspan font-weight="bold">them into 04-firmware before you solder anything.</tspan> That is why this drawing names signals and not pin numbers: the numbers do not exist yet.</text>
+  <text x="58" y="900" font-size="12.5" fill="#166534"><tspan font-weight="bold">them into 04-firmware before you solder anything.</tspan> The pins live in one table in 04-firmware; the bench board and this one use the same numbers.</text>
   <text x="44" y="924" font-size="12.5" fill="#166534"><tspan font-weight="bold">Strain relief.</tspan> Cable movement must pull on a tie or a bracket, never on a terminal. This is what kills hand-built boards — not the</text>
   <text x="58" y="942" font-size="12.5" fill="#166534">soldering, the five hundred times a loom gets tugged.</text>
   <text x="44" y="966" font-size="12.5" fill="#166534"><tspan font-weight="bold">One ground wire off this board</tspan>, to the star at the motor driver. A second path is a loop, and a loop is FMEA row 5.</text>

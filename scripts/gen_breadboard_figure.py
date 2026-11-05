@@ -99,6 +99,7 @@ e('<defs><marker id="ab2" markerWidth="10" markerHeight="10" refX="9" refY="3.2"
 e(f'<rect width="{W}" height="{H}" fill="#ffffff"/>')
 
 e('<text x="24" y="34" font-size="20" font-weight="bold" fill="#0f172a">Bench layout — drawn to a real 400-point half-size board</text>')
+e('<text x="24" y="76" font-size="11.5" fill="#64748b">Pin numbers shown here are <tspan font-weight="bold">the table in 04-firmware</tspan>, not a choice made by this figure &#8212; and the soldered signal board uses the same ones.</text>')
 e('<text x="24" y="58" font-size="12.5" fill="#475569">30 columns × 10 rows + four rails = 400 tie points, which is the <tspan font-weight="bold">SZH-BBAD-005</tspan> that was ordered. A <tspan font-weight="bold">pale band</tspan> = one node. A <tspan font-weight="bold">gap</tspan> = passes over, not into.</text>')
 
 # ===== LAYER 1: boards =====

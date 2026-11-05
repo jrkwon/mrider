@@ -4,6 +4,7 @@
 <defs><marker id="ab2" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#1d4ed8"/></marker></defs>
 <rect width="1180" height="1470" fill="#ffffff"/>
 <text x="24" y="34" font-size="20" font-weight="bold" fill="#0f172a">Bench layout — drawn to a real 400-point half-size board</text>
+<text x="24" y="76" font-size="11.5" fill="#64748b">Pin numbers shown here are <tspan font-weight="bold">the table in 04-firmware</tspan>, not a choice made by this figure &#8212; and the soldered signal board uses the same ones.</text>
 <text x="24" y="58" font-size="12.5" fill="#475569">30 columns × 10 rows + four rails = 400 tie points, which is the <tspan font-weight="bold">SZH-BBAD-005</tspan> that was ordered. A <tspan font-weight="bold">pale band</tspan> = one node. A <tspan font-weight="bold">gap</tspan> = passes over, not into.</text>
 <rect x="150" y="150" width="640" height="380" rx="6" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
 <line x1="168" y1="182" x2="772" y2="182" stroke="#dc2626" stroke-width="3"/>

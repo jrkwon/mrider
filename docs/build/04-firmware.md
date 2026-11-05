@@ -98,6 +98,42 @@ laptop  /mitt/dbw/command  (DbwCommand: steering_angle rad, speed m/s)
       Teensy  ──▶ /mitt/dbw/status  (measured angle, setpoint, speed, ticks, mode, faults)
 ```
 
+### The pin assignment — the one table that must be frozen before an iron is hot
+
+**On a breadboard you move a wire; on perfboard you desolder.** So this table, not a figure, is
+where the assignment lives, and **both** the bench layout
+([§3.5.3](03-electrical.md#353-build-the-circuit-twice-and-not-for-the-reason-it-sounds-like)) and the soldered
+signal board ([§3.5.4](03-electrical.md#354-transferring-to-perfboard-three-boards-become-one))
+use the **same numbers**. *If they differed, the bench would prove nothing about the board.*
+
+| Signal | Pin | Fixed or chosen | What has to be true |
+|---|---|---|---|
+| Drive encoder **A** (Hall latch A OUT) | **0** | chosen | A QDC channel. `QuadEncoder(ch, 0, 1, 0)` is the library's own example, so the pair is known good. **Crossbar: pin 0 excludes pins 5 and 37** |
+| Drive encoder **B** (Hall latch B OUT) | **1** | chosen | Same channel. **Crossbar: pin 1 excludes pin 36** |
+| Steering **SDA** (AS5600) | **18** | **fixed by hardware** | `Wire` on a Teensy 4.1. Not a choice |
+| Steering **SCL** | **19** | **fixed by hardware** | Same |
+| **E-stop sense** in | **20** | chosen | Plain digital in, fed by the relay board's divider. **Taking it forecloses Serial5, whose TX is pin 20** |
+| **Relay gate** out | *not assigned* | — | Any digital out. Goes to a terminal, not a header |
+| **i-BUS** RX | *not assigned* | — | **Must be a hardware serial RX, and it cannot be Serial1** — see below |
+| **PWM** out to the signal MUX | *not assigned* | — | Must be a PWM-capable pin |
+
+> [!WARNING]
+> **Taking pins 0 and 1 for the encoder forecloses Serial1, and i-BUS needs a hardware serial port**
+>
+> Pin 0 is **Serial1 RX**. [§3.5](03-electrical.md#35-signal-wiring) puts the
+> drive encoder's A channel there, and [dbw.md §10.2](../design/dbw.md#102-firmware-blocks)
+> requires *"i-BUS on a hardware serial port."* **Both cannot have Serial1.**
+>
+> *This is a decision, not a fault — the Teensy 4.1 has eight hardware serial ports — but it has
+> to be made and written down rather than discovered when the encoder stops counting the first
+> time the receiver is plugged in.* **Serial3 (RX = pin 15) is clear of everything in this
+> table; Serial5 is not, because its TX is the E-stop sense pin.**
+>
+> **Confirm at the bench before soldering**, with the i-BUS idle level metered first — the Teensy
+> 4.1 is not 5 V tolerant ([§3.4](03-electrical.md#34-wire-the-e-stop-and-mux-first)).
+
+---
+
 **Why this matters for debugging.** Command and feedback share one link and one clock, so
 `ros2 topic echo /mitt/dbw/status` shows both sides of the loop and `ros2 bag` captures a
 complete record. The superseded design split them across four boards and two transports,
