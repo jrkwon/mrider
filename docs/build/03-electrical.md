@@ -127,7 +127,7 @@ Laptop ──▶ its own internal battery (NOT wired to traction in v1)
 logic rail must not follow. Use adequate hold-up capacitance and put the undervoltage monitor
 on the **logic** rail.
 
-![Power wiring in detail, in two rows: the supply row runs the traction pack through a 25 A fuse and the E-stop contactor, then forks to the stock ECU and to the motor driver's B+ with the relay MUX in neither fork; the authority row puts the four-pole relay MUX in the motor leads, stock ECU outputs on 87a and driver M1/M2 on 87, COM out to the steering gearmotor and the paralleled drive motors; and separately the LiFePO4 logic pack through a 5 A fuse to two UBECs and a direct coil tap feeding every relay coil, with the single star ground where the two rails meet](../images/power-wiring.svg)
+![Power wiring in detail, in two rows: the supply row runs the traction pack through a 25 A fuse and the E-stop contactor, then forks to the stock ECU and to the motor driver's B+ with the relay MUX in neither fork; the authority row puts the four-pole relay MUX in the motor leads, stock ECU outputs on 87a and driver M1/M2 on 87, COM out to the steering gearmotor and the paralleled drive motors; and separately the LiFePO4 logic pack through a 5 A fuse to two UBECs and a direct coil tap feeding every relay coil, with the E-stop button's two NC contacts sitting in those two coil feeds and nowhere else, and the single star ground where the two rails meet](../images/power-wiring.svg)
 
 ## 3.2 Per-rail fuse and gauge table
 
