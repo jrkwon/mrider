@@ -161,7 +161,7 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 
 | Rail / branch | What protects it | Wire | Fuse? |
 |---|---|---|:---:|
-| **Traction pack → E-stop contactor → driver B+** | **25 A blade fuse, at the pack** | AWG 14 | **yes — 1** |
+| **Traction pack → 25 A fuse → E-stop contactor → *everything*** | **25 A blade fuse, at the pack** | AWG 14 | **yes — 1** |
 | Driver M2 → **MUX** → paralleled drive motors | the driver's current limit, set to **20 A** | AWG 14 | no |
 | Driver M1 → **MUX** → steering gearmotor | same current limit | AWG 14 | no |
 | **Logic pack → UBEC inputs + MUX coils** | **5 A blade fuse, at the pack** | AWG 18 | **yes — 1** |
@@ -213,7 +213,28 @@ without cutting it ([dbw.md §11.5](../design/dbw.md#115-3-tap-connector-spec-mi
 |---|---|---|---|
 | **Throttle tap** | stock throttle motor leads | NC → stock ECU, NO → driver M2 | paralleled rear motors |
 | **Steering tap** | stock steering motor leads | NC → stock ECU, NO → driver M1 | MRider adds the gearmotor if the column had none. **Note the M1/M2 assignment is inverted vs. mrover** — intentional, see [dbw.md §2.1](../design/dbw.md#21-actuator) (finding F6) |
-| **Power tap** | chassis traction pack | feeds the motor driver's B+ only | fused. The logic rail is a **separate battery** (§3.1), not tapped from here. **Tap at the battery, upstream of the stock inline protector** — see the caution below |
+| **Power tap** | chassis traction pack, **in the trunk** | feeds the driver's B+ **and the stock ECU, through the contactor** | fused. The logic rail is a **separate battery** (§3.1), not tapped from here. **Tap at the battery, upstream of the stock inline protector** — see the caution below, and the one after it |
+
+> [!CAUTION]
+> **The contactor goes in the TRUNK, so it cuts the stock ECU too — corrected 2026-11-05**
+>
+> Two tables on this page used to read *"traction pack → E-stop contactor → driver B+"* and
+> *"feeds the motor driver's B+ only"*, which puts the contactor in the **DBW branch alone**.
+> **That leaves the stock ECU live after an E-stop** — and the same button drops the relay MUX to
+> `87a`, which connects the motors to that live ECU. **Press the E-stop, press the pedal, and the
+> vehicle drives.**
+>
+> **The contactor is in the battery's positive lead, upstream of the fork**, so one press removes
+> power from the stock ECU and the driver together. *Three things on this page already said so and
+> only the tables did not:* [the power figure](../images/power-wiring.svg) tees after the
+> contactor, §3.4 says the E-stop *"cuts traction power"* rather than cuts the driver, and the
+> figure's own reversibility line — **"returning it to stock means unbolting the contactor"** —
+> only makes sense if the contactor is in the stock path.
+>
+> **What this means at the vehicle:** *the only stock conductor interrupted is the pack's `+`.*
+> The `−` is never switched; it runs to the star ground. If the pack's `+` ends in a connector,
+> **the contactor and fuse go in on an adapter lead and nothing is cut at all** — which is the
+> §2.8 reversibility requirement met by construction rather than by promise.
 
 > [!CAUTION]
 > **Take the power tap upstream of the stock inline device, not downstream**
@@ -361,6 +382,13 @@ All four coils sit on **one bus** — see the
 parallel across the E-stop-fed logic feed and a single `IRLZ44N` pulling all four low sides. The
 coil is the same circuit on every relay; **only the contacts differ, and that is what this table
 is for.**
+
+**The numbers are DIN automotive relay terminals, not a part number:** `30` is the common input,
+`87` the **normally-open** output, `87a` the normally-closed one, and `85 · 86` the coil. *So the
+contactor's "`30→87`" means the traction current enters at `30` and leaves at `87` — a contact
+that is closed ONLY while the coil is energised, which is de-energise-to-safe stated in terminal
+numbers.* The contactor is a **4-pin** relay and has no `87a`; the four MUX relays are **5-pin**
+and use both. `#8a` and `#8b` are this repo's part codes, not markings on the part.
 
 `30 · 87 · 87a · 85 · 86` are **moulded into the relay body**, confirmed on arrival
 ([#7](../order-log.md)). Wire to those numbers, not to pigtail colour: #7's `RV-90` sockets put

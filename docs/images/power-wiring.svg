@@ -34,6 +34,7 @@
   <rect x="48" y="156" width="130" height="68" rx="5" fill="#fecaca" stroke="#b91c1c" stroke-width="2.4"/>
   <text x="113" y="184" font-size="13" font-weight="bold" fill="#7f1d1d" text-anchor="middle">Traction pack</text>
   <text x="113" y="204" font-size="11.5" fill="#7f1d1d" text-anchor="middle">stock, in the bay</text>
+  <text x="48" y="240" font-size="10.5" font-weight="bold" fill="#b91c1c">the + lead only — − is never switched</text>
 
   <rect x="222" y="166" width="96" height="48" rx="5" fill="#ffffff" stroke="#b91c1c" stroke-width="2.4"/>
   <text x="270" y="186" font-size="12.5" font-weight="bold" fill="#991b1b" text-anchor="middle">25 A</text>
@@ -42,7 +43,7 @@
 
   <rect x="362" y="156" width="150" height="68" rx="5" fill="#fef3c7" stroke="#b45309" stroke-width="2.4"/>
   <text x="437" y="182" font-size="12.5" font-weight="bold" fill="#92400e" text-anchor="middle">E-stop contactor</text>
-  <text x="437" y="200" font-size="11" fill="#78350f" text-anchor="middle">#8a · 40 A · 30→87</text>
+  <text x="437" y="200" font-size="11" fill="#78350f" text-anchor="middle">#8a · 40 A · 30→87 (NO)</text>
   <text x="437" y="215" font-size="10.5" font-weight="bold" fill="#b45309" text-anchor="middle">coil on the LOGIC rail</text>
 
   <g stroke="#b91c1c" stroke-width="6" fill="none">
@@ -72,6 +73,8 @@
   <text x="892" y="194" font-size="11" fill="#9a3412">into B+ — while carrying the box below saying the</text>
   <text x="892" y="210" font-size="11" fill="#9a3412">MUX breaks both motor conductors. <tspan font-weight="bold">It disagreed</tspan></text>
   <text x="892" y="226" font-size="11" font-weight="bold" fill="#9a3412">with itself. The pole count settles it: four.</text>
+
+  <text x="876" y="240" font-size="10.5" fill="#7f1d1d"><tspan font-weight="bold">87 is normally OPEN</tspan> — closed only while the coil is energised.</text>
 
   <text x="44" y="258" font-size="12" fill="#7f1d1d"><tspan font-weight="bold">Both forks are fed together — a TEE, not a changeover.</tspan> One master cut: opening the contactor kills the driver <tspan font-weight="bold">and the stock ECU</tspan>. Choosing between them is row 2.</text>
 
