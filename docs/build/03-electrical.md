@@ -727,6 +727,54 @@ adjacent pads crack on a vehicle that vibrates.
 > them. That is the defect, not the silence: a number that lives in exactly one figure is a number
 > nobody can check.*
 
+#### Where it all sits on the signal board
+
+The figure above says what this board *is*. **It does not tell you where to put anything** — the
+Teensy is a dashed box and the passives are squiggles at no particular hole. This one does, on the
+same 29 × 29 grid the GA2 actually has.
+
+![Signal perfboard placement on a 29 by 29 hole grid with four plated corner mounting holes and a
+one-hole margin: a socketed Teensy 4.1 lying across the middle with its USB end to the left and its
+assumed pin order printed along both rows; a 3.3 V bus above it fed from one 3V3 pin and a second
+3.3 V bus below fed from the other, a GND bus below that and a GND spine up the right edge; short
+bare-wire stubs soldered to the pads of pins 0, 1, 18 and 19 so each can carry more than one
+connection; two 4.7 k pull-ups up to the upper 3.3 V bus from the I2C stubs; two 1 nF down to GND
+and two 10 k up to the lower 3.3 V bus from the drive stubs, the 10 k on the reverse side because
+each crosses the GND bus; six screw terminals along the top and bottom edges and three servo
+headers; and panels on the pin order, the build order and why each passive sits where it
+does](../images/signal-board-perfboard-layout.svg)
+
+**Generated** — [`scripts/gen_signal_board_figure.py`](https://github.com/jrkwon/mrider/blob/main/scripts/gen_signal_board_figure.py).
+*Edit the script and re-run it; do not edit the SVG.*
+
+> [!IMPORTANT]
+> **A socket pad already has something in it, which is why this board has stubs**
+>
+> On the relay board every part stands between two free holes, so *no two leads in one hole* holds
+> everywhere. **Here every passive hangs off a Teensy pin, and that hole is full of the socket.**
+> So the rule relaxes to **two things in a hole, never three** — a pad with one wire soldered to it
+> is ordinary work; a pad with two is a joint nobody can inspect.
+>
+> **Pins 0, 1, 18 and 19 each need more than one thing**, so each gets a **stub**: two or three
+> holes of bare wire soldered to its pad, giving the pull-up, the cap and the sensor wire a hole
+> each. *The generator asserts the two-per-hole rule and circles every doubled pad in the drawing,
+> so the builder knows which pads take a second wire before the iron is hot.*
+>
+> **The two 10 kΩ go on the reverse side.** Each crosses the GND bus on its way to 3.3 V, and the
+> board is 양면 so that it can. *The script asserts a part is on the reverse side **exactly** when
+> it crosses a bus — a dashed part that did not need to be is a part nobody can reach with an iron
+> once the board is in the box.*
+
+> [!WARNING]
+> **The pin order in that drawing has not been checked against a board**
+>
+> Every column is computed from the pin order printed along the Teensy. **If that order is wrong,
+> the whole drawing is wrong the same way.** *The same arithmetic said this perfboard was 31 holes
+> wide and it is 29.* **Hold a Teensy 4.1 next to the figure and read along the edge** — ten
+> seconds. If it differs, correct the two lists in the generator and re-run; nothing else moves,
+> because nothing else is hand-placed.
+
+
 > [!CAUTION]
 > **The 3.3 V bus is dead until the Teensy is plugged in — and you should still test the board
 > without it**
