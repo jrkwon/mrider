@@ -349,6 +349,34 @@ the laptop and the Teensy have both hung. It does two things at once:
 > *"Contactor" here is a role, not a product category: the part is an automotive relay. It is
 > called that because it is the thing that makes and breaks the traction contact.*
 
+> [!NOTE]
+> **The contactor appears TWICE in the power figure, and it is one relay drawn by its two halves**
+>
+> The traction row shows its **contact** (`30 → 87`); the logic section shows its **coil**
+> (`85 · 86`). *Same part, two sections — because its contact lives on one rail and its coil on
+> the other, which is the entire point of the design.*
+>
+> **Wire it like this. Six connections, and only one stock conductor is interrupted:**
+>
+> ```
+> CONTACT HALF  — traction rail, AWG 14
+>   pack +  ──▶ 25 A blade fuse ──▶ 30
+>   87      ──▶ tee ──▶ stock ECU +   and   motor driver B+
+>   pack −  ──────────────────────▶ star ground        (never switched)
+>
+> COIL HALF     — logic rail, AWG 18-20
+>   12 V DIRECT ──▶ button #8b NC ① ──▶ 85
+>   86          ──────────────────────▶ logic GND (the same star)
+> ```
+>
+> **The button's second NC contact (`NC ②`) does the same job for the four relay MUX coils**, on a
+> *different contact block* — see the caution below.
+>
+> **Check `85 · 86` on the body before assuming they are interchangeable.** A bare coil is not
+> polarised and either way round works; **a relay with an internal flyback diode is**, and the
+> markings say which. *Nothing drives this coil but a mechanical contact, so it needs no diode of
+> its own — unlike the four MUX coils, which are switched by a MOSFET and each carry a `1N4007`.*
+
 > [!IMPORTANT]
 > **The contactor coil runs off the LOGIC battery, not the traction pack**
 >
