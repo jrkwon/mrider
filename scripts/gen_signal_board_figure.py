@@ -131,7 +131,7 @@ PARTS = [
     # upper leg of a divider with R6 if it idles at 5 V. 3.4 forbids finding
     # that out after the wire is on the pin: the Teensy 4.1 is not 5 V tolerant.
     ("R5", "series", (23, 4), (23, 8),  "res", "L", False),
-    ("R6", "to GND", (23, 9), (27, 9),  "res", "R", False),
+    ("R6", "to GND", (23, 10), (27, 10), "res", "R", False),
 ]
 
 # Pluggable terminal blocks, 5.08 mm -> the two ways are TWO holes apart.
@@ -176,7 +176,7 @@ JUMPERS = [
     ((12, 26), (12, 24),         "#dc2626", False),    # drive sensor 3.3 V
     ((12, 28), (12, 21),         "#334155", True),     # its GND, behind the 3.3 V bus
     ((23, 2), (23, 4),           "#be123c", False),    # i-BUS signal into R5
-    ((23, 10), (14, 11),         "#be123c", True),     # and on to pin 15
+    ((23, 9),  (14, 11),         "#be123c", True),     # and on to pin 15
     ((25, 2), (27, 2),           "#334155", False),    # i-BUS ground -> the spine
     ((17, 28), (6, 17),          "#7c3aed", True),     # PWM 1 -> pin 2
     ((19, 28), (19, 21),         "#334155", False),    # its ground
@@ -415,7 +415,7 @@ for d, c, r, col, label in HEADERS:
 
 # ---- reverse side first, so the front-side copper draws over it and a part
 # that passes behind a bus looks like it passes behind a bus
-e('<g opacity="0.5">')
+e('<g opacity="0.62">')
 for a, b, col, rev in JUMPERS:
     if rev:
         e(f'<line x1="{hx(a[0])}" y1="{hy(a[1])}" x2="{hx(b[0])}" y2="{hy(b[1])}" '
@@ -502,6 +502,11 @@ for d, c, r, col, label in HEADERS:
             e(f'<circle cx="{hx(h[0])}" cy="{hy(h[1])}" r="4" fill="{col}"/>')
     e(f'<text x="{hx(c+1)}" y="{hy(r)-20}" font-size="10" font-weight="bold" '
       f'fill="{col}" text-anchor="middle">{label}</text>')
+
+# the signal leg leaves the node for the Teensy; name it, because it is drawn
+# on the reverse side and therefore faint on purpose
+e(f'<text x="{hx(22)-10}" y="{hy(9)-8}" font-size="10" font-weight="bold" '
+  f'fill="#be123c" text-anchor="end">&#8594; pin 15</text>')
 
 # ---- the one place on this board where a value is decided by a measurement
 # in the clear margin beside R5, where nothing else is drawn

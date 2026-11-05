@@ -897,7 +897,7 @@
 <rect x="667" y="163" width="78" height="26" rx="3" fill="#ffffff" fill-opacity="0.88" stroke="#be123c" stroke-width="2.2"/>
 <rect x="511" y="839" width="78" height="26" rx="3" fill="#ffffff" fill-opacity="0.88" stroke="#7c3aed" stroke-width="2.2"/>
 <rect x="641" y="839" width="78" height="26" rx="3" fill="#ffffff" fill-opacity="0.88" stroke="#7c3aed" stroke-width="2.2"/>
-<g opacity="0.5">
+<g opacity="0.62">
 <line x1="290" y1="176" x2="290" y2="410" stroke="#b45309" stroke-width="2.6" stroke-dasharray="6 5"/>
 <line x1="290" y1="228" x2="316" y2="410" stroke="#b45309" stroke-width="2.6" stroke-dasharray="6 5"/>
 <line x1="446" y1="176" x2="368" y2="384" stroke="#0f766e" stroke-width="2.6" stroke-dasharray="6 5"/>
@@ -906,7 +906,7 @@
 <line x1="264" y1="800" x2="186" y2="644" stroke="#1d4ed8" stroke-width="2.6" stroke-dasharray="6 5"/>
 <line x1="264" y1="852" x2="212" y2="644" stroke="#1d4ed8" stroke-width="2.6" stroke-dasharray="6 5"/>
 <line x1="394" y1="852" x2="394" y2="670" stroke="#334155" stroke-width="2.6" stroke-dasharray="6 5"/>
-<line x1="680" y1="384" x2="446" y2="410" stroke="#be123c" stroke-width="2.6" stroke-dasharray="6 5"/>
+<line x1="680" y1="358" x2="446" y2="410" stroke="#be123c" stroke-width="2.6" stroke-dasharray="6 5"/>
 <line x1="524" y1="852" x2="238" y2="566" stroke="#7c3aed" stroke-width="2.6" stroke-dasharray="6 5"/>
 <line x1="654" y1="852" x2="264" y2="566" stroke="#7c3aed" stroke-width="2.6" stroke-dasharray="6 5"/>
 <line x1="186" y1="618" x2="186" y2="748" stroke="#b91c1c" stroke-width="2.4" stroke-dasharray="5 4"/>
@@ -1066,10 +1066,10 @@
 <rect x="673.0" y="265.0" width="14" height="30" rx="3" fill="#b91c1c" opacity="0.92"/>
 <text x="667.0" y="278.0" font-size="11" font-weight="bold" fill="#b91c1c" text-anchor="end">R5</text>
 <text x="667.0" y="292.0" font-size="10.5" fill="#b91c1c" text-anchor="end">series</text>
-<line x1="680" y1="358" x2="784" y2="358" stroke="#b91c1c" stroke-width="2.4"/>
-<rect x="717.0" y="351.0" width="30" height="14" rx="3" fill="#b91c1c" opacity="0.92"/>
-<text x="745.0" y="356.0" font-size="11" font-weight="bold" fill="#b91c1c" text-anchor="start">R6</text>
-<text x="745.0" y="370.0" font-size="10.5" fill="#b91c1c" text-anchor="start">to GND</text>
+<line x1="680" y1="384" x2="784" y2="384" stroke="#b91c1c" stroke-width="2.4"/>
+<rect x="717.0" y="377.0" width="30" height="14" rx="3" fill="#b91c1c" opacity="0.92"/>
+<text x="745.0" y="382.0" font-size="11" font-weight="bold" fill="#b91c1c" text-anchor="start">R6</text>
+<text x="745.0" y="396.0" font-size="10.5" fill="#b91c1c" text-anchor="start">to GND</text>
 <circle cx="160" cy="176" r="4" fill="#dc2626"/>
 <circle cx="160" cy="228" r="4" fill="#dc2626"/>
 <text x="206" y="180" font-size="10" font-weight="bold" fill="#dc2626">+5 V</text>
@@ -1115,6 +1115,7 @@
 <text x="680" y="871" font-size="8" font-weight="bold" fill="#7c3aed" text-anchor="middle">n/c</text>
 <circle cx="706" cy="852" r="4" fill="#7c3aed"/>
 <text x="680" y="832" font-size="10" font-weight="bold" fill="#7c3aed" text-anchor="middle">PWM 2 · drive</text>
+<text x="644" y="350" font-size="10" font-weight="bold" fill="#be123c" text-anchor="end">&#8594; pin 15</text>
 <text x="880" y="228" font-size="11" font-weight="bold" fill="#be123c">i-BUS LEVEL &#8212; meter it first</text>
 <text x="880" y="246" font-size="10.5" fill="#be123c">3.3 V idle &#8594; R5 is a WIRE</text>
 <text x="880" y="261" font-size="10.5" fill="#be123c">LINK, and no R6 at all.</text>
