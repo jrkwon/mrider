@@ -906,7 +906,7 @@
 <line x1="264" y1="800" x2="186" y2="644" stroke="#1d4ed8" stroke-width="2.6" stroke-dasharray="6 5"/>
 <line x1="264" y1="852" x2="212" y2="644" stroke="#1d4ed8" stroke-width="2.6" stroke-dasharray="6 5"/>
 <line x1="394" y1="852" x2="394" y2="670" stroke="#334155" stroke-width="2.6" stroke-dasharray="6 5"/>
-<line x1="680" y1="176" x2="446" y2="410" stroke="#be123c" stroke-width="2.6" stroke-dasharray="6 5"/>
+<line x1="680" y1="384" x2="446" y2="410" stroke="#be123c" stroke-width="2.6" stroke-dasharray="6 5"/>
 <line x1="524" y1="852" x2="238" y2="566" stroke="#7c3aed" stroke-width="2.6" stroke-dasharray="6 5"/>
 <line x1="654" y1="852" x2="264" y2="566" stroke="#7c3aed" stroke-width="2.6" stroke-dasharray="6 5"/>
 <line x1="186" y1="618" x2="186" y2="748" stroke="#b91c1c" stroke-width="2.4" stroke-dasharray="5 4"/>
@@ -929,6 +929,7 @@
 <line x1="212" y1="566" x2="212" y2="644" stroke="#0f172a" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>
 <line x1="342" y1="358" x2="342" y2="410" stroke="#0f172a" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>
 <line x1="368" y1="358" x2="368" y2="410" stroke="#0f172a" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>
+<line x1="680" y1="332" x2="680" y2="384" stroke="#0f172a" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>
 <line x1="212" y1="410" x2="212" y2="280" stroke="#dc2626" stroke-width="2.6" opacity="0.95"/>
 <line x1="524" y1="566" x2="524" y2="748" stroke="#dc2626" stroke-width="2.6" opacity="0.95"/>
 <line x1="160" y1="566" x2="160" y2="670" stroke="#334155" stroke-width="2.6" opacity="0.95"/>
@@ -936,6 +937,7 @@
 <line x1="160" y1="228" x2="186" y2="410" stroke="#334155" stroke-width="2.6" opacity="0.95"/>
 <line x1="576" y1="176" x2="576" y2="280" stroke="#dc2626" stroke-width="2.6" opacity="0.95"/>
 <line x1="394" y1="800" x2="394" y2="748" stroke="#dc2626" stroke-width="2.6" opacity="0.95"/>
+<line x1="680" y1="176" x2="680" y2="228" stroke="#be123c" stroke-width="2.6" opacity="0.95"/>
 <line x1="732" y1="176" x2="784" y2="176" stroke="#334155" stroke-width="2.6" opacity="0.95"/>
 <line x1="576" y1="852" x2="576" y2="670" stroke="#334155" stroke-width="2.6" opacity="0.95"/>
 <line x1="706" y1="852" x2="706" y2="670" stroke="#334155" stroke-width="2.6" opacity="0.95"/>
@@ -1060,6 +1062,14 @@
 <rect x="205.0" y="616.0" width="14" height="30" rx="3" fill="#1d4ed8" opacity="0.92"/>
 <text x="225.0" y="629.0" font-size="11" font-weight="bold" fill="#1d4ed8" text-anchor="start">C2</text>
 <text x="225.0" y="643.0" font-size="10.5" fill="#1d4ed8" text-anchor="start">1 nF</text>
+<line x1="680" y1="228" x2="680" y2="332" stroke="#b91c1c" stroke-width="2.4"/>
+<rect x="673.0" y="265.0" width="14" height="30" rx="3" fill="#b91c1c" opacity="0.92"/>
+<text x="667.0" y="278.0" font-size="11" font-weight="bold" fill="#b91c1c" text-anchor="end">R5</text>
+<text x="667.0" y="292.0" font-size="10.5" fill="#b91c1c" text-anchor="end">link?</text>
+<line x1="680" y1="358" x2="784" y2="358" stroke="#b91c1c" stroke-width="2.4"/>
+<rect x="717.0" y="351.0" width="30" height="14" rx="3" fill="#b91c1c" opacity="0.92"/>
+<text x="745.0" y="356.0" font-size="11" font-weight="bold" fill="#b91c1c" text-anchor="start">R6</text>
+<text x="745.0" y="370.0" font-size="10.5" fill="#b91c1c" text-anchor="start">to GND</text>
 <circle cx="160" cy="176" r="4" fill="#dc2626"/>
 <circle cx="160" cy="228" r="4" fill="#dc2626"/>
 <text x="206" y="180" font-size="10" font-weight="bold" fill="#dc2626">+5 V</text>
@@ -1091,17 +1101,20 @@
 <text x="440" y="856" font-size="10" font-weight="bold" fill="#dc2626">GND</text>
 <text x="407" y="780" font-size="10.5" font-weight="bold" fill="#dc2626" text-anchor="middle">DRVP</text>
 <circle cx="680" cy="176" r="4" fill="#be123c"/>
-<circle cx="706" cy="176" r="4" fill="#be123c"/>
+<circle cx="706" cy="176" r="4.5" fill="#ffffff" stroke="#be123c" stroke-width="1.8"/>
+<text x="706" y="195" font-size="8" font-weight="bold" fill="#be123c" text-anchor="middle">n/c</text>
 <circle cx="732" cy="176" r="4" fill="#be123c"/>
-<text x="706" y="156" font-size="10" font-weight="bold" fill="#be123c" text-anchor="middle">i-BUS in</text>
+<text x="706" y="156" font-size="10" font-weight="bold" fill="#be123c" text-anchor="middle">i-BUS in ← receiver</text>
 <circle cx="524" cy="852" r="4" fill="#7c3aed"/>
-<circle cx="550" cy="852" r="4" fill="#7c3aed"/>
+<circle cx="550" cy="852" r="4.5" fill="#ffffff" stroke="#7c3aed" stroke-width="1.8"/>
+<text x="550" y="871" font-size="8" font-weight="bold" fill="#7c3aed" text-anchor="middle">n/c</text>
 <circle cx="576" cy="852" r="4" fill="#7c3aed"/>
-<text x="550" y="832" font-size="10" font-weight="bold" fill="#7c3aed" text-anchor="middle">PWM → MUX 1</text>
+<text x="550" y="832" font-size="10" font-weight="bold" fill="#7c3aed" text-anchor="middle">PWM 1 · steer</text>
 <circle cx="654" cy="852" r="4" fill="#7c3aed"/>
-<circle cx="680" cy="852" r="4" fill="#7c3aed"/>
+<circle cx="680" cy="852" r="4.5" fill="#ffffff" stroke="#7c3aed" stroke-width="1.8"/>
+<text x="680" y="871" font-size="8" font-weight="bold" fill="#7c3aed" text-anchor="middle">n/c</text>
 <circle cx="706" cy="852" r="4" fill="#7c3aed"/>
-<text x="680" y="832" font-size="10" font-weight="bold" fill="#7c3aed" text-anchor="middle">PWM → MUX 2</text>
+<text x="680" y="832" font-size="10" font-weight="bold" fill="#7c3aed" text-anchor="middle">PWM 2 · drive</text>
 <circle cx="160" cy="410" r="9" fill="none" stroke="#be123c" stroke-width="1.6" opacity="0.75"/>
 <circle cx="160" cy="566" r="9" fill="none" stroke="#be123c" stroke-width="1.6" opacity="0.75"/>
 <circle cx="186" cy="410" r="9" fill="none" stroke="#be123c" stroke-width="1.6" opacity="0.75"/>
@@ -1137,7 +1150,7 @@
 <text x="44" y="1303" font-size="12" fill="#166534"><tspan font-weight="bold">4.</tspan> Terminals and headers at the edges.</text>
 <text x="44" y="1321" font-size="12" fill="#166534"><tspan font-weight="bold">5.</tspan> Continuity and short checks, Teensy <tspan font-weight="bold">OUT</tspan>.</text>
 <text x="44" y="1339" font-size="12" fill="#166534"><tspan font-weight="bold">6.</tspan> Only now fit the Teensy.</text>
-<rect x="600" y="1085" width="556" height="280" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+<rect x="600" y="1085" width="556" height="496" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
 <text x="620" y="1115" font-size="14" font-weight="bold" fill="#92400e">Why the passives sit where they do</text>
 <text x="620" y="1141" font-size="12" fill="#b45309"><tspan font-weight="bold">Both 3.3 V buses come from the Teensy's own 3V3 pins</tspan>,</text>
 <text x="620" y="1159" font-size="12" fill="#b45309">  one on each row &#8212; so they are joined only when the</text>
@@ -1151,4 +1164,16 @@
 <text x="620" y="1303" font-size="12" fill="#b45309">  edge landing on a 10 k node is a <tspan font-weight="bold">count</tspan>.</text>
 <text x="620" y="1321" font-size="12" fill="#b45309"><tspan font-weight="bold">The 4.7 k sit on SDA and SCL</tspan>, parallel to the AS5600</text>
 <text x="620" y="1339" font-size="12" fill="#b45309">  breakout's own pair.</text>
+<text x="620" y="1357" font-size="12" fill="#b45309"><tspan font-weight="bold">Both PWM headers go to the MUX's MASTER inputs</tspan>, and</text>
+<text x="620" y="1375" font-size="12" fill="#b45309">  the MUX's two outputs drive the motor driver's S1 and</text>
+<text x="620" y="1393" font-size="12" fill="#b45309">  S2. Pin 2 is steering, pin 3 is drive.</text>
+<text x="620" y="1411" font-size="12" fill="#b45309"><tspan font-weight="bold">The servo headers' middle pad is left open.</tspan> That pad</text>
+<text x="620" y="1429" font-size="12" fill="#b45309">  is the connector's +5. This board runs on <tspan font-weight="bold">UBEC A</tspan></text>
+<text x="620" y="1447" font-size="12" fill="#b45309">  and the MUX and receiver on <tspan font-weight="bold">UBEC B</tspan> &#8212; joining them</text>
+<text x="620" y="1465" font-size="12" fill="#b45309">  undoes the authority split the two UBECs exist for.</text>
+<text x="620" y="1483" font-size="12" fill="#b45309">  Signal and ground land; +5 does not.</text>
+<text x="620" y="1501" font-size="12" fill="#b45309"><tspan font-weight="bold">R5 is a wire LINK or half a divider</tspan>, and which one is</text>
+<text x="620" y="1519" font-size="12" fill="#b45309">  decided by a meter: i-BUS idling at 3.3 V takes the</text>
+<text x="620" y="1537" font-size="12" fill="#b45309">  link, 5 V takes R5/R6. <tspan font-weight="bold">The Teensy 4.1 is not 5 V</tspan></text>
+<text x="620" y="1555" font-size="12" fill="#b45309">  <tspan font-weight="bold">tolerant</tspan>, and the wire goes on the pin last.</text>
 </svg>

@@ -114,6 +114,7 @@ STUBS = [
     (5,  17, 20, "1"),
     (10, 9,  11, "19"),
     (11, 9,  11, "18"),
+    (23, 8,  10, None),              # the i-BUS divider node, not a Teensy pad
 ]
 
 # designator, value, hole A, hole B, kind, label side, reverse side?
@@ -124,6 +125,11 @@ PARTS = [
     ("C2", "1 nF",  (5, 18),  (5, 21),  "cap", "R", False),
     ("R3", "10 k",  (4, 19),  (4, 24),  "res", "L", True),
     ("R4", "10 k",  (5, 19),  (5, 24),  "res", "R", True),
+    # i-BUS level. R5 is a WIRE LINK if the receiver idles at 3.3 V, and the
+    # upper leg of a divider with R6 if it idles at 5 V. 3.4 forbids finding
+    # that out after the wire is on the pin: the Teensy 4.1 is not 5 V tolerant.
+    ("R5", "link?",  (23, 4), (23, 8),  "res", "L", False),
+    ("R6", "to GND", (23, 9), (27, 9),  "res", "R", False),
 ]
 
 # Pluggable terminal blocks, 5.08 mm -> the two ways are TWO holes apart.
@@ -139,10 +145,15 @@ TERMINALS = [
 # Servo-style 3-pin headers. The middle pad is the connector's +5 and is left
 # UNCONNECTED here: the receiver and the MUX are powered from UBEC B, not from
 # this board. Signal and ground are what land.
+# 3-pin male pin header, 2.54 mm, cut from the 1x40 strip on order-log row 122
+# - the receiver and the MUX both terminate in FEMALE servo sockets.
+# Order is SIG - +5 - GND, and the middle pad is deliberately UNCONNECTED:
+# this board is on UBEC A and the MUX and receiver are on UBEC B, and joining
+# them would undo the authority split that is the whole reason for two UBECs.
 HEADERS = [
-    ("IBUS", 23, 2,  "#be123c", "i-BUS in"),
-    ("PWM1", 17, 28, "#7c3aed", "PWM \u2192 MUX 1"),
-    ("PWM2", 22, 28, "#7c3aed", "PWM \u2192 MUX 2"),
+    ("IBUS", 23, 2,  "#be123c", "i-BUS in \u2190 receiver"),
+    ("PWM1", 17, 28, "#7c3aed", "PWM 1 \u00b7 steer"),
+    ("PWM2", 22, 28, "#7c3aed", "PWM 2 \u00b7 drive"),
 ]
 
 # Insulated hookup wire. (from, to, colour, reverse side)
@@ -162,7 +173,8 @@ JUMPERS = [
     ((7, 28), (5, 20),           "#1d4ed8", True),     # drive B -> the pin 1 stub
     ((12, 26), (12, 24),         "#dc2626", False),    # drive sensor 3.3 V
     ((12, 28), (12, 21),         "#334155", True),     # its GND, behind the 3.3 V bus
-    ((23, 2), (14, 11),          "#be123c", True),     # i-BUS signal -> pin 15
+    ((23, 2), (23, 4),           "#be123c", False),    # i-BUS signal into R5
+    ((23, 10), (14, 11),         "#be123c", True),     # and on to pin 15
     ((25, 2), (27, 2),           "#334155", False),    # i-BUS ground -> the spine
     ((17, 28), (6, 17),          "#7c3aed", True),     # PWM 1 -> pin 2
     ((19, 28), (19, 21),         "#334155", False),    # its ground
@@ -234,6 +246,8 @@ def check():
     # Every stub must start on the pad of the pin it is named for, or it is
     # wire soldered to nothing.
     for c, r0, r1, who in STUBS:
+        if who is None:
+            continue                 # a plain node, not a pin's pad
         row = T_TOP if r1 == T_TOP else T_BOT
         assert (c, row) == pin(who, row), \
             f"stub {who} starts at col {c}, but pin {who} is at {pin(who, row)}"
@@ -241,10 +255,23 @@ def check():
     # A part is on the reverse side exactly when it crosses a bus, and never
     # otherwise - a dashed part that did not need to be is a part nobody can
     # reach with an iron once the board is in the box.
-    bus_rows = {r for _, r, *_ in BUSES}
+    def crosses_copper(a, b):
+        """Does the straight line a-b pass THROUGH a bus or a spine?
+
+        Row alone is not enough: a part in a column the bus never reaches does
+        not cross it, and calling that a crossing sends a part to the reverse
+        side for no reason - where nobody can reach it with an iron.
+        """
+        if a[0] == b[0]:
+            lo, hi = sorted((a[1], b[1]))
+            return any(lo < row < hi and c0 <= a[0] <= c1
+                       for _, row, (c0, c1), *_ in BUSES)
+        lo, hi = sorted((a[0], b[0]))
+        return any(lo < c < hi and r0 <= a[1] <= r1
+                   for c, r0, r1, *_ in SPINES)
+
     for d, _, a, b, _, _, rev in PARTS:
-        lo, hi = sorted((a[1], b[1]))
-        crosses = any(lo < r < hi for r in bus_rows)
+        crosses = crosses_copper(a, b)
         assert crosses == rev, (
             f"{d} runs {a}->{b}: crosses a bus = {crosses}, "
             f"but is drawn on the {'reverse' if rev else 'front'} side")
@@ -460,10 +487,17 @@ for d, c, r, up, lo, col in TERMINALS:
     e(f'<text x="{x+13}" y="{y-20}" font-size="10.5" font-weight="bold" '
       f'fill="{col}" text-anchor="middle">{d}</text>')
 
-# ---- headers: pads and labels only
+# ---- headers: pads and labels only. The MIDDLE pad is the servo connector's
+# +5 and is deliberately left open - see the panel.
 for d, c, r, col, label in HEADERS:
-    for h in header_holes(c, r):
-        e(f'<circle cx="{hx(h[0])}" cy="{hy(h[1])}" r="4" fill="{col}"/>')
+    for i, h in enumerate(header_holes(c, r)):
+        if i == 1:
+            e(f'<circle cx="{hx(h[0])}" cy="{hy(h[1])}" r="4.5" fill="#ffffff" '
+              f'stroke="{col}" stroke-width="1.8"/>')
+            e(f'<text x="{hx(h[0])}" y="{hy(h[1])+19}" font-size="8" '
+              f'font-weight="bold" fill="{col}" text-anchor="middle">n/c</text>')
+        else:
+            e(f'<circle cx="{hx(h[0])}" cy="{hy(h[1])}" r="4" fill="{col}"/>')
     e(f'<text x="{hx(c+1)}" y="{hy(r)-20}" font-size="10" font-weight="bold" '
       f'fill="{col}" text-anchor="middle">{label}</text>')
 
@@ -530,6 +564,18 @@ panel(600, y + 16, 556, 0, "#fffbeb", "#f59e0b",
     "  edge landing on a 10 k node is a **count**.",
     "**The 4.7 k sit on SDA and SCL**, parallel to the AS5600",
     "  breakout's own pair.",
+    "**Both PWM headers go to the MUX's MASTER inputs**, and",
+    "  the MUX's two outputs drive the motor driver's S1 and",
+    "  S2. Pin 2 is steering, pin 3 is drive.",
+    "**The servo headers' middle pad is left open.** That pad",
+    "  is the connector's +5. This board runs on **UBEC A**",
+    "  and the MUX and receiver on **UBEC B** &#8212; joining them",
+    "  undoes the authority split the two UBECs exist for.",
+    "  Signal and ground land; +5 does not.",
+    "**R5 is a wire LINK or half a divider**, and which one is",
+    "  decided by a meter: i-BUS idling at 3.3 V takes the",
+    "  link, 5 V takes R5/R6. **The Teensy 4.1 is not 5 V**",
+    "  **tolerant**, and the wire goes on the pin last.",
 ], "#b45309", fs=12, ls=18)
 
 H = int(y2 + 30)

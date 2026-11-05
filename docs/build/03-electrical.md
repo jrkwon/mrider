@@ -763,8 +763,9 @@ assumed pin order printed along both rows; a 3.3 V bus above it fed from one 3V3
 bare-wire stubs soldered to the pads of pins 0, 1, 18 and 19 so each can carry more than one
 connection; two 4.7 k pull-ups up to the upper 3.3 V bus from the I2C stubs; two 1 nF down to GND
 and two 10 k up to the lower 3.3 V bus from the drive stubs, the 10 k on the reverse side because
-each crosses the GND bus; six screw terminals along the top and bottom edges and three servo
-headers; and panels on the pin order, the build order and why each passive sits where it
+each crosses the GND bus; a level-shift position R5 and R6 in the i-BUS line; six screw terminals
+along the top and bottom edges and three servo headers whose middle +5 pad is drawn hollow and
+marked n/c; and panels on the pin order, the build order and why each passive sits where it
 does](../images/signal-board-perfboard-layout.svg)
 
 **Generated** — [`scripts/gen_signal_board_figure.py`](https://github.com/jrkwon/mrider/blob/main/scripts/gen_signal_board_figure.py).
@@ -787,6 +788,39 @@ does](../images/signal-board-perfboard-layout.svg)
 > board is 양면 so that it can. *The script asserts a part is on the reverse side **exactly** when
 > it crosses a bus — a dashed part that did not need to be is a part nobody can reach with an iron
 > once the board is in the box.*
+
+> [!NOTE]
+> **What the three servo headers are, and why their middle pad is empty**
+>
+> Each is a **3-pin male pin header, 2.54 mm**, cut from the `1×40` strip on
+> [row 122](../order-log.md#L122). *Male, because the receiver and the MUX both terminate in
+> female servo sockets.* The order along a servo connector is **signal · +5 · ground**.
+>
+> **The middle pad is deliberately unconnected, and the reason is the whole point of having two
+> UBECs.** This board runs on **UBEC A**; the receiver, the MUX and the driver's signal logic run
+> on **UBEC B**. *Tying the header's +5 to this board would join the two rails and undo the
+> authority split* — the one that lets a UBEC A failure leave the receiver, the MUX and the driver
+> alive. **Signal and ground land here; +5 does not.**
+>
+> **The two PWM headers go to the MUX's MASTER inputs** — pin 2 steering, pin 3 drive — and the
+> **MUX's** two outputs drive the motor driver's `S1` and `S2`. *The Teensy never reaches the
+> driver directly; that is what makes the RC override a hardware path.*
+
+> [!CAUTION]
+> **R5 and R6 are an i-BUS level-shift position, and which one you fit is a measurement**
+>
+> **The i-BUS signal comes from a receiver on 5 V, and the Teensy 4.1 is not 5 V tolerant.**
+> [§3.4](#34-wire-the-e-stop-and-mux-first) already says to meter the idle level before it touches
+> a serial pin — but no figure had anywhere to *put* the answer, so the wire went straight to
+> pin 15.
+>
+> | Metered idle | Fit |
+> |---|---|
+> | **3.3 V** | **R5 is a wire link**, R6 omitted |
+> | **5 V** | **R5 / R6 as a divider** to the measured ratio |
+>
+> *Two holes reserved now cost nothing. Finding out after the header is soldered and the wire is
+> on the pin costs a Teensy — ₩74,250, and the board is in the box.*
 
 > [!NOTE]
 > **Three of those connectors are on the board and not on the bench, and that is on purpose**
