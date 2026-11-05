@@ -55,6 +55,9 @@
     <path d="M548,190 L548,220 L596,220" marker-end="url(#kr)"/>
   </g>
 
+  <circle cx="548" cy="190" r="5.5" fill="#b91c1c"/>
+  <text x="548" y="248" font-size="10.5" font-weight="bold" fill="#b91c1c" text-anchor="middle">TEE</text>
+
   <rect x="602" y="136" width="246" height="48" rx="5" fill="#ffffff" stroke="#64748b" stroke-width="2"/>
   <text x="725" y="156" font-size="12.5" font-weight="bold" fill="#334155" text-anchor="middle">Stock ECU — supply</text>
   <text x="725" y="174" font-size="10.5" fill="#64748b" text-anchor="middle">through its own factory protector, untouched</text>
@@ -69,6 +72,8 @@
   <text x="892" y="194" font-size="11" fill="#9a3412">into B+ — while carrying the box below saying the</text>
   <text x="892" y="210" font-size="11" fill="#9a3412">MUX breaks both motor conductors. <tspan font-weight="bold">It disagreed</tspan></text>
   <text x="892" y="226" font-size="11" font-weight="bold" fill="#9a3412">with itself. The pole count settles it: four.</text>
+
+  <text x="44" y="258" font-size="12" fill="#7f1d1d"><tspan font-weight="bold">Both forks are fed together — a TEE, not a changeover.</tspan> One master cut: opening the contactor kills the driver <tspan font-weight="bold">and the stock ECU</tspan>. Choosing between them is row 2.</text>
 
   <!-- row 2: the AUTHORITY switch, in the motor leads -->
   <line x1="44" y1="266" x2="1216" y2="266" stroke="#fca5a5" stroke-width="1.5"/>
