@@ -844,11 +844,11 @@ on each edge that has no room for the bus that would have to reach it, the figur
 > (50 − 17 × 2.54, halved). *The 50 mm side is not the 80 mm side scaled, and rounding 19.7 down
 > was over by one on the only axis with no slack to give.*
 >
-> **The same two margins settle the mounting.** A **corner M3 is out** — the corner hole is 1.9 mm
-> from the side edge against an M3's 1.6 mm radius, **0.3 mm of FR-4.** Mid-edge on the long sides
-> there is 3.4 mm and it drills, but a screw there still costs a *usable* hole. **Decide it when
-> the enclosure is drawn**, and note the top-left corner is where the +12 V bus starts — the
-> printed enclosure gripping the board without screws is the cheaper answer.
+> **Mounting needs no decision at all** — *and an earlier revision of this page got that wrong.*
+> **The board ships with four plated corner holes**, in the blank margin outside the pad array
+> (photographed 2026-11-05). Nothing is drilled and no pad is spent. *The superseded note reasoned
+> from the margin that a corner M3 could not fit; it was deriving the geometry of a part that was
+> already on the bench, using the same arithmetic the row count had just caught out.*
 
 **Three rules for the board that goes in.**
 

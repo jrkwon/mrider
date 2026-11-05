@@ -77,11 +77,12 @@ The layout below already lives inside that ring and check() now enforces it
 rather than the full grid. A lead in the border ring is a lead with no room for
 the bus that has to reach it.
 
-MOUNTING: a corner M3 is out. The corner hole is 1.9 mm from the left or right
-edge and an M3 wants 1.6 mm of radius, leaving 0.3 mm of FR-4. Mid-edge on the
-long sides there is 3.4 mm, which drills - but a corner screw costs a USABLE
-hole, and the top-left corner is where the +12 V bus starts. The printed
-enclosure gripping the board without screws is the cheaper answer.
+MOUNTING: the board ships with four plated corner holes, in the blank margin
+outside the pad array (photographed 2026-11-05). Nothing is drilled and no pad
+is spent. An earlier revision of this file reasoned from the margin that a
+corner M3 could not fit - it was answering a question the manufacturer had
+already answered, and the arithmetic it used is the same one the row count
+caught out. Look at the part before deriving its geometry.
 """
 
 import io
@@ -263,6 +264,13 @@ e(f'<rect x="{hx(1+BORDER)-13}" y="{hy(1+BORDER)-13}" '
   f'width="{hx(COLS-BORDER)-hx(1+BORDER)+26}" '
   f'height="{hy(ROWS-BORDER)-hy(1+BORDER)+26}" rx="4" fill="none" '
   f'stroke="#a16207" stroke-width="1.2" stroke-dasharray="5 4" opacity="0.65"/>')
+
+# the four plated corner mounting holes, in the blank margin outside the pads
+for mx, my in ((bx0 + 15, by0 + 15), (bx1 - 15, by0 + 15),
+               (bx0 + 15, by1 - 15), (bx1 - 15, by1 - 15)):
+    e(f'<circle cx="{mx}" cy="{my}" r="7.5" fill="#ffffff" '
+      f'stroke="#a16207" stroke-width="2"/>')
+    e(f'<circle cx="{mx}" cy="{my}" r="4" fill="#fdf6e3"/>')
 
 # column / row rulers
 e('<g font-size="9.5" fill="#92400e" text-anchor="middle">')
@@ -466,9 +474,9 @@ panel(600, y + 16, 556, SIDE_H, "#f5f3ff", "#7c3aed",
     "  the eye.",
     "**No row to spare.** Rows 2&#8211;17 are the whole usable",
     "  height: the GND bus is on the LAST usable row.",
-    "**Mounting:** a corner M3 is out &#8212; the corner hole is",
-    "  **1.9 mm** from the side edge against an M3&#8217;s 1.6 mm",
-    "  radius. Mid-edge on the long sides there is 3.4 mm.",
+    "**Mounting:** four **plated corner holes** come with the",
+    "  board, in the margin outside the pads. Nothing to",
+    "  drill and no pad spent &#8212; shown at the corners here.",
 ], "#6d28d9", fs=12, ls=18)
 
 H = int(y2 + 30)

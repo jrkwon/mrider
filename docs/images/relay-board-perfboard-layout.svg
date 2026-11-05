@@ -563,6 +563,14 @@
 <circle cx="880" cy="546" r="3.1" fill="#ebe3d2"/>
 <circle cx="880" cy="572" r="3.1" fill="#ebe3d2"/>
 <rect x="113" y="143" width="754" height="416" rx="4" fill="none" stroke="#a16207" stroke-width="1.2" stroke-dasharray="5 4" opacity="0.65"/>
+<circle cx="89" cy="119" r="7.5" fill="#ffffff" stroke="#a16207" stroke-width="2"/>
+<circle cx="89" cy="119" r="4" fill="#fdf6e3"/>
+<circle cx="891" cy="119" r="7.5" fill="#ffffff" stroke="#a16207" stroke-width="2"/>
+<circle cx="891" cy="119" r="4" fill="#fdf6e3"/>
+<circle cx="89" cy="583" r="7.5" fill="#ffffff" stroke="#a16207" stroke-width="2"/>
+<circle cx="89" cy="583" r="4" fill="#fdf6e3"/>
+<circle cx="891" cy="583" r="7.5" fill="#ffffff" stroke="#a16207" stroke-width="2"/>
+<circle cx="891" cy="583" r="4" fill="#fdf6e3"/>
 <g font-size="9.5" fill="#92400e" text-anchor="middle">
 <text x="100" y="97">1</text>
 <text x="152" y="97">3</text>
@@ -771,7 +779,7 @@
 <text x="634" y="1369" font-size="12" fill="#6d28d9">the eye.</text>
 <text x="620" y="1387" font-size="12" fill="#6d28d9"><tspan font-weight="bold">No row to spare.</tspan> Rows 2&#8211;17 are the whole usable</text>
 <text x="634" y="1405" font-size="12" fill="#6d28d9">height: the GND bus is on the LAST usable row.</text>
-<text x="620" y="1423" font-size="12" fill="#6d28d9"><tspan font-weight="bold">Mounting:</tspan> a corner M3 is out &#8212; the corner hole is</text>
-<text x="634" y="1441" font-size="12" fill="#6d28d9"><tspan font-weight="bold">1.9 mm</tspan> from the side edge against an M3&#8217;s 1.6 mm</text>
-<text x="634" y="1459" font-size="12" fill="#6d28d9">radius. Mid-edge on the long sides there is 3.4 mm.</text>
+<text x="620" y="1423" font-size="12" fill="#6d28d9"><tspan font-weight="bold">Mounting:</tspan> four <tspan font-weight="bold">plated corner holes</tspan> come with the</text>
+<text x="634" y="1441" font-size="12" fill="#6d28d9">board, in the margin outside the pads. Nothing to</text>
+<text x="634" y="1459" font-size="12" fill="#6d28d9">drill and no pad spent &#8212; shown at the corners here.</text>
 </svg>
