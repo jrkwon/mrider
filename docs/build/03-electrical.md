@@ -675,7 +675,7 @@ code can be blamed for it.
 
 #### 3.5.4 Transferring to perfboard — three boards become one
 
-![Mapping from the three bench breadboards to what is actually built: only the Teensy board becomes a perfboard, the two sensor boards disappear because the sensors live on the ends of cables, and a relay-driver board that was never breadboarded appears; plus the signal perfboard layout, the build order, and the cautions](../images/perfboard-transfer.svg)
+![Mapping from the three bench breadboards to what is actually built: only the Teensy board becomes a perfboard, the two sensor boards disappear because the sensors live on the ends of cables, and a relay-driver board that was never breadboarded appears; plus the signal perfboard layout with each passive labelled by the signal it serves — 10 k and 1 nF on drive A and B, 4.7 k on SDA and SCL — the build order, and the cautions](../images/perfboard-transfer.svg)
 
 > [!IMPORTANT]
 > **The three bench boards do not become three perfboards. Two of them disappear.**
@@ -706,6 +706,20 @@ code can be blamed for it.
 
 **Point-to-point with insulated wire, soldered both ends.** Long solder-bridge runs between
 adjacent pads crack on a vehicle that vibrates.
+
+> [!NOTE]
+> **Six passives, and the figure names the SIGNAL rather than the pin**
+>
+> | | | |
+> |---|---|---|
+> | **2 × 10 kΩ** | pull-up to 3.3 V on **drive A and B** | the `DRV5013` output is open-drain; without them the quadrature decoder sees a line that never rises |
+> | **2 × 1 nF** | **those same two lines**, down to GND | a motor-edge spike on a 10 kΩ node is a count |
+> | **2 × 4.7 kΩ** | pull-up to 3.3 V on **SDA and SCL** | parallel to the AS5600 breakout's own |
+>
+> **The pin numbers are deliberately absent, and must stay absent until they are frozen.** *On a
+> breadboard you move a wire; on perfboard you desolder* — so the assignment is settled at the
+> bench and written into [`04-firmware.md`](04-firmware.md) **before anything is soldered.** A
+> figure that guessed a number now would be the thing somebody soldered to.
 
 > [!CAUTION]
 > **The 3.3 V bus is dead until the Teensy is plugged in — and you should still test the board

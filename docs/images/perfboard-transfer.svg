@@ -99,14 +99,15 @@
     <path d="M216,506 L216,492 M210,492 L222,492 M210,486 L222,486 M216,486 L216,746"/>
     <path d="M236,506 L236,492 M230,492 L242,492 M230,486 L242,486 M236,486 L236,746"/>
   </g>
-  <text x="256" y="480" font-size="11" font-weight="bold" fill="#b45309">10 k ×2</text>
-  <text x="256" y="496" font-size="11" font-weight="bold" fill="#1d4ed8">1 nF ×2 — at the pin</text>
+  <text x="256" y="480" font-size="11" font-weight="bold" fill="#b45309">10 k ×2 — drive A and B</text>
+  <text x="256" y="496" font-size="11" font-weight="bold" fill="#1d4ed8">1 nF ×2 — same two lines</text>
 
   <g stroke="#b45309" stroke-width="2.4" fill="none">
     <path d="M316,664 L316,684 L310,688 L322,694 L310,700 L322,706 L316,710 L316,726 L316,446"/>
     <path d="M336,664 L336,684 L330,688 L342,694 L330,700 L342,706 L336,710 L336,726 L336,446"/>
   </g>
-  <text x="352" y="700" font-size="11" font-weight="bold" fill="#b45309">4.7 k ×2 → 3.3 V bus</text>
+  <text x="352" y="694" font-size="11" font-weight="bold" fill="#b45309">4.7 k ×2 —</text>
+  <text x="352" y="710" font-size="11" font-weight="bold" fill="#b45309">SDA and SCL</text>
 
   <!-- terminals -->
   <g fill="#bbf7d0" stroke="#15803d" stroke-width="2">
@@ -148,7 +149,7 @@
   <rect x="24" y="826" width="1132" height="172" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
   <text x="44" y="854" font-size="14.5" font-weight="bold" fill="#14532d">Four things the breadboard could not teach you</text>
   <text x="44" y="882" font-size="12.5" fill="#166534"><tspan font-weight="bold">Pin assignment freezes here.</tspan> On a breadboard you move a wire; on perfboard you desolder. <tspan font-weight="bold">Finalise the pins at the bench and write</tspan></text>
-  <text x="58" y="900" font-size="12.5" fill="#166534"><tspan font-weight="bold">them into 04-firmware before you solder anything.</tspan></text>
+  <text x="58" y="900" font-size="12.5" fill="#166534"><tspan font-weight="bold">them into 04-firmware before you solder anything.</tspan> That is why this drawing names signals and not pin numbers: the numbers do not exist yet.</text>
   <text x="44" y="924" font-size="12.5" fill="#166534"><tspan font-weight="bold">Strain relief.</tspan> Cable movement must pull on a tie or a bracket, never on a terminal. This is what kills hand-built boards — not the</text>
   <text x="58" y="942" font-size="12.5" fill="#166534">soldering, the five hundred times a loom gets tugged.</text>
   <text x="44" y="966" font-size="12.5" fill="#166534"><tspan font-weight="bold">One ground wire off this board</tspan>, to the star at the motor driver. A second path is a loop, and a loop is FMEA row 5.</text>
