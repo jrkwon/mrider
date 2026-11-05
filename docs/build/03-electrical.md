@@ -403,8 +403,30 @@ there and from the board's own manual, not from another board's table.
 
 | Driver input | Normal source | Override source | Motor output |
 |---|---|---|---|
-| S1 | Teensy PWM (via MUX) | RC receiver (via MUX) | M1 — steering gearmotor |
-| S2 | Teensy PWM (via MUX) | RC receiver (via MUX) | M2 — drive motors, paralleled |
+| `RC1` | Teensy PWM (via MUX) | RC receiver (via MUX) | motor **Left** — steering gearmotor |
+| `RC2` | Teensy PWM (via MUX) | RC receiver (via MUX) | motor **Right** — drive motors, paralleled |
+
+> [!IMPORTANT]
+> **R/C mode needs ONE wire per channel. PWM mode needs two, and that is a different mode**
+>
+> *This comes up from the vendor's Arduino tutorial, which is written for PWM mode and shows
+> extra direction GPIOs.* It is correct — **for that mode**, which is not the one this build uses.
+>
+> | `SW1:SW2` | Mode | Per channel |
+> |---|---|---|
+> | `00` | **R/C — what this build uses** | **one servo pulse on `RC1` / `RC2`.** 1.5 ms is stop, shorter is one way, longer is the other. **Direction and magnitude are both in the pulse width** |
+> | `10` | PWM | **two pins:** `AN1`/`AN2` carry the PWM magnitude and `IN1`/`IN2` carry a **digital direction** — four pins for two channels |
+> | `01` | Analog | `AN1`/`AN2`, a voltage |
+> | `11` | Serial | `IN1` |
+>
+> **`SW3:SW4 = 11` (independent both) is the manual's own recommendation for microcontroller
+> control**, and it is what the [Order Log](../order-log.md#L122) records. *Terminals are labelled
+> `RC1`/`RC2` on the board — `S1`/`S2` is Sabertooth naming and this page used it until
+> 2026-11-05.*
+>
+> **The MUX is why R/C mode is not a convenience.** A hardware signal multiplexer switches *servo
+> pulses*; it cannot select between a direction GPIO and a receiver. **PWM mode would cost the
+> override path**, which is the thing D3 was adopted on.
 
 > [!NOTE]
 > **Why not packetized serial?**
@@ -416,8 +438,31 @@ there and from the board's own manual, not from another board's table.
 > and the MUX is the condition D3 was adopted on. See
 > [dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters).
 >
-> The consolation: in R/C mode the driver's **signal-loss timeout is inherent** — motors
-> stop when pulses stop, with nothing to configure.
+> The consolation: in R/C mode the driver has a signal-loss timeout. **It is not inherent and it
+> is not free — `SW6` turns it off**, which is why the [Order Log](../order-log.md#L122) calls that
+> switch the highest-consequence item in the whole substitution.
+>
+> | `SW6` | Behaviour, from the board's manual |
+> |---|---|
+> | **`0` — set it here** | centre point calibrated at power-up; **loss of signal for 100 ms stops the motor** |
+> | `1` | centre fixed at 1.5 ms, **timeout DISABLED — the motor keeps running at its last speed** |
+
+> [!CAUTION]
+> **`SW6 = 0` calibrates the centre at power-up, so what is on `RC1`/`RC2` at that moment becomes
+> "stop"**
+>
+> The board's manual says it twice over: *the RC transmitter must be ON before the driver is
+> powered up*, and with `SW6 = 0` *the centre point is calibrated upon power up.* **Whatever pulse
+> is present then is what the driver will afterwards believe means zero.**
+>
+> **So the power-up order is part of the design, not a habit:** receiver on, **Teensy already
+> emitting 1.5 ms on both lines**, MUX settled — *then* the driver. Power the driver first and a
+> neutral command can come out as a creep, or a real command as neutral, and **neither announces
+> itself until the wheels are on the ground.**
+>
+> *Write the order into the bring-up checklist before the first powered test, and give the Teensy
+> firmware a startup state that emits neutral before anything else
+> ([§4](04-firmware.md#the-pin-assignment-the-one-table-that-must-be-frozen-before-an-iron-is-hot)).*
 
 **Signal connections to make:**
 
@@ -803,7 +848,7 @@ does](../images/signal-board-perfboard-layout.svg)
 > alive. **Signal and ground land here; +5 does not.**
 >
 > **The two PWM headers go to the MUX's MASTER inputs** — pin 2 steering, pin 3 drive — and the
-> **MUX's** two outputs drive the motor driver's `S1` and `S2`. *The Teensy never reaches the
+> **MUX's** two outputs drive the motor driver's `RC1` and `RC2`. *The Teensy never reaches the
 > driver directly; that is what makes the RC override a hardware path.*
 
 > [!CAUTION]
@@ -835,7 +880,7 @@ does](../images/signal-board-perfboard-layout.svg)
 > **Say it out loud because the omission is invisible:** three connectors on this board are
 > soldered without ever having been rehearsed, and **the first time a PWM header is exercised, the
 > vehicle can move.** *Drive the gate and the PWM outputs from a bench 3.3 V and a servo tester
-> before the driver's `S1`/`S2` are plugged in, the same way the relay board's coils are listened
+> before the driver's `RC1`/`RC2` are plugged in, the same way the relay board's coils are listened
 > to before anything is bolted in.*
 
 > [!WARNING]
@@ -1050,7 +1095,7 @@ box, which is the same split as the enclosures and for the same reason.
 
 ### 3.5.1 Hardware RC signal MUX — wire this, it is not optional
 
-![FlySky FS-iA6B feeding the Teensy over i-BUS, the Pololu 2806 signal MUX slave inputs and its select channel; the Teensy feeding the master inputs; the MUX outputs driving S1 and S2; and below, the E-stop's two NC contacts breaking the contactor and relay MUX coils while not touching the signal MUX at all](../images/rc-mux-estop.svg)
+![FlySky FS-iA6B feeding the Teensy over i-BUS, the Pololu 2806 signal MUX slave inputs and its select channel; the Teensy feeding the master inputs; the MUX outputs driving RC1 and RC2; and below, the E-stop's two NC contacts breaking the contactor and relay MUX coils while not touching the signal MUX at all](../images/rc-mux-estop.svg)
 
 **The receiver does three separate jobs at once**, which is the thing most people miss:
 
@@ -1061,7 +1106,7 @@ box, which is the same split as the enclosures and for the same reason.
 | **CH5** servo out | signal MUX **SEL** | chooses between them, in hardware |
 
 The **Teensy's two PWM outputs go to the MASTER inputs**, and the **MUX's two outputs go to the
-driver's `S1` and `S2`**. The MUX and the receiver both sit on **UBEC B**, and **all three grounds —
+driver's `RC1` and `RC2`**. The MUX and the receiver both sit on **UBEC B**, and **all three grounds —
 receiver, MUX, driver — reference the same star**: a servo pulse is a voltage *against ground*, and
 two grounds means the driver reads a different number than the one that was sent.
 

@@ -282,7 +282,7 @@ Corresponds to [safety.md Stage 1](../design/safety.md#6-bring-up-protocol-stage
 **Use a bench supply with an adjustable current limit.** This is what turns a runaway position
 loop into a harmless buzz. Set it low — just enough to move the motor unloaded.
 
-Wire the Sabertooth: Teensy PWM → RC signal MUX → S1, and M1 → steering motor.
+Wire the motor driver: Teensy PWM → RC signal MUX → `RC1`, and motor Left → steering motor.
 
 ### Measure the actuation frame rate, and verify the signal-loss timeout
 

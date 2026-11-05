@@ -5,7 +5,7 @@
   12 volt tap; the UBECs feed the Teensy and the receiver and the signal multiplexer; the Teensy's
   own 3.3 volt pin feeds the AS5600 and the two Hall latches with their pull-ups. The Teensy and
   the receiver both feed the Pololu signal multiplexer, whose two outputs drive the motor driver's
-  S1 and S2. The E-stop's two normally-closed contacts break the traction contactor coil and the
+  RC1 and RC2. The E-stop's two normally-closed contacts break the traction contactor coil and the
   relay MUX coil separately. A panel at the foot lists seven corrections to the build page.</desc>
 
   <defs>

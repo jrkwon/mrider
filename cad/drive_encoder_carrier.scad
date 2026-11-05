@@ -143,9 +143,33 @@ HUB_D        = 62.82;
 // measurement was always the one to take and it took three tries to go and take
 // it. The grub-screw assert now depends on this number.
 //
+// 2026-11-05: the STEERING hub measured again, 62.2. That is 0.03 from the
+// 62.23 this file already carries for it, so the instrument repeats to 0.03 on
+// a hub it can reach cleanly - and the 0.12 "same part, two reads" above was
+// access, not the caliper.
+//
+//   steering   62.23  62.2      same part, 0.03 apart
+//   drive      62.7   62.82     same part, 0.12 apart
+//   part to part                0.62 mm   <- 62.2 against 62.82
+//
+// The gearboxes are the same assembly with the same six-lobe output, so this
+// 0.62 is variation WITHIN one part number, which is exactly what HUB_TOL is
+// for. And it is the number that moves: HUB_TOL 0.6 against HUB_D 62.82 covers
+// down to 62.22, and 62.2 is 0.02 BELOW it. The tolerance was short by the
+// width of the reading that found it.
+//
+// 0.6 -> 0.7, which covers 62.12.
+//
+// NOTHING REPRINTS, and that is not luck: BORE_D = HUB_D + BORE_CLEAR, so the
+// bore does not depend on HUB_TOL at all. What it costs is screw margin.
+// SPAN_MAX goes to WALL + (1.2 + 0.7)/2 = 7.95 against SET_SCREW_L 8.0, so the
+// grub-screw assert passes with 0.05 mm. The ceiling stays 0.8 - a smallest hub
+// of 62.02 - which leaves 0.08 mm of band and TWO UNMEASURED DRIVE HUBS to
+// spend it on. Measure them before this number is asked to stretch again.
+//
 // BORE_CLEAR must stay larger than this or the bore can come out SMALLER than
 // the hub, which is the one failure the screws cannot rescue.
-HUB_TOL      = 0.6;
+HUB_TOL      = 0.7;
 // Axial room on the protruding lobed boss, mm. The 2026-10-08 side view reads
 // about 10 mm with the wheel off; this keeps the older, smaller "gearbox face
 // to wheel" figure because the wheel is what finally closes on it, and the fit
@@ -195,12 +219,12 @@ SET_SCREW_L  = 8.0;         // M3 x this, no head — THE SCREWS SEAT ON LOBE CR
 // CRESTS, NOT VALLEYS — and that is what sets this length.
 //
 // HUB_D is measured ACROSS OPPOSITE LOBE CRESTS (see "fitting" below), so every
-// span figure derived from it is a distance to a CREST. SPAN_MAX = 7.90 is the
+// span figure derived from it is a distance to a CREST. SPAN_MAX = 7.95 is the
 // wall plus the largest radial gap AT A CREST. A valley sits deeper by the lobe
 // depth, which NOBODY HAS MEASURED, so an M3 x 8 cannot be assumed to reach one
 // and must not be asked to.
 //
-//   seated on a crest   -> screw stands 0.10-0.70 mm PROUD of the OD (= PROUD)
+//   seated on a crest   -> screw stands 0.05-0.75 mm PROUD of the OD (= PROUD)
 //   winding in past that without going tight -> it is heading down a flank or
 //   into a valley. BACK IT OUT, ROTATE THE RING, TRY AGAIN.
 //

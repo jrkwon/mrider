@@ -2286,7 +2286,7 @@ you need all of them before step 3:
 - Dupont / JST-XH pigtails for Teensy ↔ angle sensor (I²C: SDA/SCL/3V3/GND), Teensy ↔ steering
   encoder, Teensy ↔ drive encoder
 - Servo-style 3-wire leads: Teensy → signal MUX master inputs (×2), RC receiver → MUX slave
-  inputs (×2), MUX outputs → Sabertooth S1/S2 (×2)
+  inputs (×2), MUX outputs → driver RC1/RC2 (×2)
 - Servo-style 3-wire leads for the RC receiver → signal MUX → Sabertooth
 - USB cable, Teensy → laptop (this carries **both** command and feedback — use a good one; a
   marginal cable is now a vehicle-safety issue, see

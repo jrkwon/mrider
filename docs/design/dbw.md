@@ -435,7 +435,7 @@ Diagnostic/config traffic (PID gains, zeroing) uses ROS 2 **parameters and servi
 1. **micro-ROS node**: publisher, subscriber, session time synchronisation. Session sync replaces the MAVLink `TIMESYNC` offset estimation the superseded design needed — see [calibration.md](calibration.md) §6.
 2. **Absolute-sensor read**: AS5600 over I²C (or ADC + median/low-pass for the pot fallback), counts→radians per [calibration.md](calibration.md).
 3. **Position PID** at ≥ 200 Hz: error = setpoint − measured, output = signed effort.
-4. **Motor output**: servo-style PWM on two lines into the RC signal MUX, then to driver S1/S2, at the §12 frame rate.
+4. **Motor output**: servo-style PWM on two lines into the RC signal MUX, then to the driver RC1/RC2 inputs, at the §12 frame rate.
 5. **Throttle shaping**: ramp limit, speed cap, direction interlock.
 6. **RC decode**: i-BUS on a hardware serial port — mode switch and closed-loop manual override.
 7. **Safety supervisor**: setpoint-staleness watchdog, mechanical-limit clamp (effort toward center only), stall detection, hardware watchdog timer resetting outputs to neutral.
@@ -623,7 +623,7 @@ The pinned, testable contract for the DBW interface.
 | E-stop traction cut | **≤ 200 ms**, works with laptop powered off | [safety.md](safety.md) |
 | Absolute sensor resolution | **12-bit** over one turn (AS5600 class) | §6 |
 | Drive encoder resolution | **verify on the encoder fitted** — do not inherit 52 | §8, finding F7 |
-| Motor driver mode | **independent R/C (PWM)**; both lines Teensy → signal MUX → S1/S2 | §4 |
+| Motor driver mode | **independent R/C (PWM)**; both lines Teensy → signal MUX → RC1/RC2 | §4 |
 | Steering steady-state accuracy | **≤ 1.0°** error, RMS **≤ 1.5°** over ±20° sweep | acceptance gate; E4 trigger if unmet |
 | Steering step response | 10° step to 90% in **≤ 400 ms**, overshoot **≤ 15%** | acceptance gate |
 | Odometry drift | **≤ 2%** of distance over 20 m straight | acceptance gate |

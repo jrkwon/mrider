@@ -3,7 +3,7 @@
   <title>FlySky to Pololu signal MUX to driver — and where the E-stop actually goes</title>
   <desc>Top: the FS-iA6B receiver feeding the Teensy over i-BUS, feeding the Pololu 2806 signal
   multiplexer's slave inputs with two servo channels and its select input with a third, while the
-  Teensy feeds the master inputs; the multiplexer's two outputs drive the motor driver's S1 and S2.
+  Teensy feeds the master inputs; the multiplexer's two outputs drive the motor driver's RC1 and RC2.
   Bottom: the E-stop's four contacts, showing that its two normally-closed contacts break the
   contactor coil and the relay MUX coils and that it does not connect to the signal multiplexer at
   all; and the adopted E-stop sense wire, a divider tapped off the coil supply so that every
