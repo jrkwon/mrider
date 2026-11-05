@@ -502,11 +502,30 @@ to the driver's star, not to a convenient chassis screw.
 | Signal | Drive sensor — 3.3 V · GND · A · B | 2 × 2-pin |
 | Signal | Steering sensor — 3.3 V · GND · SDA · SCL | 2 × 2-pin |
 | Signal | 5 V power in | 1 × 2-pin |
+| Signal | **Gate + GND out to the relay board** | **1 × 2-pin** |
 | Relay | Gate + GND from the Teensy | 1 × 2-pin |
 | Relay | 12 V + GND in | 1 × 2-pin |
 | Relay | Four relay coils, a pair each | 4 × 2-pin |
-| | **Per vehicle** | **11 × 2-pin** |
-| | **Fleet** | **33 × 2-pin** |
+| | **Per vehicle** | **12 × 2-pin** |
+| | **Fleet** | **36 × 2-pin** |
+
+> **This table said 11 and 33 until 2026-11-05, and the figure below it said 12 and 36.**
+> The missing way is the **gate leaving the signal board.** The gate line crosses from the logic
+> box to the power box, so it needs a terminal at **both** ends — the old count had it arriving at
+> the relay board and never departing. *The recount was done when the perfboard transfer was worked
+> out, and it reached the figure and the Order Log and not the table beside them.*
+
+> **What is actually in the drawer: thirty 2-pin and ten 3-pin — pieces, not packs** (counted
+> 2026-11-05, closing a question open since the quote, because the listing sells 10개 단위).
+>
+> **36 ways needed, and only 30 of them can be 2-pin.** The last six take a 3-pin with one way
+> left unused. So the margin is four blocks — **and all four are 3-pin. There is no spare 2-pin at
+> all.**
+>
+> **That matters at layout, not at reorder.** Replacing a cracked 2-pin with a 3-pin costs
+> **5.08 mm of extra board width** in a footprint drawn for a 2-pin, and the relay board is a
+> 50 × 80 carrying six of them. Leave the terminals a lobe of slack on that edge. *A 2-pin is
+> ₩600 and will never justify a carriage of its own; the fix is the layout.*
 
 > **The 3-pin is the less useful part, which is the opposite of what the first estimate assumed.**
 > Both sensor cables carry **four** conductors, and four does not fit a 3-way — so they take two
@@ -774,7 +793,7 @@ box, which is the same split as the enclosures and for the same reason.
 > | | |
 > |---|---|
 > | **만능기판** | 거상인 **`[GA2] 80 × 80 양면` ₩4,300** (signal board — a Teensy 4.1 is 61 mm long, so 50 × 80 is tight once terminals are on) and **`[GA6] 50 × 80 양면` ₩3,500** (relay driver). **Four of each** — a perfboard is the part a student ruins |
-> | **Terminal blocks** | EM Tech **`2EDGK+2EDGRC-5.08`**, 2-pin ₩600 / 3-pin ₩900. **Pluggable, not plain screw** — the harness unplugs whole, so a sensor or a box comes out without a screwdriver inside the bay. **Count below: 11 × 2-pin per vehicle, and 3-pin is the *less* useful of the two** |
+> | **Terminal blocks** | EM Tech **`2EDGK+2EDGRC-5.08`**, 2-pin ₩600 / 3-pin ₩900. **Pluggable, not plain screw** — the harness unplugs whole, so a sensor or a box comes out without a screwdriver inside the bay. **Count below: 12 × 2-pin per vehicle, 36 for the fleet — and 3-pin is the *less* useful of the two.** Thirty 2-pin and ten 3-pin arrived; the four spare blocks are all 3-pin |
 > | **Headers** | CONNFLY **`핀헤더소켓 Single 1x40 Straight (2.54mm)` ₩530**. A Teensy 4.1 is **24 pins a side**, so one strip cuts a row with 16 to spare — **two per Teensy**. *Not the `적층형` at ₩1,000: its 9.1 mm legs are for stacking shields and only raise the board in the box* |
 > | **Bench** | `브레드보드` + `점퍼케이블 세트`. **Two half-size boards per bench station** — one at the Teensy, one at the sensor end. See the count below |
 > | **Splicing** | **`NT-DIY 열수축튜브 328세트` ₩3,900.** The [#8a](../order-log.md) splice joins **0.75 mm² (OD ~2.5 mm) to AWG 14 silicone (OD ~4 mm)**, so the tube must shrink from **≥ 6 mm to under 2.5 mm**; 8 sizes bracket that |
