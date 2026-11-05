@@ -209,6 +209,15 @@ def check():
     span = abs(r1_gate[0] - gate[0]) + abs(r1_gate[1] - gate[1])
     assert span <= 3, f"gate node spans {span} holes to reach the pulldown; keep it under 4"
 
+    # ...and it must be the GATE node, not the Teensy side of R2. Proximity is
+    # not connection: the schematic had the pulldown tapped before the 100 ohm
+    # for weeks and every "is it near the gate" check would have passed it.
+    # On that side a cracked R2 joint floats the gate with the pulldown still
+    # fitted and still reading 10k on a meter.
+    assert any({a, b} == {gate, r1_gate} for a, b, *_ in JUMPERS), (
+        f"the pulldown's gate lead at {r1_gate} must connect straight to the "
+        f"gate hole {gate} - on the Teensy side of R2 it protects the wrong node")
+
 
 check()
 

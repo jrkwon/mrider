@@ -771,7 +771,7 @@ at the motor driver; a second path is a loop and a loop is
 [FMEA row 5](../design/safety.md#7-fmea-lightweight). And **standoffs, not loose** — perfboard
 flexes, and a flexing board works a socketed Teensy loose.
 
-![Relay-driver board schematic: 12 V through the E-stop NC contact to four relay coils in parallel, each with a 1N4007; the low sides joined to an IRLZ44N drain; gate driven through 100 ohms from a Teensy pin and held down by 10 kilohms; and the sense divider tapped off the coil feed. Coils are labelled K1-K4 with the motor lead each one's contacts carry, and 85/86 marked; the contacts themselves are not on this board](../images/relay-driver-board.svg)
+![Relay-driver board schematic: 12 V through the E-stop NC contact to four relay coils in parallel, each with a 1N4007; the low sides joined to an IRLZ44N drain; gate driven from a Teensy pin through 100 ohms, with the 10 kilohm pulldown tapped on the MOSFET side of that resistor; and the sense divider tapped off the coil feed. Coils are labelled K1-K4 with the motor lead each one's contacts carry, and 85/86 marked; the contacts themselves are not on this board](../images/relay-driver-board.svg)
 
 > [!WARNING]
 > **The relay-driver board has no bench version, and that was deliberate**
@@ -783,6 +783,22 @@ flexes, and a flexing board works a socketed Teensy loose.
 >
 > *De-energise-to-safe is a property of that one resistor. Test it on its own, with nothing else
 > able to confuse the reading.*
+>
+> **Corrected 2026-11-05 — which SIDE of the 100 Ω the pulldown taps.** The schematic above drew
+> it on the **Teensy side**, where the placement figure below has always had it on the **MOSFET
+> side.** The schematic was wrong, and *it contradicted its own build order* — step 1 says
+> "pulldown, **gate** to GND, first, alone" and step 2 meters gate-to-GND **before the 100 Ω is
+> fitted at all**, neither of which describes a resistor hanging off the terminal. Schematic
+> moved to match.
+>
+> **It is not a cosmetic difference.** On the Teensy side the pulldown stops holding the gate the
+> moment anything **between it and the gate** opens — a cracked 100 Ω joint, a lifted pad — and it
+> does so *silently*, because the resistor is still fitted and still meters 10 kΩ. On the MOSFET
+> side nothing upstream can float the gate. *The cost is 1 % of gate drive to the R2/R1 divider:
+> 3.3 V × 10 k / 10.1 k = 3.27 V, against a worst-case `Vgs(th)` of 2.0 V.*
+>
+> **The generator now asserts the node rather than the neighbourhood.** The old check only asked
+> whether the pulldown was *near* the gate, and the wrong version would have passed it.
 
 #### Where it all sits on the board
 
