@@ -42,7 +42,7 @@
   <text x="270" y="152" font-size="11" font-weight="bold" fill="#b91c1c" text-anchor="middle">AT the pack</text>
 
   <rect x="362" y="156" width="150" height="68" rx="5" fill="#fef3c7" stroke="#b45309" stroke-width="2.4"/>
-  <text x="437" y="182" font-size="12.5" font-weight="bold" fill="#92400e" text-anchor="middle">E-stop contactor</text>
+  <text x="437" y="182" font-size="12.5" font-weight="bold" fill="#92400e" text-anchor="middle">E-stop contactor — KKA-B4 relay</text>
   <text x="437" y="200" font-size="11" fill="#78350f" text-anchor="middle">#8a · 40 A · 30→87 (NO)</text>
   <text x="437" y="215" font-size="10.5" font-weight="bold" fill="#b45309" text-anchor="middle">coil on the LOGIC rail</text>
 

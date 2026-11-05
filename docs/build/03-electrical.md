@@ -323,12 +323,31 @@ setpoint instead of toward it.
 
 Build the authority chain before anything can be commanded.
 
-**E-stop.** A latching mushroom-head contactor, hardwired in the **traction** power path —
-not a software command. It must work when the laptop and the Teensy have both hung. It does
-two things at once:
+**E-stop.** Hardwired in the **traction** power path — not a software command. It must work when
+the laptop and the Teensy have both hung. It does two things at once:
 
 1. cuts traction power, and
 2. drops the MUX coil, reverting authority to STOCK.
+
+> [!IMPORTANT]
+> **It is TWO parts, and which one carries the traction current is the whole point**
+>
+> | | Part | Carries |
+> |---|---|---|
+> | **the button** | [`#8b`](../order-log.md#L81) — 한국미스미 `MRE-RR2R`, Ø22 latching mushroom, **푸시 록 · 턴 리셋**, `2a2b`, IP65 | **coil current only** |
+> | **the contactor** | [`#8a`](../order-log.md#L80) — `KKA-B4` 방수 릴레이 40 A 4-pin, wired `30→87` | **the traction current** |
+>
+> *This page used to call it "a latching mushroom-head contactor", one object, in the traction
+> power path — which puts the button where the contactor goes. Corrected 2026-11-05.*
+>
+> **Nothing but coil current ever passes through the button.** Its two NC contacts break the
+> contactor coil and the relay MUX coils; the contactor's contact is what interrupts the pack.
+> *A signal-rated mushroom asked to switch traction **will weld shut**, and it fails in exactly
+> the moment it exists for.* **`2a2b` is why the button can do both jobs** — two independent NC
+> contacts, one per coil, which the caution below requires to be on **different contact blocks**.
+>
+> *"Contactor" here is a role, not a product category: the part is an automotive relay. It is
+> called that because it is the thing that makes and breaks the traction contact.*
 
 > [!IMPORTANT]
 > **The contactor coil runs off the LOGIC battery, not the traction pack**
