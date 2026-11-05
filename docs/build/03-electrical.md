@@ -1293,7 +1293,7 @@ two grounds means the driver reads a different number than the one that was sent
 >
 > | | what it switches | E-stop |
 > |---|---|---|
-> | **Relay MUX** | motor **power**, 70 A contacts, 12 V coils | **drops it** |
+> | **Relay MUX** | motor **power**, **80 A** contacts (70 A was the spec; 80 A arrived), 12 V coils | **drops it** |
 > | **Signal MUX** (Pololu) | **servo pulses**, logic rail, selected by an RC channel | **does not touch it** |
 >
 > The E-stop's two NC contacts break the **contactor coil** (traction power cut) and the **relay MUX

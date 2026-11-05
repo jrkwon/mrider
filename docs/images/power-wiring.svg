@@ -100,7 +100,7 @@
 
   <rect x="332" y="300" width="186" height="154" rx="5" fill="#e9d5ff" stroke="#7e22ce" stroke-width="2.4"/>
   <text x="425" y="328" font-size="12.5" font-weight="bold" fill="#581c87" text-anchor="middle">RELAY MUX</text>
-  <text x="425" y="348" font-size="11" fill="#6b21a8" text-anchor="middle">4 × SPDT 70 A</text>
+  <text x="425" y="348" font-size="11" fill="#6b21a8" text-anchor="middle">4 × SPDT, 80 A fitted</text>
   <text x="425" y="364" font-size="11" fill="#6b21a8" text-anchor="middle">2 poles per motor circuit</text>
   <text x="425" y="384" font-size="10.5" fill="#6b21a8" text-anchor="middle">K1·K2 steering · K3·K4 drive</text>
   <text x="425" y="404" font-size="10.5" fill="#6b21a8" text-anchor="middle">which lead is which: §3.4</text>
