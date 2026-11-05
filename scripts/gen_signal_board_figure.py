@@ -108,13 +108,15 @@ SPINES = [
 
 # A pad already holds a socket pin, so a pin with more than one thing hanging
 # off it gets a STUB: two or three holes of bare wire soldered to its pad.
-# (col, row_from, row_to, which pin)
+# (col, row_from, row_to, which pin, colour of the net it carries)
+# The colour matters: drawn in the GND slate these read as grounded, which is
+# the opposite of what a stub is.
 STUBS = [
-    (4,  17, 20, "0"),
-    (5,  17, 20, "1"),
-    (10, 9,  11, "19"),
-    (11, 9,  11, "18"),
-    (23, 8,  10, None),              # the i-BUS divider node, not a Teensy pad
+    (4,  17, 20, "0",  "#1d4ed8"),
+    (5,  17, 20, "1",  "#1d4ed8"),
+    (10, 9,  11, "19", "#0f766e"),
+    (11, 9,  11, "18", "#0f766e"),
+    (23, 8,  10, None, "#be123c"),   # the i-BUS divider node, not a Teensy pad
 ]
 
 # designator, value, hole A, hole B, kind, label side, reverse side?
@@ -128,7 +130,7 @@ PARTS = [
     # i-BUS level. R5 is a WIRE LINK if the receiver idles at 3.3 V, and the
     # upper leg of a divider with R6 if it idles at 5 V. 3.4 forbids finding
     # that out after the wire is on the pin: the Teensy 4.1 is not 5 V tolerant.
-    ("R5", "link?",  (23, 4), (23, 8),  "res", "L", False),
+    ("R5", "series", (23, 4), (23, 8),  "res", "L", False),
     ("R6", "to GND", (23, 9), (27, 9),  "res", "R", False),
 ]
 
@@ -221,7 +223,7 @@ def check():
     for c, r0, r1, _, _ in SPINES:
         for h in run(c, r0, c, r1):
             claim(h, "GND spine")
-    for c, r0, r1, who in STUBS:
+    for c, r0, r1, who, _ in STUBS:
         for h in run(c, r0, c, r1):
             claim(h, f"stub {who}")
     for d, _, a, b, *_ in PARTS:
@@ -245,7 +247,7 @@ def check():
 
     # Every stub must start on the pad of the pin it is named for, or it is
     # wire soldered to nothing.
-    for c, r0, r1, who in STUBS:
+    for c, r0, r1, who, _ in STUBS:
         if who is None:
             continue                 # a plain node, not a pin's pad
         row = T_TOP if r1 == T_TOP else T_BOT
@@ -293,11 +295,11 @@ def check():
     reached = set()
     for a, b, *_ in JUMPERS:
         reached.update((a, b))
-    for c, r0, r1, who in STUBS:
+    for c, r0, r1, who, _ in STUBS:
         reached.update(run(c, r0, c, r1))
     for sig, name, row, _ in USED:
         p = pin(name, row)
-        assert p in reached or any(p in run(c, r0, c, r1) for c, r0, r1, _ in STUBS), \
+        assert p in reached or any(p in run(c, r0, c, r1) for c, r0, r1, *_ in STUBS), \
             f"{sig} (pin {name}) has nothing landing on it"
 
     return {h: w for h, w in occupants.items()
@@ -434,9 +436,9 @@ for c, r0, r1, col, _ in SPINES:
       f'stroke="{col}" stroke-width="7" stroke-linecap="round" opacity="0.9"/>')
 
 # ---- per-pin stubs: short bare wire soldered onto a socket pad
-for c, r0, r1, who in STUBS:
+for c, r0, r1, who, scol in STUBS:
     e(f'<line x1="{hx(c)}" y1="{hy(r0)}" x2="{hx(c)}" y2="{hy(r1)}" '
-      f'stroke="#0f172a" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>')
+      f'stroke="{scol}" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>')
 
 # ---- front-side jumpers
 for a, b, col, rev in JUMPERS:
@@ -500,6 +502,20 @@ for d, c, r, col, label in HEADERS:
             e(f'<circle cx="{hx(h[0])}" cy="{hy(h[1])}" r="4" fill="{col}"/>')
     e(f'<text x="{hx(c+1)}" y="{hy(r)-20}" font-size="10" font-weight="bold" '
       f'fill="{col}" text-anchor="middle">{label}</text>')
+
+# ---- the one place on this board where a value is decided by a measurement
+# in the clear margin beside R5, where nothing else is drawn
+_cx, _cy = bx1 + 18, hy(4)
+e(f'<text x="{_cx}" y="{_cy}" font-size="11" font-weight="bold" fill="#be123c">'
+  f'i-BUS LEVEL &#8212; meter it first</text>')
+for _i, _ln in enumerate([
+        "3.3 V idle &#8594; R5 is a WIRE",
+        "LINK, and no R6 at all.",
+        "5 V idle &#8594; R5 / R6 as a",
+        "divider, to the ratio you",
+        "measured. &#167;3.4, and the",
+        "Teensy is not 5 V tolerant."]):
+    e(f'<text x="{_cx}" y="{_cy+18+_i*15}" font-size="10.5" fill="#be123c">{_ln}</text>')
 
 # ---- the pads that take a second wire
 for h in sorted(DOUBLED):

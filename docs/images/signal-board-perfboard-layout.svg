@@ -925,11 +925,11 @@
 <line x1="186" y1="748" x2="524" y2="748" stroke="#dc2626" stroke-width="7" stroke-linecap="round" opacity="0.9"/>
 <text x="538" y="752" font-size="11.5" font-weight="bold" fill="#dc2626">V33B</text>
 <line x1="784" y1="176" x2="784" y2="670" stroke="#334155" stroke-width="7" stroke-linecap="round" opacity="0.9"/>
-<line x1="186" y1="566" x2="186" y2="644" stroke="#0f172a" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>
-<line x1="212" y1="566" x2="212" y2="644" stroke="#0f172a" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>
-<line x1="342" y1="358" x2="342" y2="410" stroke="#0f172a" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>
-<line x1="368" y1="358" x2="368" y2="410" stroke="#0f172a" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>
-<line x1="680" y1="332" x2="680" y2="384" stroke="#0f172a" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>
+<line x1="186" y1="566" x2="186" y2="644" stroke="#1d4ed8" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>
+<line x1="212" y1="566" x2="212" y2="644" stroke="#1d4ed8" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>
+<line x1="342" y1="358" x2="342" y2="410" stroke="#0f766e" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>
+<line x1="368" y1="358" x2="368" y2="410" stroke="#0f766e" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>
+<line x1="680" y1="332" x2="680" y2="384" stroke="#be123c" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>
 <line x1="212" y1="410" x2="212" y2="280" stroke="#dc2626" stroke-width="2.6" opacity="0.95"/>
 <line x1="524" y1="566" x2="524" y2="748" stroke="#dc2626" stroke-width="2.6" opacity="0.95"/>
 <line x1="160" y1="566" x2="160" y2="670" stroke="#334155" stroke-width="2.6" opacity="0.95"/>
@@ -1065,7 +1065,7 @@
 <line x1="680" y1="228" x2="680" y2="332" stroke="#b91c1c" stroke-width="2.4"/>
 <rect x="673.0" y="265.0" width="14" height="30" rx="3" fill="#b91c1c" opacity="0.92"/>
 <text x="667.0" y="278.0" font-size="11" font-weight="bold" fill="#b91c1c" text-anchor="end">R5</text>
-<text x="667.0" y="292.0" font-size="10.5" fill="#b91c1c" text-anchor="end">link?</text>
+<text x="667.0" y="292.0" font-size="10.5" fill="#b91c1c" text-anchor="end">series</text>
 <line x1="680" y1="358" x2="784" y2="358" stroke="#b91c1c" stroke-width="2.4"/>
 <rect x="717.0" y="351.0" width="30" height="14" rx="3" fill="#b91c1c" opacity="0.92"/>
 <text x="745.0" y="356.0" font-size="11" font-weight="bold" fill="#b91c1c" text-anchor="start">R6</text>
@@ -1115,6 +1115,13 @@
 <text x="680" y="871" font-size="8" font-weight="bold" fill="#7c3aed" text-anchor="middle">n/c</text>
 <circle cx="706" cy="852" r="4" fill="#7c3aed"/>
 <text x="680" y="832" font-size="10" font-weight="bold" fill="#7c3aed" text-anchor="middle">PWM 2 · drive</text>
+<text x="880" y="228" font-size="11" font-weight="bold" fill="#be123c">i-BUS LEVEL &#8212; meter it first</text>
+<text x="880" y="246" font-size="10.5" fill="#be123c">3.3 V idle &#8594; R5 is a WIRE</text>
+<text x="880" y="261" font-size="10.5" fill="#be123c">LINK, and no R6 at all.</text>
+<text x="880" y="276" font-size="10.5" fill="#be123c">5 V idle &#8594; R5 / R6 as a</text>
+<text x="880" y="291" font-size="10.5" fill="#be123c">divider, to the ratio you</text>
+<text x="880" y="306" font-size="10.5" fill="#be123c">measured. &#167;3.4, and the</text>
+<text x="880" y="321" font-size="10.5" fill="#be123c">Teensy is not 5 V tolerant.</text>
 <circle cx="160" cy="410" r="9" fill="none" stroke="#be123c" stroke-width="1.6" opacity="0.75"/>
 <circle cx="160" cy="566" r="9" fill="none" stroke="#be123c" stroke-width="1.6" opacity="0.75"/>
 <circle cx="186" cy="410" r="9" fill="none" stroke="#be123c" stroke-width="1.6" opacity="0.75"/>
