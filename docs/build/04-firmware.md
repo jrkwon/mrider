@@ -91,9 +91,9 @@ laptop  /mitt/dbw/command  (DbwCommand: steering_angle rad, speed m/s)
               │  ── throttle ramp / cap / direction interlock
               │  ── RC serial decode, safety supervisor, watchdog
               ▼
-      Teensy PWM ──▶ RC signal MUX ──▶ Sabertooth 2x32 (R/C mode)
-              ├── M1 → steering gearmotor
-              └── M2 → paralleled rear traction motors
+      Teensy PWM ──▶ RC signal MUX ──▶ motor driver, R/C mode (RC1, RC2)
+              ├── motor Left  → steering gearmotor
+              └── motor Right → paralleled rear traction motors
 
       Teensy  ──▶ /mitt/dbw/status  (measured angle, setpoint, speed, ticks, mode, faults)
 ```
@@ -286,8 +286,11 @@ Wire the motor driver: Teensy PWM → RC signal MUX → `RC1`, and motor Left �
 
 ### Measure the actuation frame rate, and verify the signal-loss timeout
 
-This is a required check, not an assumption. In the previous R/C-PWM design the Sabertooth's
-signal-loss timeout is **inherent in R/C mode** — but the frame rate you actually achieve is not.
+This is a required check, not an assumption. **The driver's signal-loss timeout is a DIP switch,
+not a property of R/C mode** — `SW6 = 0` stops the motor after 100 ms of lost pulses and `SW6 = 1`
+disables it entirely ([§3.4](03-electrical.md#34-wire-the-e-stop-and-mux-first)). *This page said
+"inherent" until 2026-11-05.* And the frame rate you actually achieve is a separate question
+again, which is what this check measures.
 
 ```bash
 # With the motor commanded to a steady effort, halt the Teensy (unplug USB / press reset)

@@ -428,6 +428,45 @@ there and from the board's own manual, not from another board's table.
 > pulses*; it cannot select between a direction GPIO and a receiver. **PWM mode would cost the
 > override path**, which is the thing D3 was adopted on.
 
+> [!CAUTION]
+> **"All eight switches off" is wrong in two places, and one of them mixes the motors together**
+>
+> | Switch | Set | Why |
+> |---|---|---|
+> | `SW1` `SW2` | **`0` `0`** | R/C input mode |
+> | `SW3` `SW4` | **`1` `1` — ON** | **independent both.** The manual's own words: *"Recommended this mode if controlled using Microcontroller"* |
+> | `SW5` | **`0`** | exponential OFF — response linear in the pulse width |
+> | `SW6` | **`0`** | centre calibrated at power-up; **100 ms signal-loss stop** |
+> | `SW7` `SW8` | **decide — read the pack label** | battery monitor. `00` LiPo · `01` NiMH · `10` SLA · `11` off |
+>
+> **`SW3:SW4 = 00` is MIXED, and on this vehicle that is not a degraded mode, it is a wrong one.**
+> The manual: *"the motor speed is controlled by channel `RC1` and direction is controlled by
+> channel `RC2`"* — tank mixing, for a transmitter's two sticks. **Here motor Left is the steering
+> gearmotor and motor Right is the traction pair**, so a throttle command would drive the steering
+> motor and a steering command would drive the wheels. *It is the one setting that silently
+> redefines what both outputs mean.*
+>
+> **`SW7:SW8 = 00` selects LiPo**, which nothing on this vehicle is — the logic pack is LiFePO₄ and
+> the traction pack is the chassis's own. **No document records the traction pack's chemistry**,
+> so this is a label to read before the switches are set: `10` if it is the usual sealed lead-acid,
+> `11` to turn the monitor off and leave low-voltage protection to the pack.
+>
+> *Four off, two on, two to decide. Not eight off.*
+
+> [!NOTE]
+> **"Servo pulse" is the signal format, not the motor — the motors are brushed DC throughout**
+>
+> A **servo pulse** is the RC convention: a pulse repeated about every 20 ms whose **HIGH time**
+> carries the value — **1.0 ms one way, 1.5 ms stop, 2.0 ms the other way.** It is named after
+> hobby servos because they use it, but RC speed controllers and this driver read the same format.
+> **Nothing in this vehicle is a servo.**
+>
+> **It is not the same thing as PWM speed control**, and the difference is which part of the
+> waveform means something: *a servo pulse carries its value in the **width** of one pulse, and the
+> duty ratio is incidental; PWM carries its value in the **duty ratio**.* That is exactly why one
+> wire can mean "full reverse" — **a value below centre is not a smaller duty, it is a shorter
+> pulse** — and why PWM mode needs a second pin to say which way.
+
 > [!NOTE]
 > **Why not packetized serial?**
 >
