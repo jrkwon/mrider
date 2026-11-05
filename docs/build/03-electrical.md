@@ -789,7 +789,7 @@ flexes, and a flexing board works a socketed Teensy loose.
 Because there is no bench version, **the first physical build of this board is also the final
 one** — so the placement is worth settling before the iron is hot rather than during.
 
-![Relay-driver perfboard placement on a 31 by 18 hole grid whose outer ring is unusable border, leaving 29 by 16: a +12 V bus along row 2, a DRAIN bus
+![Relay-driver perfboard placement on a 29 by 18 hole grid with four plated corner mounting holes, a one-hole margin kept all round leaving 27 by 16: a +12 V bus along row 2, a DRAIN bus
 along row 8 joining the four coil low sides, and a GND bus along row 17; four pluggable coil
 terminals K1 to K4 between the two upper buses with a 1N4007 beside each, band to +12 V; the
 IRLZ44N standing upright with gate, drain and source marked; the 10 k pulldown dropping from the
@@ -821,16 +821,17 @@ of the MOSFET source.** *Edit the script and re-run it; do not edit the SVG.*
 > hazard — but it is the habit that stays correct the day someone rebuilds the same circuit with
 > wire instead of a bus.
 
-**The grid is counted on both sides, and the arithmetic was over by one.** 80 / 2.54 = 31.5 and
-50 / 2.54 = 19.7 would give 31 × 19. **Counted 2026-11-05** ([row 122](../order-log.md#L122)): the
-80 mm side is **31**, as derived — but the 50 mm side is **18, not 19.** With a one-hole border
-on each edge that has no room for the bus that would have to reach it, the figure draws
-**31 × 18 holes and asserts every lead into the 29 × 16 usable ring.**
+**The grid is counted, and divide-by-pitch was over on both sides.** 80 / 2.54 = 31.5 and
+50 / 2.54 = 19.7 would give 31 × 19. **Counted end to end 2026-11-05**
+([row 122](../order-log.md#L122)): **29 × 18.** The figure draws that, and asserts every lead
+into **27 × 16** — a one-hole margin this layout keeps on purpose, so a bus never ends on the
+outermost pad.
 
 > [!WARNING]
-> **The row budget is exactly spent.** The layout runs **rows 2–17 — sixteen rows into sixteen** —
-> so the **GND bus sits on the last usable row.** Nothing goes below it, and any later edit that
-> wants a row has to take one back from the spacing above. *The columns are not tight: 28 of 29.*
+> **The board is exactly spent, both ways.** The layout runs **rows 2–17 and columns 2–28** —
+> sixteen into sixteen, twenty-seven into twenty-seven. **The GND bus sits on the last row of the
+> margin and the three buses end on its last column.** Nothing goes beyond, and any later edit
+> that wants a row or a column has to take one back from the spacing it already has.
 >
 > **This is also why a 3-pin terminal cannot stand in for a coil 2-pin here.** At 5.08 mm it spans
 > four holes instead of two, so a coil block at row 4 would reach **row 8 — the DRAIN bus**, into
@@ -838,11 +839,15 @@ on each edge that has no room for the bus that would have to reach it, the figur
 > a layout fact, and this is its shape on this board.*
 
 > [!NOTE]
-> **Two things the division could not have told you.** It is silent about the **working area**,
-> which is the number a layout needs; and it assumes one margin where the board has two —
-> **1.9 mm** across the width (80 − 30 × 2.54, halved) against **3.4 mm** across the height
-> (50 − 17 × 2.54, halved). *The 50 mm side is not the 80 mm side scaled, and rounding 19.7 down
-> was over by one on the only axis with no slack to give.*
+> **Dividing by the pitch assumes the pads run to the board edge. They do not.** The array sits
+> inside a blank margin, and that margin is the thing the arithmetic had no way to know —
+> **4.4 mm** across the width (80 − 28 × 2.54, halved) and **3.4 mm** across the height
+> (50 − 17 × 2.54, halved). *Two different margins, neither of them derivable from the other.*
+>
+> **Those margins are also why the corner holes fit where they do.** A 3.2 mm hole needs about
+> that much blank FR-4 — **a board whose pads really did reach to within 1.9 mm of the edge could
+> not have carried one.** The photograph and the hole count agree, which is exactly the check the
+> derived figure failed.
 >
 > **Mounting needs no decision at all** — *and an earlier revision of this page got that wrong.*
 > **The board ships with four plated corner holes**, in the blank margin outside the pad array

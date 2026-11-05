@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1180" height="1465" viewBox="0 0 1180 1465" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
 <rect width="1180" height="1465" fill="#ffffff"/>
 <text x="24" y="36" font-size="19" font-weight="bold" fill="#0f172a">Relay-driver board on perfboard &#8212; where everything sits</text>
-<text x="24" y="58" font-size="12.5" fill="#475569">[GA6] 50 &#215; 80 double-sided, 2.54 mm pitch: 31 &#215; 18 holes, of which the <tspan font-weight="bold">outer ring is border &#8212; 29 &#215; 16 usable</tspan> (both sides counted 2026-11-05).</text>
+<text x="24" y="58" font-size="12.5" fill="#475569">[GA6] 50 &#215; 80 double-sided, 2.54 mm pitch: 29 &#215; 18 holes counted end to end, <tspan font-weight="bold">27 &#215; 16 after the one-hole margin this layout keeps</tspan> (both sides counted 2026-11-05).</text>
 <text x="24" y="77" font-size="12.5" fill="#475569">One MOSFET, four coils, four flyback diodes, the gate pulldown, and the E-stop sense divider. The schematic is a separate figure; this one is only about placement.</text>
-<rect x="74" y="104" width="832" height="494" rx="7" fill="#fdf6e3" stroke="#a16207" stroke-width="2.5"/>
+<rect x="74" y="104" width="780" height="494" rx="7" fill="#fdf6e3" stroke="#a16207" stroke-width="2.5"/>
 <circle cx="100" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="100" cy="156" r="3.1" fill="#ebe3d2"/>
 <circle cx="100" cy="182" r="3.1" fill="#ebe3d2"/>
@@ -509,68 +509,32 @@
 <circle cx="802" cy="546" r="3.1" fill="#d6c9a8"/>
 <circle cx="802" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="828" cy="130" r="3.1" fill="#ebe3d2"/>
-<circle cx="828" cy="156" r="3.1" fill="#d6c9a8"/>
-<circle cx="828" cy="182" r="3.1" fill="#d6c9a8"/>
-<circle cx="828" cy="208" r="3.1" fill="#d6c9a8"/>
-<circle cx="828" cy="234" r="3.1" fill="#d6c9a8"/>
-<circle cx="828" cy="260" r="3.1" fill="#d6c9a8"/>
-<circle cx="828" cy="286" r="3.1" fill="#d6c9a8"/>
-<circle cx="828" cy="312" r="3.1" fill="#d6c9a8"/>
-<circle cx="828" cy="338" r="3.1" fill="#d6c9a8"/>
-<circle cx="828" cy="364" r="3.1" fill="#d6c9a8"/>
-<circle cx="828" cy="390" r="3.1" fill="#d6c9a8"/>
-<circle cx="828" cy="416" r="3.1" fill="#d6c9a8"/>
-<circle cx="828" cy="442" r="3.1" fill="#d6c9a8"/>
-<circle cx="828" cy="468" r="3.1" fill="#d6c9a8"/>
-<circle cx="828" cy="494" r="3.1" fill="#d6c9a8"/>
-<circle cx="828" cy="520" r="3.1" fill="#d6c9a8"/>
-<circle cx="828" cy="546" r="3.1" fill="#d6c9a8"/>
+<circle cx="828" cy="156" r="3.1" fill="#ebe3d2"/>
+<circle cx="828" cy="182" r="3.1" fill="#ebe3d2"/>
+<circle cx="828" cy="208" r="3.1" fill="#ebe3d2"/>
+<circle cx="828" cy="234" r="3.1" fill="#ebe3d2"/>
+<circle cx="828" cy="260" r="3.1" fill="#ebe3d2"/>
+<circle cx="828" cy="286" r="3.1" fill="#ebe3d2"/>
+<circle cx="828" cy="312" r="3.1" fill="#ebe3d2"/>
+<circle cx="828" cy="338" r="3.1" fill="#ebe3d2"/>
+<circle cx="828" cy="364" r="3.1" fill="#ebe3d2"/>
+<circle cx="828" cy="390" r="3.1" fill="#ebe3d2"/>
+<circle cx="828" cy="416" r="3.1" fill="#ebe3d2"/>
+<circle cx="828" cy="442" r="3.1" fill="#ebe3d2"/>
+<circle cx="828" cy="468" r="3.1" fill="#ebe3d2"/>
+<circle cx="828" cy="494" r="3.1" fill="#ebe3d2"/>
+<circle cx="828" cy="520" r="3.1" fill="#ebe3d2"/>
+<circle cx="828" cy="546" r="3.1" fill="#ebe3d2"/>
 <circle cx="828" cy="572" r="3.1" fill="#ebe3d2"/>
-<circle cx="854" cy="130" r="3.1" fill="#ebe3d2"/>
-<circle cx="854" cy="156" r="3.1" fill="#d6c9a8"/>
-<circle cx="854" cy="182" r="3.1" fill="#d6c9a8"/>
-<circle cx="854" cy="208" r="3.1" fill="#d6c9a8"/>
-<circle cx="854" cy="234" r="3.1" fill="#d6c9a8"/>
-<circle cx="854" cy="260" r="3.1" fill="#d6c9a8"/>
-<circle cx="854" cy="286" r="3.1" fill="#d6c9a8"/>
-<circle cx="854" cy="312" r="3.1" fill="#d6c9a8"/>
-<circle cx="854" cy="338" r="3.1" fill="#d6c9a8"/>
-<circle cx="854" cy="364" r="3.1" fill="#d6c9a8"/>
-<circle cx="854" cy="390" r="3.1" fill="#d6c9a8"/>
-<circle cx="854" cy="416" r="3.1" fill="#d6c9a8"/>
-<circle cx="854" cy="442" r="3.1" fill="#d6c9a8"/>
-<circle cx="854" cy="468" r="3.1" fill="#d6c9a8"/>
-<circle cx="854" cy="494" r="3.1" fill="#d6c9a8"/>
-<circle cx="854" cy="520" r="3.1" fill="#d6c9a8"/>
-<circle cx="854" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="854" cy="572" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="130" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="156" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="182" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="208" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="234" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="260" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="286" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="312" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="338" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="364" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="390" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="416" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="442" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="468" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="494" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="520" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="546" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="572" r="3.1" fill="#ebe3d2"/>
-<rect x="113" y="143" width="754" height="416" rx="4" fill="none" stroke="#a16207" stroke-width="1.2" stroke-dasharray="5 4" opacity="0.65"/>
+<rect x="113" y="143" width="702" height="416" rx="4" fill="none" stroke="#a16207" stroke-width="1.2" stroke-dasharray="5 4" opacity="0.65"/>
 <circle cx="89" cy="119" r="7.5" fill="#ffffff" stroke="#a16207" stroke-width="2"/>
 <circle cx="89" cy="119" r="4" fill="#fdf6e3"/>
-<circle cx="891" cy="119" r="7.5" fill="#ffffff" stroke="#a16207" stroke-width="2"/>
-<circle cx="891" cy="119" r="4" fill="#fdf6e3"/>
+<circle cx="839" cy="119" r="7.5" fill="#ffffff" stroke="#a16207" stroke-width="2"/>
+<circle cx="839" cy="119" r="4" fill="#fdf6e3"/>
 <circle cx="89" cy="583" r="7.5" fill="#ffffff" stroke="#a16207" stroke-width="2"/>
 <circle cx="89" cy="583" r="4" fill="#fdf6e3"/>
-<circle cx="891" cy="583" r="7.5" fill="#ffffff" stroke="#a16207" stroke-width="2"/>
-<circle cx="891" cy="583" r="4" fill="#fdf6e3"/>
+<circle cx="839" cy="583" r="7.5" fill="#ffffff" stroke="#a16207" stroke-width="2"/>
+<circle cx="839" cy="583" r="4" fill="#fdf6e3"/>
 <g font-size="9.5" fill="#92400e" text-anchor="middle">
 <text x="100" y="97">1</text>
 <text x="152" y="97">3</text>
@@ -587,7 +551,6 @@
 <text x="724" y="97">25</text>
 <text x="776" y="97">27</text>
 <text x="828" y="97">29</text>
-<text x="880" y="97">31</text>
 </g>
 <g font-size="9.5" fill="#92400e" text-anchor="end">
 <text x="67" y="133.5">1</text>
@@ -600,12 +563,12 @@
 <text x="67" y="497.5">15</text>
 <text x="67" y="549.5">17</text>
 </g>
-<line x1="126" y1="156" x2="828" y2="156" stroke="#dc2626" stroke-width="7" stroke-linecap="round" opacity="0.9"/>
-<text x="842" y="160" font-size="11.5" font-weight="bold" fill="#dc2626">V12</text>
-<line x1="256" y1="312" x2="828" y2="312" stroke="#b45309" stroke-width="7" stroke-linecap="round" opacity="0.9"/>
-<text x="842" y="316" font-size="11.5" font-weight="bold" fill="#b45309">DRN</text>
-<line x1="126" y1="546" x2="828" y2="546" stroke="#334155" stroke-width="7" stroke-linecap="round" opacity="0.9"/>
-<text x="842" y="550" font-size="11.5" font-weight="bold" fill="#334155">GND</text>
+<line x1="126" y1="156" x2="802" y2="156" stroke="#dc2626" stroke-width="7" stroke-linecap="round" opacity="0.9"/>
+<text x="816" y="160" font-size="11.5" font-weight="bold" fill="#dc2626">V12</text>
+<line x1="256" y1="312" x2="802" y2="312" stroke="#b45309" stroke-width="7" stroke-linecap="round" opacity="0.9"/>
+<text x="816" y="316" font-size="11.5" font-weight="bold" fill="#b45309">DRN</text>
+<line x1="126" y1="546" x2="802" y2="546" stroke="#334155" stroke-width="7" stroke-linecap="round" opacity="0.9"/>
+<text x="816" y="550" font-size="11.5" font-weight="bold" fill="#334155">GND</text>
 <line x1="178" y1="260" x2="178" y2="546" stroke="#334155" stroke-width="7" stroke-linecap="round" opacity="0.9"/>
 <g stroke-linecap="round">
 <line x1="126" y1="208" x2="126" y2="156" stroke="#dc2626" stroke-width="3.2"/>

@@ -43,39 +43,41 @@ what a reader cannot check:
     which is the whole point of the drawing
   * no panel text overlaps another panel
 
-THE GRID IS CONFIRMED - AND THE OUTER RING IS NOT WORKING AREA
---------------------------------------------------------------
-The board is 거상인 `[GA6] 50 x 80` double-sided, 2.54 mm pitch:
+THE GRID IS COUNTED, AND DIVIDE-BY-PITCH WAS OVER ON BOTH SIDES
+---------------------------------------------------------------
+The board is 거상인 `[GA6] 50 x 80` double-sided, 2.54 mm pitch. The arithmetic
+said:
 
-    80 / 2.54 = 31.5  ->  31 columns
-    50 / 2.54 = 19.7  ->  19 rows
+    80 / 2.54 = 31.5  ->  31 columns      WRONG, over by two
+    50 / 2.54 = 19.7  ->  19 rows         WRONG, over by one
 
-COUNTED 2026-11-05. The 80 mm side on the square `[GA2] 80 x 80` from the same
-order and the same series - 31, matching the arithmetic - and the 50 mm side on
-a GA6 itself: 18, NOT the 19 the arithmetic gave. A one-hole border on each
-edge is not working area:
+COUNTED 2026-11-05, end to end including the edge holes:
 
-    holes   31 x 18
-    usable  29 x 16      columns 2..30, rows 2..17
+    holes   29 x 18
+    usable  27 x 16      columns 2..28, rows 2..17
 
-Two things the division could not have told you. It was silent about the
-WORKING area, which is the number a layout needs. And it assumed one margin,
-where the board has two:
+Dividing by the pitch assumes the pads run to the board edge. They do not -
+the array sits inside a blank margin, and that margin is what the arithmetic
+had no way to know:
 
-    width   (80 - 30 x 2.54) / 2 = 1.9 mm    <- 31 holes, as derived
-    height  (50 - 17 x 2.54) / 2 = 3.4 mm    <- 18 holes, one FEWER
+    width   (80 - 28 x 2.54) / 2 = 4.4 mm
+    height  (50 - 17 x 2.54) / 2 = 3.4 mm
 
-So the 50 mm side is not the 80 mm side scaled, and rounding 19.7 down to 19
-was over by one on the only axis with no slack to give.
+Those margins are also why the four plated corner holes fit where they do: a
+3.2 mm hole needs about that much blank FR-4, and a board whose pads really did
+run to within 1.9 mm of the edge could not have carried one. The photograph and
+the hole count agree, which is the check that the earlier guess failed.
+
+The BORDER below is one hole on each edge. That ring is not a measured property
+of the board - it is margin this layout keeps on purpose, so that a bus never
+ends on the outermost pad with nothing beyond it to take a strain or a stray
+strand. check() enforces it rather than leaving it to the eye of the next
+editor.
 
 THE ROW BUDGET IS EXACTLY SPENT. The layout runs rows 2..17 - sixteen rows into
-sixteen usable - so the GND bus sits on the LAST usable row. Nothing may be
-added below it, and any future edit that needs a row has to take one back from
-the bus spacing above.
-
-The layout below already lives inside that ring and check() now enforces it
-rather than the full grid. A lead in the border ring is a lead with no room for
-the bus that has to reach it.
+sixteen - so the GND bus sits on the LAST usable row. Nothing may be added
+below it, and any future edit that needs a row has to take one back from the
+bus spacing above. Columns are no longer loose either: 27 of 27.
 
 MOUNTING: the board ships with four plated corner holes, in the blank margin
 outside the pad array (photographed 2026-11-05). Nothing is drilled and no pad
@@ -89,7 +91,7 @@ import io
 from pathlib import Path
 
 # ---------------------------------------------------------------- the geometry
-COLS, ROWS = 31, 18               # both sides counted 2026-11-05 - see docstring
+COLS, ROWS = 29, 18               # counted end to end 2026-11-05 - see docstring
 BORDER = 1                        # outer ring: holes exist, working area does not
 P = 26                            # px per hole pitch
 X0, Y0 = 100, 130                 # centre of hole (1, 1)
@@ -108,9 +110,9 @@ def hy(r):
 # ------------------------------------------------------------------ the layout
 # Buses: bare tinned wire soldered along a whole run of holes.
 BUSES = [
-    ("V12", 2, (2, 29), "#dc2626", "+12 V  (E-stop NC feed)"),
-    ("DRN", 8, (7, 29), "#b45309", "DRAIN  (all four coil low sides)"),
-    ("GND", 17, (2, 29), "#334155", "GND  (star return)"),
+    ("V12", 2, (2, 28), "#dc2626", "+12 V  (E-stop NC feed)"),
+    ("DRN", 8, (7, 28), "#b45309", "DRAIN  (all four coil low sides)"),
+    ("GND", 17, (2, 28), "#334155", "GND  (star return)"),
 ]
 # One vertical run, because the power terminal's ground has to reach row 17.
 GND_SPINE = (4, 6, 17)            # col, row_from, row_to
@@ -239,8 +241,8 @@ e('<rect/>')
 e(f'<text x="24" y="36" font-size="19" font-weight="bold" fill="#0f172a">'
   f'Relay-driver board on perfboard &#8212; where everything sits</text>')
 e(f'<text x="24" y="58" font-size="12.5" fill="#475569">'
-  f'[GA6] 50 &#215; 80 double-sided, 2.54 mm pitch: {COLS} &#215; {ROWS} holes, of which the '
-  f'{BOLD}outer ring is border &#8212; {COLS-2*BORDER} &#215; {ROWS-2*BORDER} usable{EB} '
+  f'[GA6] 50 &#215; 80 double-sided, 2.54 mm pitch: {COLS} &#215; {ROWS} holes counted end to end, '
+  f'{BOLD}{COLS-2*BORDER} &#215; {ROWS-2*BORDER} after the one-hole margin this layout keeps{EB} '
   f'(both sides counted 2026-11-05).</text>')
 e(f'<text x="24" y="77" font-size="12.5" fill="#475569">'
   f'One MOSFET, four coils, four flyback diodes, the gate pulldown, and the E-stop sense divider. '
