@@ -387,10 +387,19 @@ the laptop and the Teensy have both hung. It does two things at once:
 > fuse and the contact** — upstream of either and one branch is unprotected or uncut, which is the
 > defect [§3.3](#33-the-three-taps) corrected on the contactor's own placement.
 >
-> **No line in the [Order Log](../order-log.md) buys a bus bar or a distribution block.** *Same
-> shape as the terminal blocks and the bypass caps: a part specified by the wiring and procured by
-> nothing.* Check the lab drawer first — it is a few thousand won and the cheapest version of this
-> errand is not ordering it.
+> **No line in the [Order Log](../order-log.md) buys one.** *Same shape as the terminal blocks and
+> the bypass caps: a part specified by the wiring and procured by nothing.* **Check the lab drawer
+> first** — the part costs about ₩2,200 and a delivery costs more than the part.
+>
+> **What to look for, if it has to be bought:** a **fixed barrier terminal block, 30 A, M4**, which
+> takes an AWG 14 ring terminal and clears the 25 A fuse with 20 % to spare. *Two ways to make the
+> tee in one: land the input ring on one side of a pole and **two output rings on the opposite
+> screw**, or bridge two poles with a shorting bar.* **Do not buy a 접지 부스바** — a grounding
+> busbar tidies earth wires and is not a 1-in-2-out power joint.
+>
+> **It is a panel part, not an automotive one.** Screw terminals on a vehicle need the screws
+> locked — threadlocker or star washers — and the cable strain-relieved to a bracket, *which this
+> page already requires of every terminal and which is what kills hand-built boards.*
 >
 > **Check `85 · 86` on the body before assuming they are interchangeable.** A bare coil is not
 > polarised and either way round works; **a relay with an internal flyback diode is**, and the
