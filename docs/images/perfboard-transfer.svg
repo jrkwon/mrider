@@ -100,7 +100,7 @@
     <path d="M236,506 L236,492 M230,492 L242,492 M230,486 L242,486 M236,486 L236,746"/>
   </g>
   <text x="256" y="480" font-size="11" font-weight="bold" fill="#b45309">10 k ×2</text>
-  <text x="256" y="496" font-size="11" font-weight="bold" fill="#1d4ed8">1 nF ×2 — as close to the pin as they will go</text>
+  <text x="256" y="496" font-size="11" font-weight="bold" fill="#1d4ed8">1 nF ×2 — at the pin</text>
 
   <g stroke="#b45309" stroke-width="2.4" fill="none">
     <path d="M316,664 L316,684 L310,688 L322,694 L310,700 L322,706 L316,710 L316,726 L316,446"/>

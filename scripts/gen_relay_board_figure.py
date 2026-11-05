@@ -85,6 +85,20 @@ is spent. An earlier revision of this file reasoned from the margin that a
 corner M3 could not fit - it was answering a question the manufacturer had
 already answered, and the arithmetic it used is the same one the row count
 caught out. Look at the part before deriving its geometry.
+
+VERIFY IT IN A BROWSER, NOT IN IMAGEMAGICK
+------------------------------------------
+`convert` renders a <text> containing <tspan> by resetting x, so bold runs
+pile up on the start of their line and the whole block looks like mush. That
+hides real overlaps underneath it - a four-pixel collision between two panel
+entries survived three rounds of "I rendered it and looked" because the mush
+was the same either way. Use:
+
+    google-chrome --headless --screenshot=out.png \
+        --window-size=1180,1519 file://$PWD/docs/images/<figure>.svg
+
+ImageMagick is still fine for geometry - buses, holes, part bodies - and it is
+what caught the paint-order halo that erased the TO-220's G/D/S letters.
 """
 
 import io
