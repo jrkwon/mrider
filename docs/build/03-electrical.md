@@ -502,12 +502,30 @@ to the driver's star, not to a convenient chassis screw.
 | Signal | Drive sensor — 3.3 V · GND · A · B | 2 × 2-pin |
 | Signal | Steering sensor — 3.3 V · GND · SDA · SCL | 2 × 2-pin |
 | Signal | 5 V power in | 1 × 2-pin |
-| Signal | **Gate + GND out to the relay board** | **1 × 2-pin** |
-| Relay | Gate + GND from the Teensy | 1 × 2-pin |
+| Signal | **Gate out + E-stop sense in** | **1 × 2-pin** |
+| Relay | **Gate in + E-stop sense out** | 1 × 2-pin |
 | Relay | 12 V + GND in | 1 × 2-pin |
 | Relay | Four relay coils, a pair each | 4 × 2-pin |
 | | **Per vehicle** | **12 × 2-pin** |
 | | **Fleet** | **36 × 2-pin** |
+
+> **Those two rows said "Gate + GND" until 2026-11-05, and that was wrong in both directions.**
+>
+> **No GND belongs on that block.** The relay board's ground already returns to the star on its
+> 12 V terminal, carrying the whole 600 mA of coil current; a second ground conductor up to the
+> Teensy would be a parallel path — a loop, which is the thing
+> [§3.5.3](#353-build-the-circuit-twice-and-not-for-the-reason-it-sounds-like) forbids one page
+> earlier. *What you accept instead is the IR drop in that single wire: 600 mA × ~0.011 Ω
+> (1.5 mm² over a metre) ≈ **7 mV**, against a worst-case `Vgs(th)` of 1.0 V. Under a percent.*
+>
+> **And the way it took was needed by something else.** The **E-stop sense divider sits on the
+> relay board** — it is tapped off the coil feed ([§3.4](#34-wire-the-e-stop-and-mux-first)) — and
+> its output has to reach a Teensy input, **but no terminal in this count carried it.** *The same
+> omission as the gate-out way found the day before, one board over: a signal that crosses between
+> the two boxes, counted at neither end or at only one.*
+>
+> **Swapping `GND` for `SENSE` closes both and leaves the count alone**, because the ground was
+> never supposed to be there and the sense line always was.
 
 > **This table said 11 and 33 until 2026-11-05, and the figure below it said 12 and 36.**
 > The missing way is the **gate leaving the signal board.** The gate line crosses from the logic
@@ -765,6 +783,48 @@ flexes, and a flexing board works a socketed Teensy loose.
 >
 > *De-energise-to-safe is a property of that one resistor. Test it on its own, with nothing else
 > able to confuse the reading.*
+
+#### Where it all sits on the board
+
+Because there is no bench version, **the first physical build of this board is also the final
+one** — so the placement is worth settling before the iron is hot rather than during.
+
+![Relay-driver perfboard placement on a 31 by 19 hole grid: a +12 V bus along row 2, a DRAIN bus
+along row 8 joining the four coil low sides, and a GND bus along row 17; four pluggable coil
+terminals K1 to K4 between the two upper buses with a 1N4007 beside each, band to +12 V; the
+IRLZ44N standing upright with gate, drain and source marked; the 10 k pulldown dropping from the
+gate node to the GND bus one hole from the source's own landing; the 100 ohm in series from the
+Teensy terminal; and the 10 k / 2.7 k E-stop sense divider on the left, with panels explaining the
+single star ground, why the pulldown lives beside the MOSFET, and the build
+order](../images/relay-board-perfboard-layout.svg)
+
+**The drawing is generated** — [`scripts/gen_relay_board_figure.py`](https://github.com/jrkwon/mrider/blob/main/scripts/gen_relay_board_figure.py)
+holds the layout as a hole-indexed netlist and asserts what a reader cannot check by looking:
+**no two leads share a hole**, every lead is inside the grid, the gate node stays under four holes
+long, and **the pulldown grounds within one hole of the MOSFET source.** *Edit the script and
+re-run it; do not edit the SVG.*
+
+> [!IMPORTANT]
+> **The pulldown goes on THIS board, beside the MOSFET — never at the Teensy end**
+>
+> The gate line crosses from the logic box to the power box. **With the pulldown at the Teensy
+> end, cutting or unplugging that wire would leave the gate floating at the MOSFET** — partial
+> enhancement, relays chattering between STOCK and DBW, which is the exact failure the resistor
+> exists to prevent.
+>
+> **With it here, a broken gate wire still leaves 10 kΩ tied across gate and source.** Gate low,
+> coils dropped, STOCK. *The pulldown is only a failsafe if it is on the far side of every
+> connector it is protecting against.*
+>
+> **Its ground lands one hole from the source's**, so no coil current flows in the copper between
+> them. Across a soldered bus that drop is microvolts — this is cheap insurance rather than a live
+> hazard — but it is the habit that stays correct the day someone rebuilds the same circuit with
+> wire instead of a bus.
+
+**The grid is derived, not yet confirmed.** 80 / 2.54 = 31.5 and 50 / 2.54 = 19.7, so the figure
+draws **31 × 19**. Twelve GA6 boards are in hand ([row 122](../order-log.md#L122)), so this is a
+ten-second check: count the holes, and count whether a border strip costs a row. The layout has
+slack for one, but the figure should stop guessing once the part is on the bench.
 
 **Three rules for the board that goes in.**
 
