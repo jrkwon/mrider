@@ -376,6 +376,14 @@ def draw_part(d, value, a, b, kind, side, rev):
       f'text-anchor="{anc}">{value}</text>')
 
 
+# ---- connector bodies go down FIRST, so no wire vanishes under a white box
+for d, c, r, up, lo, col in TERMINALS:
+    e(f'<rect x="{hx(c)-15}" y="{hy(r)-14}" width="56" height="{2*P+28}" rx="4" '
+      f'fill="#ffffff" fill-opacity="0.88" stroke="{col}" stroke-width="2.2"/>')
+for d, c, r, col, label in HEADERS:
+    e(f'<rect x="{hx(c)-13}" y="{hy(r)-13}" width="{2*P+26}" height="26" rx="3" '
+      f'fill="#ffffff" fill-opacity="0.88" stroke="{col}" stroke-width="2.2"/>')
+
 # ---- reverse side first, so the front-side copper draws over it and a part
 # that passes behind a bus looks like it passes behind a bus
 e('<g opacity="0.5">')
@@ -440,11 +448,9 @@ for row, pins, dy in ((T_TOP, TOP_PINS, 22), (T_BOT, BOT_PINS, -16)):
 for _p in [p for p in PARTS if not p[6]]:
     draw_part(*_p)
 
-# ---- terminals
+# ---- terminals: pads and labels only; the bodies went down before the wires
 for d, c, r, up, lo, col in TERMINALS:
     x, y = hx(c), hy(r)
-    e(f'<rect x="{x-15}" y="{y-14}" width="56" height="{2*P+28}" rx="4" '
-      f'fill="#ffffff" stroke="{col}" stroke-width="2.2"/>')
     for h in term_holes(c, r):
         e(f'<circle cx="{hx(h[0])}" cy="{hy(h[1])}" r="4" fill="{col}"/>')
     e(f'<text x="{x+46}" y="{y+4}" font-size="10" font-weight="bold" '
@@ -454,10 +460,8 @@ for d, c, r, up, lo, col in TERMINALS:
     e(f'<text x="{x+13}" y="{y-20}" font-size="10.5" font-weight="bold" '
       f'fill="{col}" text-anchor="middle">{d}</text>')
 
-# ---- headers
+# ---- headers: pads and labels only
 for d, c, r, col, label in HEADERS:
-    e(f'<rect x="{hx(c)-13}" y="{hy(r)-13}" width="{2*P+26}" height="26" rx="3" '
-      f'fill="#ffffff" stroke="{col}" stroke-width="2.2"/>')
     for h in header_holes(c, r):
         e(f'<circle cx="{hx(h[0])}" cy="{hy(h[1])}" r="4" fill="{col}"/>')
     e(f'<text x="{hx(c+1)}" y="{hy(r)-20}" font-size="10" font-weight="bold" '

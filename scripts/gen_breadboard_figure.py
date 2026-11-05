@@ -35,7 +35,7 @@ wrong in ways that only a reader noticed:
      was actually ordered. A figure that does not match the part in the box
      teaches the wrong layout.
   2. The upper + rail had no source. A breadboard's rail pairs are separate
-     strips, the Teensy's 3V3 pin feeds only the lower one, and the pull-ups
+     strips, the Teensy's 3V3 pin feeds only the UPPER one, and the pull-ups
      reached for the upper - so as drawn they did nothing.
   3. Labels drawn dark-on-dark, and text blocks sitting on top of wires.
 
@@ -80,6 +80,11 @@ def zig(x,y0,y1,c="#b45309"):
     d=(y1-y0); s=1 if d>0 else -1; m=y0+d/2
     e(f'<path d="M{x},{y0} L{x},{m-s*18} L{x-7},{m-s*12} L{x+7},{m-s*4} L{x-7},{m+s*4} L{x+7},{m+s*12} L{x},{m+s*18} L{x},{y1}" fill="none" stroke="{c}" stroke-width="2.6"/>')
 
+def cap_dn(x,yh,yr):
+    """cap(), mirrored: the rail is BELOW the row the component sits in."""
+    e(f'<path d="M{x},{yh} L{x-9},{yh+6} L{x-9},{yr-26}" fill="none" stroke="#1d4ed8" stroke-width="2.4"/>')
+    e(f'<path d="M{x-15},{yr-26} L{x-3},{yr-26} M{x-15},{yr-19} L{x-3},{yr-19} M{x-9},{yr-19} L{x-9},{yr}" fill="none" stroke="#1d4ed8" stroke-width="2.4"/>')
+
 def cap(x,yh,yr):
     e(f'<path d="M{x},{yh} L{x-9},{yh-6} L{x-9},{yr+26}" fill="none" stroke="#1d4ed8" stroke-width="2.4"/>')
     e(f'<path d="M{x-15},{yr+26} L{x-3},{yr+26} M{x-15},{yr+19} L{x-3},{yr+19} M{x-9},{yr+19} L{x-9},{yr}" fill="none" stroke="#1d4ed8" stroke-width="2.4"/>')
@@ -93,7 +98,7 @@ e(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" he
 e('<title>Bench breadboard layout, drawn to a real 400-point half-size board</title>')
 e('<desc>Three 400-point half-size breadboards, 30 columns by 10 rows plus four power rails. '
   'Board A carries the Teensy 4.1 straddling the centre channel, with rail-bridge jumpers taking '
-  'its 3V3 supply to the upper rails, 10k pull-ups and 1nF on the quadrature columns and 4.7k on '
+  'its 3V3 supply down to the lower rails, 10k pull-ups and 1nF on the quadrature columns and 4.7k on '
   'the I2C columns. Board B carries the two Hall latches, board C the AS5600.</desc>')
 e('<defs><marker id="ab2" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#1d4ed8"/></marker></defs>')
 e(f'<rect width="{W}" height="{H}" fill="#ffffff"/>')
@@ -108,8 +113,8 @@ board(616,996,B_t,B_b,B_A,B_F,'B','#1e3a8a')
 board(1050,1430,Cc_t,Cc_b,C_A,C_F,'C','#0f766e')
 
 # node bands
-for x in (col(4),col(5)): e(f'<rect x="{x-9}" y="228" width="18" height="56" rx="4" fill="#fde68a" fill-opacity="0.6"/>')
-for x in (col(9),col(10),col(11)): e(f'<rect x="{x-9}" y="388" width="18" height="56" rx="4" fill="#fde68a" fill-opacity="0.6"/>')
+for x in (col(4),col(5)): e(f'<rect x="{x-9}" y="388" width="18" height="56" rx="4" fill="#fde68a" fill-opacity="0.6"/>')
+for x in (col(9),col(10),col(11)): e(f'<rect x="{x-9}" y="228" width="18" height="56" rx="4" fill="#fde68a" fill-opacity="0.6"/>')
 for x in (col(3),col(4),col(5),col(10),col(11),col(12)): e(f'<rect x="{x-9}" y="678" width="18" height="36" rx="4" fill="#fde68a" fill-opacity="0.6"/>')
 for x in (col(20),col(22),col(24),col(26)): e(f'<rect x="{x-9}" y="1128" width="18" height="36" rx="4" fill="#fde68a" fill-opacity="0.6"/>')
 
@@ -118,10 +123,10 @@ e('<rect x="232" y="288" width="476" height="96" rx="5" fill="#1e293b" stroke="#
 e('<rect x="232" y="316" width="28" height="40" rx="3" fill="#94a3b8"/>')
 e('<text x="246" y="341" font-size="8.5" fill="#0f172a" text-anchor="middle">USB</text>')
 e('<text x="500" y="342" font-size="16" font-weight="bold" fill="#f1f5f9" text-anchor="middle">Teensy 4.1</text>')
-for x,t in ((col(3),'GND'),(col(4),'0'),(col(5),'1')):
-    e(f'<text x="{x}" y="314" font-size="10.5" font-weight="bold" fill="#fde68a" text-anchor="middle" transform="rotate(-90 {x} 314)">{t}</text>')
 for x,t in ((col(3),'VIN'),(col(4),'GND'),(col(5),'3V3'),(col(9),'20'),(col(10),'19'),(col(11),'18')):
-    e(f'<text x="{x}" y="358" font-size="10.5" font-weight="bold" fill="#7dd3fc" text-anchor="middle" transform="rotate(-90 {x} 358)">{t}</text>')
+    e(f'<text x="{x}" y="314" font-size="10.5" font-weight="bold" fill="#7dd3fc" text-anchor="middle" transform="rotate(-90 {x} 314)">{t}</text>')
+for x,t in ((col(3),'GND'),(col(4),'0'),(col(5),'1')):
+    e(f'<text x="{x}" y="358" font-size="10.5" font-weight="bold" fill="#fde68a" text-anchor="middle" transform="rotate(-90 {x} 358)">{t}</text>')
 
 for cx,lbl in ((col(4),'Hall A'),(col(11),'Hall B')):
     e(f'<path d="M{cx-21},766 L{cx-21},744 Q{cx},720 {cx+21},744 L{cx+21},766 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.8"/>')
@@ -130,20 +135,20 @@ e('<rect x="560" y="1178" width="168" height="38" rx="4" fill="#0f766e" stroke="
 e('<text x="644" y="1203" font-size="13" font-weight="bold" fill="#ecfeff" text-anchor="middle">AS5600</text>')
 
 # ===== LAYER 3: components =====
-zig(col(4),236,182); gap(col(4),202,"#b45309",2.6)
-zig(col(5),236,182); gap(col(5),202,"#b45309",2.6)
-cap(col(4),256,202); cap(col(5),276,202)
-zig(col(10),396,498); gap(col(10),476,"#b45309",2.6)
-zig(col(11),396,498); gap(col(11),476,"#b45309",2.6)
-# E-stop sense divider, kept entirely in the FREE bottom rows so nothing is drawn over the Teensy
-e(f'<path d="M{col(6)},416 L{col(6)+8},416 L{col(6)+14},408 L{col(6)+24},424 L{col(6)+34},408 L{col(6)+44},424 L{col(6)+50},412 L{col(9)},416" fill="none" stroke="#1d4ed8" stroke-width="2.8"/>')
-zig(col(9),436,476,"#1d4ed8")
+zig(col(4),396,498); gap(col(4),476,"#b45309",2.6)
+zig(col(5),396,498); gap(col(5),476,"#b45309",2.6)
+cap_dn(col(4),416,476); cap_dn(col(5),436,476)
+zig(col(10),236,182); gap(col(10),202,"#b45309",2.6)
+zig(col(11),236,182); gap(col(11),202,"#b45309",2.6)
+# E-stop sense divider. Pin 20 is on the UPPER row, so the divider lives in the
+# free upper rows, coming in from the right where nothing else is.
+e(f'<path d="M{col(13)},276 L{col(13)-8},276 L{col(13)-14},268 L{col(13)-24},284 L{col(13)-34},268 L{col(13)-44},284 L{col(13)-50},272 L{col(9)},276" fill="none" stroke="#1d4ed8" stroke-width="2.8"/>')
+zig(col(9),236,202,"#1d4ed8")
 
 # ===== LAYER 4: wires =====
-e(f'<path d="M{col(3)},236 L{col(3)},202" stroke="#2563eb" stroke-width="3"/>')
-e(f'<path d="M{col(5)},396 L{col(5)},498" stroke="#dc2626" stroke-width="3"/>'); gap(col(5),476,"#dc2626",3,True)
-e(f'<path d="M{col(4)},396 L{col(4)},476" stroke="#2563eb" stroke-width="3"/>')
-e(f'<path d="M{col(3)},436 L{col(3)},458 L104,458" stroke="#dc2626" stroke-width="3" fill="none"/>')
+e(f'<path d="M{col(4)},236 L{col(4)},202" stroke="#2563eb" stroke-width="3"/>')
+e(f'<path d="M{col(5)},236 L{col(5)},182" stroke="#dc2626" stroke-width="3"/>'); gap(col(5),202,"#dc2626",3,True)
+e(f'<path d="M{col(3)},236 L{col(3)},222 L104,222" stroke="#dc2626" stroke-width="3" fill="none"/>')
 # rail bridges
 e(f'<path d="M{RX1},182 L872,182 L872,498 L{RX1},498" fill="none" stroke="#dc2626" stroke-width="3.4"/>')
 e(f'<path d="M{RX1},202 L846,202 L846,476 L{RX1},476" fill="none" stroke="#2563eb" stroke-width="3.4"/>')
@@ -161,13 +166,13 @@ e(f'<path d="M{col(11)},706 L{col(11)},652" stroke="#2563eb" stroke-width="2.6"/
 e(f'<path d="M{col(20)},1136 L{col(20)},1082" stroke="#dc2626" stroke-width="2.6"/>'); gap(col(20),1102,"#dc2626",2.6,True)
 e(f'<path d="M{col(22)},1136 L{col(22)},1102" stroke="#2563eb" stroke-width="2.6"/>')
 # green jumpers
-e(f'<path d="M{col(4)},276 L112,276 L112,706 L{col(5)},706" fill="none" stroke="#15803d" stroke-width="3"/>')
-e(f'<path d="M{col(5)},256 L90,256 L90,686 L{col(12)},686" fill="none" stroke="#15803d" stroke-width="3"/>')
-gap(col(4),256,"#15803d"); gap(col(3),686,"#15803d"); gap(col(4),686,"#15803d")
-e(f'<path d="M{col(10)},416 L795,416 L795,1136 L{col(26)},1136" fill="none" stroke="#15803d" stroke-width="3"/>')
-e(f'<path d="M{col(11)},436 L818,436 L818,1156 L{col(24)},1156" fill="none" stroke="#15803d" stroke-width="3"/>')
-gap(col(11),416,"#15803d")
-for x,y in ((col(4),276),(col(5),256),(col(5),706),(col(12),686),(col(10),416),(col(11),436),(col(26),1136),(col(24),1156)):
+e(f'<path d="M{col(4)},416 L112,416 L112,706 L{col(5)},706" fill="none" stroke="#15803d" stroke-width="3"/>')
+e(f'<path d="M{col(5)},436 L90,436 L90,686 L{col(12)},686" fill="none" stroke="#15803d" stroke-width="3"/>')
+gap(col(4),436,"#15803d"); gap(col(3),686,"#15803d"); gap(col(4),686,"#15803d")
+e(f'<path d="M{col(10)},256 L795,256 L795,1136 L{col(26)},1136" fill="none" stroke="#15803d" stroke-width="3"/>')
+e(f'<path d="M{col(11)},276 L818,276 L818,1156 L{col(24)},1156" fill="none" stroke="#15803d" stroke-width="3"/>')
+gap(col(11),256,"#15803d")
+for x,y in ((col(4),416),(col(5),436),(col(5),706),(col(12),686),(col(10),256),(col(11),276),(col(26),1136),(col(24),1156)):
     e(f'<circle cx="{x}" cy="{y}" r="4.5" fill="#15803d"/>')
 
 # ===== LAYER 5: labels =====
@@ -176,15 +181,14 @@ e('<text x="24" y="572" font-size="15" font-weight="bold" fill="#1e3a8a">BOARD B
 e('<text x="24" y="592" font-size="12" fill="#1d4ed8">Only one rear wheel is instrumented. The pair sits <tspan font-weight="bold">6.80 mm apart on that one carrier</tspan> — a quarter cycle out of step, which is what</text>')
 e('<text x="24" y="608" font-size="12" fill="#1d4ed8">gives <tspan font-weight="bold">direction</tspan>. One latch counts; it cannot tell forward from reverse. <tspan font-weight="bold">A and B are two sensors on one wheel, not one sensor on each of two.</tspan></text>')
 e('<text x="24" y="1040" font-size="15" font-weight="bold" fill="#0f766e">BOARD C — STEERING: the AS5600</text>')
-e('<text x="352" y="196" font-size="11.5" font-weight="bold" fill="#b45309">2 × 10 kΩ → upper + rail</text>')
-e('<text x="150" y="238" font-size="11.5" font-weight="bold" fill="#1d4ed8" text-anchor="end">2 × 1 nF</text>')
-e('<text x="150" y="253" font-size="11.5" fill="#1d4ed8" text-anchor="end">→ upper − rail</text>')
-e('<text x="476" y="470" font-size="11.5" font-weight="bold" fill="#b45309">2 × 4.7 kΩ → lower + rail</text>')
-e(f'<text x="{col(7)+10}" y="400" font-size="10.5" font-weight="bold" fill="#1d4ed8" text-anchor="middle">10 kΩ</text>')
-e(f'<text x="{col(9)+13}" y="462" font-size="10.5" font-weight="bold" fill="#1d4ed8">2.7 kΩ</text>')
-e(f'<path d="M{col(6)},436 L{col(6)},512 L560,512" fill="none" stroke="#1d4ed8" stroke-width="2.8"/>')
-gap(col(6),476,"#1d4ed8",2.8,True); gap(col(6),498,"#1d4ed8",2.8,True)
-e('<text x="568" y="516" font-size="10.5" font-weight="bold" fill="#1d4ed8">from the E-stop COIL node — the NC side</text>')
+e('<text x="352" y="520" font-size="11.5" font-weight="bold" fill="#b45309">2 × 10 kΩ → lower + rail</text>')
+e('<text x="326" y="430" font-size="11.5" font-weight="bold" fill="#1d4ed8">2 × 1 nF</text>')
+e('<text x="326" y="445" font-size="11.5" fill="#1d4ed8">→ lower − rail</text>')
+e('<text x="476" y="196" font-size="11.5" font-weight="bold" fill="#b45309">2 × 4.7 kΩ → upper + rail</text>')
+e(f'<text x="{col(11)+6}" y="262" font-size="10.5" font-weight="bold" fill="#1d4ed8" text-anchor="middle">10 kΩ</text>')
+e(f'<text x="{col(9)+13}" y="224" font-size="10.5" font-weight="bold" fill="#1d4ed8">2.7 kΩ</text>')
+e(f'<path d="M{col(13)},276 L{col(13)},222 L560,222" fill="none" stroke="#1d4ed8" stroke-width="2.8"/>')
+e('<text x="568" y="226" font-size="10.5" font-weight="bold" fill="#1d4ed8">from the E-stop COIL node — the NC side</text>')
 e('<rect x="884" y="150" width="290" height="162" rx="7" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>')
 e('<text x="898" y="176" font-size="13.5" font-weight="bold" fill="#1e3a8a">E-STOP SENSE → pin 20</text>')
 e('<text x="898" y="200" font-size="11.5" fill="#1d4ed8">10 kΩ from the coil node, 2.7 kΩ</text>')
@@ -194,17 +198,17 @@ e('<text x="898" y="258" font-size="11.5" fill="#1d4ed8">energised. Pressed, bro
 e('<text x="898" y="275" font-size="11.5" fill="#1d4ed8">blown coil fuse, dead logic pack</text>')
 e('<text x="898" y="292" font-size="11.5" font-weight="bold" fill="#1e3a8a">all read low.</text>')
 e('<text x="898" y="307" font-size="11" font-weight="bold" fill="#b91c1c">METER IT before it touches the pin.</text>')
-e('<text x="98" y="452" font-size="11.5" font-weight="bold" fill="#b91c1c" text-anchor="end">5 V UBEC</text>')
-e('<text x="884" y="300" font-size="12" font-weight="bold" fill="#dc2626">RAIL</text>')
-e('<text x="884" y="316" font-size="12" font-weight="bold" fill="#dc2626">BRIDGES</text>')
-e('<text x="884" y="334" font-size="11" fill="#7f1d1d">without these the</text>')
-e('<text x="884" y="349" font-size="11" fill="#7f1d1d">upper + rail is dead</text>')
-e('<text x="884" y="364" font-size="11" fill="#7f1d1d">and the pull-ups</text>')
-e('<text x="884" y="379" font-size="11" fill="#7f1d1d">do nothing</text>')
-e('<text x="500" y="276" font-size="11" fill="#94a3b8" text-anchor="middle">the pins land UNDER the body — you connect in the rows above and below</text>')
+e('<text x="98" y="226" font-size="11.5" font-weight="bold" fill="#b91c1c" text-anchor="end">5 V UBEC</text>')
+e('<text x="884" y="332" font-size="12" font-weight="bold" fill="#dc2626">RAIL</text>')
+e('<text x="884" y="348" font-size="12" font-weight="bold" fill="#dc2626">BRIDGES</text>')
+e('<text x="884" y="366" font-size="11" fill="#7f1d1d">without these the</text>')
+e('<text x="884" y="381" font-size="11" fill="#7f1d1d">lower + rail is dead</text>')
+e('<text x="884" y="396" font-size="11" fill="#7f1d1d">and the pull-ups</text>')
+e('<text x="884" y="411" font-size="11" fill="#7f1d1d">do nothing</text>')
+e('<text x="500" y="460" font-size="11" fill="#94a3b8" text-anchor="middle">the pins land UNDER the body — you connect in the rows above and below</text>')
 # jumper identity labels
-e('<text x="122" y="268" font-size="11" font-weight="bold" fill="#15803d">pin 0 → Hall A OUT</text>')
-e('<text x="100" y="248" font-size="11" font-weight="bold" fill="#15803d">pin 1 → Hall B OUT</text>')
+e('<text x="122" y="408" font-size="11" font-weight="bold" fill="#15803d">pin 0 → Hall A OUT</text>')
+e('<text x="100" y="428" font-size="11" font-weight="bold" fill="#15803d">pin 1 → Hall B OUT</text>')
 e('<text x="806" y="700" font-size="11" font-weight="bold" fill="#15803d">pin 19 → SCL</text>')
 e('<text x="828" y="760" font-size="11" font-weight="bold" fill="#15803d">pin 18 → SDA</text>')
 e(f'<text x="{col(4)}" y="710" font-size="11.5" font-weight="bold" fill="#1e3a8a" text-anchor="middle">Hall A · OUT → pin 0</text>')

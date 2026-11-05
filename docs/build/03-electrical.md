@@ -587,10 +587,29 @@ breadboard and the *authority* side on the perfboard you will actually fit.** Bu
 
 #### The bench layout, hole by hole
 
-![Three 400-point half-size breadboards drawn at 30 columns by 10 rows: board A with the Teensy straddling the centre channel, rail-bridge jumpers taking its 3V3 supply to the upper rails, 10k pull-ups and 1nF on the quadrature columns and 4.7k on the I2C columns; board B with both Hall latches; board C with the AS5600](../images/breadboard-layout.svg)
+![Three 400-point half-size breadboards drawn at 30 columns by 10 rows: board A with the Teensy straddling the centre channel, its USB end at the left so the Vin/GND/3V3 edge is the upper row and the pin 0 edge the lower, rail-bridge jumpers carrying its 3V3 supply down to the lower rails, 10k pull-ups and 1nF on the quadrature columns below and 4.7k on the I2C columns above; board B with both Hall latches; board C with the AS5600](../images/breadboard-layout.svg)
 
 *Drawn to the board actually ordered — `SZH-BBAD-005`, **30 columns × 10 rows + four rails = 400
 tie points**. Rows A–E go unused; a half-size board has far more holes than this needs.*
+
+> [!WARNING]
+> **The Teensy in this figure was mirrored until 2026-11-05 — a bottom view drawn as a top view**
+>
+> It had `GND · 0 · 1` on the **upper** row and `VIN · GND · 3V3 · 20 · 19 · 18` on the lower, with
+> the USB end at the left. **That combination cannot happen.** With USB to the left the pinout card
+> rotates counter-clockwise, which puts the `Vin · GND · 3V3 · 23 · 22 · 21 · 20 · 19 · 18` edge on
+> **top** and the `GND · 0 · 1 · 2 …` edge below — which is what
+> [the signal board figure](#where-it-all-sits-on-the-signal-board) shows and what the board in
+> hand does.
+>
+> **Anyone wiring board A from the old figure would have put every component on the wrong side of
+> the Teensy**, and the first symptom would have been two dead quadrature channels — which reads
+> exactly like a dead sensor, the failure this section already warns about twice.
+>
+> *The figure was internally consistent, which is why it survived: every component agreed with
+> every other component, and all of them agreed with a mirror. It took holding a Teensy next to a
+> second, independently drawn figure to see it. **That is the argument for drawing the same thing
+> twice** — not redundancy, but a second chance to disagree.*
 
 > [!NOTE]
 > **Both Hall latches are on the SAME hub — one wheel is instrumented, not two**
@@ -610,14 +629,18 @@ other 3.3 V source in this build, and everything on it shares that one pin's bud
 > **Fit the two rail bridges, or the pull-ups do nothing**
 >
 > A breadboard's **upper and lower rail pairs are separate strips.** The Teensy's `3V3` and `GND`
-> pins are on its lower edge and therefore feed only the **lower** rails — but the 10 kΩ pull-ups
-> sit in the upper half and reach for the **upper** `+` rail, which has no source at all.
+> pins are on its **upper** edge and therefore feed only the upper rails — but the 10 kΩ pull-ups
+> hang off pins 0 and 1 in the **lower** half and reach for the **lower** `+` rail, which has no
+> source at all.
 >
 > **Two jumpers fix it:** upper `+` to lower `+`, upper `−` to lower `−`. Without them the latch
 > outputs float, and **a floating open-drain output reads exactly like a dead sensor** — the same
 > failure the pull-ups exist to prevent.
 >
 > *Caught in review on 2026-10-27; the first version of this figure had the bridges missing.*
+>
+> *Which edge is which was corrected on 2026-11-05 — see below. The jumpers were always right;
+> the reason given for them was upside down.*
 
 **Three boards, not two — drive and steering get their own.** They become **two harnesses at two
 ends of the vehicle**, a rear hub and a front kingpin, so splitting them on the bench means each
@@ -764,6 +787,22 @@ does](../images/signal-board-perfboard-layout.svg)
 > board is 양면 so that it can. *The script asserts a part is on the reverse side **exactly** when
 > it crosses a bus — a dashed part that did not need to be is a part nobody can reach with an iron
 > once the board is in the box.*
+
+> [!NOTE]
+> **Three of those connectors are on the board and not on the bench, and that is on purpose**
+>
+> **The i-BUS header and the two PWM headers appear nowhere in the breadboard layout.** The bench
+> rig exists to prove the *sensors* — pull-ups, quadrature counts, the I²C read — with a magnet in
+> your hand. **The RC path is not a bench exercise**: it needs a bound receiver, the hardware MUX
+> and the motor driver, and it is wired and proved on the vehicle in
+> [§3.5.1](#351-hardware-rc-signal-mux-wire-this-it-is-not-optional) and
+> [§3.4](#34-wire-the-e-stop-and-mux-first).
+>
+> **Say it out loud because the omission is invisible:** three connectors on this board are
+> soldered without ever having been rehearsed, and **the first time a PWM header is exercised, the
+> vehicle can move.** *Drive the gate and the PWM outputs from a bench 3.3 V and a servo tester
+> before the driver's `S1`/`S2` are plugged in, the same way the relay board's coils are listened
+> to before anything is bolted in.*
 
 > [!WARNING]
 > **The pin order in that drawing has not been checked against a board**
