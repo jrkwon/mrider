@@ -1368,13 +1368,63 @@ separately replaceable.
 > - **600 mA through breadboard rails** is at the limit of what those clips are good for, and their
 >   contact resistance is both high and unpredictable.
 >
-> A breadboard is genuinely useful at **[Stage 0](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first)**, on the bench, to prove the driver switches from a
-> 3.3 V pin before anything is soldered. It does not then go on the vehicle.
+> **There is no breadboard stage for this board — not even
+> [Stage 0](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first).**
+>
+> *Corrected 2026-11-05. This paragraph used to say a breadboard was "genuinely useful at Stage 0,
+> on the bench, to prove the driver switches from a 3.3 V pin **before anything is soldered**" —
+> which puts the pulldown in a spring clip, contradicts the two bullets directly above it, and
+> contradicts [§3.5.3](03-electrical.md#353-build-the-circuit-twice-and-not-for-the-reason-it-sounds-like)'s
+> "**never carry, even on the bench**". Two pages disagreed about the one component the failsafe
+> analysis rests on.*
+>
+> **The test it was reaching for is real — it just happens on the finished perfboard.** It is
+> **step 4** of the build order in the [board figure](../images/relay-driver-board.svg): terminals
+> on, coils last, then **drive the gate from a bench 3.3 V and listen for four clicks** before
+> anything is bolted into the car. Same proof — the driver switches from a 3.3 V pin — with the
+> pulldown **soldered** rather than clipped. *Deleting the breadboard step costs nothing but the
+> spring clips.*
+>
+> **The breadboards this build buys are for the SIGNAL side**
+> ([§3.5.3](03-electrical.md#353-build-the-circuit-twice-and-not-for-the-reason-it-sounds-like)):
+> pull-ups, the quadrature count, the AS5600's AGC, and trying pin assignments while they are
+> still free to move.
 
 **Feed the coils from the logic rail**, so a logic brownout drops them to STOCK (failsafe row 4).
 The **10 kΩ pulldown is safety-critical**: it holds the gate low — relays de-energized, STOCK —
 whenever the Teensy is unpowered, in reset, or has not yet configured the pin as an output. A
 floating gate can partially enhance.
+
+> [!IMPORTANT]
+> **Why a floating gate enhances at all — it is a capacitor, not a resistive input**
+>
+> The `IRLZ44N`'s input capacitance is around **1.8 nF**, and its `Vgs(th)` is **1.0–2.0 V**. So
+> the charge needed to reach the bottom of that threshold band is
+>
+>     Q = C × V = 1.8 nF × 1 V ≈ 1.8 nC
+>
+> **Under two nanocoulombs.** With the pulldown in place that charge has somewhere to go. With the
+> leg open it has nowhere — the gate holds what it has and keeps collecting more by capacitive
+> coupling from the 12 V coil bus running a few millimetres away.
+>
+> **And partial enhancement is worse than fully on.** Fully on is DBW, which is at least a
+> *defined* state. Partial puts the coils near their drop-out voltage, so the contacts chatter
+> between `87a` and `87` — and [§3.4](03-electrical.md#34-wire-the-e-stop-and-mux-first) puts
+> those contacts **in the motor leads**. Chatter is therefore motor current being made and broken
+> repeatedly, under load, alternating between the stock ECU's output stage and the driver's, with
+> whichever one is idle back-feeding through its own body diodes.
+>
+> **It also fails only when it matters.** A spring clip makes contact perfectly on a desk; it opens
+> when the vehicle vibrates. Every bench check, every continuity check and every standstill mode
+> switch passes. *That is the same signature as the crossed-pair fault in
+> [§3.4](03-electrical.md#34-wire-the-e-stop-and-mux-first) — a fault whose every detection
+> opportunity happens at a standstill.*
+>
+> **This is also why the pulldown is soldered first, before the MOSFET** (build order, step 1).
+> Two reasons beyond the obvious: there is then **no window** in which a fitted MOSFET has a
+> floating gate, and the gate has a 10 kΩ bleed to ground while the **static-sensitive** `IRLZ44N`
+> is being handled and soldered. Step 2 then reads 10 kΩ gate-to-GND with nothing else fitted —
+> **no MOSFET to confuse the reading and no coil to be damaged by it.**
 
 > [!WARNING]
 > **`IRF520` is not `IRL520`, and the Teensy drives at 3.3 V**
