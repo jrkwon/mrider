@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="1491" viewBox="0 0 1180 1491" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
-<rect width="1180" height="1491" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="1465" viewBox="0 0 1180 1465" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+<rect width="1180" height="1465" fill="#ffffff"/>
 <text x="24" y="36" font-size="19" font-weight="bold" fill="#0f172a">Relay-driver board on perfboard &#8212; where everything sits</text>
-<text x="24" y="58" font-size="12.5" fill="#475569">[GA6] 50 &#215; 80 double-sided, 2.54 mm pitch: 31 &#215; 19 holes, of which the <tspan font-weight="bold">outer ring is border &#8212; 29 &#215; 17 usable</tspan> (counted on the square GA2 from the same order).</text>
+<text x="24" y="58" font-size="12.5" fill="#475569">[GA6] 50 &#215; 80 double-sided, 2.54 mm pitch: 31 &#215; 18 holes, of which the <tspan font-weight="bold">outer ring is border &#8212; 29 &#215; 16 usable</tspan> (both sides counted 2026-11-05).</text>
 <text x="24" y="77" font-size="12.5" fill="#475569">One MOSFET, four coils, four flyback diodes, the gate pulldown, and the E-stop sense divider. The schematic is a separate figure; this one is only about placement.</text>
-<rect x="74" y="104" width="832" height="520" rx="7" fill="#fdf6e3" stroke="#a16207" stroke-width="2.5"/>
+<rect x="74" y="104" width="832" height="494" rx="7" fill="#fdf6e3" stroke="#a16207" stroke-width="2.5"/>
 <circle cx="100" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="100" cy="156" r="3.1" fill="#ebe3d2"/>
 <circle cx="100" cy="182" r="3.1" fill="#ebe3d2"/>
@@ -22,7 +22,6 @@
 <circle cx="100" cy="520" r="3.1" fill="#ebe3d2"/>
 <circle cx="100" cy="546" r="3.1" fill="#ebe3d2"/>
 <circle cx="100" cy="572" r="3.1" fill="#ebe3d2"/>
-<circle cx="100" cy="598" r="3.1" fill="#ebe3d2"/>
 <circle cx="126" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="126" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="126" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -40,8 +39,7 @@
 <circle cx="126" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="126" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="126" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="126" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="126" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="126" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="152" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="152" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="152" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -59,8 +57,7 @@
 <circle cx="152" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="152" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="152" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="152" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="152" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="152" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="178" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="178" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="178" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -78,8 +75,7 @@
 <circle cx="178" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="178" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="178" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="178" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="178" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="178" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="204" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="204" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="204" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -97,8 +93,7 @@
 <circle cx="204" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="204" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="204" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="204" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="204" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="204" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="230" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="230" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="230" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -116,8 +111,7 @@
 <circle cx="230" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="230" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="230" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="230" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="230" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="230" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="256" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="256" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="256" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -135,8 +129,7 @@
 <circle cx="256" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="256" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="256" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="256" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="256" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="256" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="282" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="282" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="282" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -154,8 +147,7 @@
 <circle cx="282" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="282" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="282" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="282" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="282" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="282" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="308" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="308" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="308" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -173,8 +165,7 @@
 <circle cx="308" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="308" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="308" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="308" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="308" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="308" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="334" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="334" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="334" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -192,8 +183,7 @@
 <circle cx="334" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="334" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="334" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="334" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="334" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="334" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="360" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="360" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="360" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -211,8 +201,7 @@
 <circle cx="360" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="360" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="360" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="360" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="360" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="360" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="386" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="386" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="386" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -230,8 +219,7 @@
 <circle cx="386" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="386" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="386" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="386" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="386" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="386" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="412" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="412" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="412" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -249,8 +237,7 @@
 <circle cx="412" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="412" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="412" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="412" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="412" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="412" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="438" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="438" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="438" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -268,8 +255,7 @@
 <circle cx="438" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="438" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="438" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="438" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="438" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="438" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="464" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="464" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="464" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -287,8 +273,7 @@
 <circle cx="464" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="464" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="464" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="464" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="464" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="464" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="490" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="490" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="490" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -306,8 +291,7 @@
 <circle cx="490" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="490" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="490" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="490" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="490" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="490" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="516" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="516" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="516" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -325,8 +309,7 @@
 <circle cx="516" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="516" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="516" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="516" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="516" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="516" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="542" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="542" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="542" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -344,8 +327,7 @@
 <circle cx="542" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="542" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="542" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="542" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="542" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="542" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="568" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="568" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="568" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -363,8 +345,7 @@
 <circle cx="568" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="568" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="568" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="568" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="568" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="568" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="594" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="594" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="594" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -382,8 +363,7 @@
 <circle cx="594" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="594" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="594" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="594" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="594" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="594" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="620" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="620" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="620" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -401,8 +381,7 @@
 <circle cx="620" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="620" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="620" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="620" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="620" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="620" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="646" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="646" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="646" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -420,8 +399,7 @@
 <circle cx="646" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="646" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="646" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="646" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="646" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="646" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="672" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="672" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="672" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -439,8 +417,7 @@
 <circle cx="672" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="672" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="672" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="672" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="672" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="672" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="698" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="698" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="698" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -458,8 +435,7 @@
 <circle cx="698" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="698" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="698" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="698" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="698" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="698" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="724" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="724" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="724" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -477,8 +453,7 @@
 <circle cx="724" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="724" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="724" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="724" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="724" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="724" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="750" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="750" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="750" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -496,8 +471,7 @@
 <circle cx="750" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="750" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="750" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="750" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="750" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="750" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="776" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="776" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="776" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -515,8 +489,7 @@
 <circle cx="776" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="776" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="776" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="776" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="776" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="776" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="802" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="802" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="802" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -534,8 +507,7 @@
 <circle cx="802" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="802" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="802" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="802" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="802" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="802" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="828" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="828" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="828" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -553,8 +525,7 @@
 <circle cx="828" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="828" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="828" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="828" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="828" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="828" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="854" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="854" cy="156" r="3.1" fill="#d6c9a8"/>
 <circle cx="854" cy="182" r="3.1" fill="#d6c9a8"/>
@@ -572,8 +543,7 @@
 <circle cx="854" cy="494" r="3.1" fill="#d6c9a8"/>
 <circle cx="854" cy="520" r="3.1" fill="#d6c9a8"/>
 <circle cx="854" cy="546" r="3.1" fill="#d6c9a8"/>
-<circle cx="854" cy="572" r="3.1" fill="#d6c9a8"/>
-<circle cx="854" cy="598" r="3.1" fill="#ebe3d2"/>
+<circle cx="854" cy="572" r="3.1" fill="#ebe3d2"/>
 <circle cx="880" cy="130" r="3.1" fill="#ebe3d2"/>
 <circle cx="880" cy="156" r="3.1" fill="#ebe3d2"/>
 <circle cx="880" cy="182" r="3.1" fill="#ebe3d2"/>
@@ -592,8 +562,7 @@
 <circle cx="880" cy="520" r="3.1" fill="#ebe3d2"/>
 <circle cx="880" cy="546" r="3.1" fill="#ebe3d2"/>
 <circle cx="880" cy="572" r="3.1" fill="#ebe3d2"/>
-<circle cx="880" cy="598" r="3.1" fill="#ebe3d2"/>
-<rect x="113" y="143" width="754" height="442" rx="4" fill="none" stroke="#a16207" stroke-width="1.2" stroke-dasharray="5 4" opacity="0.65"/>
+<rect x="113" y="143" width="754" height="416" rx="4" fill="none" stroke="#a16207" stroke-width="1.2" stroke-dasharray="5 4" opacity="0.65"/>
 <g font-size="9.5" fill="#92400e" text-anchor="middle">
 <text x="100" y="97">1</text>
 <text x="152" y="97">3</text>
@@ -622,7 +591,6 @@
 <text x="67" y="445.5">13</text>
 <text x="67" y="497.5">15</text>
 <text x="67" y="549.5">17</text>
-<text x="67" y="601.5">19</text>
 </g>
 <line x1="126" y1="156" x2="828" y2="156" stroke="#dc2626" stroke-width="7" stroke-linecap="round" opacity="0.9"/>
 <text x="842" y="160" font-size="11.5" font-weight="bold" fill="#dc2626">V12</text>
@@ -755,54 +723,55 @@
 <circle cx="464" cy="546" r="11" fill="none" stroke="#be123d" stroke-width="2.6"/>
 <text x="484" y="576" font-size="12" font-weight="bold" fill="#be123d">PULLDOWN and SOURCE ground ONE HOLE APART</text>
 <path d="M 478 552 L 486 563" stroke="#be123d" stroke-width="2" fill="none"/>
-<rect x="24" y="654" width="1132" height="180" rx="8" fill="#fef2f2" stroke="#be123d" stroke-width="2"/>
-<text x="44" y="681" font-size="14" font-weight="bold" fill="#991b1b">Your question: yes &#8212; but the Teensy&#8217;s ground reaches it through the STAR, not through a second wire</text>
-<text x="44" y="706" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">The MOSFET is a low-side switch, so its SOURCE is the board ground.</tspan> The pulldown holds the gate low against that source, so</text>
-<text x="58" y="725" font-size="12.5" fill="#7f1d1d">&#8220;3.3 V on the gate&#8221; and &#8220;0 V on the gate&#8221; only mean anything if the Teensy shares that same node. That part of your reading is exactly right.</text>
-<text x="44" y="744" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">What it must not be is a second ground WIRE.</tspan> This board&#8217;s ground already returns to the star on the PWR terminal, carrying the</text>
-<text x="58" y="763" font-size="12.5" fill="#7f1d1d">whole 600 mA of coil current. A second ground conductor up to the Teensy is a parallel path &#8212; a loop, which is what &#167;3.5.3 forbids.</text>
-<text x="44" y="782" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">What you accept instead is the IR drop in that one wire:</tspan> 600 mA &#215; ~0.011 &#937; (1.5 mm&#178; over 1 m) &#8776; <tspan font-weight="bold">7 mV</tspan>, against a worst-case</text>
-<text x="58" y="801" font-size="12.5" fill="#7f1d1d">V&#7504;&#8347;(th) of 1.0 V. <tspan font-weight="bold">0.7 %.</tspan> A single star ground is not a compromise here &#8212; it is simply right, and it is one wire fewer.</text>
-<rect x="24" y="850" width="1132" height="159" rx="8" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
-<text x="44" y="877" font-size="14" font-weight="bold" fill="#9a3412">Why the pulldown lives HERE, beside the MOSFET, and not at the Teensy end</text>
-<text x="44" y="902" font-size="12.5" fill="#7c2d12"><tspan font-weight="bold">Because then a cut gate wire is still safe.</tspan> That wire runs from the logic box to the power box. With the pulldown at the Teensy end,</text>
-<text x="58" y="921" font-size="12.5" fill="#7c2d12">unplugging it would leave the gate floating <tspan font-weight="bold">at the MOSFET</tspan> &#8212; partial enhancement, relays chattering between STOCK and DBW.</text>
-<text x="44" y="940" font-size="12.5" fill="#7c2d12"><tspan font-weight="bold">With it on this board, a broken gate wire still leaves 10 k&#937; tied across gate and source.</tspan> Gate low. Coils dropped. STOCK.</text>
-<text x="44" y="959" font-size="12.5" fill="#7c2d12"><tspan font-weight="bold">And its ground lands one hole from the source&#8217;s.</tspan> Across a soldered bus that drop is microvolts, so this is cheap insurance rather than a</text>
-<text x="58" y="978" font-size="12.5" fill="#7c2d12">live hazard &#8212; but it is the habit that stays correct the day someone rebuilds the same circuit with wire instead of a bus.</text>
-<rect x="24" y="1025" width="1132" height="140" rx="8" fill="#f0fdf4" stroke="#15803d" stroke-width="2"/>
-<text x="44" y="1052" font-size="14" font-weight="bold" fill="#166534">One thing this drawing changed: the Teensy terminal carries GATE + SENSE, not GATE + GND</text>
-<text x="44" y="1077" font-size="12.5" fill="#14532d"><tspan font-weight="bold">The E-stop sense divider is on this board</tspan> (R3/R4, tapped off the coil feed), and its output has to get back to a Teensy input &#8212; but</text>
-<text x="58" y="1096" font-size="12.5" fill="#14532d"><tspan font-weight="bold">no terminal in the &#167;3.5.4 count carried it.</tspan> The same omission as the gate-out way found on 2026-11-05, one board over.</text>
-<text x="44" y="1115" font-size="12.5" fill="#14532d"><tspan font-weight="bold">Swapping GND for SENSE on that block fixes both at once</tspan> and leaves the count untouched at 12 per vehicle, 36 for the fleet: the</text>
-<text x="58" y="1134" font-size="12.5" fill="#14532d">ground was never supposed to be there, and the sense line always was.</text>
-<rect x="24" y="1181" width="556" height="280" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
-<text x="44" y="1208" font-size="14" font-weight="bold" fill="#1e3a8a">Build order &#8212; unchanged; the layout follows it</text>
-<text x="44" y="1233" font-size="12" fill="#1e40af"><tspan font-weight="bold">1.</tspan> GND bus, GND spine, R1. Nothing else.</text>
-<text x="44" y="1251" font-size="12" fill="#1e40af"><tspan font-weight="bold">2.</tspan> Meter gate-to-GND: <tspan font-weight="bold">10 k&#937;</tspan>. No MOSFET to</text>
-<text x="58" y="1269" font-size="12" fill="#1e40af">confuse the reading, no coil to be damaged by it.</text>
-<text x="44" y="1287" font-size="12" fill="#1e40af"><tspan font-weight="bold">3.</tspan> Q1, then R2, then the four diodes.</text>
-<text x="58" y="1305" font-size="12" fill="#1e40af"><tspan font-weight="bold">Every band at the +12 V bus</tspan> &#8212; one reversed</text>
-<text x="58" y="1323" font-size="12" fill="#1e40af">diode is a short across the logic pack.</text>
-<text x="44" y="1341" font-size="12" fill="#1e40af"><tspan font-weight="bold">4.</tspan> Terminals, then coils last. Drive the gate from</text>
-<text x="58" y="1359" font-size="12" fill="#1e40af">a bench 3.3 V and <tspan font-weight="bold">listen for four clicks</tspan>.</text>
-<text x="44" y="1377" font-size="12" fill="#1e40af"><tspan font-weight="bold">5.</tspan> R3/R4 last, and <tspan font-weight="bold">meter the sense node before</tspan></text>
-<text x="58" y="1395" font-size="12" fill="#1e40af"><tspan font-weight="bold">the wire goes near a pin</tspan> &#8212; it starts at pack</text>
-<text x="58" y="1413" font-size="12" fill="#1e40af">volts and the Teensy 4.1 is not 5 V tolerant.</text>
-<rect x="600" y="1181" width="556" height="316" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
-<text x="620" y="1208" font-size="14" font-weight="bold" fill="#5b21b6">Reading the drawing</text>
-<text x="620" y="1233" font-size="12" fill="#6d28d9"><tspan font-weight="bold">Thick coloured runs</tspan> are bare tinned wire soldered</text>
-<text x="634" y="1251" font-size="12" fill="#6d28d9">along the holes: three buses and the GND spine.</text>
-<text x="620" y="1269" font-size="12" fill="#6d28d9"><tspan font-weight="bold">Thin runs</tspan> are insulated hookup wire, 22&#8211;24 AWG.</text>
-<text x="620" y="1287" font-size="12" fill="#6d28d9"><tspan font-weight="bold">Dashed</tspan> means route it on the reverse side &#8212; it</text>
-<text x="634" y="1305" font-size="12" fill="#6d28d9">passes under the TO-220 and you cannot solder it</text>
-<text x="634" y="1323" font-size="12" fill="#6d28d9">afterwards.</text>
-<text x="620" y="1341" font-size="12" fill="#6d28d9"><tspan font-weight="bold">Crossings are fine.</tspan> The board is &#50577;&#47732; and the wire</text>
-<text x="634" y="1359" font-size="12" fill="#6d28d9">is insulated. What is never fine is two leads in one</text>
-<text x="634" y="1377" font-size="12" fill="#6d28d9">hole, which this script asserts rather than trusting</text>
-<text x="634" y="1395" font-size="12" fill="#6d28d9">the eye.</text>
-<text x="620" y="1413" font-size="12" fill="#6d28d9"><tspan font-weight="bold">Mounting:</tspan> the border ring cannot take a screw. Its</text>
-<text x="634" y="1431" font-size="12" fill="#6d28d9">holes sit <tspan font-weight="bold">1.9 mm</tspan> from the edge and an M3 wants</text>
-<text x="634" y="1449" font-size="12" fill="#6d28d9">1.6 mm of radius, so a corner screw costs a USABLE</text>
-<text x="634" y="1467" font-size="12" fill="#6d28d9">hole &#8212; or the enclosure grips the board instead.</text>
+<rect x="24" y="628" width="1132" height="180" rx="8" fill="#fef2f2" stroke="#be123d" stroke-width="2"/>
+<text x="44" y="655" font-size="14" font-weight="bold" fill="#991b1b">Your question: yes &#8212; but the Teensy&#8217;s ground reaches it through the STAR, not through a second wire</text>
+<text x="44" y="680" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">The MOSFET is a low-side switch, so its SOURCE is the board ground.</tspan> The pulldown holds the gate low against that source, so</text>
+<text x="58" y="699" font-size="12.5" fill="#7f1d1d">&#8220;3.3 V on the gate&#8221; and &#8220;0 V on the gate&#8221; only mean anything if the Teensy shares that same node. That part of your reading is exactly right.</text>
+<text x="44" y="718" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">What it must not be is a second ground WIRE.</tspan> This board&#8217;s ground already returns to the star on the PWR terminal, carrying the</text>
+<text x="58" y="737" font-size="12.5" fill="#7f1d1d">whole 600 mA of coil current. A second ground conductor up to the Teensy is a parallel path &#8212; a loop, which is what &#167;3.5.3 forbids.</text>
+<text x="44" y="756" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">What you accept instead is the IR drop in that one wire:</tspan> 600 mA &#215; ~0.011 &#937; (1.5 mm&#178; over 1 m) &#8776; <tspan font-weight="bold">7 mV</tspan>, against a worst-case</text>
+<text x="58" y="775" font-size="12.5" fill="#7f1d1d">V&#7504;&#8347;(th) of 1.0 V. <tspan font-weight="bold">0.7 %.</tspan> A single star ground is not a compromise here &#8212; it is simply right, and it is one wire fewer.</text>
+<rect x="24" y="824" width="1132" height="159" rx="8" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+<text x="44" y="851" font-size="14" font-weight="bold" fill="#9a3412">Why the pulldown lives HERE, beside the MOSFET, and not at the Teensy end</text>
+<text x="44" y="876" font-size="12.5" fill="#7c2d12"><tspan font-weight="bold">Because then a cut gate wire is still safe.</tspan> That wire runs from the logic box to the power box. With the pulldown at the Teensy end,</text>
+<text x="58" y="895" font-size="12.5" fill="#7c2d12">unplugging it would leave the gate floating <tspan font-weight="bold">at the MOSFET</tspan> &#8212; partial enhancement, relays chattering between STOCK and DBW.</text>
+<text x="44" y="914" font-size="12.5" fill="#7c2d12"><tspan font-weight="bold">With it on this board, a broken gate wire still leaves 10 k&#937; tied across gate and source.</tspan> Gate low. Coils dropped. STOCK.</text>
+<text x="44" y="933" font-size="12.5" fill="#7c2d12"><tspan font-weight="bold">And its ground lands one hole from the source&#8217;s.</tspan> Across a soldered bus that drop is microvolts, so this is cheap insurance rather than a</text>
+<text x="58" y="952" font-size="12.5" fill="#7c2d12">live hazard &#8212; but it is the habit that stays correct the day someone rebuilds the same circuit with wire instead of a bus.</text>
+<rect x="24" y="999" width="1132" height="140" rx="8" fill="#f0fdf4" stroke="#15803d" stroke-width="2"/>
+<text x="44" y="1026" font-size="14" font-weight="bold" fill="#166534">One thing this drawing changed: the Teensy terminal carries GATE + SENSE, not GATE + GND</text>
+<text x="44" y="1051" font-size="12.5" fill="#14532d"><tspan font-weight="bold">The E-stop sense divider is on this board</tspan> (R3/R4, tapped off the coil feed), and its output has to get back to a Teensy input &#8212; but</text>
+<text x="58" y="1070" font-size="12.5" fill="#14532d"><tspan font-weight="bold">no terminal in the &#167;3.5.4 count carried it.</tspan> The same omission as the gate-out way found on 2026-11-05, one board over.</text>
+<text x="44" y="1089" font-size="12.5" fill="#14532d"><tspan font-weight="bold">Swapping GND for SENSE on that block fixes both at once</tspan> and leaves the count untouched at 12 per vehicle, 36 for the fleet: the</text>
+<text x="58" y="1108" font-size="12.5" fill="#14532d">ground was never supposed to be there, and the sense line always was.</text>
+<rect x="24" y="1155" width="556" height="280" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
+<text x="44" y="1182" font-size="14" font-weight="bold" fill="#1e3a8a">Build order &#8212; unchanged; the layout follows it</text>
+<text x="44" y="1207" font-size="12" fill="#1e40af"><tspan font-weight="bold">1.</tspan> GND bus, GND spine, R1. Nothing else.</text>
+<text x="44" y="1225" font-size="12" fill="#1e40af"><tspan font-weight="bold">2.</tspan> Meter gate-to-GND: <tspan font-weight="bold">10 k&#937;</tspan>. No MOSFET to</text>
+<text x="58" y="1243" font-size="12" fill="#1e40af">confuse the reading, no coil to be damaged by it.</text>
+<text x="44" y="1261" font-size="12" fill="#1e40af"><tspan font-weight="bold">3.</tspan> Q1, then R2, then the four diodes.</text>
+<text x="58" y="1279" font-size="12" fill="#1e40af"><tspan font-weight="bold">Every band at the +12 V bus</tspan> &#8212; one reversed</text>
+<text x="58" y="1297" font-size="12" fill="#1e40af">diode is a short across the logic pack.</text>
+<text x="44" y="1315" font-size="12" fill="#1e40af"><tspan font-weight="bold">4.</tspan> Terminals, then coils last. Drive the gate from</text>
+<text x="58" y="1333" font-size="12" fill="#1e40af">a bench 3.3 V and <tspan font-weight="bold">listen for four clicks</tspan>.</text>
+<text x="44" y="1351" font-size="12" fill="#1e40af"><tspan font-weight="bold">5.</tspan> R3/R4 last, and <tspan font-weight="bold">meter the sense node before</tspan></text>
+<text x="58" y="1369" font-size="12" fill="#1e40af"><tspan font-weight="bold">the wire goes near a pin</tspan> &#8212; it starts at pack</text>
+<text x="58" y="1387" font-size="12" fill="#1e40af">volts and the Teensy 4.1 is not 5 V tolerant.</text>
+<rect x="600" y="1155" width="556" height="334" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+<text x="620" y="1182" font-size="14" font-weight="bold" fill="#5b21b6">Reading the drawing</text>
+<text x="620" y="1207" font-size="12" fill="#6d28d9"><tspan font-weight="bold">Thick coloured runs</tspan> are bare tinned wire soldered</text>
+<text x="634" y="1225" font-size="12" fill="#6d28d9">along the holes: three buses and the GND spine.</text>
+<text x="620" y="1243" font-size="12" fill="#6d28d9"><tspan font-weight="bold">Thin runs</tspan> are insulated hookup wire, 22&#8211;24 AWG.</text>
+<text x="620" y="1261" font-size="12" fill="#6d28d9"><tspan font-weight="bold">Dashed</tspan> means route it on the reverse side &#8212; it</text>
+<text x="634" y="1279" font-size="12" fill="#6d28d9">passes under the TO-220 and you cannot solder it</text>
+<text x="634" y="1297" font-size="12" fill="#6d28d9">afterwards.</text>
+<text x="620" y="1315" font-size="12" fill="#6d28d9"><tspan font-weight="bold">Crossings are fine.</tspan> The board is &#50577;&#47732; and the wire</text>
+<text x="634" y="1333" font-size="12" fill="#6d28d9">is insulated. What is never fine is two leads in one</text>
+<text x="634" y="1351" font-size="12" fill="#6d28d9">hole, which this script asserts rather than trusting</text>
+<text x="634" y="1369" font-size="12" fill="#6d28d9">the eye.</text>
+<text x="620" y="1387" font-size="12" fill="#6d28d9"><tspan font-weight="bold">No row to spare.</tspan> Rows 2&#8211;17 are the whole usable</text>
+<text x="634" y="1405" font-size="12" fill="#6d28d9">height: the GND bus is on the LAST usable row.</text>
+<text x="620" y="1423" font-size="12" fill="#6d28d9"><tspan font-weight="bold">Mounting:</tspan> a corner M3 is out &#8212; the corner hole is</text>
+<text x="634" y="1441" font-size="12" fill="#6d28d9"><tspan font-weight="bold">1.9 mm</tspan> from the side edge against an M3&#8217;s 1.6 mm</text>
+<text x="634" y="1459" font-size="12" fill="#6d28d9">radius. Mid-edge on the long sides there is 3.4 mm.</text>
 </svg>

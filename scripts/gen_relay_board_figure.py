@@ -50,33 +50,45 @@ The board is 거상인 `[GA6] 50 x 80` double-sided, 2.54 mm pitch:
     80 / 2.54 = 31.5  ->  31 columns
     50 / 2.54 = 19.7  ->  19 rows
 
-COUNTED 2026-11-05, on the square `[GA2] 80 x 80` from the same order and the
-same series: 31 x 31 holes, of which a one-hole border on each edge is not
-usable - 29 x 29 remain. Divide-by-pitch was right about the HOLES and said
-nothing about the WORKING area, which is the number a layout actually needs.
-The GA6 shares the 80 mm side, so its columns are the same 31 -> 29:
+COUNTED 2026-11-05. The 80 mm side on the square `[GA2] 80 x 80` from the same
+order and the same series - 31, matching the arithmetic - and the 50 mm side on
+a GA6 itself: 18, NOT the 19 the arithmetic gave. A one-hole border on each
+edge is not working area:
 
-    holes   31 x 19
-    usable  29 x 17      columns 2..30, rows 2..18
+    holes   31 x 18
+    usable  29 x 16      columns 2..30, rows 2..17
 
-The 50 mm side is the same margin rule applied to the other dimension and has
-not itself been counted - one GA6 and this comment stops hedging.
+Two things the division could not have told you. It was silent about the
+WORKING area, which is the number a layout needs. And it assumed one margin,
+where the board has two:
+
+    width   (80 - 30 x 2.54) / 2 = 1.9 mm    <- 31 holes, as derived
+    height  (50 - 17 x 2.54) / 2 = 3.4 mm    <- 18 holes, one FEWER
+
+So the 50 mm side is not the 80 mm side scaled, and rounding 19.7 down to 19
+was over by one on the only axis with no slack to give.
+
+THE ROW BUDGET IS EXACTLY SPENT. The layout runs rows 2..17 - sixteen rows into
+sixteen usable - so the GND bus sits on the LAST usable row. Nothing may be
+added below it, and any future edit that needs a row has to take one back from
+the bus spacing above.
 
 The layout below already lives inside that ring and check() now enforces it
 rather than the full grid. A lead in the border ring is a lead with no room for
 the bus that has to reach it.
 
-That 1.9 mm from the outer hole centre to the board edge (80 - 30 x 2.54, both
-sides) also settles the mounting: an M3 wants 1.6 mm of radius and would leave
-0.3 mm of FR-4, so the border ring cannot take a screw. The mount costs a
-USABLE hole at each corner, or the enclosure holds the board without screws.
+MOUNTING: a corner M3 is out. The corner hole is 1.9 mm from the left or right
+edge and an M3 wants 1.6 mm of radius, leaving 0.3 mm of FR-4. Mid-edge on the
+long sides there is 3.4 mm, which drills - but a corner screw costs a USABLE
+hole, and the top-left corner is where the +12 V bus starts. The printed
+enclosure gripping the board without screws is the cheaper answer.
 """
 
 import io
 from pathlib import Path
 
 # ---------------------------------------------------------------- the geometry
-COLS, ROWS = 31, 19               # counted 2026-11-05 on the GA2 - see docstring
+COLS, ROWS = 31, 18               # both sides counted 2026-11-05 - see docstring
 BORDER = 1                        # outer ring: holes exist, working area does not
 P = 26                            # px per hole pitch
 X0, Y0 = 100, 130                 # centre of hole (1, 1)
@@ -228,7 +240,7 @@ e(f'<text x="24" y="36" font-size="19" font-weight="bold" fill="#0f172a">'
 e(f'<text x="24" y="58" font-size="12.5" fill="#475569">'
   f'[GA6] 50 &#215; 80 double-sided, 2.54 mm pitch: {COLS} &#215; {ROWS} holes, of which the '
   f'{BOLD}outer ring is border &#8212; {COLS-2*BORDER} &#215; {ROWS-2*BORDER} usable{EB} '
-  f'(counted on the square GA2 from the same order).</text>')
+  f'(both sides counted 2026-11-05).</text>')
 e(f'<text x="24" y="77" font-size="12.5" fill="#475569">'
   f'One MOSFET, four coils, four flyback diodes, the gate pulldown, and the E-stop sense divider. '
   f'The schematic is a separate figure; this one is only about placement.</text>')
@@ -452,10 +464,11 @@ panel(600, y + 16, 556, SIDE_H, "#f5f3ff", "#7c3aed",
     "  is insulated. What is never fine is two leads in one",
     "  hole, which this script asserts rather than trusting",
     "  the eye.",
-    "**Mounting:** the border ring cannot take a screw. Its",
-    "  holes sit **1.9 mm** from the edge and an M3 wants",
-    "  1.6 mm of radius, so a corner screw costs a USABLE",
-    "  hole &#8212; or the enclosure grips the board instead.",
+    "**No row to spare.** Rows 2&#8211;17 are the whole usable",
+    "  height: the GND bus is on the LAST usable row.",
+    "**Mounting:** a corner M3 is out &#8212; the corner hole is",
+    "  **1.9 mm** from the side edge against an M3&#8217;s 1.6 mm",
+    "  radius. Mid-edge on the long sides there is 3.4 mm.",
 ], "#6d28d9", fs=12, ls=18)
 
 H = int(y2 + 30)

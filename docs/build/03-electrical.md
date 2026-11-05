@@ -789,7 +789,7 @@ flexes, and a flexing board works a socketed Teensy loose.
 Because there is no bench version, **the first physical build of this board is also the final
 one** — so the placement is worth settling before the iron is hot rather than during.
 
-![Relay-driver perfboard placement on a 31 by 19 hole grid whose outer ring is unusable border, leaving 29 by 17: a +12 V bus along row 2, a DRAIN bus
+![Relay-driver perfboard placement on a 31 by 18 hole grid whose outer ring is unusable border, leaving 29 by 16: a +12 V bus along row 2, a DRAIN bus
 along row 8 joining the four coil low sides, and a GND bus along row 17; four pluggable coil
 terminals K1 to K4 between the two upper buses with a 1N4007 beside each, band to +12 V; the
 IRLZ44N standing upright with gate, drain and source marked; the 10 k pulldown dropping from the
@@ -821,26 +821,34 @@ of the MOSFET source.** *Edit the script and re-run it; do not edit the SVG.*
 > hazard — but it is the habit that stays correct the day someone rebuilds the same circuit with
 > wire instead of a bus.
 
-**The grid is counted, and the outer ring is not working area.** 80 / 2.54 = 31.5 and
-50 / 2.54 = 19.7 give **31 × 19 holes**, and that part was right. **Counted 2026-11-05** on the
-square `GA2 80 × 80` from the same order and the same series — **31 × 31 holes, 29 × 29 usable**,
-because a one-hole border on each edge has no room for the bus that would have to reach it. The
-GA6 shares the 80 mm side, so the figure now draws **31 × 19 holes and asserts every lead into the
-29 × 17 usable ring** ([row 122](../order-log.md#L122)).
+**The grid is counted on both sides, and the arithmetic was over by one.** 80 / 2.54 = 31.5 and
+50 / 2.54 = 19.7 would give 31 × 19. **Counted 2026-11-05** ([row 122](../order-log.md#L122)): the
+80 mm side is **31**, as derived — but the 50 mm side is **18, not 19.** With a one-hole border
+on each edge that has no room for the bus that would have to reach it, the figure draws
+**31 × 18 holes and asserts every lead into the 29 × 16 usable ring.**
+
+> [!WARNING]
+> **The row budget is exactly spent.** The layout runs **rows 2–17 — sixteen rows into sixteen** —
+> so the **GND bus sits on the last usable row.** Nothing goes below it, and any later edit that
+> wants a row has to take one back from the spacing above. *The columns are not tight: 28 of 29.*
+>
+> **This is also why a 3-pin terminal cannot stand in for a coil 2-pin here.** At 5.08 mm it spans
+> four holes instead of two, so a coil block at row 4 would reach **row 8 — the DRAIN bus**, into
+> the very hole that coil's own `85` jumper already occupies. *The spare blocks being all 3-pin is
+> a layout fact, and this is its shape on this board.*
 
 > [!NOTE]
-> **Divide-by-pitch answered the wrong question.** It gives the holes; a layout needs the
-> **working area**, and the two differ by a ring you only see by counting. The layout was already
-> inside it — *nothing moved* — but the check that proves so is now in the generator rather than
-> in the eye of whoever next edits it.
+> **Two things the division could not have told you.** It is silent about the **working area**,
+> which is the number a layout needs; and it assumes one margin where the board has two —
+> **1.9 mm** across the width (80 − 30 × 2.54, halved) against **3.4 mm** across the height
+> (50 − 17 × 2.54, halved). *The 50 mm side is not the 80 mm side scaled, and rounding 19.7 down
+> was over by one on the only axis with no slack to give.*
 >
-> **The same 1.9 mm settles the mounting.** The outer hole centre sits 1.9 mm from the edge
-> (80 − 30 × 2.54, halved), and an M3 wants 1.6 mm of radius — **0.3 mm of FR-4 left, so the
-> border ring cannot take a screw.** A corner screw costs a *usable* hole, or the printed
-> enclosure grips the board without one. **Decide this when the enclosure is drawn**, because the
-> top-left corner is currently where the +12 V bus starts.
->
-> **The 50 mm side is still the margin rule, not a count** — one GA6 out of the bag closes it.
+> **The same two margins settle the mounting.** A **corner M3 is out** — the corner hole is 1.9 mm
+> from the side edge against an M3's 1.6 mm radius, **0.3 mm of FR-4.** Mid-edge on the long sides
+> there is 3.4 mm and it drills, but a screw there still costs a *usable* hole. **Decide it when
+> the enclosure is drawn**, and note the top-left corner is where the +12 V bus starts — the
+> printed enclosure gripping the board without screws is the cheaper answer.
 
 **Three rules for the board that goes in.**
 
