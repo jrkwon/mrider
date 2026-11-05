@@ -789,7 +789,7 @@ flexes, and a flexing board works a socketed Teensy loose.
 Because there is no bench version, **the first physical build of this board is also the final
 one** — so the placement is worth settling before the iron is hot rather than during.
 
-![Relay-driver perfboard placement on a 31 by 19 hole grid: a +12 V bus along row 2, a DRAIN bus
+![Relay-driver perfboard placement on a 31 by 19 hole grid whose outer ring is unusable border, leaving 29 by 17: a +12 V bus along row 2, a DRAIN bus
 along row 8 joining the four coil low sides, and a GND bus along row 17; four pluggable coil
 terminals K1 to K4 between the two upper buses with a 1N4007 beside each, band to +12 V; the
 IRLZ44N standing upright with gate, drain and source marked; the 10 k pulldown dropping from the
@@ -800,9 +800,9 @@ order](../images/relay-board-perfboard-layout.svg)
 
 **The drawing is generated** — [`scripts/gen_relay_board_figure.py`](https://github.com/jrkwon/mrider/blob/main/scripts/gen_relay_board_figure.py)
 holds the layout as a hole-indexed netlist and asserts what a reader cannot check by looking:
-**no two leads share a hole**, every lead is inside the grid, the gate node stays under four holes
-long, and **the pulldown grounds within one hole of the MOSFET source.** *Edit the script and
-re-run it; do not edit the SVG.*
+**no two leads share a hole**, **every lead is inside the usable ring** rather than merely on
+the board, the gate node stays under four holes long, and **the pulldown grounds within one hole
+of the MOSFET source.** *Edit the script and re-run it; do not edit the SVG.*
 
 > [!IMPORTANT]
 > **The pulldown goes on THIS board, beside the MOSFET — never at the Teensy end**
@@ -821,10 +821,26 @@ re-run it; do not edit the SVG.*
 > hazard — but it is the habit that stays correct the day someone rebuilds the same circuit with
 > wire instead of a bus.
 
-**The grid is derived, not yet confirmed.** 80 / 2.54 = 31.5 and 50 / 2.54 = 19.7, so the figure
-draws **31 × 19**. Twelve GA6 boards are in hand ([row 122](../order-log.md#L122)), so this is a
-ten-second check: count the holes, and count whether a border strip costs a row. The layout has
-slack for one, but the figure should stop guessing once the part is on the bench.
+**The grid is counted, and the outer ring is not working area.** 80 / 2.54 = 31.5 and
+50 / 2.54 = 19.7 give **31 × 19 holes**, and that part was right. **Counted 2026-11-05** on the
+square `GA2 80 × 80` from the same order and the same series — **31 × 31 holes, 29 × 29 usable**,
+because a one-hole border on each edge has no room for the bus that would have to reach it. The
+GA6 shares the 80 mm side, so the figure now draws **31 × 19 holes and asserts every lead into the
+29 × 17 usable ring** ([row 122](../order-log.md#L122)).
+
+> [!NOTE]
+> **Divide-by-pitch answered the wrong question.** It gives the holes; a layout needs the
+> **working area**, and the two differ by a ring you only see by counting. The layout was already
+> inside it — *nothing moved* — but the check that proves so is now in the generator rather than
+> in the eye of whoever next edits it.
+>
+> **The same 1.9 mm settles the mounting.** The outer hole centre sits 1.9 mm from the edge
+> (80 − 30 × 2.54, halved), and an M3 wants 1.6 mm of radius — **0.3 mm of FR-4 left, so the
+> border ring cannot take a screw.** A corner screw costs a *usable* hole, or the printed
+> enclosure grips the board without one. **Decide this when the enclosure is drawn**, because the
+> top-left corner is currently where the +12 V bus starts.
+>
+> **The 50 mm side is still the margin rule, not a count** — one GA6 out of the bag closes it.
 
 **Three rules for the board that goes in.**
 

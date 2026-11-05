@@ -43,24 +43,41 @@ what a reader cannot check:
     which is the whole point of the drawing
   * no panel text overlaps another panel
 
-THE GRID IS DERIVED AND NOT YET CONFIRMED
------------------------------------------
+THE GRID IS CONFIRMED - AND THE OUTER RING IS NOT WORKING AREA
+--------------------------------------------------------------
 The board is 거상인 `[GA6] 50 x 80` double-sided, 2.54 mm pitch:
 
     80 / 2.54 = 31.5  ->  31 columns
     50 / 2.54 = 19.7  ->  19 rows
 
-Twelve of them are in hand (order log row 122), so this is a ten-second check:
-count the holes and confirm 31 x 19. A border strip would cost a row or two and
-the layout has slack for it, but the figure should not keep guessing once the
-part is on the bench.
+COUNTED 2026-11-05, on the square `[GA2] 80 x 80` from the same order and the
+same series: 31 x 31 holes, of which a one-hole border on each edge is not
+usable - 29 x 29 remain. Divide-by-pitch was right about the HOLES and said
+nothing about the WORKING area, which is the number a layout actually needs.
+The GA6 shares the 80 mm side, so its columns are the same 31 -> 29:
+
+    holes   31 x 19
+    usable  29 x 17      columns 2..30, rows 2..18
+
+The 50 mm side is the same margin rule applied to the other dimension and has
+not itself been counted - one GA6 and this comment stops hedging.
+
+The layout below already lives inside that ring and check() now enforces it
+rather than the full grid. A lead in the border ring is a lead with no room for
+the bus that has to reach it.
+
+That 1.9 mm from the outer hole centre to the board edge (80 - 30 x 2.54, both
+sides) also settles the mounting: an M3 wants 1.6 mm of radius and would leave
+0.3 mm of FR-4, so the border ring cannot take a screw. The mount costs a
+USABLE hole at each corner, or the enclosure holds the board without screws.
 """
 
 import io
 from pathlib import Path
 
 # ---------------------------------------------------------------- the geometry
-COLS, ROWS = 31, 19               # derived from 50 x 80 at 2.54 mm - see docstring
+COLS, ROWS = 31, 19               # counted 2026-11-05 on the GA2 - see docstring
+BORDER = 1                        # outer ring: holes exist, working area does not
 P = 26                            # px per hole pitch
 X0, Y0 = 100, 130                 # centre of hole (1, 1)
 
@@ -132,7 +149,13 @@ for c in (7, 12, 17, 22):
 # ------------------------------------------------------------- the assertions
 def check():
     def inside(h):
-        return 1 <= h[0] <= COLS and 1 <= h[1] <= ROWS
+        """Inside the USABLE ring, not merely on the board.
+
+        The border ring has holes and no room: the bus or jumper that has to
+        reach a lead there runs off the edge. Counted, not assumed - docstring.
+        """
+        return (1 + BORDER <= h[0] <= COLS - BORDER
+                and 1 + BORDER <= h[1] <= ROWS - BORDER)
 
     leads = []
     for d, _, a, b, _, _ in PARTS:
@@ -144,7 +167,8 @@ def check():
 
     seen = {}
     for h, owner in leads:
-        assert inside(h), f"{owner} lead at {h} is off the {COLS}x{ROWS} grid"
+        assert inside(h), (f"{owner} lead at {h} is outside the usable "
+                           f"{COLS-2*BORDER}x{ROWS-2*BORDER} ring")
         assert h not in seen, f"two leads in hole {h}: {seen[h]} and {owner}"
         seen[h] = owner
 
@@ -202,8 +226,9 @@ e('<rect/>')
 e(f'<text x="24" y="36" font-size="19" font-weight="bold" fill="#0f172a">'
   f'Relay-driver board on perfboard &#8212; where everything sits</text>')
 e(f'<text x="24" y="58" font-size="12.5" fill="#475569">'
-  f'[GA6] 50 &#215; 80 double-sided, 2.54 mm pitch, drawn as {COLS} columns &#215; {ROWS} rows. '
-  f'{BOLD}Count the holes on the board in hand and confirm.{EB}</text>')
+  f'[GA6] 50 &#215; 80 double-sided, 2.54 mm pitch: {COLS} &#215; {ROWS} holes, of which the '
+  f'{BOLD}outer ring is border &#8212; {COLS-2*BORDER} &#215; {ROWS-2*BORDER} usable{EB} '
+  f'(counted on the square GA2 from the same order).</text>')
 e(f'<text x="24" y="77" font-size="12.5" fill="#475569">'
   f'One MOSFET, four coils, four flyback diodes, the gate pulldown, and the E-stop sense divider. '
   f'The schematic is a separate figure; this one is only about placement.</text>')
@@ -213,11 +238,19 @@ bx0, by0 = hx(1) - P, hy(1) - P
 bx1, by1 = hx(COLS) + P, hy(ROWS) + P
 e(f'<rect x="{bx0}" y="{by0}" width="{bx1-bx0}" height="{by1-by0}" rx="7" '
   f'fill="#fdf6e3" stroke="#a16207" stroke-width="2.5"/>')
-e('<g fill="#d6c9a8">')
 for c in range(1, COLS + 1):
     for r in range(1, ROWS + 1):
-        e(f'<circle cx="{hx(c)}" cy="{hy(r)}" r="3.1"/>')
-e('</g>')
+        edge = (c <= BORDER or c > COLS - BORDER
+                or r <= BORDER or r > ROWS - BORDER)
+        e(f'<circle cx="{hx(c)}" cy="{hy(r)}" r="3.1" '
+          f'fill="{"#ebe3d2" if edge else "#d6c9a8"}"/>')
+
+# the usable ring, drawn because a builder counting in from the edge is
+# exactly the person who puts a lead in the border by one hole
+e(f'<rect x="{hx(1+BORDER)-13}" y="{hy(1+BORDER)-13}" '
+  f'width="{hx(COLS-BORDER)-hx(1+BORDER)+26}" '
+  f'height="{hy(ROWS-BORDER)-hy(1+BORDER)+26}" rx="4" fill="none" '
+  f'stroke="#a16207" stroke-width="1.2" stroke-dasharray="5 4" opacity="0.65"/>')
 
 # column / row rulers
 e('<g font-size="9.5" fill="#92400e" text-anchor="middle">')
@@ -419,8 +452,10 @@ panel(600, y + 16, 556, SIDE_H, "#f5f3ff", "#7c3aed",
     "  is insulated. What is never fine is two leads in one",
     "  hole, which this script asserts rather than trusting",
     "  the eye.",
-    "**Mounting:** four M3 at the corners &#8212; but the outer",
-    "  holes sit ~2.5 mm in, too close. Check the GA6 for",
+    "**Mounting:** the border ring cannot take a screw. Its",
+    "  holes sit **1.9 mm** from the edge and an M3 wants",
+    "  1.6 mm of radius, so a corner screw costs a USABLE",
+    "  hole &#8212; or the enclosure grips the board instead.",
 ], "#6d28d9", fs=12, ls=18)
 
 H = int(y2 + 30)
@@ -432,7 +467,7 @@ e('</svg>')
 
 dst = Path("docs/images/relay-board-perfboard-layout.svg")
 io.open(dst, "w", encoding="utf-8").write("\n".join(out))
-print(f"wrote {dst}  ({COLS}x{ROWS} grid, {len(PARTS)} parts, "
+print(f"wrote {dst}  ({COLS}x{ROWS} holes, {COLS-2*BORDER}x{ROWS-2*BORDER} usable, {len(PARTS)} parts, "
       f"{len(TERMINALS)} terminals, {len(JUMPERS)} jumpers, canvas {W}x{H})")
-print("assertions passed: no shared holes, pulldown ground within one hole of "
-      "the source, no panel overlaps")
+print("assertions passed: every lead inside the usable ring, no shared holes, "
+      "pulldown ground within one hole of the source, no panel overlaps")
