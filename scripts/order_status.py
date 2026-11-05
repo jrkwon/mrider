@@ -40,9 +40,13 @@ check in the Verify column to have actually been performed.
 
 TABLE FORMAT
 ------------
-Any markdown table row whose first cell is an integer is read as a line item:
+Any markdown table row whose first cell is an integer is read as a line item.
+That cell must stay a BARE INTEGER - the row's cross-reference anchor lives in
+the Item cell (`<a id="L122">`) for exactly this reason. `Row` is a sort key
+grouping a BOM item with its sub-letters; it is not a part number and not a
+GitHub issue number. See the order log's own warning under "The `Row` column".
 
-    | # | Item | Qty | Vendor | Unit KRW | Ordered | Arrived | Secured | Paid KRW | Verify |
+    | Row | Item | Qty | Vendor | Unit KRW | Ordered | Arrived | Secured | Paid KRW | Verify |
 
 Dates are YYYY-MM-DD, or `.` for not yet. Secured is `n/N`. Paid is the total
 actually charged for that row, blank until it is known.
@@ -122,6 +126,21 @@ def money(cell):
         return None
 
 
+ANCHOR = re.compile(r'^\s*<a id="L\d+"></a>\s*')
+
+
+def item_name(cell):
+    """The Item cell without its cross-reference anchor.
+
+    Every row carries `<a id="Lnnn"></a>` at the head of its Item cell so
+    that `[#12b](#L122)` has somewhere to land. It cannot go in column 1,
+    which has to stay a bare integer for parse() to find the row at all.
+    This strips it back out, because it is markup for the rendered page and
+    not part of the part's name.
+    """
+    return ANCHOR.sub('', cell).strip()
+
+
 def parse():
     """Every line item in the log, as dicts. Order preserved."""
     rows = []
@@ -137,7 +156,7 @@ def parse():
         if len(cells) < 9 or not cells[0].isdigit():
             continue
         rows.append(dict(
-            bom=int(cells[0]), item=cells[1], qty=cells[2], vendor=cells[3],
+            bom=int(cells[0]), item=item_name(cells[1]), qty=cells[2], vendor=cells[3],
             unit=money(cells[4]), ordered=cells[5], arrived=cells[6],
             secured=cells[7], paid=money(cells[8]),
             verify=cells[9] if len(cells) > 9 else '', batch=batch,
@@ -176,7 +195,7 @@ def set_cell(bom, column, value):
         lines[i] = '|' + '|'.join(cells) + '|'
         LOG.write_text('\n'.join(lines))
         return cells[1].strip()
-    die(f'no line item #{bom} in {LOG.relative_to(REPO)}')
+    die(f'no line item in row {bom} of {LOG.relative_to(REPO)}')
 
 
 def die(msg):
@@ -203,7 +222,7 @@ def main():
         if not DATE.match(d):
             die(f'--date {d!r} is not YYYY-MM-DD')
         name = set_cell(args.order, 'ordered', d)
-        print(f'#{args.order} {name}: ordered {d}')
+        print(f'L{args.order} {name}: ordered {d}')
         if args.paid:
             v = re.sub(r'[^\d]', '', args.paid)
             set_cell(args.order, 'paid', f'{int(v):,}')
@@ -216,7 +235,7 @@ def main():
         if not DATE.match(d):
             die(f'--date {d!r} is not YYYY-MM-DD')
         name = set_cell(args.arrive, 'arrived', d)
-        print(f'#{args.arrive} {name}: arrived {d}')
+        print(f'L{args.arrive} {name}: arrived {d}')
         print('      NOT yet secured - run the Verify check, then --secure')
         acted = True
     if args.secure is not None:
@@ -224,12 +243,12 @@ def main():
             die('--secure needs --count (how many units are confirmed good)')
         rows = {r['bom']: r for r in parse()}
         if args.secure not in rows:
-            die(f'no line item #{args.secure}')
+            die(f'no line item in row {args.secure}')
         _have, need = secured_count(rows[args.secure]['secured'])
         if args.count > need:
             die(f'--count {args.count} exceeds the {need} on order for #{args.secure}')
         name = set_cell(args.secure, 'secured', f'{args.count}/{need}')
-        print(f'#{args.secure} {name}: secured {args.count}/{need}')
+        print(f'L{args.secure} {name}: secured {args.count}/{need}')
         acted = True
     if acted:
         print()
@@ -285,7 +304,7 @@ def main():
         if landed and have < need:
             unverified.append(r)
 
-    print(f'{"#":>3}  {"item":<34} {"qty":>5}  {"ordered":<10} {"arrived":<10} '
+    print(f'{"row":>3}  {"item":<34} {"qty":>5}  {"ordered":<10} {"arrived":<10} '
           f'{"secured":>8}  {"paid":>10}')
     print('-' * 92)
     cur = None
@@ -332,19 +351,19 @@ def main():
     if mismatch:
         print(f'  CHECK: {len(mismatch)} row(s) where paid does not equal unit x qty:')
         for r, want, why in mismatch:
-            print(f'      #{r["bom"]} {r["item"][:30]:<30} paid {r["paid"]:>9,} '
+            print(f'      L{r["bom"]} {r["item"][:30]:<30} paid {r["paid"]:>9,} '
                   f'vs {want:>9,}{why}')
     if unpriced:
         print(f'  NOT IN THE TOTAL: {len(unpriced)} row(s) have no unit price and are not paid.')
         for r in unpriced:
-            print(f'      #{r["bom"]} {r["item"][:44]}')
+            print(f'      L{r["bom"]} {r["item"][:44]}')
         print('  The projection above is therefore a FLOOR, not an estimate.')
     print('=' * 92)
 
     if waiting:
         print(f'\nOrdered, not yet arrived ({len(waiting)}):')
         for r in waiting:
-            print(f'  #{r["bom"]:<3} {r["item"][:40]:<40} ordered {r["ordered"]}')
+            print(f'  L{r["bom"]:<3} {r["item"][:40]:<40} ordered {r["ordered"]}')
     if unverified:
         print(f'\nArrived, NOT yet secured ({len(unverified)}) - '
               f'the check in the Verify column has not been done:')
@@ -353,7 +372,7 @@ def main():
             # Show the count, because arrivals are routinely partial: a row can
             # be part-delivered and part-outstanding at the same time, and
             # "arrived" alone reads as though every unit is on the shelf.
-            print(f'  #{r["bom"]:<3} {r["item"][:30]:<30} {have}/{need} secured  '
+            print(f'  L{r["bom"]:<3} {r["item"][:30]:<30} {have}/{need} secured  '
                   f'{r["verify"][:34]}')
     if not waiting and not unverified:
         print('\nNothing outstanding.')

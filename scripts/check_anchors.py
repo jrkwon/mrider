@@ -22,6 +22,15 @@ to get wrong and impossible to notice by reading.
 This checker closes that gap. Stdlib only, so it adds nothing to
 requirements-docs.txt and runs anywhere Python 3 does.
 
+IT ALSO FAILS A BARE `href="#"`
+------------------------------
+A link to `#` renders as a link, invites a click and goes nowhere. This checker
+used to skip those as no-ops, and 49 accumulated in the order log - every
+cross-reference in the file, `[#8a](#)` and the rest, written as if the row
+keys were anchors when no anchor existed. The reader cannot tell one from a
+working link without clicking it, which is worse than plain text would have
+been. The Material theme emits no bare `#`, so every one found is ours.
+
 WHAT IT DELIBERATELY DOES NOT DO
 --------------------------------
 It ignores links whose *target page* does not exist. `--strict` already fails
@@ -87,6 +96,7 @@ def main() -> int:
 
     checked = 0
     broken: dict[tuple[str, str, str], int] = {}
+    dangling: dict[tuple[str, str, str], int] = {}
 
     for f in sorted(site.rglob("*.html")):
         if f.name != "index.html":
@@ -98,7 +108,16 @@ def main() -> int:
                 continue
             path, _, frag = href.partition("#")
             if not frag:
-                continue  # bare '#', a no-op link
+                # A bare '#' is a link that renders, invites a click and goes
+                # nowhere. This used to be skipped as "a no-op link", and 49 of
+                # them accumulated in the order log's cross-references - every
+                # [#8a](#) in the file. A reader cannot tell one from a working
+                # link until they click it, which is strictly worse than no
+                # link at all. The Material theme emits none, so every one is
+                # ours.
+                key = (source or "<home>", href, "")
+                dangling[key] = dangling.get(key, 0) + 1
+                continue
 
             target = resolve(source, path)
             if target not in ids:
@@ -112,9 +131,24 @@ def main() -> int:
 
     print(f"anchors checked: {checked} across {len(ids)} pages")
 
-    if not broken:
+    if dangling:
+        total = sum(dangling.values())
+        print(f'dangling: {total} link{"s" if total != 1 else ""} with href="#"')
+        sys.stdout.flush()
+        print('\nLINKS THAT GO NOWHERE (href="#")\n', file=sys.stderr)
+        for source, href, _ in sorted(dangling):
+            count = dangling[(source, href, "")]
+            print(f"  {source}  ({count} link{'s' if count != 1 else ''})",
+                  file=sys.stderr)
+        print("\n  Give each one a real target, or make it plain text.\n",
+              file=sys.stderr)
+
+    if not broken and not dangling:
         print("no broken anchors")
         return 0
+
+    if not broken:
+        return 1
 
     total = sum(broken.values())
     print(f"broken: {len(broken)} distinct "
