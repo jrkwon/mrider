@@ -453,13 +453,16 @@ y = panel(24, y + 16, 1132, 123, "#f0fdf4", "#15803d",
     "  ground was never supposed to be there, and the sense line always was.",
 ], "#14532d")
 
-SIDE_H = 52 + 18 * 12 + 12
+SIDE_H = 52 + 18 * 15 + 12
 y2 = panel(24, y + 16, 556, SIDE_H, "#eff6ff", "#1d4ed8",
            "Build order &#8212; unchanged; the layout follows it",
            "#1e3a8a", [
     "**1.** GND bus, GND spine, R1. Nothing else.",
-    "**2.** Meter gate-to-GND: **10 k&#937;**. No MOSFET to",
-    "  confuse the reading, no coil to be damaged by it.",
+    "**2.** Meter **10 k&#937;** from R1&#8217;s upper pad to the GND",
+    "  bus. The reading is of **the two joints and the two**",
+    "  **holes**, not of the resistor &#8212; a meter could check",
+    "  the part in your hand. Nothing else is fitted, so a",
+    "  wrong number has exactly one suspect.",
     "**3.** Q1, then R2, then the four diodes.",
     "  **Every band at the +12 V bus** &#8212; one reversed",
     "  diode is a short across the logic pack.",

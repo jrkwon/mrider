@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="1465" viewBox="0 0 1180 1465" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
-<rect width="1180" height="1465" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="1519" viewBox="0 0 1180 1519" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+<rect width="1180" height="1519" fill="#ffffff"/>
 <text x="24" y="36" font-size="19" font-weight="bold" fill="#0f172a">Relay-driver board on perfboard &#8212; where everything sits</text>
 <text x="24" y="58" font-size="12.5" fill="#475569">[GA6] 50 &#215; 80 double-sided, 2.54 mm pitch: 29 &#215; 18 holes counted end to end, <tspan font-weight="bold">27 &#215; 16 after the one-hole margin this layout keeps</tspan> (both sides counted 2026-11-05).</text>
 <text x="24" y="77" font-size="12.5" fill="#475569">One MOSFET, four coils, four flyback diodes, the gate pulldown, and the E-stop sense divider. The schematic is a separate figure; this one is only about placement.</text>
@@ -715,19 +715,22 @@
 <text x="58" y="1070" font-size="12.5" fill="#14532d"><tspan font-weight="bold">no terminal in the &#167;3.5.4 count carried it.</tspan> The same omission as the gate-out way found on 2026-11-05, one board over.</text>
 <text x="44" y="1089" font-size="12.5" fill="#14532d"><tspan font-weight="bold">Swapping GND for SENSE on that block fixes both at once</tspan> and leaves the count untouched at 12 per vehicle, 36 for the fleet: the</text>
 <text x="58" y="1108" font-size="12.5" fill="#14532d">ground was never supposed to be there, and the sense line always was.</text>
-<rect x="24" y="1155" width="556" height="280" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
+<rect x="24" y="1155" width="556" height="334" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
 <text x="44" y="1182" font-size="14" font-weight="bold" fill="#1e3a8a">Build order &#8212; unchanged; the layout follows it</text>
 <text x="44" y="1207" font-size="12" fill="#1e40af"><tspan font-weight="bold">1.</tspan> GND bus, GND spine, R1. Nothing else.</text>
-<text x="44" y="1225" font-size="12" fill="#1e40af"><tspan font-weight="bold">2.</tspan> Meter gate-to-GND: <tspan font-weight="bold">10 k&#937;</tspan>. No MOSFET to</text>
-<text x="58" y="1243" font-size="12" fill="#1e40af">confuse the reading, no coil to be damaged by it.</text>
-<text x="44" y="1261" font-size="12" fill="#1e40af"><tspan font-weight="bold">3.</tspan> Q1, then R2, then the four diodes.</text>
-<text x="58" y="1279" font-size="12" fill="#1e40af"><tspan font-weight="bold">Every band at the +12 V bus</tspan> &#8212; one reversed</text>
-<text x="58" y="1297" font-size="12" fill="#1e40af">diode is a short across the logic pack.</text>
-<text x="44" y="1315" font-size="12" fill="#1e40af"><tspan font-weight="bold">4.</tspan> Terminals, then coils last. Drive the gate from</text>
-<text x="58" y="1333" font-size="12" fill="#1e40af">a bench 3.3 V and <tspan font-weight="bold">listen for four clicks</tspan>.</text>
-<text x="44" y="1351" font-size="12" fill="#1e40af"><tspan font-weight="bold">5.</tspan> R3/R4 last, and <tspan font-weight="bold">meter the sense node before</tspan></text>
-<text x="58" y="1369" font-size="12" fill="#1e40af"><tspan font-weight="bold">the wire goes near a pin</tspan> &#8212; it starts at pack</text>
-<text x="58" y="1387" font-size="12" fill="#1e40af">volts and the Teensy 4.1 is not 5 V tolerant.</text>
+<text x="44" y="1225" font-size="12" fill="#1e40af"><tspan font-weight="bold">2.</tspan> Meter <tspan font-weight="bold">10 k&#937;</tspan> from R1&#8217;s upper pad to the GND</text>
+<text x="58" y="1243" font-size="12" fill="#1e40af">bus. The reading is of <tspan font-weight="bold">the two joints and the two</tspan></text>
+<text x="58" y="1261" font-size="12" fill="#1e40af"><tspan font-weight="bold">holes</tspan>, not of the resistor &#8212; a meter could check</text>
+<text x="58" y="1279" font-size="12" fill="#1e40af">the part in your hand. Nothing else is fitted, so a</text>
+<text x="58" y="1297" font-size="12" fill="#1e40af">wrong number has exactly one suspect.</text>
+<text x="44" y="1315" font-size="12" fill="#1e40af"><tspan font-weight="bold">3.</tspan> Q1, then R2, then the four diodes.</text>
+<text x="58" y="1333" font-size="12" fill="#1e40af"><tspan font-weight="bold">Every band at the +12 V bus</tspan> &#8212; one reversed</text>
+<text x="58" y="1351" font-size="12" fill="#1e40af">diode is a short across the logic pack.</text>
+<text x="44" y="1369" font-size="12" fill="#1e40af"><tspan font-weight="bold">4.</tspan> Terminals, then coils last. Drive the gate from</text>
+<text x="58" y="1387" font-size="12" fill="#1e40af">a bench 3.3 V and <tspan font-weight="bold">listen for four clicks</tspan>.</text>
+<text x="44" y="1405" font-size="12" fill="#1e40af"><tspan font-weight="bold">5.</tspan> R3/R4 last, and <tspan font-weight="bold">meter the sense node before</tspan></text>
+<text x="58" y="1423" font-size="12" fill="#1e40af"><tspan font-weight="bold">the wire goes near a pin</tspan> &#8212; it starts at pack</text>
+<text x="58" y="1441" font-size="12" fill="#1e40af">volts and the Teensy 4.1 is not 5 V tolerant.</text>
 <rect x="600" y="1155" width="556" height="334" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
 <text x="620" y="1182" font-size="14" font-weight="bold" fill="#5b21b6">Reading the drawing</text>
 <text x="620" y="1207" font-size="12" fill="#6d28d9"><tspan font-weight="bold">Thick coloured runs</tspan> are bare tinned wire soldered</text>

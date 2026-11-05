@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 1360" width="1180" height="1360"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 1380" width="1180" height="1380"
      font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
   <title>Breadboard to perfboard — the three bench boards do not become three boards</title>
   <desc>Top: a mapping showing that of the three bench breadboards, only the Teensy board becomes a
@@ -166,10 +166,11 @@
   <text x="44" y="1196" font-size="12" font-style="italic" fill="#1e40af">Soldered at the bracket, across the latch's own VCC and GND. Not at the board end, where it does nothing for the sensor.</text>
 
   <!-- ============ relay board ============ -->
-  <rect x="24" y="1224" width="1132" height="118" rx="8" fill="#fef2f2" stroke="#b91c1c" stroke-width="2"/>
+  <rect x="24" y="1224" width="1132" height="136" rx="8" fill="#fef2f2" stroke="#b91c1c" stroke-width="2"/>
   <text x="44" y="1252" font-size="14.5" font-weight="bold" fill="#991b1b">The relay-driver board has no bench version, and that was deliberate</text>
   <text x="44" y="1280" font-size="12.5" fill="#7f1d1d">It carries 600 mA of coil current and the MOSFET gate pulldown, and <tspan font-weight="bold">neither may ever sit in a spring clip.</tspan> So it is built from</text>
   <text x="44" y="1298" font-size="12.5" fill="#7f1d1d">the schematic straight onto perfboard — <tspan font-weight="bold">solder the 10 kΩ gate pulldown FIRST</tspan>, before the MOSFET, because a floating gate</text>
   <text x="44" y="1316" font-size="12.5" fill="#7f1d1d">chatters the relays between STOCK and DBW. <tspan font-weight="bold">Then meter gate-to-GND for 10 kΩ before a single coil is connected.</tspan></text>
-  <text x="44" y="1334" font-size="12" font-style="italic" fill="#b91c1c">De-energise-to-safe is a property of that one resistor. Test it on its own, with nothing else able to confuse the reading.</text>
+  <text x="44" y="1334" font-size="12" font-style="italic" fill="#b91c1c">De-energise-to-safe is a property of that one resistor, so it is tested on its own. The reading is of the two joints and the two holes, not of the</text>
+  <text x="44" y="1352" font-size="12" font-style="italic" fill="#b91c1c">resistor — a meter could check the part in your hand. With nothing else fitted, a wrong number has exactly one suspect.</text>
 </svg>
