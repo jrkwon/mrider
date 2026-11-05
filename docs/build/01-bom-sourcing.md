@@ -1423,8 +1423,19 @@ floating gate can partially enhance.
 > **This is also why the pulldown is soldered first, before the MOSFET** (build order, step 1).
 > Two reasons beyond the obvious: there is then **no window** in which a fitted MOSFET has a
 > floating gate, and the gate has a 10 kΩ bleed to ground while the **static-sensitive** `IRLZ44N`
-> is being handled and soldered. Step 2 then reads 10 kΩ gate-to-GND with nothing else fitted —
-> **no MOSFET to confuse the reading and no coil to be damaged by it.**
+> is being handled and soldered.
+>
+> **Step 2 then meters 10 kΩ gate-to-GND, and that reading is not about the resistor.** *A meter
+> can tell you a loose 10 kΩ is 10 kΩ before it ever goes in; what it cannot check until the
+> resistor is soldered is **the two joints and the two holes** — a cold joint, a 1 kΩ misread off
+> a thirty-value kit, a ground lead one pad short of the bus.* **Fitting nothing else first is
+> what makes the number diagnostic:** 10 kΩ can then only mean the right part in the right two
+> holes with both ends wetted, and anything else has exactly one suspect.
+>
+> *Corrected 2026-11-05: an earlier wording said the MOSFET would "confuse the reading". It would
+> not — `Ciss` 1.8 nF against 10 kΩ settles in **18 µs**, far inside a meter's gate time. What a
+> fitted MOSFET actually costs you is **attribution**: a low reading could then be the resistor or
+> an ESD-punched gate, and you would have to take one off to find out.*
 
 > [!WARNING]
 > **`IRF520` is not `IRL520`, and the Teensy drives at 3.3 V**

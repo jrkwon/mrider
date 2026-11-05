@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 980" width="1240" height="980"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 1000" width="1240" height="1000"
      font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
   <title>Relay-driver board schematic — one MOSFET, four coils, and the resistor the whole design rests on</title>
   <desc>Schematic of the relay-driver perfboard: 12 V from the logic pack through the E-stop's NC
@@ -146,19 +146,21 @@
   <text x="54" y="682" font-size="11" fill="#7f1d1d">joint upstream can float the gate.</text>
 
   <!-- notes -->
-  <rect x="24" y="700" width="596" height="256" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+  <rect x="24" y="700" width="596" height="276" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
   <text x="44" y="728" font-size="14.5" font-weight="bold" fill="#991b1b">Build and test order</text>
   <text x="44" y="754" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">1 · 10 kΩ pulldown, gate to GND.</tspan> First, alone.</text>
-  <text x="44" y="774" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">2 · Meter gate-to-GND for 10 kΩ</tspan> with nothing else fitted — no</text>
-  <text x="58" y="792" font-size="12.5" fill="#7f1d1d">MOSFET to confuse the reading, no coil to be damaged by it.</text>
-  <text x="44" y="814" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">3 · MOSFET, 100 Ω, then the four diodes</tspan> — check every band</text>
-  <text x="58" y="832" font-size="12.5" fill="#7f1d1d">points at +12 V before power. <tspan font-weight="bold">One reversed diode is a short</tspan></text>
-  <text x="58" y="850" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">across the logic pack</tspan>, and it will not announce itself politely.</text>
-  <text x="44" y="872" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">4 · Terminals, then coils last.</tspan> Drive the gate from a bench 3.3 V</text>
-  <text x="58" y="890" font-size="12.5" fill="#7f1d1d">and listen for four clicks before anything is bolted into the car.</text>
-  <text x="44" y="916" font-size="12.5" font-weight="bold" fill="#991b1b">The tab of a TO-220 is the DRAIN, not ground.</text>
-  <text x="44" y="934" font-size="12.5" fill="#7f1d1d">Do not bolt it to a plate without an insulating kit. No heatsink is</text>
-  <text x="44" y="950" font-size="12.5" fill="#7f1d1d">needed — four coils is ~600 mA and under 0.1 W in the device.</text>
+  <text x="44" y="774" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">2 · Meter gate-to-GND for 10 kΩ</tspan> once it is soldered. You are</text>
+  <text x="58" y="792" font-size="12.5" fill="#7f1d1d">testing <tspan font-weight="bold">the two joints and the two holes</tspan>, not the resistor —</text>
+  <text x="58" y="810" font-size="12.5" fill="#7f1d1d">that is the part a meter cannot check before it goes in. Fit</text>
+  <text x="58" y="828" font-size="12.5" fill="#7f1d1d">nothing else first, so a wrong number has only one suspect.</text>
+  <text x="44" y="832" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">3 · MOSFET, 100 Ω, then the four diodes</tspan> — check every band</text>
+  <text x="58" y="850" font-size="12.5" fill="#7f1d1d">points at +12 V before power. <tspan font-weight="bold">One reversed diode is a short</tspan></text>
+  <text x="58" y="868" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">across the logic pack</tspan>, and it will not announce itself politely.</text>
+  <text x="44" y="890" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">4 · Terminals, then coils last.</tspan> Drive the gate from a bench 3.3 V</text>
+  <text x="58" y="908" font-size="12.5" fill="#7f1d1d">and listen for four clicks before anything is bolted into the car.</text>
+  <text x="44" y="934" font-size="12.5" font-weight="bold" fill="#991b1b">The tab of a TO-220 is the DRAIN, not ground.</text>
+  <text x="44" y="952" font-size="12.5" fill="#7f1d1d">Do not bolt it to a plate without an insulating kit. No heatsink is</text>
+  <text x="44" y="968" font-size="12.5" fill="#7f1d1d">needed — four coils is ~600 mA and under 0.1 W in the device.</text>
 
   <rect x="644" y="700" width="572" height="256" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
   <text x="664" y="728" font-size="14.5" font-weight="bold" fill="#14532d">Why it is shaped like this</text>

@@ -781,8 +781,11 @@ flexes, and a flexing board works a socketed Teensy loose.
 > pulldown first, before the MOSFET**, because a floating gate chatters the relays between STOCK
 > and DBW. **Then meter gate-to-GND for 10 kΩ before a single coil is connected.**
 >
-> *De-energise-to-safe is a property of that one resistor. Test it on its own, with nothing else
-> able to confuse the reading.*
+> *De-energise-to-safe is a property of that one resistor, so it is tested on its own.* **The
+> reading is of the two joints and the two holes, not of the resistor** — a meter can check a
+> loose 10 kΩ before it goes anywhere near the board, and cannot check a cold joint or a ground
+> lead one pad short of the bus until it is in. **With nothing else fitted, a wrong number has
+> exactly one suspect.**
 >
 > **Corrected 2026-11-05 — which SIDE of the 100 Ω the pulldown taps.** The schematic above drew
 > it on the **Teensy side**, where the placement figure below has always had it on the **MOSFET
