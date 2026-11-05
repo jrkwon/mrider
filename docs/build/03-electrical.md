@@ -169,6 +169,25 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 
 **Two fuses per vehicle, one at each battery.** Not one per row.
 
+> [!WARNING]
+> **"The driver's current limit, set to 20 A" is a Sabertooth setting, and the board bought does
+> not appear to have it — OPEN**
+>
+> Two rows above justify **no fuse on the motor branches** on a *"current limit, set to 20 A"*.
+> **The `MDDS30` manual documents no user-settable limit.** It lists *"current limit protection"*
+> as a feature with no number, and the only current figures it gives are **30 A continuous and
+> 80 A peak per channel**, derated by temperature (80 A below 50 °C, 50 A to 70 °C, 40 A to
+> 100 °C, 30 A above).
+>
+> **That matters because the branches are AWG 14**, which is not a 30 A conductor in a loom. *The
+> no-fuse argument may still be right — a fuse that blows and stays blown mid-lab is a real cost —
+> but it is currently resting on a number from a board that was never fitted.*
+>
+> **Two things close it:** find the limit in the board's own configuration if it has one, and
+> **measure the drive-motor stall current** (`I1`, still outstanding). *The traction pack is a
+> 4.5 Ah SLA; at 20 A that is a 4.4 C discharge, so the pack's own internal resistance may be the
+> real limiter — which is a measurement, not an assumption.*
+
 > [!NOTE]
 > **Why the branches are not individually fused**
 >
@@ -465,7 +484,7 @@ there and from the board's own manual, not from another board's table.
 > | `SW3` `SW4` | **`1` `1` — ON** | **independent both.** The manual's own words: *"Recommended this mode if controlled using Microcontroller"* |
 > | `SW5` | **`0`** | exponential OFF — response linear in the pulse width |
 > | `SW6` | **`0`** | centre calibrated at power-up; **100 ms signal-loss stop** |
-> | `SW7` `SW8` | **decide — read the pack label** | battery monitor. `00` LiPo · `01` NiMH · `10` SLA · `11` off |
+> | `SW7` `SW8` | **`1` `0` — SLA** | battery monitor. The pack is an **`Aroma 6-FM-4.5`, 4.5 Ah sealed lead-acid** — `NON-SPILLABLE`, `Pb`, label read 2026-11-05 |
 >
 > **`SW3:SW4 = 00` is MIXED, and on this vehicle that is not a degraded mode, it is a wrong one.**
 > The manual: *"the motor speed is controlled by channel `RC1` and direction is controlled by
@@ -479,7 +498,14 @@ there and from the board's own manual, not from another board's table.
 > so this is a label to read before the switches are set: `10` if it is the usual sealed lead-acid,
 > `11` to turn the monitor off and leave low-voltage protection to the pack.
 >
-> *Four off, two on, two to decide. Not eight off.*
+> *Five off, three on. Not eight off.*
+>
+> **The monitor warns and does not cut.** The manual is explicit: on under-voltage the error LED
+> blinks three times but *"the power to the motor will be maintained and will not be cut out."*
+> **So nothing on this vehicle protects the traction pack from being flattened** — that is a
+> person's job, and deep discharge is what kills a lead-acid pack. *Setting it to `10` costs
+> nothing and makes the warning mean something; setting it to `00` would have it warn at LiPo
+> thresholds on a pack that is not LiPo.*
 
 > [!NOTE]
 > **"Servo pulse" is the signal format, not the motor — the motors are brushed DC throughout**
@@ -526,6 +552,13 @@ there and from the board's own manual, not from another board's table.
 > emitting 1.5 ms on both lines**, MUX settled — *then* the driver. Power the driver first and a
 > neutral command can come out as a creep, or a real command as neutral, and **neither announces
 > itself until the wheels are on the ground.**
+>
+> **The board also refuses to start without a valid stop**, which is the other half of this: the
+> manual's first safety feature is *"every time SmartDriveDuo-30 is powered up, the input data
+> must be 'stop'"*, and otherwise the **error LED blinks twice**. *So the two failure shapes are
+> different and both worth knowing: **no signal at power-up → it will not run, error LED 2 blinks**;
+> a steady but wrong pulse at power-up → `SW6 = 0` adopts it as the centre and **every later
+> command is offset by that error**.*
 >
 > *Write the order into the bring-up checklist before the first powered test, and give the Teensy
 > firmware a startup state that emits neutral before anything else
