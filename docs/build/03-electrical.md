@@ -394,8 +394,17 @@ the laptop and the Teensy have both hung. It does two things at once:
 > **What to look for, if it has to be bought:** a **fixed barrier terminal block, 30 A, M4**, which
 > takes an AWG 14 ring terminal and clears the 25 A fuse with 20 % to spare. *Two ways to make the
 > tee in one: land the input ring on one side of a pole and **two output rings on the opposite
-> screw**, or bridge two poles with a shorting bar.* **Do not buy a 접지 부스바** — a grounding
-> busbar tidies earth wires and is not a 1-in-2-out power joint.
+> screw**, or bridge two poles with a shorting bar.*
+>
+> **Two things the search engine offers that are the wrong class — and it offers them first:**
+>
+> | looks right | what it actually is | why not |
+> |---|---|---|
+> | **접지 부스바** (grounding busbar) | a tidy-up block for earth wires | not a 1-in-2-out power joint |
+> | **T형 / 무탈피 분기 커넥터** (IDC T-tap) | a blade that bites through the insulation of a through-conductor | *it is the shape of the job and the wrong class of joint.* These are sold **by wire size, with no current rating stated at all** — the contact is a thin blade on a pierced strand, under vibration, and the pierce is a water path into the copper. **It ranks below the piggyback spades this table already says to avoid**, and the tee is carrying everything |
+>
+> *Both were reached by searching for exactly the right thing — "power distribution block",
+> "T형" — which is why they are named here rather than left to judgement.*
 >
 > **It is a panel part, not an automotive one.** Screw terminals on a vehicle need the screws
 > locked — threadlocker or star washers — and the cable strain-relieved to a bracket, *which this
