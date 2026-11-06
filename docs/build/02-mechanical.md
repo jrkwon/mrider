@@ -78,8 +78,31 @@ Work in this order and bag-and-tag fasteners by panel.
 
    **These are flat-blade (Faston-style) connectors, not crimp-pin housings.** The female side
    is folded sheet metal that wipes onto a tab moulded into the module's shroud — so what
-   identifies them for purchase is **tab width and thickness** (2.8 / 4.8 / 6.3 mm × 0.5 or
-   0.8 mm), not a pin pitch.
+   identifies them for purchase is **tab width and thickness**, not a pin pitch.
+
+   A tab is one flat piece of metal, and its **cross-section is the whole specification**:
+
+   | | what it is | the values that exist |
+   |---|---|---|
+   | **width** | the **long side** of that cross-section — across the flat face | **2.8 / 4.8 / 6.3 mm** (`.110` / `.187` / `.250`, named in inches) |
+   | **thickness** | the **sheet's own thickness** — face to face | **0.5 or 0.8 mm** |
+   | *length* | how far the tab protrudes | *not part of the designation — do not measure it* |
+
+   The inch name gives the **width only**, which is why a part is quoted as `6.3 × 0.8`.
+
+   **Where to put the calipers.** The module's tabs sit inside a moulded shroud and calipers
+   will not reach them, so **measure the female receptacle instead**: the **long side of its
+   entry slot** is the tab width, and the **gap between its two folded faces** is the tab
+   thickness. Thickness is one of two values, so 0.1 mm of resolution is enough.
+
+   > [!TIP]
+   > **Faster than measuring: the relays on the shelf are the reference.**
+   >
+   > An automotive relay's `30 / 87 / 87a` terminals are almost always **6.3 × 0.8**, and
+   > [#7](../order-log.md) bought twelve relays. **Offer the stock plug to a relay terminal.**
+   > If it seats firmly, the drive tap is `6.3 × 0.8` and no caliper is needed; if it is loose
+   > or will not go, measure. *And a fit is not just a measurement — the receptacle that mates
+   > that relay is the part to buy.*
 
    **They are nowhere near the same size, so they cannot be cross-plugged** — which is the
    property [§3.3](03-electrical.md#33-the-three-taps) relies on to make the taps
