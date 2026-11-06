@@ -2025,37 +2025,32 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > | tap | termination found | what to buy |
 > |---|---|---|
 > | Power | **keyed 2-pin** (2026-10-02) | mating half ×2 per vehicle |
-> | Throttle | **keyed 2-pin at each motor** (2026-10-02); at the ECU end a **4-position, 3.96 mm pitch** plug, 16.19 mm wide (2026-11-06) | ×2 per vehicle — see the family note below |
-> | Steering | **2-position, 3.96 mm pitch**, 8.35 mm wide (2026-11-06) | ×2 per vehicle — see the family note below |
+> | Throttle | **keyed 2-pin at each motor** (2026-10-02); at the ECU end a **2-position flat-blade** plug, 16.19 mm wide, **tabs keyed 90°** (2026-11-06) | ×2 per vehicle — see the note below |
+> | Steering | **2-position flat-blade**, 8.35 mm wide (2026-11-06) | ×2 per vehicle — see the note below |
 >
 > **Checked on vehicle #1, 2026-11-06 — and the throttle row was a half-truth.** The stock ECU's
 > motor edge carries three sockets: `M2M3` **steering** (brown + blue, a 2-position plug — the
 > board's footprint offers two outputs there and only the `M3` header is fitted), `M1`
 > **Motor** — which
-> carries **both** rear motors on four contacts, bridged into two nets **on the board** (right
-> yellow + blue, left green + red) — and `P1` **Power**. So the throttle tap is **four
-> conductors, two nets**, not a 2-pin, unless you take it at the motor ends instead. The
-> connector map and how to tell the pairs apart are in
-> [02-mechanical §2.2](02-mechanical.md#22-teardown) step 2.
+> carries **both** rear motors on **two** flat-blade contacts — four wires, two crimped on each
+> blade (right yellow + blue, left green + red) — and `P1` **Power**. So the throttle tap is
+> **four conductors making two nets**, and the pairing is visible in the plug. The connector map
+> is in [02-mechanical §2.2](02-mechanical.md#22-teardown) step 2.
 >
-> **Both ECU-end connectors are one 3.96 mm family — and that breaks the claim below.**
-> 16.19 − 8.35 = 7.84 mm, two positions at that pitch, so steering and throttle are the 2-way
-> and 4-way of the same VH-style series. **The "different families cannot cross-plug" argument
-> does not hold at these two taps.** The 4-way will not enter the 2-way, so the dangerous
-> direction is only one — a steering plug offered to the throttle socket — and what stops it is
-> labelling and the wheels-off check, not geometry. *Said plainly because the paragraph below
-> was written when the terminations were unknown.*
+> **Both are flat-blade (Faston-style), so a tab size is what you buy, not a pin pitch.**
+> Measure **tab width × thickness** on each — 2.8 / 4.8 / 6.3 mm × 0.5 or 0.8 mm — before
+> ordering anything. Receptacles are wire-to-wire by nature, so no PCB header is needed; what
+> does need checking is whether a bought receptacle **fits inside the module's moulded shroud**,
+> or whether the housing has to be harvested.
 >
-> **VH is wire-to-board, which the tap is not.** Each tap needs a crimp housing to enter the
-> ECU socket **and a male header to receive the vehicle's plug** — and the male half of this
-> family exists as a **PCB header**. Mount it on a fragment of the perfboard
-> [#12b](../order-log.md#L122) already bought, rather than buying a family that does not mate.
+> **The sizes differ enough that the two taps cannot cross-plug** — 8.35 mm against 16.19 mm —
+> so the self-enforcing argument below holds here on size rather than on family.
 >
-> **The contacts, not the driver, set the drive tap's current ceiling.** VH is rated **10 A per
-> contact**; the throttle net reaches the motors over **two** contacts, so **20 A a net** — under
-> the **30 A continuous** [§3.3](03-electrical.md#33-the-three-taps) warns the driver can deliver.
-> The factory never met this because the stock ECU is capped at 20 A behind a 10 A protector.
-> **Fold this into the open current-limit question before Stage 1.**
+> **One blade now carries a whole net**, not two contacts in parallel, so the drive tap's
+> current ceiling is a single tab's rating. Settle it with the tab size and fold it into the
+> open current-limit question — [§3.3](03-electrical.md#33-the-three-taps) warns the driver can
+> deliver **30 A continuous**, which the factory never met behind a 20 A ECU and a 10 A
+> protector.
 >
 > **Blue appears on two different circuits** on this vehicle — steering and right rear. Choosing
 > or terminating a lead by colour is how the wrong pair ends up on the relay.

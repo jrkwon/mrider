@@ -66,21 +66,36 @@ Work in this order and bag-and-tag fasteners by panel.
    | Socket | Silkscreen | Carries | Found on vehicle #1 |
    |---|---|---|---|
    | **Steering motor** | `M2M3` (`M2± / M3±`) | the steering gearmotor | **brown on `M3−`, blue on `M3+`** — a plain **2-position** plug. The board's footprint holds four pads; **only the `M3` header is fitted** |
-   | **Motor** | `M1` | **both rear motors** — four conductors on **four separate contacts**, **bridged into two nets on the board** | right **yellow + blue**, left **green + red** |
+   | **Motor** | `M1` | **both rear motors** — **two** contacts, **four** wires: two crimped on each blade. *The paralleling is inside the plug* | right **yellow + blue**, left **green + red** |
    | **Power** | `P1` ⊕⊖ | the traction pack | — |
 
-   **Both authority connectors are the same 3.96 mm family** — measured on vehicle #1,
-   **2026-11-06**:
+   **Both authority connectors** — measured and opened on vehicle #1, **2026-11-06**:
 
-   | | Positions | Housing width | Carries |
-   |---|---:|---:|---|
-   | Steering `M2M3` | **2** | **8.35 mm** | brown `M3−`, blue `M3+` |
-   | Drive `M1` | **4** | **16.19 mm** | four conductors, **two nets** |
+   | | Positions | Housing width | Contacts | Carries |
+   |---|---:|---:|---|---|
+   | Steering `M2M3` | **2** | **8.35 mm** | flat blade | brown `M3−`, blue `M3+` |
+   | Drive `M1` | **2** | **16.19 mm** | flat blade, **the two tabs keyed 90° to each other** | **four wires, two per blade** |
 
-   16.19 − 8.35 = **7.84 mm**, which is exactly two more positions at **3.96 mm pitch** — so
-   these are the 2-way and 4-way of one family, VH-style (JST's own `VHR-2N`/`VHR-4N` are
-   7.86 and 15.78 mm, a consistent 0.4 mm under, so this is a clone or the calipers are over
-   the side ribs). **The pitch is the identifier, not the overall width.**
+   **These are flat-blade (Faston-style) connectors, not crimp-pin housings.** The female side
+   is folded sheet metal that wipes onto a tab moulded into the module's shroud — so what
+   identifies them for purchase is **tab width and thickness** (2.8 / 4.8 / 6.3 mm × 0.5 or
+   0.8 mm), not a pin pitch.
+
+   **They are nowhere near the same size, so they cannot be cross-plugged** — which is the
+   property [§3.3](03-electrical.md#33-the-three-taps) relies on to make the taps
+   self-enforcing.
+
+   > [!NOTE]
+   > **The drive tap's net map is visible — no meter needed**
+   >
+   > `M1` has **two** contacts and **four** wires, so **two wires are crimped onto each blade.**
+   > *That is the paralleling, and it lives in the plug.* The two sharing the **horizontal**
+   > tab are one net; the two on the **vertical** tab are the other. Record which colours go
+   > where — the motors are mirror-mounted, so the pairing need not be left-and-left.
+   >
+   > **And the 90° key means this tap cannot be plugged in reversed.** The polarity error that
+   > remains possible is on the relay side, not here —
+   > [03-electrical §3.4](03-electrical.md#34-wire-the-e-stop-and-mux-first).
 
    > [!WARNING]
    > **Mark the steering plug's polarity before you unterminate it.**
@@ -138,7 +153,9 @@ Work in this order and bag-and-tag fasteners by panel.
 | Drive-motor shaft diameter | mm | *(measure during bring-up)* | Calipers |
 | Instrumented side | L / R | *(measure during bring-up)* | — |
 | Steering: which header is fitted, and which wire on − | — | *(vehicle #1: `M3`, brown `M3−` / blue `M3+`)* | Read against the silkscreen — step 2 |
-| Drive `M1`: which two of the four contacts are common | — | *(measure during bring-up)* | Meter across the board's socket pins — **this is the net map** |
+| Drive `M1`: which two colours on the **horizontal** tab | — | *(record during teardown)* | Look into the plug — **this is the net map** |
+| Drive `M1`: tab width × thickness | mm | *(measure during teardown)* | Calipers — decides the mating half |
+| Steering `M2M3`: tab width × thickness | mm | *(measure during teardown)* | Calipers — decides the mating half |
 | Steering: polarity that drives **left** (e.g. *blue positive*) | — | *(measure during bring-up)* | Stock remote, wheels off the ground — step 2 |
 | Wheelbase (rear axle → front axle) | m | *(measure during bring-up)* | Tape |
 | Track (wheel separation) | m | *(measure during bring-up)* | Tape |
