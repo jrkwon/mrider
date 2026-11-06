@@ -2025,8 +2025,8 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > | tap | termination found | what to buy |
 > |---|---|---|
 > | Power | **keyed 2-pin** (2026-10-02) | mating half ×2 per vehicle |
-> | Throttle | **keyed 2-pin at each motor** (2026-10-02); at the ECU end a **2-position flat-blade** plug, 16.19 mm wide, **tabs keyed 90°** (2026-11-06) | ×2 per vehicle — see the note below |
-> | Steering | **2-position flat-blade**, 8.35 mm wide (2026-11-06) | ×2 per vehicle — see the note below |
+> | Throttle | **keyed 2-pin at each motor** (2026-10-02); at the ECU end a **2-position flat-blade `6.3 × 0.8`** plug, 16.19 mm wide, **tabs keyed 90°** (2026-11-06) | **×2 per vehicle, uninsulated `.250`** — see the note below |
+> | Steering | **2-position flat-blade**, 8.35 mm wide (2026-11-06); tab size **not yet measured, 2.8 expected** | ×2 per vehicle — see the note below |
 >
 > **Checked on vehicle #1, 2026-11-06 — and the throttle row was a half-truth.** The stock ECU's
 > motor edge carries three sockets: `M2M3` **steering** (brown + blue, a 2-position plug — the
@@ -2038,19 +2038,26 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > is in [02-mechanical §2.2](02-mechanical.md#22-teardown) step 2.
 >
 > **Both are flat-blade (Faston-style), so a tab size is what you buy, not a pin pitch.**
-> Measure **tab width × thickness** on each — 2.8 / 4.8 / 6.3 mm × 0.5 or 0.8 mm — before
-> ordering anything. Receptacles are wire-to-wire by nature, so no PCB header is needed; what
-> does need checking is whether a bought receptacle **fits inside the module's moulded shroud**,
-> or whether the housing has to be harvested.
+> **Measured on vehicle #1 2026-11-06: the drive tap is `6.3 × 0.8` — `.250`, the ordinary
+> automotive size, and the same terminal the [#7](../order-log.md) relays carry.** The steering
+> tap is still unmeasured and is **expected to be `2.8`**, because two 6.3 tabs do not fit in an
+> 8.35 mm housing.
+>
+> **Buy UNINSULATED.** The module's tabs sit inside a moulded shroud, and a sleeved terminal
+> very likely will not enter it. Most assortment kits on the shelf are insulated — check the
+> listing says 비절연 / uninsulated, and seal with the 3:1 heatshrink already bought. *Whether
+> a bought receptacle actually clears the shroud is the one thing to try on vehicle #1 before
+> ordering for all three.*
 >
 > **The sizes differ enough that the two taps cannot cross-plug** — 8.35 mm against 16.19 mm —
 > so the self-enforcing argument below holds here on size rather than on family.
 >
-> **One blade now carries a whole net**, not two contacts in parallel, so the drive tap's
-> current ceiling is a single tab's rating. Settle it with the tab size and fold it into the
-> open current-limit question — [§3.3](03-electrical.md#33-the-three-taps) warns the driver can
-> deliver **30 A continuous**, which the factory never met behind a 20 A ECU and a 10 A
-> protector.
+> **And the connector is no longer the binding current constraint.** `6.3 × 0.8` is the size
+> the automotive trade runs at 20–30 A, so what limits the drive branch is the **1.5 mm² stock
+> conductor** it feeds — which is exactly the caution
+> [§3.3](03-electrical.md#33-the-three-taps) already carries: the driver can deliver **30 A
+> continuous**, and the factory never met that behind a 20 A ECU and a 10 A protector. *Settle
+> the driver's limit against the conductor, not against the plug.*
 >
 > **Blue appears on two different circuits** on this vehicle — steering and right rear. Choosing
 > or terminating a lead by colour is how the wrong pair ends up on the relay.

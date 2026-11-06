@@ -74,7 +74,7 @@ Work in this order and bag-and-tag fasteners by panel.
    | | Positions | Housing width | Contacts | Carries |
    |---|---:|---:|---|---|
    | Steering `M2M3` | **2** | **8.35 mm** | flat blade | brown `M3−`, blue `M3+` |
-   | Drive `M1` | **2** | **16.19 mm** | flat blade, **the two tabs keyed 90° to each other** | **four wires, two per blade** |
+   | Drive `M1` | **2** | **16.19 mm** | flat blade **6.3 × 0.8** (`.250`), **the two tabs keyed 90° to each other** | **four wires, two per blade** |
 
    **These are flat-blade (Faston-style) connectors, not crimp-pin housings.** The female side
    is folded sheet metal that wipes onto a tab moulded into the module's shroud — so what
@@ -90,19 +90,25 @@ Work in this order and bag-and-tag fasteners by panel.
 
    The inch name gives the **width only**, which is why a part is quoted as `6.3 × 0.8`.
 
-   **Where to put the calipers.** The module's tabs sit inside a moulded shroud and calipers
-   will not reach them, so **measure the female receptacle instead**: the **long side of its
-   entry slot** is the tab width, and the **gap between its two folded faces** is the tab
-   thickness. Thickness is one of two values, so 0.1 mm of resolution is enough.
+   **Where to put the calipers — and they go in two different places.**
+
+   | | measure it on | why not the other half |
+   |---|---|---|
+   | **width** | the **female receptacle's entry slot**, long side | the module's tabs sit inside a moulded shroud that calipers cannot reach |
+   | **thickness** | the **male tab** | **a receptacle has no gap to measure.** It is a spring: the two folded faces rest closed and are forced apart by the tab. Whatever a caliper reads there is the jaws' own pressure |
+
+   *Corrected 2026-11-06 — this page asked for the receptacle's gap, which does not exist.*
 
    > [!TIP]
    > **Faster than measuring: the relays on the shelf are the reference.**
    >
-   > An automotive relay's `30 / 87 / 87a` terminals are almost always **6.3 × 0.8**, and
-   > [#7](../order-log.md) bought twelve relays. **Offer the stock plug to a relay terminal.**
-   > If it seats firmly, the drive tap is `6.3 × 0.8` and no caliper is needed; if it is loose
-   > or will not go, measure. *And a fit is not just a measurement — the receptacle that mates
-   > that relay is the part to buy.*
+   > An automotive relay's `30 / 87 / 87a` terminals are **6.3 × 0.8**, and
+   > [#7](../order-log.md) bought twelve relays. **Measured on vehicle #1 2026-11-06, the drive
+   > tap is `6.3 × 0.8` — the same size.** So the relay on the shelf is the gauge: offer the
+   > stock plug to a relay terminal, and a firm seat settles it without a caliper.
+   >
+   > *A fit is not only a measurement — the receptacle that mates that relay is the part to
+   > buy, and the MUX needs those receptacles anyway.*
 
    **They are nowhere near the same size, so they cannot be cross-plugged** — which is the
    property [§3.3](03-electrical.md#33-the-three-taps) relies on to make the taps
@@ -177,8 +183,8 @@ Work in this order and bag-and-tag fasteners by panel.
 | Instrumented side | L / R | *(measure during bring-up)* | — |
 | Steering: which header is fitted, and which wire on − | — | *(vehicle #1: `M3`, brown `M3−` / blue `M3+`)* | Read against the silkscreen — step 2 |
 | Drive `M1`: which two colours on the **horizontal** tab | — | *(record during teardown)* | Look into the plug — **this is the net map** |
-| Drive `M1`: tab width × thickness | mm | *(measure during teardown)* | Calipers — decides the mating half |
-| Steering `M2M3`: tab width × thickness | mm | *(measure during teardown)* | Calipers — decides the mating half |
+| Drive `M1`: tab width × thickness | mm | **6.3 × 0.8** *(vehicle #1)* | Width off the receptacle slot, thickness off the tab |
+| Steering `M2M3`: tab width × thickness | mm | *(measure during teardown — **2.8 expected**: two tabs will not fit 8.35 mm at 6.3)* | Width off the receptacle slot, thickness off the tab |
 | Steering: polarity that drives **left** (e.g. *blue positive*) | — | *(measure during bring-up)* | Stock remote, wheels off the ground — step 2 |
 | Wheelbase (rear axle → front axle) | m | *(measure during bring-up)* | Tape |
 | Track (wheel separation) | m | *(measure during bring-up)* | Tape |
