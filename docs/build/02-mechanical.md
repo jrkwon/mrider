@@ -73,14 +73,22 @@ Work in this order and bag-and-tag fasteners by panel.
 
    | | Positions | Housing width | Contacts | Carries |
    |---|---:|---:|---|---|
-   | Steering `M2M3` | **2** | **8.35 mm** | flat blade | brown `M3−`, blue `M3+` |
+   | Steering `M2M3` | **2** | **8.35 mm** | **pin-and-socket**, pitch ≈ 2.8 mm measured | brown `M3−`, blue `M3+` |
    | Drive `M1` | **2** | **16.19 mm** | flat blade **6.3 × 0.8** (`.250`), **the two tabs keyed 90° to each other** | **four wires, two per blade** |
 
-   **These are flat-blade (Faston-style) connectors, not crimp-pin housings.** The female side
-   is folded sheet metal that wipes onto a tab moulded into the module's shroud — so what
-   identifies them for purchase is **tab width and thickness**, not a pin pitch.
+   **The two taps are not the same kind of connector, and they are not specified the same way.**
 
-   A tab is one flat piece of metal, and its **cross-section is the whole specification**:
+   | | contact | what identifies it |
+   |---|---|---|
+   | **Drive `M1`** | **flat blade** (Faston-style) — folded sheet metal wiping onto a tab | **width × thickness** |
+   | **Steering `M2M3`** | **pin and socket** | **pitch** — centre to centre. *A pin has no thickness; asking for one gets no answer* |
+
+   *They therefore cannot be cross-plugged at all — not merely because 8.35 mm and 16.19 mm
+   differ, but because a pin will not enter a blade receptacle. This is the strongest form the
+   self-enforcing argument in [§3.3](03-electrical.md#33-the-three-taps) takes anywhere.*
+
+   **For the blade tap**, a tab is one flat piece of metal and its **cross-section is the whole
+   specification**:
 
    | | what it is | the values that exist |
    |---|---|---|
@@ -98,6 +106,18 @@ Work in this order and bag-and-tag fasteners by panel.
    | **thickness** | the **male tab** | **a receptacle has no gap to measure.** It is a spring: the two folded faces rest closed and are forced apart by the tab. Whatever a caliper reads there is the jaws' own pressure |
 
    *Corrected 2026-11-06 — this page asked for the receptacle's gap, which does not exist.*
+
+   **For the pin tap**, measure the **pitch on the module's header pins**, not on the plug's
+   cavities: the pins are solid, so outer-edge to outer-edge minus one pin width gives the
+   centre distance, while a cavity's moulded walls will put you 0.3 mm out. **8.35 mm of
+   housing is no help** — a 2-way housing is about 7.8 mm at both 2.5 mm and 3.96 mm pitch.
+   The answer is one of the standard values:
+
+   | pitch | family |
+   |---|---|
+   | **2.50 mm** | JST XH — the closest to what was measured |
+   | 2.54 mm | generic 0.1 in header, Molex KK254 |
+   | 3.00 mm | Molex Micro-Fit and relatives |
 
    > [!TIP]
    > **Faster than measuring: the relays on the shelf are the reference.**
@@ -184,7 +204,7 @@ Work in this order and bag-and-tag fasteners by panel.
 | Steering: which header is fitted, and which wire on − | — | *(vehicle #1: `M3`, brown `M3−` / blue `M3+`)* | Read against the silkscreen — step 2 |
 | Drive `M1`: which two colours on the **horizontal** tab | — | *(record during teardown)* | Look into the plug — **this is the net map** |
 | Drive `M1`: tab width × thickness | mm | **6.3 × 0.8** *(vehicle #1)* | Width off the receptacle slot, thickness off the tab |
-| Steering `M2M3`: tab width × thickness | mm | *(measure during teardown — **2.8 expected**: two tabs will not fit 8.35 mm at 6.3)* | Width off the receptacle slot, thickness off the tab |
+| Steering `M2M3`: **pitch**, centre to centre | mm | *(≈ 2.8 measured — resolve to 2.50 / 2.54 / 3.00)* | Across the module's header **pins**, not the plug's cavities |
 | Steering: polarity that drives **left** (e.g. *blue positive*) | — | *(measure during bring-up)* | Stock remote, wheels off the ground — step 2 |
 | Wheelbase (rear axle → front axle) | m | *(measure during bring-up)* | Tape |
 | Track (wheel separation) | m | *(measure during bring-up)* | Tape |

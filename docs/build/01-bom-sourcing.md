@@ -2026,7 +2026,7 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > |---|---|---|
 > | Power | **keyed 2-pin** (2026-10-02) | mating half ×2 per vehicle |
 > | Throttle | **keyed 2-pin at each motor** (2026-10-02); at the ECU end a **2-position flat-blade `6.3 × 0.8`** plug, 16.19 mm wide, **tabs keyed 90°** (2026-11-06) | **×2 per vehicle, uninsulated `.250`** — see the note below |
-> | Steering | **2-position flat-blade**, 8.35 mm wide (2026-11-06); tab size **not yet measured, 2.8 expected** | ×2 per vehicle — see the note below |
+> | Steering | **2-position pin-and-socket**, 8.35 mm wide, **pitch ≈ 2.8 mm** (2026-11-06) | ×2 per vehicle — see the note below. **Not a blade family** |
 >
 > **Checked on vehicle #1, 2026-11-06 — and the throttle row was a half-truth.** The stock ECU's
 > motor edge carries three sockets: `M2M3` **steering** (brown + blue, a 2-position plug — the
@@ -2037,11 +2037,17 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > **four conductors making two nets**, and the pairing is visible in the plug. The connector map
 > is in [02-mechanical §2.2](02-mechanical.md#22-teardown) step 2.
 >
-> **Both are flat-blade (Faston-style), so a tab size is what you buy, not a pin pitch.**
-> **Measured on vehicle #1 2026-11-06: the drive tap is `6.3 × 0.8` — `.250`, the ordinary
-> automotive size, and the same terminal the [#7](../order-log.md) relays carry.** The steering
-> tap is still unmeasured and is **expected to be `2.8`**, because two 6.3 tabs do not fit in an
-> 8.35 mm housing.
+> **The two taps are different kinds of connector, so they are bought differently.**
+>
+> | | contact | spec | what to buy |
+> |---|---|---|---|
+> | **Drive** | flat blade | **`6.3 × 0.8`** (`.250`) — measured 2026-11-06, **the same terminal the [#7](../order-log.md) relays carry** | uninsulated `.250` receptacles and tabs, wire-to-wire |
+> | **Steering** | **pin and socket** | **pitch ≈ 2.8 mm** — resolve to 2.50 / 2.54 / 3.00 before ordering | crimp housing + pins, **and a PCB header for the male half** |
+>
+> **The steering tap brings back the wire-to-board problem, and only that tap.** A pin family's
+> male half exists as a **PCB header**, so the end that receives the vehicle's own plug goes on
+> a fragment of the perfboard [#12b](../order-log.md#L122) already bought. The drive tap needs
+> nothing of the sort — blade terminals are wire-to-wire by nature.
 >
 > **Buy UNINSULATED.** The module's tabs sit inside a moulded shroud, and a sleeved terminal
 > very likely will not enter it. Most assortment kits on the shelf are insulated — check the
@@ -2049,8 +2055,10 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > a bought receptacle actually clears the shroud is the one thing to try on vehicle #1 before
 > ordering for all three.*
 >
-> **The sizes differ enough that the two taps cannot cross-plug** — 8.35 mm against 16.19 mm —
-> so the self-enforcing argument below holds here on size rather than on family.
+> **The two taps cannot cross-plug at all** — a pin will not enter a blade receptacle, quite
+> apart from 8.35 mm against 16.19 mm. The self-enforcing argument below holds here in its
+> strongest form. *Stated three ways across three days as the connectors were identified;
+> this is the one that survived opening them.*
 >
 > **And the connector is no longer the binding current constraint.** `6.3 × 0.8` is the size
 > the automotive trade runs at 20–30 A, so what limits the drive branch is the **1.5 mm² stock
