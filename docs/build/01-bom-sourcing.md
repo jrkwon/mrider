@@ -2026,7 +2026,7 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > |---|---|---|
 > | Power | **keyed 2-pin** (2026-10-02) | mating half ×2 per vehicle |
 > | Throttle | **keyed 2-pin at each motor** (2026-10-02); at the ECU end a **2-position flat-blade `6.3 × 0.8`** plug, 16.19 mm wide, **tabs keyed 90°** (2026-11-06) | **×2 per vehicle, uninsulated `.250`** — see the note below |
-> | Steering | **2-position pin-and-socket**, 8.35 mm wide, **pitch ≈ 2.8 mm** (2026-11-06) | ×2 per vehicle — see the note below. **Not a blade family** |
+> | Steering | **2-position pin-and-socket, 3.0 mm pitch** (2026-11-06) — Micro-Fit 3.0 class | ×2 per vehicle — see the note below. **Not a blade family** |
 >
 > **Checked on vehicle #1, 2026-11-06 — and the throttle row was a half-truth.** The stock ECU's
 > motor edge carries three sockets: `M2M3` **steering** (brown + blue, a 2-position plug — the
@@ -2042,12 +2042,27 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > | | contact | spec | what to buy |
 > |---|---|---|---|
 > | **Drive** | flat blade | **`6.3 × 0.8`** (`.250`) — measured 2026-11-06, **the same terminal the [#7](../order-log.md) relays carry** | uninsulated `.250` receptacles and tabs, wire-to-wire |
-> | **Steering** | **pin and socket** | **pitch ≈ 2.8 mm** — resolve to 2.50 / 2.54 / 3.00 before ordering | crimp housing + pins, **and a PCB header for the male half** |
+> | **Steering** | **pin and socket** | **3.0 mm pitch**, 2-way single row — **Micro-Fit 3.0** (`43645` housing, `43030` terminals, `43650` header) and its clones | crimp housing + terminals, **and a PCB header for the male half** |
 >
 > **The steering tap brings back the wire-to-board problem, and only that tap.** A pin family's
 > male half exists as a **PCB header**, so the end that receives the vehicle's own plug goes on
 > a fragment of the perfboard [#12b](../order-log.md#L122) already bought. The drive tap needs
 > nothing of the sort — blade terminals are wire-to-wire by nature.
+>
+> **Buy ONE of each before you buy nine.** 3.0 mm is a pitch, not a guarantee of fit: Micro-Fit
+> and its clones vary in shroud and latch, and the module's socket is moulded into its case.
+> *One housing, one strip of terminals and one header, tried on vehicle #1, costs a few hundred
+> won and settles a question that twelve wrong parts cannot.* The blade half can be bought in
+> quantity immediately — `.250` is `.250`.
+>
+> | | per vehicle | **three vehicles** |
+> |---|---:|---:|
+> | drive — `.250` receptacles, **uninsulated** | 2 | **6** |
+> | drive — `.250` male tabs, **uninsulated** | 2 | **6** |
+> | steering — 3.0 mm housing + 2 terminals | 1 | **3** |
+> | steering — 3.0 mm **PCB header**, 2-way | 1 | **3** |
+>
+> *Plus spares on every line: these are crimps made by hand, by students, once.*
 >
 > **Buy UNINSULATED.** The module's tabs sit inside a moulded shroud, and a sleeved terminal
 > very likely will not enter it. Most assortment kits on the shelf are insulated — check the

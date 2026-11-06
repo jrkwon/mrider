@@ -144,7 +144,7 @@ steps 1–2 (step 3 happens in [step 7](07-manual-drive.md) on the ground):
 | Measured full-right road-wheel angle | *(measure during bring-up)* ° |
 | Logic rail during steering stall | *(measure during bring-up)* V |
 | Logic rail sag vs. rest | *(measure during bring-up)* V |
-| Steering stall current | *(measure during bring-up)* A |
+| Steering stall current | *(measure during bring-up)* A — **must clear the steering tap's connector rating.** A 3.0 mm Micro-Fit-class part is about **5 A a circuit**, and this motor stalls at its end-stops as a matter of course — [02-mechanical §2.2](02-mechanical.md#22-teardown) |
 | Drive stall current (paralleled) | *(measure during bring-up)* A — must be < 32 A |
 | Measured sensor-shaft travel, lock-to-lock | *(measure)* ° — must be ≤ 340° for AS5600 |
 | Drive-encoder PPR (measured, not inherited) | *(measure)* |

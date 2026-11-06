@@ -73,7 +73,7 @@ Work in this order and bag-and-tag fasteners by panel.
 
    | | Positions | Housing width | Contacts | Carries |
    |---|---:|---:|---|---|
-   | Steering `M2M3` | **2** | **8.35 mm** | **pin-and-socket**, pitch ≈ 2.8 mm measured | brown `M3−`, blue `M3+` |
+   | Steering `M2M3` | **2** | **8.35 mm** | **pin-and-socket, 3.0 mm pitch** — Micro-Fit 3.0 and its clones | brown `M3−`, blue `M3+` |
    | Drive `M1` | **2** | **16.19 mm** | flat blade **6.3 × 0.8** (`.250`), **the two tabs keyed 90° to each other** | **four wires, two per blade** |
 
    **The two taps are not the same kind of connector, and they are not specified the same way.**
@@ -111,13 +111,18 @@ Work in this order and bag-and-tag fasteners by panel.
    cavities: the pins are solid, so outer-edge to outer-edge minus one pin width gives the
    centre distance, while a cavity's moulded walls will put you 0.3 mm out. **8.35 mm of
    housing is no help** — a 2-way housing is about 7.8 mm at both 2.5 mm and 3.96 mm pitch.
-   The answer is one of the standard values:
+   **Measured 3.0 mm on vehicle #1, 2026-11-06** — off the socket's cavity centres, because
+   the header pins sit too deep for calipers. 3.0 mm single row is **Molex Micro-Fit 3.0**
+   (`43645` housing, `43030` terminals, `43650` header) and the many clones of it.
 
-   | pitch | family |
-   |---|---|
-   | **2.50 mm** | JST XH — the closest to what was measured |
-   | 2.54 mm | generic 0.1 in header, Molex KK254 |
-   | 3.00 mm | Molex Micro-Fit and relatives |
+   > [!CAUTION]
+   > **Micro-Fit 3.0 is rated about 5 A a circuit, and this motor stalls on purpose.**
+   >
+   > Steering runs into its end-stops as a matter of course, and the position loop will hold it
+   > there. Whatever the stock part is rated for, **measure the steering stall current**
+   > ([06-bench-test §](06-bench-test.md)) and check it against the tap you buy before trusting
+   > the tap. *The factory's own connector is the evidence that it can be done — not that a
+   > generic 3.0 mm part can.*
 
    > [!TIP]
    > **Faster than measuring: the relays on the shelf are the reference.**
