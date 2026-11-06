@@ -230,8 +230,8 @@ without cutting it ([dbw.md §11.5](../design/dbw.md#115-3-tap-connector-spec-mi
 
 | Tap | Intercepts | MUX side | Notes |
 |---|---|---|---|
-| **Throttle tap** | stock throttle motor leads | NC → stock ECU, NO → driver M2 | paralleled rear motors |
-| **Steering tap** | stock steering motor leads | NC → stock ECU, NO → driver M1 | MRider adds the gearmotor if the column had none. **Note the M1/M2 assignment is inverted vs. mrover** — intentional, see [dbw.md §2.1](../design/dbw.md#21-actuator) (finding F6) |
+| **Throttle tap** | stock throttle motor leads | NC → stock ECU, NO → driver M2 | paralleled rear motors — and they are paralleled **inside the stock ECU-end housing**, so this tap intercepts **four conductors carrying two nets**. **Read the pairing off the housing** (two wires to a contact); do not infer it from colour, because the two motors are mirror-mounted and the stock harness may cross them. Traced on vehicle #1 2026-11-06 — [02-mechanical §2.2](02-mechanical.md#22-teardown) step 2 |
+| **Steering tap** | stock steering motor leads | NC → stock ECU, NO → driver M1 | **The stock steering motor exists and is connectorised at the ECU end** (`M2M3`, its own 2-pin socket) — confirmed 2026-11-06, so the tap **reuses the stock motor** rather than adding one. *That does not release BOM #4*, which stays funded until the duty-cycle test ([dbw.md §2.1](../design/dbw.md#21-actuator)). **Note the M1/M2 assignment is inverted vs. mrover** — intentional, see [dbw.md §2.1](../design/dbw.md#21-actuator) (finding F6) |
 | **Power tap** | chassis traction pack, **in the trunk** | feeds the driver's B+ **and the stock ECU, through the contactor** | fused. The logic rail is a **separate battery** (§3.1), not tapped from here. **Tap at the battery, upstream of the stock inline protector** — see the caution below, and the one after it |
 
 > [!CAUTION]

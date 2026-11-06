@@ -2025,8 +2025,18 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > | tap | termination found | what to buy |
 > |---|---|---|
 > | Power | **keyed 2-pin** (2026-10-02) | mating half ×2 per vehicle |
-> | Throttle | **keyed 2-pin** (2026-10-02) | mating half ×2 per vehicle |
-> | Steering | *(not yet checked)* | mating half if connectorised; otherwise a 2-pin ≥10 A family |
+> | Throttle | **keyed 2-pin at each motor** (2026-10-02); **one housing carrying all four conductors at the ECU end** (2026-11-06) | mating half ×2 per vehicle if you tap at the motors — **one 4-way pair** if you tap at the ECU |
+> | Steering | **keyed 2-pin at the ECU end** (`M2M3`) — **checked 2026-11-06** | mating half ×2 per vehicle. **The motor end has not been seen** — if it is spliced, that half is a cut |
+>
+> **Checked on vehicle #1, 2026-11-06 — and the throttle row was a half-truth.** The stock ECU's
+> motor edge carries three sockets: `M2M3` **steering** (brown + blue), `M1` **Motor** — which
+> carries **both** rear motors, paralleled inside that one housing (right yellow + blue, left
+> green + red) — and `P1` **Power**. So the throttle tap is **four conductors, two nets**, not a
+> 2-pin, unless you take it at the motor ends instead. The connector map and how to tell the
+> pairs apart are in [02-mechanical §2.2](02-mechanical.md#22-teardown) step 2.
+>
+> **Blue appears on two different circuits** on this vehicle — steering and right rear. Choosing
+> or terminating a lead by colour is how the wrong pair ends up on the relay.
 >
 > **That choice also makes the families self-enforcing.** XT60, XT30 and a small 2-pin cannot mate
 > with each other — different shells, different sizes — so no extra discipline is needed.

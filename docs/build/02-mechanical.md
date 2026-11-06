@@ -58,6 +58,41 @@ Work in this order and bag-and-tag fasteners by panel.
     - the **throttle** leads to the rear motors,
     - the **steering** leads (if a stock steering motor exists),
     - the **12 V pack** output.
+
+   All three leave the stock ECU on **one edge of the module**. The map below was read off the
+   `JR1630RX-12V` PCB silkscreen and the manufacturer's own labelled photograph, then traced on
+   the vehicle on **2026-11-06**:
+
+   | Socket | Silkscreen | Carries | Found on vehicle #1 |
+   |---|---|---|---|
+   | **Steering motor** | `M2M3` (`M2± / M3±`) | the steering gearmotor | **brown + blue** |
+   | **Motor** | `M1` | **both rear motors, paralleled in this one housing** | right **yellow + blue**, left **green + red** |
+   | **Power** | `P1` ⊕⊖ | the traction pack | — |
+
+   > [!WARNING]
+   > **Do not identify a lead by its colour.**
+   >
+   > On vehicle #1 **blue appears twice** — once in the steering pair and once on the right rear
+   > motor. Identify a lead by **which socket it leaves**, and confirm it by **which two wires
+   > share a contact**. A colour names a strand, not a circuit.
+
+   **The opposite edge is not a tap.** The yellow 7-pin header (`J1`) carries the thin bundle
+   that runs forward to the dash and the headlights, and it is **all logic** — `+BAT`,
+   `Power output`, `GND`, `Forward`, `Back`, `High/low speed`. **No motor is on it.** It gets
+   mistaken for the steering lead because the dash sits on the steering column; it is not one.
+
+   **Confirming the steering pair** — the stock remote needs a live battery for this. Wheels off
+   the ground, power on, work the **steering stick only**, and meter the suspect pair at the ECU
+   end:
+
+   | Observed | Verdict |
+   |---|---|
+   | polarity **reverses** between left and right, pedal does nothing | **steering** |
+   | responds to the pedal, stick does nothing | **throttle** |
+
+   Record which polarity drives **left** in the sheet below. A reversed steering tap is the one
+   mistake that passes every standstill check — see
+   [03-electrical §3.3](03-electrical.md#33-the-three-taps).
 3. **Expose the steering column** from the wheel down to the linkage. Note the column
    diameter, its total lock-to-lock rotation, and whether there is a usable flat or
    D-profile for a coupler set screw.
@@ -76,6 +111,7 @@ Work in this order and bag-and-tag fasteners by panel.
 | Column-to-road-wheel ratio | — | *(measure during bring-up)* | Derived from the two rows above |
 | Drive-motor shaft diameter | mm | *(measure during bring-up)* | Calipers |
 | Instrumented side | L / R | *(measure during bring-up)* | — |
+| Steering: polarity that drives **left** | — | *(measure during bring-up)* | Stock remote, wheels off the ground — step 2 |
 | Wheelbase (rear axle → front axle) | m | *(measure during bring-up)* | Tape |
 | Track (wheel separation) | m | *(measure during bring-up)* | Tape |
 | Loaded wheel rolling circumference | m | *(measure during bring-up)* | Mark tire, roll one revolution |
