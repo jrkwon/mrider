@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 850" width="1300" height="850" font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+<title>Authority tap wiring - which connector half goes on which end</title>
+<desc>Each motor conductor runs from a tab on the stock module, through a receptacle MRider supplies, into a relay on 87a; the relay's 30 leaves on a tab MRider supplies and enters the vehicle's own plug on its way to the motor. The motor driver feeds 87. Nothing is cut: both taps are connectors the vehicle already has.</desc>
+<defs><marker id="a047857" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#047857"/></marker><marker id="a1d4ed8" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#1d4ed8"/></marker><marker id="a334155" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#334155"/></marker><marker id="a64748b" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#64748b"/></marker><marker id="a7e22ce" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#7e22ce"/></marker><marker id="a92400e" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#92400e"/></marker></defs>
+<rect width="1300" height="850" fill="#ffffff"/>
+<text x="24" y="34" font-size="18" font-weight="bold" fill="#0f172a" text-anchor="start">Authority tap wiring — nothing is cut, and each half is the gender opposite to the thing it mates</text>
+<text x="24" y="58" font-size="12.5" fill="#475569"><tspan font-weight="bold" fill="#64748b">Grey = the vehicle’s own parts.</tspan><tspan font-weight="bold" fill="#047857">  Green = what MRider buys.</tspan><tspan font-weight="bold" fill="#7e22ce">  Purple = the motor driver.</tspan>  Coil off → 30 sits on 87a → the vehicle is factory stock.</text>
+<rect x="24" y="78" width="1252" height="336" rx="8" fill="#f0f9ff" stroke="#0369a1" stroke-width="2.4"/>
+<text x="44" y="108" font-size="15" font-weight="bold" fill="#0c4a6e" text-anchor="start">STEERING TAP</text>
+<text x="44" y="130" font-size="12" font-weight="normal" fill="#0c4a6e" text-anchor="start">M2M3  socket on the stock module  →  steering gearmotor</text>
+<text x="136.0" y="148" font-size="9.5" font-weight="bold" fill="#94a3b8" text-anchor="middle">STOCK MODULE</text>
+<text x="304.0" y="148" font-size="9.5" font-weight="bold" fill="#94a3b8" text-anchor="middle">MRider buys</text>
+<text x="510.0" y="148" font-size="9.5" font-weight="bold" fill="#94a3b8" text-anchor="middle">RELAY MUX</text>
+<text x="716.0" y="148" font-size="9.5" font-weight="bold" fill="#94a3b8" text-anchor="middle">MRider buys</text>
+<text x="888.0" y="148" font-size="9.5" font-weight="bold" fill="#94a3b8" text-anchor="middle">VEHICLE’S OWN PLUG</text>
+<text x="1132.0" y="148" font-size="9.5" font-weight="bold" fill="#94a3b8" text-anchor="middle">MOTOR</text>
+<rect x="48" y="180.0" width="176" height="52" rx="5" fill="#ffffff" stroke="#64748b" stroke-width="2.2"/>
+<text x="136.0" y="201.0" font-size="13" font-weight="bold" fill="#334155" text-anchor="middle">M3−</text>
+<text x="136.0" y="220.0" font-size="10.5" font-weight="normal" fill="#92400e" text-anchor="middle">male tab · brown</text>
+<line x1="224" y1="206.0" x2="243" y2="206.0" stroke="#92400e" stroke-width="3" marker-end="url(#a92400e)"/>
+<rect x="252" y="180.0" width="104" height="52" rx="5" fill="#ecfdf5" stroke="#047857" stroke-width="2.6"/>
+<text x="304.0" y="201.0" font-size="12.5" font-weight="bold" fill="#047857" text-anchor="middle">FEMALE</text>
+<text x="304.0" y="220.0" font-size="10.5" font-weight="normal" fill="#047857" text-anchor="middle">receptacle</text>
+<line x1="356" y1="206.0" x2="383" y2="206.0" stroke="#92400e" stroke-width="3" marker-end="url(#a92400e)"/>
+<rect x="392" y="172.0" width="236" height="68" rx="5" fill="#ffffff" stroke="#334155" stroke-width="2.6"/>
+<text x="404" y="193.0" font-size="14" font-weight="bold" fill="#0f172a" text-anchor="start">K1</text>
+<text x="616" y="193.0" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="end">30 →</text>
+<text x="404" y="213.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="start">87a</text>
+<text x="436" y="213.0" font-size="10.5" font-weight="normal" fill="#64748b" text-anchor="start">STOCK — coil off</text>
+<text x="404" y="231.0" font-size="11.5" font-weight="bold" fill="#7e22ce" text-anchor="start">87</text>
+<text x="436" y="231.0" font-size="10.5" font-weight="normal" fill="#7e22ce" text-anchor="start">driver M1A — coil on</text>
+<line x1="628" y1="206.0" x2="655" y2="206.0" stroke="#92400e" stroke-width="3" marker-end="url(#a92400e)"/>
+<rect x="664" y="180.0" width="104" height="52" rx="5" fill="#ecfdf5" stroke="#047857" stroke-width="2.6"/>
+<text x="716.0" y="201.0" font-size="12.5" font-weight="bold" fill="#047857" text-anchor="middle">MALE</text>
+<text x="716.0" y="220.0" font-size="10.5" font-weight="normal" fill="#047857" text-anchor="middle">tab</text>
+<line x1="768" y1="206.0" x2="791" y2="206.0" stroke="#92400e" stroke-width="3" marker-end="url(#a92400e)"/>
+<rect x="800" y="180.0" width="176" height="52" rx="5" fill="#ffffff" stroke="#64748b" stroke-width="2.2"/>
+<text x="888.0" y="201.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">female receptacle</text>
+<text x="888.0" y="220.0" font-size="10.5" font-weight="normal" fill="#92400e" text-anchor="middle">brown — 1 wire</text>
+<line x1="976" y1="206.0" x2="1003" y2="206.0" stroke="#92400e" stroke-width="3" marker-end="url(#a92400e)"/>
+<rect x="1012" y="180.0" width="240" height="52" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="2.2"/>
+<text x="1132.0" y="209.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">steering gearmotor</text>
+<rect x="48" y="284.0" width="176" height="52" rx="5" fill="#ffffff" stroke="#64748b" stroke-width="2.2"/>
+<text x="136.0" y="305.0" font-size="13" font-weight="bold" fill="#334155" text-anchor="middle">M3+</text>
+<text x="136.0" y="324.0" font-size="10.5" font-weight="normal" fill="#1d4ed8" text-anchor="middle">male tab · blue</text>
+<line x1="224" y1="310.0" x2="243" y2="310.0" stroke="#1d4ed8" stroke-width="3" marker-end="url(#a1d4ed8)"/>
+<rect x="252" y="284.0" width="104" height="52" rx="5" fill="#ecfdf5" stroke="#047857" stroke-width="2.6"/>
+<text x="304.0" y="305.0" font-size="12.5" font-weight="bold" fill="#047857" text-anchor="middle">FEMALE</text>
+<text x="304.0" y="324.0" font-size="10.5" font-weight="normal" fill="#047857" text-anchor="middle">receptacle</text>
+<line x1="356" y1="310.0" x2="383" y2="310.0" stroke="#1d4ed8" stroke-width="3" marker-end="url(#a1d4ed8)"/>
+<rect x="392" y="276.0" width="236" height="68" rx="5" fill="#ffffff" stroke="#334155" stroke-width="2.6"/>
+<text x="404" y="297.0" font-size="14" font-weight="bold" fill="#0f172a" text-anchor="start">K2</text>
+<text x="616" y="297.0" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="end">30 →</text>
+<text x="404" y="317.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="start">87a</text>
+<text x="436" y="317.0" font-size="10.5" font-weight="normal" fill="#64748b" text-anchor="start">STOCK — coil off</text>
+<text x="404" y="335.0" font-size="11.5" font-weight="bold" fill="#7e22ce" text-anchor="start">87</text>
+<text x="436" y="335.0" font-size="10.5" font-weight="normal" fill="#7e22ce" text-anchor="start">driver M1B — coil on</text>
+<line x1="628" y1="310.0" x2="655" y2="310.0" stroke="#1d4ed8" stroke-width="3" marker-end="url(#a1d4ed8)"/>
+<rect x="664" y="284.0" width="104" height="52" rx="5" fill="#ecfdf5" stroke="#047857" stroke-width="2.6"/>
+<text x="716.0" y="305.0" font-size="12.5" font-weight="bold" fill="#047857" text-anchor="middle">MALE</text>
+<text x="716.0" y="324.0" font-size="10.5" font-weight="normal" fill="#047857" text-anchor="middle">tab</text>
+<line x1="768" y1="310.0" x2="791" y2="310.0" stroke="#1d4ed8" stroke-width="3" marker-end="url(#a1d4ed8)"/>
+<rect x="800" y="284.0" width="176" height="52" rx="5" fill="#ffffff" stroke="#64748b" stroke-width="2.2"/>
+<text x="888.0" y="305.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">female receptacle</text>
+<text x="888.0" y="324.0" font-size="10.5" font-weight="normal" fill="#1d4ed8" text-anchor="middle">blue — 1 wire</text>
+<line x1="976" y1="310.0" x2="1003" y2="310.0" stroke="#1d4ed8" stroke-width="3" marker-end="url(#a1d4ed8)"/>
+<rect x="1012" y="284.0" width="240" height="52" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="2.2"/>
+<text x="1132.0" y="313.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">steering gearmotor</text>
+<text x="44" y="388" font-size="11.5" font-weight="bold" fill="#0c4a6e" text-anchor="start">No key seen on this plug — MARK the polarity before you unplug it.</text>
+<rect x="24" y="432" width="1252" height="336" rx="8" fill="#fffbeb" stroke="#b45309" stroke-width="2.4"/>
+<text x="44" y="462" font-size="15" font-weight="bold" fill="#78350f" text-anchor="start">DRIVE TAP</text>
+<text x="44" y="484" font-size="12" font-weight="normal" fill="#78350f" text-anchor="start">M1  socket on the stock module  →  both rear motors</text>
+<text x="136.0" y="502" font-size="9.5" font-weight="bold" fill="#94a3b8" text-anchor="middle">STOCK MODULE</text>
+<text x="304.0" y="502" font-size="9.5" font-weight="bold" fill="#94a3b8" text-anchor="middle">MRider buys</text>
+<text x="510.0" y="502" font-size="9.5" font-weight="bold" fill="#94a3b8" text-anchor="middle">RELAY MUX</text>
+<text x="716.0" y="502" font-size="9.5" font-weight="bold" fill="#94a3b8" text-anchor="middle">MRider buys</text>
+<text x="888.0" y="502" font-size="9.5" font-weight="bold" fill="#94a3b8" text-anchor="middle">VEHICLE’S OWN PLUG</text>
+<text x="1132.0" y="502" font-size="9.5" font-weight="bold" fill="#94a3b8" text-anchor="middle">MOTOR</text>
+<rect x="48" y="534.0" width="176" height="52" rx="5" fill="#ffffff" stroke="#64748b" stroke-width="2.2"/>
+<text x="136.0" y="555.0" font-size="13" font-weight="bold" fill="#334155" text-anchor="middle">horizontal tab</text>
+<text x="136.0" y="574.0" font-size="10.5" font-weight="normal" fill="#334155" text-anchor="middle">male tab · net A</text>
+<line x1="224" y1="560.0" x2="243" y2="560.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
+<rect x="252" y="534.0" width="104" height="52" rx="5" fill="#ecfdf5" stroke="#047857" stroke-width="2.6"/>
+<text x="304.0" y="555.0" font-size="12.5" font-weight="bold" fill="#047857" text-anchor="middle">FEMALE</text>
+<text x="304.0" y="574.0" font-size="10.5" font-weight="normal" fill="#047857" text-anchor="middle">receptacle</text>
+<line x1="356" y1="560.0" x2="383" y2="560.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
+<rect x="392" y="526.0" width="236" height="68" rx="5" fill="#ffffff" stroke="#334155" stroke-width="2.6"/>
+<text x="404" y="547.0" font-size="14" font-weight="bold" fill="#0f172a" text-anchor="start">K3</text>
+<text x="616" y="547.0" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="end">30 →</text>
+<text x="404" y="567.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="start">87a</text>
+<text x="436" y="567.0" font-size="10.5" font-weight="normal" fill="#64748b" text-anchor="start">STOCK — coil off</text>
+<text x="404" y="585.0" font-size="11.5" font-weight="bold" fill="#7e22ce" text-anchor="start">87</text>
+<text x="436" y="585.0" font-size="10.5" font-weight="normal" fill="#7e22ce" text-anchor="start">driver M2A — coil on</text>
+<line x1="628" y1="560.0" x2="655" y2="560.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
+<rect x="664" y="534.0" width="104" height="52" rx="5" fill="#ecfdf5" stroke="#047857" stroke-width="2.6"/>
+<text x="716.0" y="555.0" font-size="12.5" font-weight="bold" fill="#047857" text-anchor="middle">MALE</text>
+<text x="716.0" y="574.0" font-size="10.5" font-weight="normal" fill="#047857" text-anchor="middle">tab</text>
+<line x1="768" y1="560.0" x2="791" y2="560.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
+<rect x="800" y="534.0" width="176" height="52" rx="5" fill="#ffffff" stroke="#64748b" stroke-width="2.2"/>
+<text x="888.0" y="555.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">female receptacle</text>
+<text x="888.0" y="574.0" font-size="10.5" font-weight="normal" fill="#334155" text-anchor="middle">2 wires — RECORD colours</text>
+<line x1="976" y1="560.0" x2="1003" y2="560.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
+<rect x="1012" y="534.0" width="240" height="52" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="2.2"/>
+<text x="1132.0" y="563.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">both rear motors</text>
+<rect x="48" y="638.0" width="176" height="52" rx="5" fill="#ffffff" stroke="#64748b" stroke-width="2.2"/>
+<text x="136.0" y="659.0" font-size="13" font-weight="bold" fill="#334155" text-anchor="middle">vertical tab</text>
+<text x="136.0" y="678.0" font-size="10.5" font-weight="normal" fill="#334155" text-anchor="middle">male tab · net B</text>
+<line x1="224" y1="664.0" x2="243" y2="664.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
+<rect x="252" y="638.0" width="104" height="52" rx="5" fill="#ecfdf5" stroke="#047857" stroke-width="2.6"/>
+<text x="304.0" y="659.0" font-size="12.5" font-weight="bold" fill="#047857" text-anchor="middle">FEMALE</text>
+<text x="304.0" y="678.0" font-size="10.5" font-weight="normal" fill="#047857" text-anchor="middle">receptacle</text>
+<line x1="356" y1="664.0" x2="383" y2="664.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
+<rect x="392" y="630.0" width="236" height="68" rx="5" fill="#ffffff" stroke="#334155" stroke-width="2.6"/>
+<text x="404" y="651.0" font-size="14" font-weight="bold" fill="#0f172a" text-anchor="start">K4</text>
+<text x="616" y="651.0" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="end">30 →</text>
+<text x="404" y="671.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="start">87a</text>
+<text x="436" y="671.0" font-size="10.5" font-weight="normal" fill="#64748b" text-anchor="start">STOCK — coil off</text>
+<text x="404" y="689.0" font-size="11.5" font-weight="bold" fill="#7e22ce" text-anchor="start">87</text>
+<text x="436" y="689.0" font-size="10.5" font-weight="normal" fill="#7e22ce" text-anchor="start">driver M2B — coil on</text>
+<line x1="628" y1="664.0" x2="655" y2="664.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
+<rect x="664" y="638.0" width="104" height="52" rx="5" fill="#ecfdf5" stroke="#047857" stroke-width="2.6"/>
+<text x="716.0" y="659.0" font-size="12.5" font-weight="bold" fill="#047857" text-anchor="middle">MALE</text>
+<text x="716.0" y="678.0" font-size="10.5" font-weight="normal" fill="#047857" text-anchor="middle">tab</text>
+<line x1="768" y1="664.0" x2="791" y2="664.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
+<rect x="800" y="638.0" width="176" height="52" rx="5" fill="#ffffff" stroke="#64748b" stroke-width="2.2"/>
+<text x="888.0" y="659.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">female receptacle</text>
+<text x="888.0" y="678.0" font-size="10.5" font-weight="normal" fill="#334155" text-anchor="middle">2 wires — RECORD colours</text>
+<line x1="976" y1="664.0" x2="1003" y2="664.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
+<rect x="1012" y="638.0" width="240" height="52" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="2.2"/>
+<text x="1132.0" y="667.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">both rear motors</text>
+<text x="44" y="742" font-size="11.5" font-weight="bold" fill="#78350f" text-anchor="start">Tabs keyed 90° apart — this plug CANNOT go in reversed.</text>
+<text x="24" y="806" font-size="12.5" font-weight="bold" fill="#334155" text-anchor="start">Restoring the vehicle: unplug MRider’s two assemblies and put the vehicle’s own plugs back on the module. No conductor was cut.</text>
+<text x="24" y="828" font-size="12" font-weight="normal" fill="#475569" text-anchor="start">Per vehicle: 2 taps × (2 female + 2 male) = 4 female + 4 male. Three vehicles: 12 female, 12 male, plus spares.</text>
+</svg>

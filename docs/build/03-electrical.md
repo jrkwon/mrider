@@ -472,6 +472,21 @@ the person wiring them is not the person who read this table.
 | **K3** | throttle tap, lead **A** | drive motors A, paralleled | stock ECU throttle A | driver `M2`, terminal A |
 | **K4** | throttle tap, lead **B** | drive motors B, paralleled | stock ECU throttle B | driver `M2`, terminal B |
 
+![Authority tap wiring: for each of the four motor conductors, a row running from a male tab on the stock module, through a female receptacle MRider supplies, into the relay's 87a; the relay's 30 leaves on a male tab MRider supplies and enters the vehicle's own female plug on the way to the motor, while the driver feeds 87. The steering tap's two conductors are brown on M3-minus and blue on M3-plus with no polarity key; the drive tap's two conductors each carry two wires whose colours are still to be recorded, and its tabs are keyed ninety degrees apart. Both taps are connectors the vehicle already has, so nothing is cut](../images/authority-tap-wiring.svg)
+
+> [!IMPORTANT]
+> **Both halves you buy are the opposite gender to the thing they are named after**
+>
+> The stock module presents **male tabs**, so MRider's half facing it is a **female
+> receptacle**. The vehicle's own plug is a **female receptacle**, so MRider's half facing
+> *that* is a **male tab**. *Order from the picture, not from the sentence "the steering
+> plug" — the sentence gets you twelve wrong parts.*
+>
+> | | per tap | per vehicle | **three vehicles** |
+> |---|---:|---:|---:|
+> | female receptacles | 2 | 4 | **12** |
+> | male tabs | 2 | 4 | **12** |
+
 All four coils sit on **one bus** — see the
 [relay-driver board](../images/relay-driver-board.svg) for the driver side: the four coils in
 parallel across the E-stop-fed logic feed and a single `IRLZ44N` pulling all four low sides. The
