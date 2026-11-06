@@ -65,18 +65,23 @@ Work in this order and bag-and-tag fasteners by panel.
 
    | Socket | Silkscreen | Carries | Found on vehicle #1 |
    |---|---|---|---|
-   | **Steering motor** | `M2M3` (`M2± / M3±`) | the steering gearmotor | **brown + blue**, in a **2×2 four-way housing with only two positions fitted** |
+   | **Steering motor** | `M2M3` (`M2± / M3±`) | the steering gearmotor | **brown on `M3−`, blue on `M3+`** — the upper row of a 2×2 four-way housing. **The `M2` row is unfitted** |
    | **Motor** | `M1` | **both rear motors, paralleled in this one housing** | right **yellow + blue**, left **green + red** |
    | **Power** | `P1` ⊕⊖ | the traction pack | — |
 
    > [!WARNING]
-   > **Mark which two cavities the steering terminals sit in, before you unterminate anything.**
+   > **The steering plug's two empty cavities are the `M2` row — record this per vehicle.**
    >
-   > `M2M3` is a **four-way** footprint — the board carries two motor outputs there, `M2` and
-   > `M3`, and this chassis wires **one** of them. The housing therefore comes out of the socket
-   > with two cavities empty, and nothing on the plug says which two were used. Re-make it into
-   > the wrong pair and the steering motor is on a dead output, or on the other one. *This is
-   > also the answer to why a socket labelled for two outputs carries a single motor.*
+   > `M2M3` is a **four-way** footprint: the board offers two motor outputs there, `M2` and `M3`,
+   > and this chassis wires **one**. *That is why a socket labelled for two outputs carries a
+   > single motor.* On vehicle #1 the terminals sit in the **`M3` row**, **brown on `M3−` and
+   > blue on `M3+`** — read against the silkscreen with the four-way housing on the left, `M1`
+   > and `P1` to its right.
+   >
+   > **Nothing on the plug itself records that.** Mark the two cavities, with their polarity,
+   > before you pull a terminal — on **every** vehicle, because a factory that populated `M3`
+   > on one chassis had no reason to be consistent on the next. Re-make the plug into the wrong
+   > row and the steering motor is on a dead output.
 
    > [!WARNING]
    > **Do not identify a lead by its colour.**
@@ -120,7 +125,8 @@ Work in this order and bag-and-tag fasteners by panel.
 | Column-to-road-wheel ratio | — | *(measure during bring-up)* | Derived from the two rows above |
 | Drive-motor shaft diameter | mm | *(measure during bring-up)* | Calipers |
 | Instrumented side | L / R | *(measure during bring-up)* | — |
-| Steering: polarity that drives **left** | — | *(measure during bring-up)* | Stock remote, wheels off the ground — step 2 |
+| Steering: cavities fitted (`M2` row or `M3` row), and which wire on − | — | *(vehicle #1: `M3` row, brown `M3−` / blue `M3+`)* | Read against the silkscreen — step 2 |
+| Steering: polarity that drives **left** (e.g. *blue positive*) | — | *(measure during bring-up)* | Stock remote, wheels off the ground — step 2 |
 | Wheelbase (rear axle → front axle) | m | *(measure during bring-up)* | Tape |
 | Track (wheel separation) | m | *(measure during bring-up)* | Tape |
 | Loaded wheel rolling circumference | m | *(measure during bring-up)* | Mark tire, roll one revolution |

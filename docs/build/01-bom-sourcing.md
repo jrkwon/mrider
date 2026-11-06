@@ -2026,7 +2026,7 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > |---|---|---|
 > | Power | **keyed 2-pin** (2026-10-02) | mating half ×2 per vehicle |
 > | Throttle | **keyed 2-pin at each motor** (2026-10-02); **one housing carrying all four conductors at the ECU end** (2026-11-06) | mating half ×2 per vehicle if you tap at the motors — **one 4-way pair** if you tap at the ECU |
-> | Steering | **2×2 four-way housing at the ECU end, two positions fitted** (`M2M3`) — **checked 2026-11-06** | mating half ×2 per vehicle — a **four-way shell**, not a 2-pin, with terminals in the same two cavities. **The motor end has not been seen** — if it is spliced, that half is a cut |
+> | Steering | **2×2 four-way housing at the ECU end, the `M3` row fitted** (brown `M3−`, blue `M3+`) — **checked 2026-11-06** | mating half ×2 per vehicle — a **four-way shell**, not a 2-pin, with terminals in the same row. **The motor end has not been seen** — if it is spliced, that half is a cut |
 >
 > **Checked on vehicle #1, 2026-11-06 — and the throttle row was a half-truth.** The stock ECU's
 > motor edge carries three sockets: `M2M3` **steering** (brown + blue, in a four-way housing with
