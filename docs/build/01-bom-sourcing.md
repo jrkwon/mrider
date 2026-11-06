@@ -2026,7 +2026,7 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > |---|---|---|
 > | Power | **keyed 2-pin** (2026-10-02) | mating half ×2 per vehicle |
 > | Throttle | **keyed 2-pin at each motor** (2026-10-02); at the ECU end a **2-position flat-blade `6.3 × 0.8`** plug, 16.19 mm wide, **tabs keyed 90°** (2026-11-06) | **×2 per vehicle, uninsulated `.250`** — see the note below |
-> | Steering | **2-position pin-and-socket, 3.0 mm pitch** (2026-11-06) — Micro-Fit 3.0 class | ×2 per vehicle — see the note below. **Not a blade family** |
+> | Steering | **2-position pin-and-socket, 3.0 mm pitch** (2026-11-06) — **Micro-Fit 3.0**, confirmed to a part number 2026-11-07 | ×2 per vehicle — see the note below. **Not a blade family**, and **not wire-to-board either** |
 >
 > **Checked on vehicle #1, 2026-11-06 — and the throttle row was a half-truth.** The stock ECU's
 > motor edge carries three sockets: `M2M3` **steering** (brown + blue, a 2-position plug — the
@@ -2042,25 +2042,72 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > | | contact | spec | what to buy |
 > |---|---|---|---|
 > | **Drive** | flat blade | **`6.3 × 0.8`** (`.250`) — measured 2026-11-06, **the same terminal the [#7](../order-log.md) relays carry** | uninsulated `.250` receptacles and tabs, wire-to-wire |
-> | **Steering** | **pin and socket** | **3.0 mm pitch**, 2-way single row — **Micro-Fit 3.0** (`43645` housing, `43030` terminals, `43650` header) and its clones | crimp housing + terminals, **and a PCB header for the male half** |
+> | **Steering** | **pin and socket** | **3.0 mm pitch**, 2-way single row — **Micro-Fit 3.0** | **two crimp housings, both wire-to-wire** — the four part numbers are in the table below |
 >
-> **The steering tap brings back the wire-to-board problem, and only that tap.** A pin family's
-> male half exists as a **PCB header**, so the end that receives the vehicle's own plug goes on
-> a fragment of the perfboard [#12b](../order-log.md#L122) already bought. The drive tap needs
-> nothing of the sort — blade terminals are wire-to-wire by nature.
+> **One test settles both halves of the steering tap, not one each.** It looked like two
+> independent fit questions — does the bought female enter the module, and does the bought male
+> accept the vehicle's plug. It is one question, because the two halves meet the *same* board
+> header:
 >
-> **Buy ONE of each before you buy nine.** 3.0 mm is a pitch, not a guarantee of fit: Micro-Fit
-> and its clones vary in shroud and latch, and the module's socket is moulded into its case.
-> *One housing, one strip of terminals and one header, tried on vehicle #1, costs a few hundred
-> won and settles a question that twelve wrong parts cannot.* The blade half can be bought in
-> quantity immediately — `.250` is `.250`.
+> ```
+> module header (male)  ↔  vehicle's own plug (female)      — given
+> module header (male)  ↔  the female half MRider buys      — try this
+> ───────────────────────────────────────────────
+> ⇒ the male half MRider buys  ↔  vehicle's own plug         — follows
+> ```
+>
+> If the bought female mates with the module header, that header is of the bought series; the
+> vehicle's plug mates with that header, so it is of the series too; so the bought male takes it.
+> **Buy both genders from one series and try only the awkward one** — the female entering a
+> shroud moulded into the module's case. A housing sliding over a header is the forgiving direction.
+>
+> **And the male half is NOT wire-to-board.** The earlier reading of this — that a pin family's
+> male half exists only as a PCB header, so the end receiving the vehicle's plug would have to be
+> mounted on a fragment of the perfboard [#12b](../order-log.md#L122) — was wrong. Micro-Fit's
+> `43640` is a **crimp housing for male terminals**, wire-to-wire. Both halves crimp and plug;
+> nothing is soldered to a board. *Found by following the cross-reference printed on the terminal's
+> own listing rather than reasoning about what a pin family must look like.*
+>
+> **The four part numbers, ×three vehicles** — devicemart `ㅌㅏㄱㄹㄹㄴㄷㅏ` › ㅭㄹㄹㅡㅅㄱ › Micro-Fit 3.0™,
+> priced 2026-11-07:
+>
+> | | part | goods no. | each | needed | **MOQ** | cost |
+> |---|---|---|---:|---:|---:|---:|
+> | **module side** (`87a`) — housing, female terminals | `43645-0200` | `1271915` | ₩460 | 3 | 1 | ₩1,380 |
+> | **vehicle side** (`30`) — housing, male terminals | `43640-0200` | `1271917` | ₩490 | 3 | 1 | ₩1,470 |
+> | female crimp terminal, AWG 20–24 | `43030-0001` | `1271920` | ₩50 | 6 | **50** | ₩2,500 |
+> | male crimp terminal, AWG 20–24 | `43031-0001` | `1271922` | ₩60 | 6 | **100** | ₩6,000 |
+> | | | | | | | **₩11,350** |
+>
+> Which housing is which is settled by the listings' own cross-references, and they also
+> **re-confirm the identification**: `43645` is listed as mating with `43640`, **`43650`** and
+> `200875`, and `43650` is the PCB-header family — so `43645` is the half that goes onto a board
+> header, which is what the vehicle's plug does. The whole chain closes without a datasheet.
+>
+> **The terminals' MOQ retires "buy one before you buy nine" for this tap.** 50 and 100 is
+> ₩8,500 whether one vehicle is built or three, so there is nothing left to stage: order all of
+> it. That is also the right call under a deadline for a different reason — **staging costs a
+> delivery cycle, and the project is short of time, not of ₩7,000.** Keep the staged-purchase rule
+> for parts where a wrong guess is expensive; here a wrong guess costs ₩11,350 and a right guess
+> saves a week. *And 150 terminals is the correct quantity for crimps students make by hand once:
+> the first few will be wrong.*
+>
+> > [!WARNING]
+> > **Both terminals are AWG 20–24.** `1.5 mm²` (≈16 AWG) will not fit, and `0.75 mm²`
+> > (≈18 AWG) will not either — **measure the steering conductor before ordering.** If it is
+> > too thick, *do not cut the stock harness to suit the terminal*: MRider's own pigtail starts
+> > at 20 AWG from the crimp and is joined up to gauge at the relay end, where the joint is
+> > MRider's and inspectable. Steering current is low and the tap's rating (≈5 A) already gates
+> > [06 § bench](06-bench-test.md) — the gauge is about the crimp barrel, not the current.
+> > `43645-0200`'s listing names `45773` and `46235` as alternative terminals for other gauge
+> > ranges; neither is stocked in this category.
 >
 > | | per vehicle | **three vehicles** |
 > |---|---:|---:|
 > | drive — `.250` receptacles, **uninsulated** | 2 | **6** |
 > | drive — `.250` male tabs, **uninsulated** | 2 | **6** |
-> | steering — 3.0 mm housing + 2 terminals | 1 | **3** |
-> | steering — 3.0 mm **PCB header**, 2-way | 1 | **3** |
+> | steering — `43645-0200` + 2× `43030-0001` | 1 | **3** |
+> | steering — `43640-0200` + 2× `43031-0001` | 1 | **3** |
 >
 > *Plus spares on every line: these are crimps made by hand, by students, once.*
 >

@@ -486,15 +486,21 @@ the person wiring them is not the person who read this table.
 > [!IMPORTANT]
 > **Both halves you buy are the opposite gender to the thing they are named after**
 >
-> The stock module presents **male tabs**, so MRider's half facing it is a **female
-> receptacle**. The vehicle's own plug is a **female receptacle**, so MRider's half facing
-> *that* is a **male tab**. *Order from the picture, not from the sentence "the steering
-> plug" — the sentence gets you twelve wrong parts.*
+> The stock module presents the **male** contact, so MRider's half facing it is **female**.
+> The vehicle's own plug is **female**, so MRider's half facing *that* is **male**. *Order
+> from the picture, not from the sentence "the steering plug" — the sentence gets you twelve
+> wrong parts.*
 >
 > | | per tap | per vehicle | **three vehicles** |
 > |---|---:|---:|---:|
-> | female receptacles | 2 | 4 | **12** |
-> | male tabs | 2 | 4 | **12** |
+> | female contacts | 2 | 4 | **12** |
+> | male contacts | 2 | 4 | **12** |
+>
+> **All eight parts crimp onto wire; none mounts on a board.** The drive tap is blade, which is
+> wire-to-wire by nature; the steering tap is Micro-Fit 3.0, whose male half also exists as a
+> crimp housing (`43640`) and not only as a PCB header. Part numbers, prices and the argument
+> that **one fit test settles both steering halves** are in
+> [01 § tap terminations](01-bom-sourcing.md).
 
 All four coils sit on **one bus** — see the
 [relay-driver board](../images/relay-driver-board.svg) for the driver side: the four coils in

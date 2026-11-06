@@ -112,8 +112,17 @@ Work in this order and bag-and-tag fasteners by panel.
    centre distance, while a cavity's moulded walls will put you 0.3 mm out. **8.35 mm of
    housing is no help** — a 2-way housing is about 7.8 mm at both 2.5 mm and 3.96 mm pitch.
    **Measured 3.0 mm on vehicle #1, 2026-11-06** — off the socket's cavity centres, because
-   the header pins sit too deep for calipers. 3.0 mm single row is **Molex Micro-Fit 3.0**
-   (`43645` housing, `43030` terminals, `43650` header) and the many clones of it.
+   the header pins sit too deep for calipers. 3.0 mm single row is **Molex Micro-Fit 3.0**,
+   and the mating halves are **both crimp housings** — `43645-0200` with `43030` terminals
+   towards the module, `43640-0200` with `43031` terminals towards the vehicle's own plug. Part
+   numbers and prices: [01 § tap terminations](01-bom-sourcing.md). **Nothing here is
+   wire-to-board** — an earlier reading of this page had the vehicle-facing half as a PCB header
+   needing a perfboard mount, and it does not.
+
+   **One fit test covers both halves.** Both meet the *same* board header, so if the bought
+   female enters the module, the bought male of that series necessarily accepts the vehicle's
+   plug — the argument is written out in [01 § tap terminations](01-bom-sourcing.md). Try the
+   female; the module's socket is moulded into its case and that is the tight direction.
 
    > [!CAUTION]
    > **Micro-Fit 3.0 is rated about 5 A a circuit, and this motor stalls on purpose.**
