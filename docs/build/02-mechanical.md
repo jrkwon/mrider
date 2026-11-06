@@ -65,9 +65,18 @@ Work in this order and bag-and-tag fasteners by panel.
 
    | Socket | Silkscreen | Carries | Found on vehicle #1 |
    |---|---|---|---|
-   | **Steering motor** | `M2M3` (`M2± / M3±`) | the steering gearmotor | **brown + blue** |
+   | **Steering motor** | `M2M3` (`M2± / M3±`) | the steering gearmotor | **brown + blue**, in a **2×2 four-way housing with only two positions fitted** |
    | **Motor** | `M1` | **both rear motors, paralleled in this one housing** | right **yellow + blue**, left **green + red** |
    | **Power** | `P1` ⊕⊖ | the traction pack | — |
+
+   > [!WARNING]
+   > **Mark which two cavities the steering terminals sit in, before you unterminate anything.**
+   >
+   > `M2M3` is a **four-way** footprint — the board carries two motor outputs there, `M2` and
+   > `M3`, and this chassis wires **one** of them. The housing therefore comes out of the socket
+   > with two cavities empty, and nothing on the plug says which two were used. Re-make it into
+   > the wrong pair and the steering motor is on a dead output, or on the other one. *This is
+   > also the answer to why a socket labelled for two outputs carries a single motor.*
 
    > [!WARNING]
    > **Do not identify a lead by its colour.**
