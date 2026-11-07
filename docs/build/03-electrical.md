@@ -917,21 +917,46 @@ then fit to that vehicle** — which is better practice anyway, since AGC is tun
 
 **Prove it in this order, because each step fails for a different reason.**
 
-1. **Power only.** 5 V at `VIN`, then meter the `+` rail **on board B**: 3.3 V. Not there → the
-   fault is a jumper, not a sensor.
-2. **Latches, with a meter, before any code.** Probe each `OUT` against GND and pass a magnet by.
-   It must snap between **0 V and 3.3 V and stay there** when the magnet leaves — *that is what
-   makes it a latch*. If it falls back on its own you have a switch, and the whole quadrature
-   scheme is wrong. **Flip the magnet to reset it.**
-3. **I²C scan.** `0x36` must appear, and nothing else — one device per bus is the design.
-4. **AGC.** Read `0x1A` at the working gap, tune to mid-scale, and **write the gap down**: it is
-   the number the other two vehicles are built to.
-5. **Counts last.** Only now bring up the decoder and move a magnet past both latches in sequence.
-   Counting up one way and down the other is the **first proof the `(n + ½)` spacing is right**,
-   and it is cheap here and expensive on a wheel.
+| # | What you are proving | On what | With | Pass |
+|---|---|---|---|---|
+| 1 | the rail exists | board B's `+` rail | **multimeter** | **3.3 V** |
+| 2 | each latch *latches* | **`DRV5013` A, then B** — `OUT` against GND | **multimeter + magnet** | snaps **0 ↔ 3.3 V** and **stays** |
+| 3 | the bus has one device | **`AS5600`**, `SDA` 18 / `SCL` 19 | **`pio run -e i2c_scan`** | `0x36` **and nothing else** |
+| 4 | the air gap is right, and the angle does not wrap | **`AS5600`** `0x1A`, `0x0B`, `0x0C` | **`pio run -e as5600_check`** | AGC **40–90** on a 3.3 V board; **no wrap** lock to lock |
+| 5 | the two latches are half a pitch apart | **both `DRV5013`**, pins **0** and **1** | **`pio run -e quad_count`** | **±36 counts** per carrier revolution, sign follows direction |
 
-**Steps 1–3 need no firmware beyond a scan sketch.** If something is wrong, it is wrong before any
-code can be blamed for it.
+1. **Power only.** Not there → the fault is a jumper, not a sensor.
+2. **Latches, with a meter, before any code.** Pass a magnet by. It must snap and **stay** when
+   the magnet leaves — *that is what makes it a latch*. If it falls back on its own you have a
+   switch, and the whole quadrature scheme is wrong. **Flip the magnet to reset it.**
+3. **I²C scan.** One device per bus is the design, so **two addresses is a failure too** — it
+   means a second breakout still on the rail or a second pull-up pair fighting the first.
+4. **AGC.** Tune to mid-scale and **write the gap down**: it is the number the other two vehicles
+   are built to. The same run does the **wrap check**, which is the safety half — see below.
+5. **Counts last.** Counting up one way and down the other is the **first proof the `(n + ½)`
+   spacing is right**, and it is cheap here and expensive on a wheel.
+
+> [!CAUTION]
+> **Mid-scale is ≈ 64 here, not 128** — the AS5600's AGC spans `0–255` at **5 V** but `0–128`
+> at **3.3 V**, and the Teensy 4.1 is a 3.3 V part. Aiming at 128 on this board means closing the
+> gap until the magnet nearly touches and the sensor still reports *too weak*.
+>
+> **And step 4's wrap check is not a gap check.** The AS5600 is **single-turn absolute**. Turn the
+> sensed shaft lock to lock: the reading must be **monotonic with no discontinuity**. A wrap is
+> [FMEA row 2](../design/safety.md#7-fmea-lightweight), severity 5 — a garbage angle feeding a
+> position loop that drives a motor. If it wraps you mounted it on the wrong shaft. **Do not
+> proceed.**
+
+**Steps 1 and 2 need no firmware at all**, and they come first for exactly that reason: a fault
+found with a meter can never be blamed on code.
+
+**Steps 3–5 do need code, and it now exists** —
+[`firmware/bench/`](https://github.com/jrkwon/mrider/tree/main/firmware/bench), one PlatformIO
+environment per step, each building a single source file so no sketch can mask another's fault.
+*Until 2026-11-07 this page said "a scan sketch" and "the decoder" as though they were on the
+shelf, and there was no `firmware/` directory at all.* They are **syntax-checked and never
+flashed**: the first person to run them should expect to fix something, and should fix it in the
+repository rather than in a copy.
 
 > [!IMPORTANT]
 > **Cut `VUSB`–`VIN` before the first bench session that involves a UBEC**
