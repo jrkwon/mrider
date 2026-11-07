@@ -1,0 +1,147 @@
+# MRider traction supply -- the pack end of the power tap.
+#
+#   wireviz harness/traction-supply.yml
+#
+# WHY THIS IS AN INTERCEPTION AND NOT A TAKE-OFF
+# ----------------------------------------------
+# The 2026 pack is sealed and ends in a pigtail, so there is nothing to bolt a
+# ring terminal to. The stock feed is unplugged, MRider is inserted, and the
+# stock ECU is fed back out THROUGH THE CONTACTOR -- which is what puts the
+# whole vehicle, stock branch included, behind the E-stop.
+#
+# WHAT IS IN THE BOM AND WHAT IS NOT
+# -----------------------------------
+# Only MRider's own halves are. The pack's receptacle and the stock protector
+# lead are the vehicle's and carry ignore_in_bom, so the generated BOM is a
+# shopping list rather than an inventory. That matters here more than usual:
+# both of MRider's halves are the OPPOSITE gender to the thing they are named
+# after, and counting them by hand is how twelve wrong parts get ordered.
+#
+#   pack presents a RECEPTACLE  -> MRider's pack-facing half is a MALE TAB
+#   stock lead is a MALE TAB    -> MRider's ECU-facing half is a RECEPTACLE
+
+connectors:
+  PACK:
+    type: .250 blade
+    subtype: 2-pos, keyed 90, female
+    pincount: 2
+    pinlabels: [+, '-']
+    ignore_in_bom: true
+    notes: Vehicle's own. Sealed 12 V pack. ALWAYS LIVE.
+
+  J_PACK:
+    type: .250 blade MALE tab
+    subtype: uninsulated, 16-14 AWG
+    pincount: 2
+    pinlabels: [+, '-']
+    notes: MRider's half. Opposite gender to the pack.
+
+  F1:
+    type: Blade fuse, ATO
+    subtype: 25 A
+    pincount: 2
+    pinlabels: [in, out]
+    notes: First thing after the pack.
+
+  XT60:
+    type: XT60
+    subtype: bare pair
+    pincount: 2
+    pinlabels: [+, '-']
+    notes: The defined dead point.
+
+  K0:
+    type: E-stop contactor
+    subtype: NO, 12 V coil
+    pincount: 2
+    pinlabels: [in, out]
+    notes: Stock branch is downstream too.
+
+  TEE:
+    type: Barrier block
+    subtype: JOTB 30-4P, 30 A, M4
+    pincount: 2
+    pinlabels: [+, '-']
+
+  J_ECU:
+    type: .250 blade RECEPTACLE
+    subtype: uninsulated, 16-14 AWG
+    pincount: 2
+    pinlabels: [+, '-']
+    notes: MRider's half. Receives the stock male lead.
+
+  ECU:
+    type: .250 blade
+    subtype: 2-pos, keyed 90, male
+    pincount: 2
+    pinlabels: [+, '-']
+    ignore_in_bom: true
+    notes: Vehicle's own, on to the stock 10 A protector.
+
+  DRV:
+    type: Motor driver
+    subtype: screw terminal
+    pincount: 2
+    pinlabels: ['B+', 'B-']
+    ignore_in_bom: true
+    notes: Star ground lands here.
+
+cables:
+  W_IN:
+    wirecount: 2
+    gauge: 14 AWG
+    length: 0.3
+    colors: [RD, BK]
+    notes: MRider's own wire. The bought terminals crimp onto THIS.
+  W_F:
+    wirecount: 2
+    gauge: 14 AWG
+    length: 0.2
+    colors: [RD, BK]
+  W_X:
+    wirecount: 2
+    gauge: 14 AWG
+    length: 0.3
+    colors: [RD, BK]
+  W_K:
+    wirecount: 2
+    gauge: 14 AWG
+    length: 0.3
+    colors: [RD, BK]
+  W_ECU:
+    wirecount: 2
+    gauge: 14 AWG
+    length: 0.3
+    colors: [RD, BK]
+    notes: Stock branch, restored.
+  W_DRV:
+    wirecount: 2
+    gauge: 14 AWG
+    length: 0.5
+    colors: [RD, BK]
+
+connections:
+  - - PACK: [1, 2]
+    - ==>: [1-2]
+    - J_PACK: [1, 2]
+  - - J_PACK: [1, 2]
+    - W_IN: [1, 2]
+    - F1: [1, 2]
+  - - F1: [2, 1]
+    - W_F: [1, 2]
+    - XT60: [1, 2]
+  - - XT60: [1, 2]
+    - W_X: [1, 2]
+    - K0: [1, 2]
+  - - K0: [2, 1]
+    - W_K: [1, 2]
+    - TEE: [1, 2]
+  - - TEE: [1, 2]
+    - W_ECU: [1, 2]
+    - J_ECU: [1, 2]
+  - - J_ECU: [1, 2]
+    - ==>: [1-2]
+    - ECU: [1, 2]
+  - - TEE: [1, 2]
+    - W_DRV: [1, 2]
+    - DRV: [1, 2]

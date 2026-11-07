@@ -129,6 +129,39 @@ on the **logic** rail.
 
 ![Power wiring in detail, in two rows: the supply row runs the traction pack through a 25 A fuse and the E-stop contactor, then forks to the stock ECU and to the motor driver's B+ with the relay MUX in neither fork; the authority row puts the four-pole relay MUX in the motor leads, stock ECU outputs on 87a and driver M1/M2 on 87, COM out to the steering gearmotor and the paralleled drive motors; and separately the LiFePO4 logic pack through a 5 A fuse to two UBECs and a direct coil tap feeding every relay coil, with the E-stop button's two NC contacts sitting in those two coil feeds and nowhere else, and the single star ground where the two rails meet](../images/power-wiring.svg)
 
+### The same supply, connector by connector
+
+The figure above is a **block** drawing — it says the pack feeds a fuse, a contactor and two
+forks. It does not say **which terminal**, **which gauge**, or **which half of each connector
+MRider has to buy**, and those are what the bench actually needs.
+
+![Traction supply harness drawn connector by connector, top to bottom: the pack's own .250
+receptacle mating MRider's male tab, then 14 AWG red and black to the 25 A ATO fuse, the XT60,
+the E-stop contactor and the JOTB barrier block, which forks to MRider's .250 receptacle
+receiving the stock lead back out to the ECU and to the motor driver's B plus and B minus. Every
+wire carries its gauge, colour and length; every connector its type, pin numbering and
+whether it is the vehicle's part or one MRider buys](../images/traction-supply.svg)
+
+**Generated from [`harness/traction-supply.yml`](https://github.com/jrkwon/mrider/blob/main/harness/traction-supply.yml)**
+by [`scripts/gen_harness.sh`](https://github.com/jrkwon/mrider/blob/main/scripts/gen_harness.sh).
+*Edit the YAML, never the SVG.*
+
+> [!NOTE]
+> **The parts list under it is generated too, and that is the reason this figure is machine-drawn**
+>
+> Connectors the **vehicle already owns** are marked `ignore_in_bom`, so
+> [`harness/traction-supply.bom.tsv`](https://github.com/jrkwon/mrider/blob/main/harness/traction-supply.bom.tsv)
+> comes out as a **shopping list rather than an inventory** — and it counts the genders for you:
+>
+> | | |
+> |---|---|
+> | `.250` blade **MALE tab**, uninsulated | ×1 — faces the pack, which presents a receptacle |
+> | `.250` blade **RECEPTACLE**, uninsulated | ×1 — receives the stock male lead |
+>
+> **Both are the opposite gender to the thing they are named after**, which is the error this
+> project has made in prose more than once. Here the drawing and the count come from the same
+> four lines of YAML, so they cannot disagree.
+
 ## 3.2 Per-rail fuse and gauge table
 
 Fuse for the **stall** current, not the nominal draw, and size wire for the fuse.

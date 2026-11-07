@@ -49,3 +49,8 @@ ros2_ws/src/gz_ros2_control/
 
 # OpenSCAD build output
 *.stl
+
+# WireViz intermediates — the SVG and the BOM are committed, these are not
+harness/*.gv
+harness/*.html
+harness/*.png

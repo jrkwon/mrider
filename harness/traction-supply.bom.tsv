@@ -1,0 +1,8 @@
+Id	Description	Qty	Unit	Designators
+1	Cable, 2 x 14 AWG	1.9	m	W_DRV, W_ECU, W_F, W_IN, W_K, W_X
+2	Connector, .250 blade MALE tab, uninsulated, 16-14 AWG, 2 pins	1		J_PACK
+3	Connector, .250 blade RECEPTACLE, uninsulated, 16-14 AWG, 2 pins	1		J_ECU
+4	Connector, Barrier block, JOTB 30-4P, 30 A, M4, 2 pins	1		TEE
+5	Connector, Blade fuse, ATO, 25 A, 2 pins	1		F1
+6	Connector, E-stop contactor, NO, 12 V coil, 2 pins	1		K0
+7	Connector, XT60, bare pair, 2 pins	1		XT60
