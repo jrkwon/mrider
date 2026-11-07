@@ -2430,6 +2430,35 @@ you need all of them before step 3:
   > 릴레이 소켓` fits them and yields the receptacle half ready-made. *Thirteen students, hand
   > crimps, once — a pre-crimped lead is worth more here than it looks.*
 
+  > [!IMPORTANT]
+  > **Buy this one on 쿠팡, and filter on GAUGE — not on the size, which every listing has**
+  >
+  > Checked 2026-11-07. The electronics distributors sell this part **by the reel**:
+  > 엘레파츠 lists 332 `FASTON 250` lines and most carry **M.O.Q. 6,000–10,000**, which is
+  > the wrong shape for twenty-four terminals. 쿠팡 carries mixed `2.8 / 4.8 / 6.3` male-and-female
+  > kits for ₩5,000–₩15,000, next-day.
+  >
+  > | | required | why |
+  > |---|---|---|
+  > | size | `6.3 × 0.8` | measured 2026-11-06 |
+  > | insulation | **none** | a sleeved terminal will not enter the module's moulded shroud |
+  > | **gauge** | **16–14 AWG (1.5–2.1 mm²)** | **the two taps run different wire** |
+  >
+  > **The gauge is the trap, and it is specific to this tap pair.** The drive tap's wire matches
+  > the stock harness at **1.5 mm²**; the power tap is on the traction branch at **AWG 14
+  > (≈2.1 mm²)** (§`#12`, [§3.4](03-electrical.md#34-wire-the-e-stop-and-mux-first)). A kit
+  > rated **22–16 AWG — which is the common one — will not take AWG 14.** One terminal family,
+  > two wire sizes: only **16–14** covers both.
+  >
+  > **A kit whose sleeves are loose in the box is the right kind, not the wrong kind.** The
+  > terminals are bare brass and the sleeves slide on separately, so the shrouded end goes in
+  > naked and the open ends can still be insulated. *"Uninsulated" is a requirement about one
+  > end, not a preference about all of them.*
+  >
+  > **Filter on the MALE tab first.** Receptacles are everywhere; tabs are the scarce half, and
+  > at least one 쿠팡 listing says so in its own title — *암단자 전용 … (수단자 미포함)*.
+  > A kit that clears the male tab at the right gauge clears everything.
+
   **The power tap needs no separate search.** A revision ago this paragraph said it could not
   be searched for at all, because its family was unknown; it was opened on **2026-11-07** and
   the pack's pigtail ends in the **same `.250` receptacle used at `M1`**. So one terminal
