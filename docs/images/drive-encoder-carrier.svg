@@ -1,129 +1,107 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 760" width="980" height="760"
-     font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
-  <title>Drive encoder carrier — one-piece ring on a six-lobe hub</title>
-  <desc>Left: looking along the axle. A one-piece printed ring slides onto the gearbox output
-  hub, which is six broad lobes separated by narrow gaps, and presents a plain cylinder carrying
-  eighteen magnets in alternating polarity. Three recessed grub screws, 120 degrees apart and so
-  exactly two lobe pitches apart, are shown dropped into lobe gaps. Two Hall sensors sit radially
-  outside the track, half a magnet pitch apart, so that when A is over a magnet B is over the
-  boundary between two. Right: the same assembly in axial section, with each magnet drawn
-  magnetised RADIALLY - poles stacked through the ring wall, outward face alternating N, S,
-  N, S - and a sensor above the track reading that outward face.</desc>
-  <defs>
-    <marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
-      <path d="M0,0 L0,6 L8,3 z" fill="#b91c1c"/></marker>
-    <marker id="g" markerWidth="8" markerHeight="8" refX="7" refY="2.5" orient="auto">
-      <path d="M0,0 L0,5 L7,2.5 z" fill="#334155"/></marker>
-    <pattern id="h" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
-      <line x1="0" y1="0" x2="0" y2="7" stroke="#94a3b8" stroke-width="2.5"/></pattern>
-  </defs>
-  <rect width="980" height="760" fill="#ffffff"/>
-  <text x="24" y="34" font-size="19" font-weight="bold" fill="#0f172a">Carrier and magnet track — one piece, nothing standing proud</text>
-  <text x="24" y="56" font-size="13" fill="#475569">Hub measures 62.82 mm across opposite lobe crests (caliper). Left: end view, looking along the axle. Right: axial section.</text>
-  <rect x="24" y="76" width="492" height="660" rx="8" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
-  <text x="44" y="102" font-size="15" font-weight="bold" fill="#0f172a">END VIEW — looking along the axle</text>
-  <circle cx="262" cy="346" r="109.4" fill="#fde68a" stroke="#b45309" stroke-width="2.5"/>
-  <circle cx="262" cy="346" r="90.5" fill="#ffffff" stroke="#475569" stroke-width="1.5"/>
-  <path d="M347.5,316.6 L346.3,313.1 L344.8,309.7 L343.3,306.3 L341.6,303.1 L339.8,299.9 L337.9,296.7 L335.8,293.7 L333.6,290.7 L331.3,287.9 L328.9,285.1 L326.3,282.4 L323.7,279.8 L320.9,277.4 L318.1,275.0 L315.2,272.8 L312.1,270.7 L309.0,268.7 L305.9,266.9 L294.5,279.3 L291.0,277.7 L279.3,257.2 L275.6,256.6 L272.0,256.1 L268.3,255.8 L264.6,255.6 L260.9,255.6 L257.3,255.7 L253.6,255.9 L249.9,256.4 L246.3,256.9 L242.7,257.6 L239.1,258.5 L235.6,259.5 L232.1,260.7 L228.6,261.9 L225.2,263.4 L221.9,264.9 L218.6,266.6 L215.4,268.5 L220.5,284.4 L217.3,286.7 L193.7,286.7 L191.4,289.5 L189.1,292.4 L187.0,295.4 L185.0,298.5 L183.1,301.7 L181.4,304.9 L179.8,308.3 L178.3,311.6 L177.0,315.1 L175.8,318.6 L174.8,322.1 L173.9,325.7 L173.1,329.3 L172.5,332.9 L172.0,336.5 L171.7,340.2 L171.6,343.9 L171.6,347.6 L187.9,351.2 L188.3,355.0 L176.5,375.4 L177.7,378.9 L179.2,382.3 L180.7,385.7 L182.4,388.9 L184.2,392.1 L186.1,395.3 L188.2,398.3 L190.4,401.3 L192.7,404.1 L195.1,406.9 L197.7,409.6 L200.3,412.2 L203.1,414.6 L205.9,417.0 L208.8,419.2 L211.9,421.3 L215.0,423.3 L218.1,425.1 L229.5,412.7 L233.0,414.3 L244.7,434.8 L248.4,435.4 L252.0,435.9 L255.7,436.2 L259.4,436.4 L263.1,436.4 L266.7,436.3 L270.4,436.1 L274.1,435.6 L277.7,435.1 L281.3,434.4 L284.9,433.5 L288.4,432.5 L291.9,431.3 L295.4,430.1 L298.8,428.6 L302.1,427.1 L305.4,425.4 L308.6,423.5 L303.5,407.6 L306.7,405.3 L330.3,405.3 L332.6,402.5 L334.9,399.6 L337.0,396.6 L339.0,393.5 L340.9,390.3 L342.6,387.1 L344.2,383.7 L345.7,380.4 L347.0,376.9 L348.2,373.4 L349.2,369.9 L350.1,366.3 L350.9,362.7 L351.5,359.1 L352.0,355.5 L352.3,351.8 L352.4,348.1 L352.4,344.4 L336.1,340.8 L335.7,337.0 Z" fill="#e2e8f0" stroke="#475569" stroke-width="2"/>
-  <circle cx="262" cy="346" r="21" fill="#ffffff" stroke="#475569" stroke-width="2"/>
-  <text x="262" y="350" font-size="10.5" fill="#475569" text-anchor="middle">axle</text>
-  <g transform="translate(368.6,346.0) rotate(-0.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(362.2,309.5) rotate(-20.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(343.7,277.4) rotate(-40.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(315.3,253.6) rotate(-60.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(280.5,241.0) rotate(-80.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(243.5,241.0) rotate(-100.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(208.7,253.6) rotate(-120.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(180.3,277.4) rotate(-140.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(161.8,309.5) rotate(-160.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(155.3,346.0) rotate(-180.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(161.8,382.5) rotate(-200.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(180.3,414.6) rotate(-220.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(208.7,438.4) rotate(-240.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(243.5,451.0) rotate(-260.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(280.5,451.0) rotate(-280.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(315.3,438.4) rotate(-300.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(343.7,414.6) rotate(-320.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <g transform="translate(362.2,382.5) rotate(-340.0)"><rect x="-2.7" y="-6.8" width="5.4" height="13.5" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
-  <line x1="339.1" y1="332.4" x2="369.7" y2="327.0" stroke="#7f1d1d" stroke-width="4.5" stroke-linecap="round"/>
-  <g transform="translate(363.0,328.2) rotate(-10.0)"><rect x="-6.8" y="-6.2" width="13.5" height="12.4" rx="1.5" fill="#fecaca" stroke="#7f1d1d" stroke-width="1.5"/></g>
-  <line x1="211.7" y1="286.1" x2="191.7" y2="262.2" stroke="#7f1d1d" stroke-width="4.5" stroke-linecap="round"/>
-  <g transform="translate(196.0,267.4) rotate(-130.0)"><rect x="-6.8" y="-6.2" width="13.5" height="12.4" rx="1.5" fill="#fecaca" stroke="#7f1d1d" stroke-width="1.5"/></g>
-  <line x1="235.2" y1="419.5" x2="224.6" y2="448.8" stroke="#7f1d1d" stroke-width="4.5" stroke-linecap="round"/>
-  <g transform="translate(226.9,442.4) rotate(-250.0)"><rect x="-6.8" y="-6.2" width="13.5" height="12.4" rx="1.5" fill="#fecaca" stroke="#7f1d1d" stroke-width="1.5"/></g>
-  <line x1="352.4" y1="346.0" x2="363.2" y2="346.0" stroke="#0f172a" stroke-width="3" stroke-dasharray="4 3"/>
-  <g transform="translate(241.4,229.0) rotate(-100.0)"><rect x="-6" y="-9" width="12" height="18" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/></g><text x="241.4" y="233.0" font-size="10" font-weight="bold" fill="#14532d" text-anchor="middle">A</text>
-  <g transform="translate(262.0,227.2) rotate(-90.0)"><rect x="-6" y="-9" width="12" height="18" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/></g><text x="262.0" y="231.2" font-size="10" font-weight="bold" fill="#14532d" text-anchor="middle">B</text>
-  <line x1="241.4" y1="213.0" x2="262.0" y2="213.0" stroke="#15803d" stroke-width="2" marker-start="url(#g)" marker-end="url(#g)"/>
-  <text x="251.7" y="205" font-size="11.5" font-weight="bold" fill="#15803d" text-anchor="middle">6.80 mm</text>
-  <text x="251.7" y="191" font-size="10.5" fill="#15803d" text-anchor="middle">= HALF a magnet pitch</text>
-  <text x="251.7" y="177" font-size="10" fill="#15803d" text-anchor="middle">A on a magnet → B on a BOUNDARY</text>
-  <line x1="382" y1="272" x2="352" y2="284" stroke="#b45309" stroke-width="1.2"/>
-  <text x="386" y="252" font-size="11.5" font-weight="bold" fill="#b45309">one-piece ring</text>
-  <text x="386" y="266" font-size="10.5" fill="#92400e">bore Ø64.02 (clearance)</text>
-  <text x="386" y="280" font-size="10.5" fill="#92400e">plain OD Ø78.02</text>
-  <line x1="398" y1="348" x2="368" y2="346" stroke="#334155" stroke-width="1.2"/>
-  <text x="402" y="352" font-size="10.5" font-weight="bold" fill="#0f172a">index groove</text>
-  <text x="402" y="366" font-size="10.5" fill="#334155">in one face only</text>
-  <text x="44" y="474" font-size="11.5" font-weight="bold" fill="#1e3a8a">18 magnets, alternating</text>
-  <text x="44" y="489" font-size="10.5" fill="#2563eb">pitch 13.60 mm · 36 counts/rev</text>
-  <line x1="146" y1="468" x2="190" y2="436" stroke="#2563eb" stroke-width="1.2"/>
-  <text x="300" y="492" font-size="11.5" font-weight="bold" fill="#7f1d1d">3 × M3 grub screw</text>
-  <text x="300" y="507" font-size="10.5" fill="#b91c1c">recessed below the OD,</text>
-  <text x="300" y="521" font-size="10.5" fill="#b91c1c">dropped into lobe gaps</text>
-  <line x1="330" y1="484" x2="314" y2="456" stroke="#b91c1c" stroke-width="1.2"/>
-  <text x="44" y="136" font-size="11" font-weight="bold" fill="#334155">SIX broad lobes, narrow gaps</text>
-  <text x="44" y="151" font-size="10.5" fill="#64748b">— not a fine spline, which is why a wire</text>
-  <text x="44" y="165" font-size="10.5" fill="#64748b">round the crests reads Ø to within 0.1 mm</text>
-  <line x1="112" y1="172" x2="176" y2="292" stroke="#64748b" stroke-width="1.2"/>
-  <rect x="40" y="540" width="460" height="56" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
-  <text x="56" y="562" font-size="12.5" font-weight="bold" fill="#7f1d1d">Every feature here is a RECESS. Nothing stands proud of Ø78.02.</text>
-  <text x="56" y="581" font-size="12" fill="#7f1d1d">A two-piece version put clamp ears 9 mm out — they swept the sensor.</text>
-  <rect x="40" y="606" width="460" height="56" rx="6" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
-  <text x="56" y="628" font-size="12.5" font-weight="bold" fill="#92400e">6 lobes at 60° · 3 screws at 120° = exactly two lobe pitches.</text>
-  <text x="56" y="647" font-size="12" fill="#78350f">So all three land together. Turn the ring one lobe to seat them in gaps.</text>
-  <rect x="532" y="76" width="424" height="660" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
-  <text x="552" y="102" font-size="15" font-weight="bold" fill="#14532d">AXIAL SECTION — where the 8 mm goes</text>
-  <line x1="560" y1="470" x2="930" y2="470" stroke="#64748b" stroke-width="1.5" stroke-dasharray="9 5"/>
-  <text x="860" y="464" font-size="10.5" fill="#64748b">centreline</text>
-  <rect x="570" y="330" width="78" height="140" fill="url(#h)" stroke="#475569" stroke-width="2"/>
-  <rect x="570" y="330" width="78" height="140" fill="#e2e8f0" fill-opacity="0.5"/>
-  <text x="574" y="492" font-size="11" font-weight="bold" fill="#334155">gearbox</text>
-  <text x="580" y="506" font-size="10.5" fill="#64748b">FIXED</text>
-  <circle cx="608" cy="348" r="5" fill="#fff" stroke="#475569" stroke-width="2"/>
-  <rect x="660" y="372" width="96" height="98" fill="#e2e8f0" stroke="#475569" stroke-width="2"/>
-  <text x="664" y="492" font-size="11" font-weight="bold" fill="#1e3a8a">lobed boss · ROTATES</text>
-  <rect x="668" y="344" width="80" height="28" fill="#fde68a" stroke="#b45309" stroke-width="2"/>
-  <rect x="672" y="330" width="18" height="8" fill="#b91c1c"/><rect x="672" y="338" width="18" height="8" fill="#1e3a8a"/><rect x="690" y="330" width="18" height="8" fill="#1e3a8a"/><rect x="690" y="338" width="18" height="8" fill="#b91c1c"/><rect x="708" y="330" width="18" height="8" fill="#b91c1c"/><rect x="708" y="338" width="18" height="8" fill="#1e3a8a"/><rect x="726" y="330" width="18" height="8" fill="#1e3a8a"/><rect x="726" y="338" width="18" height="8" fill="#b91c1c"/>
-  <rect x="672" y="330" width="72" height="16" fill="none" stroke="#1e293b" stroke-width="1"/>
-  <g font-size="7" fill="#fff" text-anchor="middle"><text x="681" y="337">N</text><text x="681" y="345">S</text><text x="699" y="337">S</text><text x="699" y="345">N</text><text x="717" y="337">N</text><text x="717" y="345">S</text><text x="735" y="337">S</text><text x="735" y="345">N</text></g>
-  <line x1="700" y1="346" x2="700" y2="380" stroke="#7f1d1d" stroke-width="5" stroke-linecap="round"/>
-  <rect x="768" y="300" width="30" height="170" rx="5" fill="#f1f5f900" stroke="#94a3b8" stroke-width="2"/>
-  <text x="804" y="392" font-size="11" fill="#64748b">wheel</text>
-  <line x1="782" y1="182" x2="746" y2="339" stroke="#2563eb" stroke-width="1.2"/>
-  <text x="786" y="176" font-size="11" font-weight="bold" fill="#1e3a8a">magnets</text>
-  <text x="786" y="190" font-size="10" fill="#2563eb">18, alternating</text>
-  <line x1="782" y1="220" x2="750" y2="352" stroke="#b45309" stroke-width="1.2"/>
-  <text x="786" y="214" font-size="11" font-weight="bold" fill="#b45309">carrier — one piece</text>
-  <text x="786" y="228" font-size="10" fill="#92400e">no split, no ears</text>
-  <line x1="782" y1="318" x2="706" y2="362" stroke="#b91c1c" stroke-width="1.2"/>
-  <text x="786" y="312" font-size="11" font-weight="bold" fill="#7f1d1d">grub screw</text>
-  <text x="786" y="326" font-size="10" fill="#b91c1c">flush, then into</text>
-  <text x="786" y="340" font-size="10" fill="#b91c1c">a lobe gap</text>
-  <text x="804" y="406" font-size="10" fill="#94a3b8">comes off</text>
-  <path d="M608,340 L608,262 L700,262 L700,310" fill="none" stroke="#15803d" stroke-width="5" stroke-linejoin="round"/>
-  <rect x="684" y="310" width="32" height="16" rx="3" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
-  <text x="726" y="276" font-size="11" font-weight="bold" fill="#15803d">bracket + sensors</text>
-  <text x="726" y="291" font-size="10.5" fill="#15803d">both A and B in one part</text>
-  <line x1="660" y1="534" x2="768" y2="534" stroke="#b91c1c" stroke-width="2" marker-start="url(#a)" marker-end="url(#a)"/>
-  <text x="714" y="554" font-size="12" font-weight="bold" fill="#b91c1c" text-anchor="middle">8 mm — gearbox to wheel</text>
-  <line x1="660" y1="478" x2="660" y2="540" stroke="#b91c1c" stroke-width="1" stroke-dasharray="3 3"/>
-  <line x1="768" y1="478" x2="768" y2="540" stroke="#b91c1c" stroke-width="1" stroke-dasharray="3 3"/>
-  <text x="552" y="592" font-size="12.5" fill="#14532d">The sensors sit <tspan font-weight="bold">radially outside</tspan> the magnets, not beside</text>
-  <text x="552" y="610" font-size="12.5" fill="#14532d">them — so the 8 mm holds the track width and the sensor&#39;s</text>
-  <text x="552" y="628" font-size="12.5" fill="#14532d">thickness <tspan font-weight="bold">side by side</tspan>, not stacked. Both fit comfortably.</text>
-  <text x="552" y="652" font-size="12.5" fill="#14532d">Each magnet is magnetised <tspan font-weight="bold">radially</tspan> — its poles stack through</text>
-  <text x="552" y="670" font-size="12.5" fill="#14532d">the ring wall, they do not run along it. What the sensor reads is</text>
-  <text x="552" y="688" font-size="12.5" fill="#14532d">the <tspan font-weight="bold">outward</tspan> face, and that is what alternates N, S, N, S.</text>
-  <text x="552" y="712" font-size="12" fill="#15803d" font-style="italic">Radial room: not measured. The fit mule either spins or it does not.</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 760" width="980" height="760" font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+<title>Carrier and magnet track - drawn from the printed part</title>
+<desc>Left: end view looking along the axle. A one-piece printed ring on the six-lobe hub, carrying eighteen magnets in alternating polarity, with three recessed grub screws 120 degrees apart dropped into lobe gaps. The two Hall latches sit radially outside the track, HALF a magnet pitch apart, so when A is over a magnet B is over the boundary between two - the angles are computed from the CAD model rather than placed by hand. Right: axial section, with each magnet drawn magnetised radially, poles stacked through the ring wall and the outward face alternating north and south as the carrier turns.</desc>
+<rect x="0.0" y="0.0" width="980.0" height="760.0" rx="0" fill="#ffffff"/>
+<text x="24.0" y="34.0" font-size="19" font-weight="bold" fill="#0f172a" text-anchor="start">Carrier and magnet track — one piece, nothing standing proud</text>
+<text x="24.0" y="56.0" font-size="12" font-weight="normal" fill="#64748b" text-anchor="start">Every dimension here is read from cad/drive_encoder_carrier.scad, the model that was printed and checked.</text>
+<rect x="24.0" y="76.0" width="492.0" height="660.0" rx="8" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+<rect x="532.0" y="76.0" width="424.0" height="660.0" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+<text x="44.0" y="104.0" font-size="15" font-weight="bold" fill="#0f172a" text-anchor="start">END VIEW — looking along the axle</text>
+<text x="552.0" y="104.0" font-size="15" font-weight="bold" fill="#14532d" text-anchor="start">AXIAL SECTION — where the 8 mm goes</text>
+<circle cx="270.0" cy="352.0" r="106.7" fill="#fde68a" stroke="#b45309" stroke-width="2.4"/>
+<circle cx="270.0" cy="352.0" r="87.5" fill="#dbe3ec" stroke="#94a3b8" stroke-width="1.6"/>
+<line x1="345.8" y1="395.8" x2="336.8" y2="377.6" stroke="#94a3b8" stroke-width="1.4"/>
+<line x1="345.8" y1="395.8" x2="325.6" y2="397.0" stroke="#94a3b8" stroke-width="1.4"/>
+<line x1="270.0" y1="439.5" x2="281.2" y2="422.7" stroke="#94a3b8" stroke-width="1.4"/>
+<line x1="270.0" y1="439.5" x2="258.8" y2="422.7" stroke="#94a3b8" stroke-width="1.4"/>
+<line x1="194.2" y1="395.8" x2="214.4" y2="397.0" stroke="#94a3b8" stroke-width="1.4"/>
+<line x1="194.2" y1="395.8" x2="203.2" y2="377.6" stroke="#94a3b8" stroke-width="1.4"/>
+<line x1="194.2" y1="308.2" x2="203.2" y2="326.4" stroke="#94a3b8" stroke-width="1.4"/>
+<line x1="194.2" y1="308.2" x2="214.4" y2="307.0" stroke="#94a3b8" stroke-width="1.4"/>
+<line x1="270.0" y1="264.5" x2="258.8" y2="281.3" stroke="#94a3b8" stroke-width="1.4"/>
+<line x1="270.0" y1="264.5" x2="281.2" y2="281.3" stroke="#94a3b8" stroke-width="1.4"/>
+<line x1="345.8" y1="308.2" x2="325.6" y2="307.0" stroke="#94a3b8" stroke-width="1.4"/>
+<line x1="345.8" y1="308.2" x2="336.8" y2="326.4" stroke="#94a3b8" stroke-width="1.4"/>
+<g transform="translate(372.3,352.0) rotate(0.0)"><rect x="-2.7" y="-6.8" width="5.5" height="13.7" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
+<g transform="translate(366.1,387.0) rotate(20.0)"><rect x="-2.7" y="-6.8" width="5.5" height="13.7" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
+<g transform="translate(348.4,417.8) rotate(40.0)"><rect x="-2.7" y="-6.8" width="5.5" height="13.7" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
+<g transform="translate(321.2,440.6) rotate(60.0)"><rect x="-2.7" y="-6.8" width="5.5" height="13.7" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
+<g transform="translate(287.8,452.8) rotate(80.0)"><rect x="-2.7" y="-6.8" width="5.5" height="13.7" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
+<g transform="translate(252.2,452.8) rotate(100.0)"><rect x="-2.7" y="-6.8" width="5.5" height="13.7" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
+<g transform="translate(218.8,440.6) rotate(120.0)"><rect x="-2.7" y="-6.8" width="5.5" height="13.7" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
+<g transform="translate(191.6,417.8) rotate(140.0)"><rect x="-2.7" y="-6.8" width="5.5" height="13.7" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
+<g transform="translate(173.9,387.0) rotate(160.0)"><rect x="-2.7" y="-6.8" width="5.5" height="13.7" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
+<g transform="translate(167.7,352.0) rotate(180.0)"><rect x="-2.7" y="-6.8" width="5.5" height="13.7" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
+<g transform="translate(173.9,317.0) rotate(200.0)"><rect x="-2.7" y="-6.8" width="5.5" height="13.7" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
+<g transform="translate(191.6,286.2) rotate(220.0)"><rect x="-2.7" y="-6.8" width="5.5" height="13.7" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
+<g transform="translate(218.8,263.4) rotate(240.0)"><rect x="-2.7" y="-6.8" width="5.5" height="13.7" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
+<g transform="translate(252.2,251.2) rotate(260.0)"><rect x="-2.7" y="-6.8" width="5.5" height="13.7" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
+<g transform="translate(287.8,251.2) rotate(280.0)"><rect x="-2.7" y="-6.8" width="5.5" height="13.7" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
+<g transform="translate(321.2,263.4) rotate(300.0)"><rect x="-2.7" y="-6.8" width="5.5" height="13.7" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
+<g transform="translate(348.4,286.2) rotate(320.0)"><rect x="-2.7" y="-6.8" width="5.5" height="13.7" rx="1.5" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.2"/></g>
+<g transform="translate(366.1,317.0) rotate(340.0)"><rect x="-2.7" y="-6.8" width="5.5" height="13.7" rx="1.5" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1.2"/></g>
+<line x1="358.2" y1="367.5" x2="372.1" y2="370.0" stroke="#7f1d1d" stroke-width="6.8" stroke-linecap="round"/>
+<line x1="212.4" y1="420.6" x2="203.3" y2="431.4" stroke="#7f1d1d" stroke-width="6.8" stroke-linecap="round"/>
+<line x1="239.4" y1="267.9" x2="234.5" y2="254.6" stroke="#7f1d1d" stroke-width="6.8" stroke-linecap="round"/>
+<g transform="translate(289.8,239.9) rotate(370.0)"><rect x="-6" y="-9" width="12" height="18" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/></g>
+<text x="289.8" y="243.9" font-size="10" font-weight="bold" fill="#14532d" text-anchor="middle">A</text>
+<g transform="translate(308.9,245.1) rotate(380.0)"><rect x="-6" y="-9" width="12" height="18" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/></g>
+<text x="308.9" y="249.1" font-size="10" font-weight="bold" fill="#14532d" text-anchor="middle">B</text>
+<line x1="289.8" y1="222.2" x2="308.9" y2="222.2" stroke="#15803d" stroke-width="2"/>
+<text x="299.3" y="214.2" font-size="11.5" font-weight="bold" fill="#15803d" text-anchor="middle">6.81 mm</text>
+<text x="299.3" y="200.2" font-size="10.5" font-weight="normal" fill="#15803d" text-anchor="middle">= HALF a magnet pitch</text>
+<text x="299.3" y="186.2" font-size="10" font-weight="normal" fill="#15803d" text-anchor="middle">A on a magnet → B on a BOUNDARY</text>
+<text x="44.0" y="150.0" font-size="11.5" font-weight="bold" fill="#0f172a" text-anchor="start">6 broad lobes, narrow gaps</text>
+<text x="44.0" y="164.0" font-size="10.5" font-weight="normal" fill="#64748b" text-anchor="start">— the hub's feature, not the</text>
+<text x="44.0" y="178.0" font-size="10.5" font-weight="normal" fill="#64748b" text-anchor="start">carrier's. Bore is round.</text>
+<text x="44.0" y="560.0" font-size="11.5" font-weight="bold" fill="#1e3a8a" text-anchor="start">18 magnets, alternating</text>
+<text x="44.0" y="576.0" font-size="10.5" font-weight="normal" fill="#2563eb" text-anchor="start">pitch 13.62 mm · 36 counts/rev</text>
+<text x="290.0" y="606.0" font-size="11.5" font-weight="bold" fill="#b91c1c" text-anchor="start">3 × M3 grub screw</text>
+<text x="290.0" y="622.0" font-size="10.5" font-weight="normal" fill="#b91c1c" text-anchor="start">recessed below the OD Ø78.02</text>
+<text x="290.0" y="638.0" font-size="10.5" font-weight="normal" fill="#b91c1c" text-anchor="start">first one 10° off magnet 0,</text>
+<text x="290.0" y="654.0" font-size="10.5" font-weight="normal" fill="#b91c1c" text-anchor="start">so all three land in lobe gaps</text>
+<rect x="44.0" y="668.0" width="452.0" height="52.0" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="1.6"/>
+<text x="56.0" y="690.0" font-size="12" font-weight="bold" fill="#7f1d1d" text-anchor="start">Every feature here is a RECESS.</text>
+<text x="56.0" y="708.0" font-size="11" font-weight="normal" fill="#7f1d1d" text-anchor="start">Nothing stands proud of Ø78.02.</text>
+<rect x="570.0" y="330.0" width="78.0" height="140.0" rx="0" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="574.0" y="492.0" font-size="11" font-weight="bold" fill="#334155" text-anchor="start">gearbox</text>
+<text x="580.0" y="506.0" font-size="10.5" font-weight="normal" fill="#64748b" text-anchor="start">FIXED</text>
+<rect x="660.0" y="372.0" width="96.0" height="98.0" rx="0" fill="#e2e8f0" stroke="#475569" stroke-width="2"/>
+<text x="664.0" y="492.0" font-size="11" font-weight="bold" fill="#1e3a8a" text-anchor="start">lobed boss · ROTATES</text>
+<rect x="668.0" y="344.0" width="80.0" height="28.0" rx="0" fill="#fde68a" stroke="#b45309" stroke-width="2"/>
+<rect x="672.0" y="330.0" width="18.0" height="8.0" rx="0" fill="#b91c1c"/>
+<rect x="672.0" y="338.0" width="18.0" height="8.0" rx="0" fill="#1e3a8a"/>
+<text x="681.0" y="337.0" font-size="7" font-weight="normal" fill="#fff" text-anchor="middle">N</text>
+<text x="681.0" y="345.0" font-size="7" font-weight="normal" fill="#fff" text-anchor="middle">S</text>
+<rect x="690.0" y="330.0" width="18.0" height="8.0" rx="0" fill="#1e3a8a"/>
+<rect x="690.0" y="338.0" width="18.0" height="8.0" rx="0" fill="#b91c1c"/>
+<text x="699.0" y="337.0" font-size="7" font-weight="normal" fill="#fff" text-anchor="middle">S</text>
+<text x="699.0" y="345.0" font-size="7" font-weight="normal" fill="#fff" text-anchor="middle">N</text>
+<rect x="708.0" y="330.0" width="18.0" height="8.0" rx="0" fill="#b91c1c"/>
+<rect x="708.0" y="338.0" width="18.0" height="8.0" rx="0" fill="#1e3a8a"/>
+<text x="717.0" y="337.0" font-size="7" font-weight="normal" fill="#fff" text-anchor="middle">N</text>
+<text x="717.0" y="345.0" font-size="7" font-weight="normal" fill="#fff" text-anchor="middle">S</text>
+<rect x="726.0" y="330.0" width="18.0" height="8.0" rx="0" fill="#1e3a8a"/>
+<rect x="726.0" y="338.0" width="18.0" height="8.0" rx="0" fill="#b91c1c"/>
+<text x="735.0" y="337.0" font-size="7" font-weight="normal" fill="#fff" text-anchor="middle">S</text>
+<text x="735.0" y="345.0" font-size="7" font-weight="normal" fill="#fff" text-anchor="middle">N</text>
+<rect x="672.0" y="330.0" width="72.0" height="16.0" rx="0" fill="none" stroke="#1e293b" stroke-width="1"/>
+<rect x="684.0" y="310.0" width="32.0" height="16.0" rx="0" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/>
+<text x="726.0" y="300.0" font-size="11" font-weight="bold" fill="#15803d" text-anchor="start">bracket + sensors</text>
+<text x="726.0" y="315.0" font-size="10.5" font-weight="normal" fill="#15803d" text-anchor="start">both A and B in one part</text>
+<rect x="768.0" y="300.0" width="30.0" height="170.0" rx="5" fill="none" stroke="#94a3b8" stroke-width="2"/>
+<text x="804.0" y="392.0" font-size="11" font-weight="normal" fill="#64748b" text-anchor="start">wheel</text>
+<text x="786.0" y="176.0" font-size="11" font-weight="bold" fill="#1e3a8a" text-anchor="start">magnets</text>
+<text x="786.0" y="190.0" font-size="10" font-weight="normal" fill="#2563eb" text-anchor="start">18, alternating</text>
+<text x="786.0" y="214.0" font-size="11" font-weight="bold" fill="#b45309" text-anchor="start">carrier — one piece</text>
+<text x="786.0" y="228.0" font-size="10" font-weight="normal" fill="#92400e" text-anchor="start">wall 7 mm, width 6 mm</text>
+<line x1="660" y1="534" x2="768" y2="534" stroke="#b91c1c" stroke-width="2"/>
+<text x="714.0" y="554.0" font-size="12" font-weight="bold" fill="#b91c1c" text-anchor="middle">8 mm — gearbox to wheel</text>
+<text x="552.0" y="592.0" font-size="12.5" font-weight="normal" fill="#14532d" text-anchor="start">The sensors sit radially OUTSIDE the magnets, not beside</text>
+<text x="552.0" y="610.0" font-size="12.5" font-weight="normal" fill="#14532d" text-anchor="start">them — so the 8 mm holds the track width and the</text>
+<text x="552.0" y="628.0" font-size="12.5" font-weight="normal" fill="#14532d" text-anchor="start">sensor's thickness side by side, not stacked.</text>
+<text x="552.0" y="664.0" font-size="12.5" font-weight="normal" fill="#14532d" text-anchor="start">Each magnet is magnetised RADIALLY — its poles stack</text>
+<text x="552.0" y="682.0" font-size="12.5" font-weight="normal" fill="#14532d" text-anchor="start">through the ring wall, they do not run along it. What the</text>
+<text x="552.0" y="700.0" font-size="12.5" font-weight="normal" fill="#14532d" text-anchor="start">sensor reads is the OUTWARD face, and THAT is what</text>
+<text x="552.0" y="718.0" font-size="12.5" font-weight="normal" fill="#14532d" text-anchor="start">alternates N, S, N, S.</text>
 </svg>
