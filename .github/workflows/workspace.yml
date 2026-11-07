@@ -19,12 +19,14 @@ on:
     branches: [main]
     paths:
       - 'ros2_ws/**'
+      - 'firmware/**'
       - 'docs/course/environment.md'
       - 'scripts/check_packages.py'
       - '.github/workflows/workspace.yml'
   pull_request:
     paths:
       - 'ros2_ws/**'
+      - 'firmware/**'
       - 'docs/course/environment.md'
       - 'scripts/check_packages.py'
       - '.github/workflows/workspace.yml'
@@ -39,6 +41,29 @@ permissions:
   contents: read
 
 jobs:
+  # The bench sketches were written on 2026-11-07, syntax-checked against stub
+  # headers with g++, and never compiled for the actual part - which the
+  # firmware README said out loud and nothing did anything about. A procedure
+  # that tells thirteen students to flash something should know the something
+  # builds. Minutes, and it needs no hardware.
+  firmware:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: cache the pinned teensy platform
+        uses: actions/cache@v4
+        with:
+          path: ~/.platformio
+          key: pio-${{ hashFiles('firmware/bench/platformio.ini') }}
+      - name: install platformio
+        run: pip install --quiet platformio
+      - name: build every bench environment
+        working-directory: firmware/bench
+        run: pio run
+
   # Seconds, no ROS, runs on every touch of the workspace. Catches the
   # empty-directory class on its own.
   package-layout:
@@ -114,9 +139,16 @@ jobs:
         run: |
           set -euo pipefail
           cd ros2_ws/src
-          git clone -q -b humble --depth 1 \
+          # PINNED to a commit, not to the branch head. Cloning `humble`
+          # meant a build of an old project commit could fail for a reason
+          # that was not in this repository, which is the kind of failure
+          # nobody can act on. Raising this is a deliberate commit; tracking
+          # upstream belongs in a separate, allowed-to-fail job.
+          GZ_ROS2_CONTROL_SHA=a120bac2ca9e0f979154bd9990a3cf90462f80e9
+          git clone -q -b humble \
             https://github.com/ros-controls/gz_ros2_control.git
           cd gz_ros2_control
+          git checkout -q "$GZ_ROS2_CONTROL_SHA"
           SKIP=$(sed -n '/^## 6\. Clone the repository/,/^## 7\./p' \
                  ../../../docs/course/environment.md | awk '/^```/{f=!f; next} f' \
                  | grep -oE '\b(gz|ign)_ros2_control[a-z_]*/COLCON_IGNORE\b' | sort -u)

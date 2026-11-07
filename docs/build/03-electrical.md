@@ -1017,7 +1017,7 @@ found with a meter can never be blamed on code.
 [`firmware/bench/`](https://github.com/jrkwon/mrider/tree/main/firmware/bench), one PlatformIO
 environment per step, each building a single source file so no sketch can mask another's fault.
 *Until 2026-11-07 this page said "a scan sketch" and "the decoder" as though they were on the
-shelf, and there was no `firmware/` directory at all.* They are **syntax-checked and never
+shelf, and there was no `firmware/` directory at all.* They are **built in CI and never
 flashed**: the first person to run them should expect to fix something, and should fix it in the
 repository rather than in a copy.
 

@@ -62,7 +62,7 @@ QuadEncoder g_enc(1, kPinA, kPinB, 0);
 int32_t g_last = 0;
 int32_t g_min = 0;
 int32_t g_max = 0;
-uint32_t g_next_print = 0;
+uint32_t g_last_print = 0;
 
 }  // namespace
 
@@ -91,11 +91,13 @@ void loop() {
   if (now < g_min) g_min = now;
   if (now > g_max) g_max = now;
 
-  if (millis() < g_next_print) {
+  // Unsigned elapsed difference: correct across the ~49-day millis() rollover,
+  // where `millis() < deadline` opens the gate every loop for a few ms.
+  if ((uint32_t)(millis() - g_last_print) < 200u) {
     delay(2);
     return;
   }
-  g_next_print = millis() + 200;
+  g_last_print = millis();
 
   const int32_t delta = now - g_last;
   g_last = now;

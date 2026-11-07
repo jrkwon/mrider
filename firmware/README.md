@@ -62,6 +62,12 @@ Both are the kind that are easy to type wrong and impossible to notice:
 
 ## Status
 
-Written 2026-11-07. **Syntax-checked against stub headers; never compiled with PlatformIO and
-never run on hardware.** The first person to flash them should expect to fix something, and
-should fix it here rather than in a copy.
+Written 2026-11-07. **Built in CI against the pinned `teensy@6.0.0` platform; never run on
+hardware.** The first person to flash them should expect to fix something, and should fix it here
+rather than in a copy.
+
+*Until 2026-11-07 this said "syntax-checked against stub headers; never compiled" — and nothing
+in CI touched `firmware/` at all, so the statement was true and stayed true. A page that tells
+thirteen students to flash something should know the something builds; the
+[`firmware` job](https://github.com/jrkwon/mrider/blob/main/.github/workflows/workspace.yml) now
+does, in minutes and with no hardware.*

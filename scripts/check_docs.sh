@@ -44,6 +44,11 @@
 #                                ("the traction pack"), exactly as
 #                                architecture.md already does; the number lives
 #                                in vehicle.md, bom.md and the order log.
+#  16. vehicle geometry      - wheelbase, track and wheel radius restated in
+#                                three packages, and Nav2's turning radii
+#                                derived from them. mitt_controllers.yaml said
+#                                "mitt_bringup checks the two agree at launch"
+#                                and nothing did.
 #  15. carrier numbers       - prose and figures quoting the drive-encoder
 #                                carrier differently from the model that was
 #                                printed. On 2026-11-07 three figures were
@@ -377,6 +382,15 @@ printf "%s15. figures and prose quote the carrier as the model computes it%s\n" 
 # rounded to 0.1, because the thinness of it is the whole point.
 if ! python3 scripts/check_carrier_numbers.py; then
     fail "carrier figures or prose disagree with cad/drive_encoder_carrier.scad"
+fi
+printf "\n"
+
+printf "%s16. vehicle geometry agrees across packages%s\n" "$B" "$N"
+# A copy that drifts is the hazard, and the Nav2 radii are not copies: they
+# are a FLOOR at wheelbase / tan(steer_limit) with margin. Checking them as
+# copies would be wrong; checking the inequality is the real contract.
+if ! python3 scripts/check_vehicle_dims.py; then
+    fail "vehicle geometry disagrees across packages"
 fi
 printf "\n"
 

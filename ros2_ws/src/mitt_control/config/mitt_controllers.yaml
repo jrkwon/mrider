@@ -13,7 +13,14 @@
 #
 # Geometry MUST stay in sync with mitt_description/config/mitt_dimensions.yaml.
 # It is duplicated here because ros2_control params cannot read that yaml
-# directly; mitt_bringup checks the two agree at launch.
+# directly. The agreement is enforced from OUTSIDE, by
+# scripts/check_vehicle_dims.py, which runs in CI and needs no ROS install.
+#
+# This comment used to say "mitt_bringup checks the two agree at launch". It
+# did not, and never had: mitt_bringup holds one file, sim.launch.py, and it
+# never opens mitt_dimensions.yaml. A claim that something is checked stops
+# the reader checking, so it is worse than saying nothing. Corrected and made
+# true on 2026-11-07.
 
 controller_manager:
   ros__parameters:

@@ -1016,6 +1016,24 @@ def cmd_submit(args):
 
 # --- grade -------------------------------------------------------------------
 
+# A uniqname becomes a FILENAME in dist/grade/, and it is read out of a file a
+# student wrote. Without this, "../../../docs/build/03-electrical" in the
+# Uniqname cell of a submitted report overwrites a page of the build guide the
+# next time anyone grades, and "/tmp/x" escapes by the other route entirely,
+# because Path('/a/b') / '/tmp/x' is '/tmp/x' - an absolute right-hand side
+# discards the left. Neither needs a malicious student; a paste accident is
+# enough.
+UNIQNAME_RE = re.compile(r'^[a-z][a-z0-9_-]{1,30}$', re.I)
+
+
+def safe_who(who, where):
+    """A uniqname that is safe to use as a path component, or a complaint."""
+    if not UNIQNAME_RE.match(who or ''):
+        return None, (f'{where}: {who!r} is not a usable uniqname - letters, '
+                      f'digits, dash and underscore only')
+    return who, None
+
+
 def read_roster(path):
     """
     Parse the cohort roster into (uniqname, github_username, clone_url).
@@ -1051,6 +1069,7 @@ def cmd_grade(args):
         die('grade needs --zips DIR or --roster FILE')
 
     rows = []
+    arrived = {}
     if args.zips:
         zips = sorted(Path(args.zips).glob(f'lab{n}_*.zip')) + \
                sorted(Path(args.zips).glob('*.zip'))
@@ -1059,26 +1078,68 @@ def cmd_grade(args):
             if z in seen:
                 continue
             seen.add(z)
-            rows.append(grade_zip(n, z))
+            row = grade_zip(n, z)
+            rows.append(row)
+            # Arrival time, kept beside the row. For an LMS download the file
+            # mtime is when it was fetched, which is the only ordering signal
+            # the archive carries.
+            arrived[id(row)] = z.stat().st_mtime
     if args.roster:
         for who, _github, url in read_roster(args.roster):
             rows.append(grade_remote(n, who, url))
 
+    # Rejected identities never reach the output directory, and they are not
+    # silently dropped either - an ungradeable submission is a thing a human
+    # has to deal with, so it is printed and counted.
+    rejected = [r for r in rows if r[0] is None]
+    rows = [r for r in rows if r[0] is not None]
+    for _who, fails, _warns, _detail in rejected:
+        print(f'SKIP  {fails[0]}')
+
     # A duplicate LMS download is the same submission twice, not two students.
-    # Now that identity comes from inside the archive they can be collapsed;
-    # the later file wins, which is also the right answer for a resubmission.
+    # Identity comes from inside the archive, so they collapse - but WHICH copy
+    # to keep was wrong, and wrong silently.
+    #
+    # It kept the last in SORTED FILENAME order, reasoning that a later file is
+    # a resubmission. Filename order is not arrival order. The LMS appends "-1"
+    # to a second copy and '-' (0x2D) sorts before '.' (0x2E):
+    #
+    #     sorted(['lab1_smith.zip', 'lab1_smith-1.zip'])
+    #       -> ['lab1_smith-1.zip', 'lab1_smith.zip']
+    #
+    # so "keep the last" kept the FIRST download - the opposite of the comment.
+    # Nobody would have noticed: the wrong archive grades cleanly and a student
+    # is marked on work they replaced.
     if args.zips:
         by_who = {}
         for r in rows:
-            if r[0] in by_who:
-                print(f'note  {r[0]}: more than one archive; keeping the last')
-            by_who[r[0]] = r
+            who = r[0]
+            prev = by_who.get(who)
+            if prev is None:
+                by_who[who] = r
+                continue
+            t_new, t_old = arrived.get(id(r), 0), arrived.get(id(prev), 0)
+            if abs(t_new - t_old) < 1.0:
+                print(f'note  {who}: two archives arrived together - the same '
+                      f'submission fetched twice; keeping one')
+            else:
+                print(f'note  {who}: more than one archive; keeping the one '
+                      f'that arrived later (by file mtime)')
+            if t_new > t_old:
+                by_who[who] = r
         rows = list(by_who.values())
 
     outdir = REPO / 'dist' / 'grade' / f'lab{n}'
     outdir.mkdir(parents=True, exist_ok=True)
     for who, fails, warns, detail in rows:
-        (outdir / f'{who}.md').write_text(detail)
+        out = outdir / f'{who}.md'
+        # Belt and braces. safe_who() already refused anything with a path
+        # separator in it, but this is the line that actually writes, and a
+        # later code path that forgets to validate should fail here rather
+        # than somewhere in the repository.
+        assert out.resolve().parent == outdir.resolve(), \
+            f'refusing to write outside {outdir}: {out}'
+        out.write_text(detail)
     # The per-student .md is rewritten on every run and dist/ is git-ignored, so
     # neither is a place to keep a grade. This is the handoff to `scores`.
     (outdir / 'auto.tsv').write_text(
@@ -1148,6 +1209,11 @@ def grade_zip(n, path):
                 who = m.group(1)
         if not who:
             who = path.stem.replace(f'lab{n}_', '')
+        who, complaint = safe_who(who, path.name)
+        if complaint:
+            # Do not guess a replacement. A submission whose identity cannot be
+            # trusted is one a human has to look at.
+            return None, [complaint], [], complaint + '\n'
         return _grade_tree(n, who, root)
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
