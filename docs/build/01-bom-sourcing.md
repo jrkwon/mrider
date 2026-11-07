@@ -2093,14 +2093,20 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > the first few will be wrong.*
 >
 > > [!WARNING]
-> > **Both terminals are AWG 20–24.** `1.5 mm²` (≈16 AWG) will not fit, and `0.75 mm²`
-> > (≈18 AWG) will not either — **measure the steering conductor before ordering.** If it is
-> > too thick, *do not cut the stock harness to suit the terminal*: MRider's own pigtail starts
-> > at 20 AWG from the crimp and is joined up to gauge at the relay end, where the joint is
-> > MRider's and inspectable. Steering current is low and the tap's rating (≈5 A) already gates
-> > [06 § bench](06-bench-test.md) — the gauge is about the crimp barrel, not the current.
-> > `43645-0200`'s listing names `45773` and `46235` as alternative terminals for other gauge
-> > ranges; neither is stocked in this category.
+> > **Both terminals are AWG 20–24 — and that constrains MRider's wire, not the vehicle's.**
+> >
+> > An earlier draft of this note said to *measure the steering conductor before ordering*, in
+> > case `0.75 mm²` would not fit the barrel. **The premise was wrong.** Read the tap from the
+> > [figure](../images/authority-tap-wiring.svg): the module-facing half is crimped onto the wire
+> > running to the relay's `87a`, and the vehicle-facing half onto the wire running from `30`.
+> > **Both bought terminals carry MRider's own wire.** Nothing stock is cut, so no stock conductor
+> > ever enters a bought barrel, and the stock gauge cannot make this order wrong.
+> >
+> > What it does fix is **MRider's tap wire: 20–24 AWG**, which is fine here and nowhere else in
+> > the authority chain — the drive branch is AWG 14. Pair it with the tap's ≈5 A rating as the
+> > acceptance criterion for steering stall current in
+> > [06 § bench](06-bench-test.md). `43645-0200`'s listing names `45773` and `46235` as terminals
+> > for other gauge ranges; neither is stocked in this category, and neither is needed.
 >
 > | | per vehicle | **three vehicles** |
 > |---|---:|---:|
@@ -2393,8 +2399,38 @@ you need all of them before step 3:
   | tap | MRider's two halves | ordering |
   |---|---|---|
   | **steering** | Micro-Fit 3.0, 2-way — `43645-0200` + `43030` towards the module, `43640-0200` + `43031` towards the vehicle's plug | **[order log #12c](../order-log.md#L123)** — goods numbers, prices, links |
-  | **drive** | flat blade `6.3 × 0.8` (`.250`), **uninsulated** — receptacle towards the module, male tab towards the vehicle's plug | still to source |
+  | **drive** | flat blade `6.3 × 0.8` (`.250`), **uninsulated** — receptacle towards the module, male tab towards the vehicle's plug | **not a 디바이스마트 part** — see below |
   | **power** | mating half of the pack's red keyed 2-pin, or harvested from a spare lead | still to source |
+
+  > [!NOTE]
+  > **디바이스마트 does not carry uninsulated `.250`.** Its `압착단자/절연단자`
+  > category, read end to end 2026-11-07, holds **three** `.250` parts, **all insulated**, and
+  > **no male tabs at all**. Buy these elsewhere — and **do not hold the Micro-Fit order waiting
+  > for them.**
+  >
+  > **The first searches failed on vocabulary, not availability.** The trade name is **`250`**,
+  > not `6.3`: 디바이스마트's own listings read *"250 SLIP-ON RECEPTACLES"* and
+  > *"250 SLIP-ON TAB TERMINALS"*.
+  >
+  > | | search for | **avoid** |
+  > |---|---|---|
+  > | size | **`250`** | `6.3` returns nothing |
+  > | female | **리셉터클**, `REC` | |
+  > | male | **탭**, `TAB` | |
+  > | uninsulated | **나단자**, **비절연** | **`PG`**, **풀리** (= fully insulated), and **colour words** — 빨강/파랑 name the insulation sleeve |
+  >
+  > **Or skip the crimping: an automotive relay socket arrives with `.250` receptacles already
+  > crimped to wire.** [#7](../order-log.md#L7)'s relays carry `.250` terminals — that is what
+  > made the relay on the shelf a working gauge for this tap in the first place — so a `5핀
+  > 릴레이 소켓` fits them and yields the receptacle half ready-made. *Thirteen students, hand
+  > crimps, once — a pre-crimped lead is worth more here than it looks.*
+
+  The **power** tap cannot be searched for yet: it was photographed 2026-10-02 and **its pitch
+  has never been measured**, so there is no family to name. Measure it the way
+  [§2.2 step 2](02-mechanical.md#22-teardown) measures the others — *searching before
+  identifying is what produced three wrong steering connectors in three days.* Then
+  `전동차 배터리 커넥터` / `승용완구 배터리 플러그`, or harvest a spare battery lead,
+  which ends in the part by construction.
 
   Plus the drive tap's tee, **[order log #12d](../order-log.md#L124)** — the relay's `30` has to
   reach two stock conductors per net. Why these parts and not others, and the measurements that
