@@ -731,6 +731,18 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > have taken the sensor and its bracket off on the first turn of the wheel. **The wheel comes off**,
 > so the ring can simply be slid on.
 >
+> **And the 1 mm floor on that gap is not a round number — it is the grub screws.** A screw seated
+> on a crest stands **0.05–0.75 mm proud of Ø78.02**
+> ([§above](#7-8-11-12-14-what-to-actually-buy)), so **0.75 mm is the tallest thing the sensor can
+> meet.** A 1 mm gap clears the worst case by **0.25 mm**; anything under 0.75 mm and the sensor is
+> inside the swept cylinder of its own fastener — the same geometry as the 9 mm clamp ears above,
+> two orders of magnitude smaller and just as terminal.
+>
+> *Both figures come from
+> [`scripts/carrier_params.py`](https://github.com/jrkwon/mrider/blob/main/scripts/carrier_params.py),
+> and [check 15](https://github.com/jrkwon/mrider/blob/main/scripts/check_carrier_numbers.py)
+> fails if either drifts — so the floor moves if the screw length or the hub tolerance ever does.*
+>
 > **The bore carries no load.** The hub measures **62.82 mm** and FDM holds a Ø64 bore to perhaps
 > ±0.3 mm; a press fit needs both numbers to ±0.1, which is two significant figures out of reach —
 > and there are three hubs, not one. So the bore is deliberately **clear** of the hub, and three

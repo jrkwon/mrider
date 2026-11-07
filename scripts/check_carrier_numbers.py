@@ -64,6 +64,17 @@ SUPERSEDED = [
 ]
 
 
+# The air-gap floor is NOT a round number: a grub screw seated on a crest can
+# stand PROUD_MAX above the OD, so the sensor must stay clear of it. These three
+# say so, and if PROUD_MAX ever moves they have to move with it. Naming the
+# files keeps the rule narrow - a check that cries wolf gets muted.
+MUST_QUOTE_PROUD = (
+    "docs/build/01-bom-sourcing.md",
+    "docs/images/grub-screw-points.svg",
+    "docs/images/hall-sensor-mounting.svg",
+)
+
+
 def in_scope(text):
     return any(h in text for h in SCOPE_HINTS)
 
@@ -98,6 +109,14 @@ def main():
                         f"{rel}:{line}  {val} mm - a drawing builds to the ROUND "
                         f"figure ({d[name.upper() + '_BUILD']:.2f}); see "
                         f"01-bom-sourcing.md on false precision")
+
+    for rel in MUST_QUOTE_PROUD:
+        f = REPO / rel
+        assert f.exists(), f"{rel} is in MUST_QUOTE_PROUD but does not exist"
+        if f"{d['PROUD_MAX']:.2f}" not in f.read_text(encoding="utf-8",
+                                                      errors="replace"):
+            bad.append(f"{rel}  does not state the {d['PROUD_MAX']:.2f} mm "
+                       f"stand-off that sets the sensor air-gap floor")
 
     if bad:
         print("carrier numbers that do not match the model:", file=sys.stderr)
