@@ -67,7 +67,21 @@ Work in this order and bag-and-tag fasteners by panel.
    |---|---|---|---|
    | **Steering motor** | `M2M3` (`M2± / M3±`) | the steering gearmotor | **brown on `M3−`, blue on `M3+`** — a plain **2-position** plug. The board's footprint holds four pads; **only the `M3` header is fitted** |
    | **Motor** | `M1` | **both rear motors** — **two** contacts, **four** wires: two crimped on each blade. *The paralleling is inside the plug* | right **yellow + blue**, left **green + red** |
-   | **Power** | `P1` ⊕⊖ | the traction pack | — |
+   | **Power** | `P1` ⊕⊖ | the traction pack | **— and the power tap does NOT go here.** See the warning below |
+
+   > [!WARNING]
+   > **`P1` is on this list because it is on the module, not because you tap there.**
+   >
+   > The power tap goes at the **battery pack, in the trunk** — upstream of the stock **10 A
+   > auto-resetting thermal breaker**, which sits between the pack and this socket. `P1` is
+   > *downstream* of it, so tapping here puts **a device that re-closes by itself inside the DBW
+   > traction path**: traction could return unannounced, minutes after a thermal trip, with no
+   > operator action. [§3.3](03-electrical.md#33-the-three-taps) forbids it and the
+   > [failsafe matrix](../design/safety.md#2-failsafe-matrix) has no row for it.
+   >
+   > *The two pages each said half of this. A map that lists `P1` beside the two taps, and says
+   > nothing, is an invitation — the same shape as [`J1`](#the-7-pin-header-is-not-a-tap) further
+   > down.*
 
    **Both authority connectors** — measured and opened on vehicle #1, **2026-11-06**:
 
@@ -123,6 +137,31 @@ Work in this order and bag-and-tag fasteners by panel.
    female enters the module, the bought male of that series necessarily accepts the vehicle's
    plug — the argument is written out in [01 § tap terminations](01-bom-sourcing.md). Try the
    female; the module's socket is moulded into its case and that is the tight direction.
+
+   **The power tap's connector has never been characterised at all** — photographed 2026-10-02
+   as *"a red keyed 2-pin on the pack's pigtail"* and not opened since. **Nobody has recorded
+   which family it is**, so start one step earlier than for the other two:
+
+   | look into the socket half and you see | family | measure |
+   |---|---|---|
+   | folded flat metal faces, closing like a spring | **blade**, as `M1` | **width × thickness**, by the two-places rule above |
+   | round or square cavities with sockets in them | **pin**, as `M2M3` | **pitch** only |
+
+   *Skipping this step is what produced three wrong steering identifications in three days.*
+
+   > [!CAUTION]
+   > **This tap needs a rating as well as a size, and it is the only one that does.**
+   >
+   > The stock connectors set the vehicle's current ceiling — not the driver, the fuse or the
+   > wire — and **this one carries the whole traction current**. Dimensions name the family;
+   > they do not name an ampere. Measure the **millivolt drop across the mated pair** under a
+   > known current, by the three-step procedure in
+   > [§1.5](01-bom-sourcing.md#15-connector-and-consumable-list). A floor comes free: the
+   > manufacturer put it on a **10 A** circuit.
+   >
+   > **And MRider buys both genders here too.** The pack's half is **permanently live** — a
+   > sealed pack with no switch upstream — so MRider's half facing the pack must be the one
+   > whose contacts are **recessed**, not exposed. Check the two halves in hand.
 
    > [!CAUTION]
    > **Micro-Fit 3.0 is rated about 5 A a circuit, and this motor stalls on purpose.**
