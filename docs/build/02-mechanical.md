@@ -138,30 +138,43 @@ Work in this order and bag-and-tag fasteners by panel.
    plug — the argument is written out in [01 § tap terminations](01-bom-sourcing.md). Try the
    female; the module's socket is moulded into its case and that is the tight direction.
 
-   **The power tap's connector has never been characterised at all** — photographed 2026-10-02
-   as *"a red keyed 2-pin on the pack's pigtail"* and not opened since. **Nobody has recorded
-   which family it is**, so start one step earlier than for the other two:
-
-   | look into the socket half and you see | family | measure |
-   |---|---|---|
-   | folded flat metal faces, closing like a spring | **blade**, as `M1` | **width × thickness**, by the two-places rule above |
-   | round or square cavities with sockets in them | **pin**, as `M2M3` | **pitch** only |
-
-   *Skipping this step is what produced three wrong steering identifications in three days.*
+   **The power tap is the same family as the drive tap** — confirmed on vehicle #1,
+   **2026-11-07**. The pack's pigtail ends in a **flat-blade receptacle, the `.250` used at
+   `M1`**, so it is a **female** half exactly like the vehicle's own `M1` plug. *That answers
+   the family question this page had open since 2026-10-02 and makes one terminal cover two of
+   the three taps.*
 
    > [!CAUTION]
-   > **This tap needs a rating as well as a size, and it is the only one that does.**
+   > **Two taps now share a family, so the "taps cannot cross-plug" property has a gap in it**
    >
-   > The stock connectors set the vehicle's current ceiling — not the driver, the fuse or the
-   > wire — and **this one carries the whole traction current**. Dimensions name the family;
-   > they do not name an ampere. Measure the **millivolt drop across the mated pair** under a
-   > known current, by the three-step procedure in
-   > [§1.5](01-bom-sourcing.md#15-connector-and-consumable-list). A floor comes free: the
-   > manufacturer put it on a **10 A** circuit.
+   > Steering is still safe by construction — a pin will not enter a blade receptacle. But
+   > **power and drive are both `.250` now**, and a cross-plug there puts the traction pack
+   > directly across the motor circuit, bypassing the driver and the contactor. **Check whether
+   > the pack's receptacle is keyed the way `M1` is**: `M1`'s two tabs sit **90° to each other**.
+   > If the pack's two contacts are **coplanar**, the key alone prevents the swap and the
+   > property survives on geometry. If the pack is keyed 90° as well, **the two plugs will
+   > mate** and the protection has to be a label and a build order instead.
    >
-   > **And MRider buys both genders here too.** The pack's half is **permanently live** — a
-   > sealed pack with no switch upstream — so MRider's half facing the pack must be the one
-   > whose contacts are **recessed**, not exposed. Check the two halves in hand.
+   > *Recorded as an open question rather than an assumption: "the same as `M1`" was reported of
+   > the terminal, and whether it extends to the housing's key has not been stated.*
+
+   > [!NOTE]
+   > **The gender here is the mirror of the drive tap's, and the rating question is already
+   > answered.**
+   >
+   > The pack presents a **receptacle**, so MRider's half facing the pack is a **male tab** —
+   > the opposite way round from `M1`, where the module presents tabs. The stock protector lead
+   > is therefore male, and MRider's half facing *it* is a receptacle.
+   >
+   > And the **millivolt-drop measurement this page asked for a revision ago is not needed.**
+   > [§1.5](01-bom-sourcing.md#15-connector-and-consumable-list) wanted it because nothing was
+   > printed on the connector and no family was known; **`.250` is a family the trade runs at
+   > 20–30 A**, against a 25 A fuse. The ceiling is the **conductor**, which is the same
+   > conclusion the drive branch reached. *The identification did the work the bench procedure
+   > was there to do.*
+   >
+   > **The pack's half is permanently live** — sealed, no switch upstream — so MRider's half
+   > facing it must have **recessed** contacts, not exposed ones. Check the two in hand.
 
    > [!CAUTION]
    > **Micro-Fit 3.0 is rated about 5 A a circuit, and this motor stalls on purpose.**
@@ -185,7 +198,8 @@ Work in this order and bag-and-tag fasteners by panel.
 
    **They are nowhere near the same size, so they cannot be cross-plugged** — which is the
    property [§3.3](03-electrical.md#33-the-three-taps) relies on to make the taps
-   self-enforcing.
+   self-enforcing. **That property covers steering against the other two and no longer covers
+   all three pairs**: the power tap turned out to be `.250` as well, so see the caution above.
 
    > [!NOTE]
    > **The drive tap's net map is visible — no meter needed**

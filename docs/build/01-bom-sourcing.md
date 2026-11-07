@@ -2110,8 +2110,8 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 >
 > | | per vehicle | **three vehicles** |
 > |---|---:|---:|
-> | drive — `.250` receptacles, **uninsulated** | 2 | **6** |
-> | drive — `.250` male tabs, **uninsulated** | 2 | **6** |
+> | `.250` receptacles, **uninsulated** — drive **and power** | 4 | **12** |
+> | `.250` male tabs, **uninsulated** — drive **and power** | 4 | **12** |
 > | steering — `43645-0200` + 2× `43030-0001` | 1 | **3** |
 > | steering — `43640-0200` + 2× `43031-0001` | 1 | **3** |
 >
@@ -2123,10 +2123,15 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > a bought receptacle actually clears the shroud is the one thing to try on vehicle #1 before
 > ordering for all three.*
 >
-> **The two taps cannot cross-plug at all** — a pin will not enter a blade receptacle, quite
-> apart from 8.35 mm against 16.19 mm. The self-enforcing argument below holds here in its
-> strongest form. *Stated three ways across three days as the connectors were identified;
-> this is the one that survived opening them.*
+> **Steering and drive cannot cross-plug at all** — a pin will not enter a blade receptacle,
+> quite apart from 8.35 mm against 16.19 mm. The self-enforcing argument below holds for that
+> pair in its strongest form. *Stated three ways across three days as the connectors were
+> identified; this is the one that survived opening them.*
+>
+> **It does not extend to the third pair.** The power tap was found on 2026-11-07 to be `.250`
+> too — the same terminal as the drive tap — so those two are separated by housing and key, if
+> at all, and not by family. [§2.2](02-mechanical.md#22-teardown) carries the caution and the
+> question that settles it.
 >
 > **And the connector is no longer the binding current constraint.** `6.3 × 0.8` is the size
 > the automotive trade runs at 20–30 A, so what limits the drive branch is the **1.5 mm² stock
@@ -2400,7 +2405,7 @@ you need all of them before step 3:
   |---|---|---|
   | **steering** | Micro-Fit 3.0, 2-way — `43645-0200` + `43030` towards the module, `43640-0200` + `43031` towards the vehicle's plug | **[order log #12c](../order-log.md#L123)** — goods numbers, prices, links |
   | **drive** | flat blade `6.3 × 0.8` (`.250`), **uninsulated** — receptacle towards the module, male tab towards the vehicle's plug | **not a 디바이스마트 part** — see below |
-  | **power** | mating half of the pack's red keyed 2-pin, or harvested from a spare lead | still to source |
+  | **power** | **the same `.250` as the drive tap** (2026-11-07) — but **gendered the other way**: the pack presents a receptacle, so MRider's half facing it is a **male tab** | buy with the drive tap — **one family covers both** |
 
   > [!NOTE]
   > **디바이스마트 does not carry uninsulated `.250`.** Its `압착단자/절연단자`
@@ -2425,12 +2430,20 @@ you need all of them before step 3:
   > 릴레이 소켓` fits them and yields the receptacle half ready-made. *Thirteen students, hand
   > crimps, once — a pre-crimped lead is worth more here than it looks.*
 
-  The **power** tap cannot be searched for yet: it was photographed 2026-10-02 and **its pitch
-  has never been measured**, so there is no family to name. Measure it the way
-  [§2.2 step 2](02-mechanical.md#22-teardown) measures the others — *searching before
-  identifying is what produced three wrong steering connectors in three days.* Then
-  `전동차 배터리 커넥터` / `승용완구 배터리 플러그`, or harvest a spare battery lead,
-  which ends in the part by construction.
+  **The power tap needs no separate search.** A revision ago this paragraph said it could not
+  be searched for at all, because its family was unknown; it was opened on **2026-11-07** and
+  the pack's pigtail ends in the **same `.250` receptacle used at `M1`**. So one terminal
+  family covers **two** of the three taps, and the only thing that changes is the count:
+
+  | | per tap | per vehicle | **three vehicles** |
+  |---|---:|---:|---:|
+  | `.250` **female receptacles**, uninsulated | 2 | 4 | **12** |
+  | `.250` **male tabs**, uninsulated | 2 | 4 | **12** |
+
+  *Two taps × two contacts × both genders. Plus spares — hand crimps, by students, once.*
+  **Mind the mirror:** at the drive tap MRider's module-facing half is female, at the power tap
+  its pack-facing half is **male**, because the pack presents the receptacle. The totals are
+  symmetric; which end each one goes on is not.
 
   Plus the drive tap's tee, **[order log #12d](../order-log.md#L124)** — the relay's `30` has to
   reach two stock conductors per net. Why these parts and not others, and the measurements that
