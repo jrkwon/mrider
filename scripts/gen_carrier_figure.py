@@ -49,10 +49,8 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-SCAD = REPO / "cad" / "drive_encoder_carrier.scad"
 OUT = REPO / "docs" / "images" / "drive-encoder-carrier.svg"
 
-N_LOBE = 6          # observed on the vehicle's hub. NOT a carrier parameter.
 W, H = 980, 760
 
 INK = "#0f172a"
@@ -65,73 +63,13 @@ GREEN = "#15803d"
 GREEN_D = "#14532d"
 
 
-# ---- read the part ---------------------------------------------------------
-def scad_params():
-    """Pull the input parameters out of the .scad by name."""
-    src = SCAD.read_text(encoding="utf-8")
-    want = ("HUB_D", "WALL", "WIDTH", "BORE_CLEAR", "N_MAG", "MAG_D", "MAG_T",
-            "N_SET", "SET_TAP_D", "SET_SCREW_L", "MARK_W", "MARK_DEPTH",
-            "AXIAL_GAP")
-    p = {}
-    for name in want:
-        m = re.search(r"^%s\s*=\s*([-0-9.]+)\s*;" % name, src, re.M)
-        assert m, f"{name} not found in {SCAD.name}"
-        p[name] = float(m.group(1))
-    p["N_MAG"] = int(p["N_MAG"])
-    p["N_SET"] = int(p["N_SET"])
-    return p
-
-
-def derive(p):
-    d = dict(p)
-    d["BORE_D"] = p["HUB_D"] + p["BORE_CLEAR"]
-    d["OD"] = d["BORE_D"] + 2 * p["WALL"]
-    d["CIRC"] = math.pi * d["OD"]
-    d["PITCH"] = d["CIRC"] / p["N_MAG"]
-    d["OFFSET"] = d["PITCH"] / 2
-    d["COUNTS"] = 2 * p["N_MAG"]
-    d["SET_A0"] = 180.0 / p["N_MAG"]
-    # The sensors. A sits on the MAGNET nearest the top of the drawing, B is
-    # A plus the quadrature offset expressed as an angle - which is half a
-    # pitch, so B necessarily lands on a BOUNDARY. Picking 270 for A looks
-    # right and is wrong: 270 is not a multiple of 360/18, so A would sit on a
-    # boundary and B on a magnet, which is the drawing's own caption reversed.
-    step = 360.0 / p["N_MAG"]
-    d["STEP"] = step
-    d["A_DEG"] = round(270.0 / step) * step
-    d["B_DEG"] = d["A_DEG"] + d["OFFSET"] / d["CIRC"] * 360.0
-    return d
-
-
-def cross_check(d):
-    """Run OpenSCAD and hold our arithmetic against the model's own ECHO.
-
-    This is the whole point of the script. If the two ever disagree the figure
-    is not written, because one of them is lying about a part that exists.
-    """
-    try:
-        r = subprocess.run(
-            ["openscad", "--export-format=asciistl", "-o", "/dev/null", str(SCAD)],
-            capture_output=True, text=True, timeout=300)
-    except (FileNotFoundError, subprocess.TimeoutExpired):
-        print("  openscad unavailable - arithmetic NOT cross-checked", file=sys.stderr)
-        return False
-    echo = r.stdout + r.stderr
-    pairs = [("magnet pitch", d["PITCH"]),
-             ("SENSOR OFFSET", d["OFFSET"]),
-             ("track circum.", d["CIRC"]),
-             ("counts / rev", d["COUNTS"]),
-             ("SWEPT Ø", d["OD"])]
-    seen = 0
-    for key, ours in pairs:
-        m = re.search(re.escape(key) + r"\s*([0-9.]+)", echo)
-        assert m, f"openscad did not echo {key!r}; the model changed"
-        theirs = float(m.group(1))
-        assert abs(theirs - ours) < 0.01, \
-            f"{key}: this script says {ours:.4f}, the .scad says {theirs:.4f}"
-        seen += 1
-    assert seen == len(pairs)
-    return True
+# ---- the part ------------------------------------------------------------
+# Every dimension comes from carrier_params, which reads cad/drive_encoder_carrier.scad
+# and holds its arithmetic against OpenSCAD's own echo before returning. Five
+# figures now share it; two of them used to type their own copy and two of
+# those copies were wrong.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import carrier_params  # noqa: E402
 
 
 # ---- svg helpers -----------------------------------------------------------
@@ -160,6 +98,7 @@ def rect(x, y, w, h, fill, stroke=None, sw=1.5, rx=0):
 
 
 def build(d):
+    nlobe = d["N_LOBE"]
     mm = 2.735                      # px per mm in the end view
     cx, cy = 270.0, 352.0
     r_od = d["OD"] / 2 * mm
@@ -182,7 +121,7 @@ def build(d):
          rect(0, 0, W, H, "#ffffff"),
          txt(24, 34, "Carrier and magnet track — one piece, nothing standing proud",
              19, "bold", INK),
-         txt(24, 56, f"Every dimension here is read from cad/{SCAD.name}, the model that "
+         txt(24, 56, f"Every dimension here is read from cad/{carrier_params.SCAD.name}, the model that "
                      f"was printed and checked.", 12, "normal", MUTED),
          rect(24, 76, 492, 660, "#f8fafc", "#334155", 2, 8),
          rect(532, 76, 424, 660, "#f0fdf4", "#22c55e", 2, 8),
@@ -196,8 +135,8 @@ def build(d):
              f'stroke="#94a3b8" stroke-width="1.6"/>')
 
     # ---- hub lobes: an observation of the vehicle, not a carrier parameter --
-    for i in range(N_LOBE):
-        a = math.radians(i * 360.0 / N_LOBE + 30)
+    for i in range(nlobe):
+        a = math.radians(i * 360.0 / nlobe + 30)
         for s in (-1, 1):
             a2 = a + s * math.radians(9)
             o.append(f'<line x1="{cx + r_bore * math.cos(a):.1f}" '
@@ -252,7 +191,7 @@ def build(d):
     o.append(txt(midx, ytop - 36, "A on a magnet → B on a BOUNDARY",
                  10, "normal", GREEN, "middle"))
 
-    o.append(txt(44, 150, f"{N_LOBE} broad lobes, narrow gaps", 11.5, "bold", INK))
+    o.append(txt(44, 150, f"{nlobe} broad lobes, narrow gaps", 11.5, "bold", INK))
     o.append(txt(44, 164, "— the hub's feature, not the", 10.5, "normal", MUTED))
     o.append(txt(44, 178, "carrier's. Bore is round.", 10.5, "normal", MUTED,
                  limit=188))
@@ -346,9 +285,8 @@ def check(svg, d):
 
 
 def main():
-    p = scad_params()
-    d = derive(p)
-    checked = cross_check(d)
+    d = carrier_params.load()
+    checked = d["_checked"]
     svg = build(d)
     check(svg, d)
     OUT.write_text(svg, encoding="utf-8")

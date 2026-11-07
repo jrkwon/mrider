@@ -1,143 +1,83 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 760" width="1020" height="760"
-     font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
-  <title>Grub-screw point types against the seat they actually land on — a convex lobe crest</title>
-  <desc>Top: the four set-screw point types in profile — flat, cup, cone and dog. Bottom left: the
-  carrier wall over the six-lobe hub, drawn with the screws seating on crests as the length
-  calculation assumes, showing a flat face making an axial line contact, a cup rim straddling the
-  ridge, and a cone perched on the apex where it wants to slide off; and the flank, which is the
-  seat that actually causes trouble. Bottom right: why the seat decides the point form, the
-  seating check in millimetres, and the witness mark.</desc>
-
-  <defs>
-    <marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
-      <path d="M0,0 L0,6 L8,3 z" fill="#334155"/>
-    </marker>
-    <marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
-      <path d="M0,0 L0,6 L8,3 z" fill="#b91c1c"/>
-    </marker>
-    <marker id="ag" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
-      <path d="M0,0 L0,6 L8,3 z" fill="#15803d"/>
-    </marker>
-    <pattern id="petg" width="8" height="8" patternUnits="userSpaceOnUse">
-      <rect width="8" height="8" fill="#e0f2fe"/>
-      <line x1="0" y1="8" x2="8" y2="0" stroke="#7dd3fc" stroke-width="1.2"/>
-    </pattern>
-  </defs>
-
-  <rect width="1020" height="760" fill="#ffffff"/>
-
-  <text x="24" y="34" font-size="19" font-weight="bold" fill="#0f172a">
-    The seat decides the point form — and here the seat is a CONVEX CREST
-  </text>
-  <text x="24" y="56" font-size="13" fill="#475569">
-    <tspan font-weight="bold">HUB_D is measured across opposite lobe crests</tspan>, so every span in the model is a distance to a crest. M3 × 8 is a crest length.
-  </text>
-
-  <!-- ================= PANEL A ================= -->
-  <rect x="24" y="76" width="972" height="236" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
-
-  <g stroke="#334155" stroke-width="2.2" fill="#e2e8f0">
-    <path d="M128,106 L172,106 L172,214 L128,214 Z"/>
-    <path d="M358,106 L402,106 L402,214 Q380,192 358,214 Z"/>
-    <path d="M588,106 L632,106 L632,188 L610,220 L588,188 Z"/>
-    <path d="M818,106 L862,106 L862,192 L852,192 L852,220 L828,220 L828,192 L818,192 Z"/>
-  </g>
-  <g fill="#94a3b8" stroke="#334155" stroke-width="1.6">
-    <circle cx="150" cy="118" r="9"/><circle cx="380" cy="118" r="9"/>
-    <circle cx="610" cy="118" r="9"/><circle cx="840" cy="118" r="9"/>
-  </g>
-  <g stroke="#94a3b8" stroke-width="1.3">
-    <line x1="128" y1="142" x2="172" y2="148"/><line x1="128" y1="162" x2="172" y2="168"/><line x1="128" y1="182" x2="172" y2="188"/>
-    <line x1="358" y1="142" x2="402" y2="148"/><line x1="358" y1="162" x2="402" y2="168"/><line x1="358" y1="182" x2="402" y2="188"/>
-    <line x1="588" y1="142" x2="632" y2="148"/><line x1="588" y1="162" x2="632" y2="168"/><line x1="588" y1="182" x2="632" y2="188"/>
-    <line x1="818" y1="142" x2="862" y2="148"/><line x1="818" y1="162" x2="862" y2="168"/><line x1="818" y1="182" x2="862" y2="188"/>
-  </g>
-
-  <text x="150" y="246" font-size="13" font-weight="bold" fill="#15803d" text-anchor="middle">평면 · FLAT  DIN 913</text>
-  <text x="380" y="246" font-size="13" font-weight="bold" fill="#15803d" text-anchor="middle">컵 · CUP  DIN 916</text>
-  <text x="610" y="246" font-size="13" font-weight="bold" fill="#b45309" text-anchor="middle">콘 · CONE  DIN 914</text>
-  <text x="840" y="246" font-size="13" font-weight="bold" fill="#b91c1c" text-anchor="middle">돌출 · DOG  DIN 915</text>
-
-  <text x="150" y="270" font-size="11.5" fill="#166534" text-anchor="middle">line contact along the crest</text>
-  <text x="150" y="286" font-size="11.5" font-weight="bold" fill="#15803d" text-anchor="middle">✓ adequate — and in hand</text>
-  <text x="380" y="270" font-size="11.5" fill="#166534" text-anchor="middle">rim straddles the ridge</text>
-  <text x="380" y="286" font-size="11.5" font-weight="bold" fill="#15803d" text-anchor="middle">✓ better — an upgrade</text>
-  <text x="610" y="270" font-size="11.5" fill="#78350f" text-anchor="middle">one point on the apex</text>
-  <text x="610" y="286" font-size="11.5" font-weight="bold" fill="#b45309" text-anchor="middle">△ wants to slide off</text>
-  <text x="840" y="270" font-size="11.5" fill="#7f1d1d" text-anchor="middle">needs a matching hole</text>
-  <text x="840" y="286" font-size="11.5" font-weight="bold" fill="#b91c1c" text-anchor="middle">✗ wrong anywhere here</text>
-
-  <!-- ================= PANEL B ================= -->
-  <rect x="24" y="328" width="600" height="408" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.8"/>
-  <text x="44" y="354" font-size="14.5" font-weight="bold" fill="#14532d">B · Section — the screws land on crests</text>
-
-  <!-- carrier wall -->
-  <rect x="56" y="370" width="540" height="74" fill="url(#petg)" stroke="#0284c7" stroke-width="2.4"/>
-  <text x="66" y="390" font-size="11" font-weight="bold" fill="#075985">carrier wall 7 mm — M3 tapped straight into PETG</text>
-
-  <!-- hub surface -->
-  <path d="M56,536 Q112,480 168,536 Q224,592 280,536 Q336,480 392,536 Q448,592 504,536 Q560,480 596,512"
-        fill="none" stroke="#1e293b" stroke-width="4"/>
-  <path d="M56,536 Q112,480 168,536 Q224,592 280,536 Q336,480 392,536 Q448,592 504,536 Q560,480 596,512 L596,610 L56,610 Z"
-        fill="#cbd5e1" stroke="none" opacity="0.75"/>
-  <text x="66" y="602" font-size="11" font-weight="bold" fill="#334155">hub — crest · flank · valley · flank · crest …</text>
-
-  <!-- flat on crest -->
-  <rect x="90" y="370" width="44" height="124" fill="#bbf7d0" stroke="#15803d" stroke-width="2.2"/>
-  <line x1="90" y1="494" x2="134" y2="494" stroke="#15803d" stroke-width="4"/>
-  <text x="142" y="404" font-size="11.5" font-weight="bold" fill="#15803d">FLAT on a crest</text>
-  <text x="142" y="419" font-size="11" fill="#166534">line contact, running axially</text>
-
-  <!-- cup on crest -->
-  <path d="M258,370 L302,370 L302,494 Q280,474 258,494 Z" fill="#bbf7d0" stroke="#15803d" stroke-width="2.2"/>
-  <circle cx="259" cy="494" r="3.6" fill="#15803d"/><circle cx="301" cy="494" r="3.6" fill="#15803d"/>
-  <text x="312" y="404" font-size="11.5" font-weight="bold" fill="#15803d">CUP on a crest</text>
-  <text x="312" y="419" font-size="11" fill="#166534">rim straddles the ridge — two</text>
-  <text x="312" y="434" font-size="11" fill="#166534">contacts either side of the apex</text>
-
-  <!-- cone on crest -->
-  <path d="M370,370 L414,370 L414,460 L392,494 L370,460 Z" fill="#fef3c7" stroke="#b45309" stroke-width="2.2"/>
-  <path d="M392,500 L368,516" stroke="#b45309" stroke-width="2" marker-end="url(#a)"/>
-  <path d="M392,500 L416,516" stroke="#b45309" stroke-width="2" marker-end="url(#a)"/>
-  <text x="424" y="470" font-size="11.5" font-weight="bold" fill="#b45309">CONE</text>
-  <text x="424" y="485" font-size="11" fill="#78350f">one point — slides</text>
-
-  <!-- the flank, the dangerous one -->
-  <rect x="456" y="370" width="44" height="142" fill="#fecaca" stroke="#b91c1c" stroke-width="2.4"/>
-  <path d="M478,520 L512,544" stroke="#b91c1c" stroke-width="2.4" marker-end="url(#ar)"/>
-  <text x="430" y="652" font-size="12" font-weight="bold" fill="#b91c1c">The FLANK is the seat that bites →</text>
-
-  <rect x="48" y="664" width="552" height="58" rx="6" fill="#fee2e2" stroke="#ef4444" stroke-width="1.6"/>
-  <text x="62" y="684" font-size="11.5" fill="#7f1d1d">A screw part-way down a flank <tspan font-weight="bold">does</tspan> clamp — at a smaller radius. And six lobes at 60°</text>
-  <text x="62" y="701" font-size="11.5" fill="#7f1d1d">against three screws at 120° is two lobe pitches, so <tspan font-weight="bold">all three share the phase and push the</tspan></text>
-  <text x="62" y="716" font-size="11.5" fill="#7f1d1d"><tspan font-weight="bold">ring off centre together.</tspan> Eccentric ring → varying air gap → the Hall latch drops out.</text>
-
-  <!-- ================= PANEL C ================= -->
-  <rect x="640" y="328" width="356" height="408" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.8"/>
-  <text x="660" y="354" font-size="14.5" font-weight="bold" fill="#92400e">C · How you know it seated</text>
-
-  <text x="660" y="382" font-size="12" fill="#78350f">From numbers already in the model:</text>
-  <rect x="660" y="394" width="316" height="62" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="1.6"/>
-  <text x="674" y="416" font-size="12" font-weight="bold" fill="#92400e">Tight on a crest → the screw stands</text>
-  <text x="674" y="434" font-size="12" font-weight="bold" fill="#92400e">0.10–0.70 mm PROUD of the OD.</text>
-  <text x="674" y="450" font-size="11" fill="#78350f">(= SET_SCREW_L − SPAN, both in the SCAD)</text>
-
-  <text x="660" y="482" font-size="12" font-weight="bold" fill="#b91c1c">Winds in past that and still loose?</text>
-  <text x="660" y="500" font-size="11.5" fill="#7f1d1d">It is on a flank or over a valley.</text>
-  <text x="660" y="517" font-size="11.5" font-weight="bold" fill="#7f1d1d">Back it out, rotate the ring, retry.</text>
-
-  <line x1="660" y1="534" x2="976" y2="534" stroke="#fcd34d" stroke-width="1.5"/>
-
-  <text x="660" y="558" font-size="12" font-weight="bold" fill="#92400e">An M3 × 8 cannot reach a valley</text>
-  <text x="660" y="576" font-size="11.5" fill="#78350f">The span is 7.90 mm <tspan font-style="italic">to a crest</tspan>. A valley</text>
-  <text x="660" y="593" font-size="11.5" fill="#78350f">is deeper by the lobe depth — <tspan font-weight="bold">which has</tspan></text>
-  <text x="660" y="610" font-size="11.5" fill="#78350f"><tspan font-weight="bold">never been measured.</tspan> Caliper across two</text>
-  <text x="660" y="627" font-size="11.5" fill="#78350f">opposite valleys and record it.</text>
-
-  <line x1="660" y1="644" x2="976" y2="644" stroke="#fcd34d" stroke-width="1.5"/>
-
-  <rect x="660" y="658" width="316" height="62" rx="6" fill="#dcfce7" stroke="#15803d" stroke-width="1.6"/>
-  <text x="674" y="678" font-size="12" font-weight="bold" fill="#14532d">Draw a witness mark across the</text>
-  <text x="674" y="695" font-size="12" font-weight="bold" fill="#14532d">ring-to-hub joint.</text>
-  <text x="674" y="712" font-size="11" fill="#166534">A slip then shows at a glance, whatever is fitted.</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 844" width="1020" height="844" font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+<title>Grub-screw point types against the seat they actually land on - a convex lobe crest</title>
+<desc>Top: the four set-screw point types in profile, flat, cup, cone and dog, each with the contact it makes on a convex crest and a verdict. Bottom left: the carrier wall over the lobed hub, with the screws seating on crests as the length calculation assumes, and the flank, which is the seat that causes trouble because three screws sharing a lobe phase push the ring off centre together. Bottom right: the seating check in millimetres, every figure read from the CAD model, and the witness mark.</desc>
+<rect x="0.0" y="0.0" width="1020.0" height="844.0" rx="0" fill="#ffffff"/>
+<text x="24.0" y="34.0" font-size="19" font-weight="bold" fill="#0f172a" text-anchor="start">Grub-screw point types against the seat they actually land on</text>
+<text x="24.0" y="56.0" font-size="11.5" font-weight="normal" fill="#64748b" text-anchor="start">HUB_D is measured across opposite lobe crests, so every span below is a distance to a CREST. All figures read from cad/drive_encoder_carrier.scad.</text>
+<rect x="24.0" y="76.0" width="972.0" height="212.0" rx="8" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+<text x="44.0" y="104.0" font-size="14" font-weight="bold" fill="#0f172a" text-anchor="start">A · Four points, and what each one does on a CONVEX crest</text>
+<rect x="139.0" y="152.0" width="22.0" height="36.0" rx="0" fill="#cbd5e1" stroke="#475569" stroke-width="1.4"/><line x1="139" y1="156" x2="161" y2="159" stroke="#94a3b8" stroke-width="0.9"/><line x1="139" y1="163" x2="161" y2="166" stroke="#94a3b8" stroke-width="0.9"/><line x1="139" y1="170" x2="161" y2="173" stroke="#94a3b8" stroke-width="0.9"/><line x1="139" y1="177" x2="161" y2="180" stroke="#94a3b8" stroke-width="0.9"/><line x1="139" y1="184" x2="161" y2="187" stroke="#94a3b8" stroke-width="0.9"/><rect x="139.0" y="188.0" width="22.0" height="8.0" rx="0" fill="#cbd5e1" stroke="#475569" stroke-width="1.4"/>
+<path d="M110,206 Q150,198 190,206" fill="none" stroke="#94a3b8" stroke-width="2.2"/>
+<text x="150.0" y="132.0" font-size="12.5" font-weight="bold" fill="#0f172a" text-anchor="middle">평면 · FLAT</text>
+<text x="150.0" y="147.0" font-size="10.5" font-weight="normal" fill="#64748b" text-anchor="middle">DIN 913</text>
+<text x="150.0" y="232.0" font-size="10.5" font-weight="normal" fill="#64748b" text-anchor="middle">line contact along the crest</text>
+<text x="150.0" y="250.0" font-size="11" font-weight="bold" fill="#15803d" text-anchor="middle">✓ adequate — and in hand</text>
+<rect x="371.0" y="152.0" width="22.0" height="36.0" rx="0" fill="#cbd5e1" stroke="#475569" stroke-width="1.4"/><line x1="371" y1="156" x2="393" y2="159" stroke="#94a3b8" stroke-width="0.9"/><line x1="371" y1="163" x2="393" y2="166" stroke="#94a3b8" stroke-width="0.9"/><line x1="371" y1="170" x2="393" y2="173" stroke="#94a3b8" stroke-width="0.9"/><line x1="371" y1="177" x2="393" y2="180" stroke="#94a3b8" stroke-width="0.9"/><line x1="371" y1="184" x2="393" y2="187" stroke="#94a3b8" stroke-width="0.9"/><path d="M371,188 L371,196 L377,193 L387,193 L393,196 L393,188 Z" fill="#cbd5e1" stroke="#475569" stroke-width="1.4"/>
+<path d="M342,206 Q382,198 422,206" fill="none" stroke="#94a3b8" stroke-width="2.2"/>
+<text x="382.0" y="132.0" font-size="12.5" font-weight="bold" fill="#0f172a" text-anchor="middle">컵 · CUP</text>
+<text x="382.0" y="147.0" font-size="10.5" font-weight="normal" fill="#64748b" text-anchor="middle">DIN 916</text>
+<text x="382.0" y="232.0" font-size="10.5" font-weight="normal" fill="#64748b" text-anchor="middle">rim straddles the ridge</text>
+<text x="382.0" y="250.0" font-size="11" font-weight="bold" fill="#15803d" text-anchor="middle">✓ better — an upgrade</text>
+<rect x="603.0" y="152.0" width="22.0" height="36.0" rx="0" fill="#cbd5e1" stroke="#475569" stroke-width="1.4"/><line x1="603" y1="156" x2="625" y2="159" stroke="#94a3b8" stroke-width="0.9"/><line x1="603" y1="163" x2="625" y2="166" stroke="#94a3b8" stroke-width="0.9"/><line x1="603" y1="170" x2="625" y2="173" stroke="#94a3b8" stroke-width="0.9"/><line x1="603" y1="177" x2="625" y2="180" stroke="#94a3b8" stroke-width="0.9"/><line x1="603" y1="184" x2="625" y2="187" stroke="#94a3b8" stroke-width="0.9"/><path d="M603,188 L614,198 L625,188 Z" fill="#cbd5e1" stroke="#475569" stroke-width="1.4"/>
+<path d="M574,206 Q614,198 654,206" fill="none" stroke="#94a3b8" stroke-width="2.2"/>
+<text x="614.0" y="132.0" font-size="12.5" font-weight="bold" fill="#0f172a" text-anchor="middle">콘 · CONE</text>
+<text x="614.0" y="147.0" font-size="10.5" font-weight="normal" fill="#64748b" text-anchor="middle">DIN 914</text>
+<text x="614.0" y="232.0" font-size="10.5" font-weight="normal" fill="#64748b" text-anchor="middle">one point on the apex</text>
+<text x="614.0" y="250.0" font-size="11" font-weight="bold" fill="#b45309" text-anchor="middle">△ wants to slide off</text>
+<rect x="835.0" y="152.0" width="22.0" height="36.0" rx="0" fill="#cbd5e1" stroke="#475569" stroke-width="1.4"/><line x1="835" y1="156" x2="857" y2="159" stroke="#94a3b8" stroke-width="0.9"/><line x1="835" y1="163" x2="857" y2="166" stroke="#94a3b8" stroke-width="0.9"/><line x1="835" y1="170" x2="857" y2="173" stroke="#94a3b8" stroke-width="0.9"/><line x1="835" y1="177" x2="857" y2="180" stroke="#94a3b8" stroke-width="0.9"/><line x1="835" y1="184" x2="857" y2="187" stroke="#94a3b8" stroke-width="0.9"/><rect x="835.0" y="188.0" width="22.0" height="4.0" rx="0" fill="#cbd5e1" stroke="#475569" stroke-width="1.4"/><rect x="841.0" y="192.0" width="10.0" height="10.0" rx="0" fill="#cbd5e1" stroke="#475569" stroke-width="1.4"/>
+<path d="M806,206 Q846,198 886,206" fill="none" stroke="#94a3b8" stroke-width="2.2"/>
+<text x="846.0" y="132.0" font-size="12.5" font-weight="bold" fill="#0f172a" text-anchor="middle">돌출 · DOG</text>
+<text x="846.0" y="147.0" font-size="10.5" font-weight="normal" fill="#64748b" text-anchor="middle">DIN 915</text>
+<text x="846.0" y="232.0" font-size="10.5" font-weight="normal" fill="#64748b" text-anchor="middle">needs a matching hole</text>
+<text x="846.0" y="250.0" font-size="11" font-weight="bold" fill="#b91c1c" text-anchor="middle">✗ wrong anywhere here</text>
+<text x="44.0" y="274.0" font-size="11" font-weight="normal" fill="#64748b" text-anchor="start">The seat is CONVEX, which is why a flat face is acceptable here and a cone is not.</text>
+<rect x="24.0" y="300.0" width="592.0" height="516.0" rx="8" fill="#fffbeb" stroke="#b45309" stroke-width="2"/>
+<text x="44.0" y="328.0" font-size="14" font-weight="bold" fill="#78350f" text-anchor="start">B · The screws land on CRESTS — that is what sets the length</text>
+<rect x="56.0" y="352.0" width="528.0" height="34.0" rx="0" fill="#fde68a" stroke="#b45309" stroke-width="2"/>
+<text x="578.0" y="374.0" font-size="10.5" font-weight="normal" fill="#78350f" text-anchor="end">carrier wall 7 mm</text>
+<path d="M56.0,444.0 L59.7,444.9 L63.3,447.5 L67.0,451.6 L70.7,457.0 L74.3,463.3 L78.0,470.0 L81.7,476.7 L85.3,483.0 L89.0,488.4 L92.7,492.5 L96.3,495.1 L100.0,496.0 L103.7,495.1 L107.3,492.5 L111.0,488.4 L114.7,483.0 L118.3,476.7 L122.0,470.0 L125.7,463.3 L129.3,457.0 L133.0,451.6 L136.7,447.5 L140.3,444.9 L144.0,444.0 L147.7,444.9 L151.3,447.5 L155.0,451.6 L158.7,457.0 L162.3,463.3 L166.0,470.0 L169.7,476.7 L173.3,483.0 L177.0,488.4 L180.7,492.5 L184.3,495.1 L188.0,496.0 L191.7,495.1 L195.3,492.5 L199.0,488.4 L202.7,483.0 L206.3,476.7 L210.0,470.0 L213.7,463.3 L217.3,457.0 L221.0,451.6 L224.7,447.5 L228.3,444.9 L232.0,444.0 L235.7,444.9 L239.3,447.5 L243.0,451.6 L246.7,457.0 L250.3,463.3 L254.0,470.0 L257.7,476.7 L261.3,483.0 L265.0,488.4 L268.7,492.5 L272.3,495.1 L276.0,496.0 L279.7,495.1 L283.3,492.5 L287.0,488.4 L290.7,483.0 L294.3,476.7 L298.0,470.0 L301.7,463.3 L305.3,457.0 L309.0,451.6 L312.7,447.5 L316.3,444.9 L320.0,444.0 L323.7,444.9 L327.3,447.5 L331.0,451.6 L334.7,457.0 L338.3,463.3 L342.0,470.0 L345.7,476.7 L349.3,483.0 L353.0,488.4 L356.7,492.5 L360.3,495.1 L364.0,496.0 L367.7,495.1 L371.3,492.5 L375.0,488.4 L378.7,483.0 L382.3,476.7 L386.0,470.0 L389.7,463.3 L393.3,457.0 L397.0,451.6 L400.7,447.5 L404.3,444.9 L408.0,444.0 L411.7,444.9 L415.3,447.5 L419.0,451.6 L422.7,457.0 L426.3,463.3 L430.0,470.0 L433.7,476.7 L437.3,483.0 L441.0,488.4 L444.7,492.5 L448.3,495.1 L452.0,496.0 L455.7,495.1 L459.3,492.5 L463.0,488.4 L466.7,483.0 L470.3,476.7 L474.0,470.0 L477.7,463.3 L481.3,457.0 L485.0,451.6 L488.7,447.5 L492.3,444.9 L496.0,444.0 L499.7,444.9 L503.3,447.5 L507.0,451.6 L510.7,457.0 L514.3,463.3 L518.0,470.0 L521.7,476.7 L525.3,483.0 L529.0,488.4 L532.7,492.5 L536.3,495.1 L540.0,496.0 L543.7,495.1 L547.3,492.5 L551.0,488.4 L554.7,483.0 L558.3,476.7 L562.0,470.0 L565.7,463.3 L569.3,457.0 L573.0,451.6 L576.7,447.5 L580.3,444.9 L584.0,444.0" fill="none" stroke="#94a3b8" stroke-width="2.4"/>
+<text x="60.0" y="508.0" font-size="10.5" font-weight="normal" fill="#64748b" text-anchor="start">hub — 6 lobes: crest · flank · valley · flank · crest …</text>
+<line x1="144.0" y1="356" x2="144.0" y2="444" stroke="#7f1d1d" stroke-width="7" stroke-linecap="butt"/>
+<text x="144.0" y="346.0" font-size="10" font-weight="bold" fill="#7f1d1d" text-anchor="middle">FLAT on a crest</text>
+<line x1="320.0" y1="356" x2="320.0" y2="444" stroke="#7f1d1d" stroke-width="7" stroke-linecap="butt"/>
+<text x="320.0" y="346.0" font-size="10" font-weight="bold" fill="#7f1d1d" text-anchor="middle">CUP on a crest</text>
+<line x1="452.0" y1="356" x2="452.0" y2="470" stroke="#b91c1c" stroke-width="7" stroke-dasharray="6 4"/>
+<text x="452.0" y="346.0" font-size="10" font-weight="bold" fill="#b91c1c" text-anchor="middle">on a FLANK</text>
+<text x="56.0" y="540.0" font-size="11.5" font-weight="normal" fill="#78350f" text-anchor="start">M3 is tapped STRAIGHT INTO THE PETG — a 2.5 mm pilot through the</text>
+<text x="56.0" y="559.0" font-size="11.5" font-weight="normal" fill="#78350f" text-anchor="start">whole wall. Heat-set inserts were the plan and would split these faces.</text>
+<text x="56.0" y="597.0" font-size="11.5" font-weight="normal" fill="#78350f" text-anchor="start">The FLANK is the seat that bites. A screw part-way down one DOES clamp</text>
+<text x="56.0" y="616.0" font-size="11.5" font-weight="normal" fill="#78350f" text-anchor="start">— at a smaller radius. And 6 lobes at 60° against 3 screws at 120° is</text>
+<text x="56.0" y="635.0" font-size="11.5" font-weight="normal" fill="#78350f" text-anchor="start">exactly two lobe pitches, so all three share the phase and push the ring</text>
+<text x="56.0" y="654.0" font-size="11.5" font-weight="normal" fill="#78350f" text-anchor="start">off centre TOGETHER.</text>
+<text x="56.0" y="692.0" font-size="11.5" font-weight="normal" fill="#78350f" text-anchor="start">Eccentric ring → varying air gap → the Hall latch drops out over part</text>
+<text x="56.0" y="711.0" font-size="11.5" font-weight="normal" fill="#78350f" text-anchor="start">of a revolution.</text>
+<rect x="56.0" y="730.0" width="528.0" height="66.0" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="1.6"/>
+<text x="68.0" y="752.0" font-size="11.5" font-weight="bold" fill="#7f1d1d" text-anchor="start">An M3 × 8 cannot be asked to reach a VALLEY.</text>
+<text x="68.0" y="770.0" font-size="11" font-weight="normal" fill="#7f1d1d" text-anchor="start">The span above is to a CREST. A valley is deeper by the lobe depth,</text>
+<text x="68.0" y="786.0" font-size="11" font-weight="normal" fill="#7f1d1d" text-anchor="start">which has never been measured. Caliper two opposite valleys and record it.</text>
+<rect x="632.0" y="300.0" width="364.0" height="516.0" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+<text x="652.0" y="328.0" font-size="14" font-weight="bold" fill="#14532d" text-anchor="start">C · How you know it seated</text>
+<text x="652.0" y="352.0" font-size="11" font-weight="normal" fill="#15803d" text-anchor="start">Every figure below is computed in the .scad:</text>
+<text x="652.0" y="378.0" font-size="11" font-weight="normal" fill="#14532d" text-anchor="start">wall to cross</text>
+<text x="976.0" y="378.0" font-size="11" font-weight="normal" fill="#14532d" text-anchor="end">7.00 mm</text>
+<text x="652.0" y="400.0" font-size="11" font-weight="normal" fill="#14532d" text-anchor="start">+ radial gap, smallest</text>
+<text x="976.0" y="400.0" font-size="11" font-weight="normal" fill="#14532d" text-anchor="end">7.25 mm total</text>
+<text x="652.0" y="422.0" font-size="11" font-weight="normal" fill="#14532d" text-anchor="start">+ radial gap, largest</text>
+<text x="976.0" y="422.0" font-size="11" font-weight="normal" fill="#14532d" text-anchor="end">7.95 mm total</text>
+<text x="652.0" y="444.0" font-size="11" font-weight="normal" fill="#14532d" text-anchor="start">screw chosen</text>
+<text x="976.0" y="444.0" font-size="11" font-weight="normal" fill="#14532d" text-anchor="end">M3 × 8</text>
+<text x="652.0" y="488.0" font-size="11" font-weight="bold" fill="#14532d" text-anchor="start">stands PROUD of the OD</text>
+<text x="976.0" y="488.0" font-size="11" font-weight="bold" fill="#14532d" text-anchor="end">0.05 – 0.75 mm</text>
+<line x1="652" y1="492" x2="976" y2="492" stroke="#15803d" stroke-width="1"/>
+<rect x="652.0" y="506.0" width="324.0" height="86.0" rx="6" fill="#dcfce7" stroke="#15803d" stroke-width="1.6"/>
+<text x="664.0" y="528.0" font-size="11.5" font-weight="bold" fill="#14532d" text-anchor="start">Set the sensor air gap ABOVE 0.75 mm.</text>
+<text x="664.0" y="546.0" font-size="11" font-weight="normal" fill="#14532d" text-anchor="start">A screw at worst case stands that far out,</text>
+<text x="664.0" y="562.0" font-size="11" font-weight="normal" fill="#14532d" text-anchor="start">and anything standing proud sweeps the</text>
+<text x="664.0" y="578.0" font-size="11" font-weight="normal" fill="#14532d" text-anchor="start">sensor — the two-piece carrier died of it.</text>
+<text x="652.0" y="620.0" font-size="11.5" font-weight="normal" fill="#14532d" text-anchor="start">Winds in past 7.95 mm and still loose?</text>
+<text x="652.0" y="639.0" font-size="11.5" font-weight="normal" fill="#14532d" text-anchor="start">It is on a flank or over a valley.</text>
+<text x="652.0" y="658.0" font-size="11.5" font-weight="normal" fill="#14532d" text-anchor="start">Back it out, rotate the ring, retry.</text>
+<text x="652.0" y="696.0" font-size="11.5" font-weight="normal" fill="#14532d" text-anchor="start">Then draw a WITNESS MARK across the</text>
+<text x="652.0" y="715.0" font-size="11.5" font-weight="normal" fill="#14532d" text-anchor="start">ring-to-hub joint. A slip shows at a</text>
+<text x="652.0" y="734.0" font-size="11.5" font-weight="normal" fill="#14532d" text-anchor="start">glance afterwards, whatever is fitted.</text>
 </svg>
