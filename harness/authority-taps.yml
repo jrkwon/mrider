@@ -1,0 +1,147 @@
+# MRider authority taps -- steering and drive, connector by connector.
+#
+#   bash scripts/gen_harness.sh
+#
+# The companion to authority-tap-wiring.svg, and deliberately NOT a
+# replacement for it. That figure carries the relay semantics -- 30 sitting on
+# 87a with the coil off is what "factory stock" means -- and a harness drawing
+# has no way to say that. This one carries what the bench needs instead: which
+# part number, which gauge, which gender, how many.
+#
+# THE TWO TAPS ARE DIFFERENT FAMILIES AND THAT IS LOAD-BEARING
+# -------------------------------------------------------------
+# Steering is a 3.0 mm PIN family, drive is a .250 BLADE family. A pin will
+# not enter a blade receptacle, so those two can never be cross-plugged. The
+# POWER tap is the one that can, because it is .250 as well -- see
+# traction-supply.yml and FMEA row 12.
+#
+# EVERY MRider HALF IS THE OPPOSITE GENDER TO ITS NAME
+# ------------------------------------------------------
+# The module presents male contacts, so MRider's module-facing half is female.
+# The vehicle's own plug is female, so MRider's plug-facing half is male. The
+# vehicle's parts carry ignore_in_bom, so the generated BOM counts only what
+# has to be bought.
+
+connectors:
+  # ---------------- steering: M2M3, Micro-Fit 3.0, 3.0 mm pitch ------------
+  MOD_S:
+    type: Micro-Fit 3.0 header
+    subtype: 2 circuit, on the module PCB
+    pincount: 2
+    pinlabels: ['M3-', 'M3+']
+    ignore_in_bom: true
+    notes: Stock module. Only the M3 header is fitted of the four pads.
+
+  S_IN:
+    type: Micro-Fit 43645-0200
+    subtype: + 43030-0001 female terminals
+    pincount: 2
+    pinlabels: ['M3-', 'M3+']
+    notes: MRider's half, towards the module. Carries 87a.
+
+  S_OUT:
+    type: Micro-Fit 43640-0200
+    subtype: + 43031-0001 male terminals
+    pincount: 2
+    pinlabels: ['M3-', 'M3+']
+    notes: MRider's half, receives the vehicle's plug. Carries 30.
+
+  VEH_S:
+    type: Micro-Fit 3.0 plug
+    subtype: 2 circuit, female
+    pincount: 2
+    pinlabels: ['M3-', 'M3+']
+    ignore_in_bom: true
+    notes: Vehicle's own, on to the steering gearmotor. NO KEY SEEN - mark polarity.
+
+  # ---------------- drive: M1, .250 flat blade, tabs keyed 90 --------------
+  MOD_D:
+    type: .250 blade
+    subtype: 2-pos, keyed 90, male tabs
+    pincount: 2
+    pinlabels: [netA, netB]
+    ignore_in_bom: true
+    notes: Stock module. Two tabs, FOUR wires - two crimped on each.
+
+  D_IN:
+    type: .250 blade RECEPTACLE
+    subtype: uninsulated, 16-14 AWG
+    pincount: 2
+    pinlabels: [netA, netB]
+    notes: MRider's half, towards the module. Carries 87a.
+
+  D_OUT:
+    type: .250 blade MALE tab
+    subtype: uninsulated, 16-14 AWG
+    pincount: 2
+    pinlabels: [netA, netB]
+    notes: MRider's half, receives the vehicle's plug. Carries 30.
+
+  VEH_D:
+    type: .250 blade
+    subtype: 2-pos, keyed 90, female
+    pincount: 2
+    pinlabels: [netA, netB]
+    ignore_in_bom: true
+    notes: Vehicle's own. The paralleling of the two rear motors is INSIDE this plug.
+
+  # ---------------- the relay MUX --------------------------------------
+  MUX:
+    type: Relay MUX
+    subtype: 4 x SPDT, 70 A
+    pincount: 8
+    pinlabels: ['K1 87a', 'K1 30', 'K2 87a', 'K2 30',
+                'K3 87a', 'K3 30', 'K4 87a', 'K4 30']
+    ignore_in_bom: true
+    notes: Coil OFF puts 30 on 87a - the vehicle is then factory stock.
+
+cables:
+  W_S_IN:
+    wirecount: 2
+    gauge: 20 AWG
+    length: 0.6
+    colors: [BN, BU]
+    notes: Brown is M3-, blue is M3+. 20 AWG because the 43030 barrel is 20-24.
+  W_S_OUT:
+    wirecount: 2
+    gauge: 20 AWG
+    length: 0.6
+    colors: [BN, BU]
+  W_D_IN:
+    wirecount: 2
+    gauge: 16 AWG
+    length: 0.6
+    colors: [WH, GY]
+    notes: Two NETS, not four wires - the stock plug does the paralleling.
+  W_D_OUT:
+    wirecount: 2
+    gauge: 16 AWG
+    length: 0.6
+    colors: [WH, GY]
+
+connections:
+  - - MOD_S: [1, 2]
+    - ==>: [1-2]
+    - S_IN: [1, 2]
+  - - S_IN: [1, 2]
+    - W_S_IN: [1, 2]
+    - MUX: [1, 3]
+  - - MUX: [2, 4]
+    - W_S_OUT: [1, 2]
+    - S_OUT: [1, 2]
+  - - S_OUT: [1, 2]
+    - ==>: [1-2]
+    - VEH_S: [1, 2]
+
+  - - MOD_D: [1, 2]
+    - ==>: [1-2]
+    - D_IN: [1, 2]
+  - - D_IN: [1, 2]
+    - W_D_IN: [1, 2]
+    - MUX: [5, 7]
+  - - MUX: [6, 8]
+    - W_D_OUT: [1, 2]
+    - D_OUT: [1, 2]
+  - - D_OUT: [1, 2]
+    - ==>: [1-2]
+    - VEH_D: [1, 2]

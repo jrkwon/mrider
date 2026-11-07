@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 850" width="1300" height="850" font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 880" width="1300" height="880" font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
 <title>Authority tap wiring - which connector half goes on which end</title>
 <desc>Each motor conductor runs from a tab on the stock module, through a receptacle MRider supplies, into a relay on 87a; the relay's 30 leaves on a tab MRider supplies and enters the vehicle's own plug on its way to the motor. The motor driver feeds 87. Nothing is cut: both taps are connectors the vehicle already has.</desc>
 <defs><marker id="a047857" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#047857"/></marker><marker id="a1d4ed8" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#1d4ed8"/></marker><marker id="a334155" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#334155"/></marker><marker id="a64748b" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#64748b"/></marker><marker id="a7e22ce" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#7e22ce"/></marker><marker id="a92400e" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto"><path d="M0,0 L0,6.4 L9,3.2 z" fill="#92400e"/></marker></defs>
-<rect width="1300" height="850" fill="#ffffff"/>
+<rect width="1300" height="880" fill="#ffffff"/>
 <text x="24" y="34" font-size="18" font-weight="bold" fill="#0f172a" text-anchor="start">Authority tap wiring — nothing is cut, and each half is the gender opposite to the thing it mates</text>
 <text x="24" y="58" font-size="12.5" fill="#475569"><tspan font-weight="bold" fill="#64748b">Grey = the vehicle’s own parts.</tspan><tspan font-weight="bold" fill="#047857">  Green = what MRider buys.</tspan><tspan font-weight="bold" fill="#7e22ce">  Purple = the motor driver.</tspan>  Coil off → 30 sits on 87a → the vehicle is factory stock.</text>
 <rect x="24" y="78" width="1252" height="336" rx="8" fill="#f0f9ff" stroke="#0369a1" stroke-width="2.4"/>
@@ -20,7 +20,7 @@
 <line x1="224" y1="206.0" x2="243" y2="206.0" stroke="#92400e" stroke-width="3" marker-end="url(#a92400e)"/>
 <rect x="252" y="180.0" width="104" height="52" rx="5" fill="#ecfdf5" stroke="#047857" stroke-width="2.6"/>
 <text x="304.0" y="201.0" font-size="12.5" font-weight="bold" fill="#047857" text-anchor="middle">FEMALE</text>
-<text x="304.0" y="220.0" font-size="10.5" font-weight="normal" fill="#047857" text-anchor="middle">receptacle</text>
+<text x="304.0" y="220.0" font-size="9.5" font-weight="normal" fill="#047857" text-anchor="middle">43645 + 43030</text>
 <line x1="356" y1="206.0" x2="383" y2="206.0" stroke="#92400e" stroke-width="3" marker-end="url(#a92400e)"/>
 <rect x="392" y="172.0" width="236" height="68" rx="5" fill="#ffffff" stroke="#334155" stroke-width="2.6"/>
 <text x="404" y="193.0" font-size="14" font-weight="bold" fill="#0f172a" text-anchor="start">K1</text>
@@ -32,7 +32,7 @@
 <line x1="628" y1="206.0" x2="655" y2="206.0" stroke="#92400e" stroke-width="3" marker-end="url(#a92400e)"/>
 <rect x="664" y="180.0" width="104" height="52" rx="5" fill="#ecfdf5" stroke="#047857" stroke-width="2.6"/>
 <text x="716.0" y="201.0" font-size="12.5" font-weight="bold" fill="#047857" text-anchor="middle">MALE</text>
-<text x="716.0" y="220.0" font-size="10.5" font-weight="normal" fill="#047857" text-anchor="middle">tab</text>
+<text x="716.0" y="220.0" font-size="9.5" font-weight="normal" fill="#047857" text-anchor="middle">43640 + 43031</text>
 <line x1="768" y1="206.0" x2="791" y2="206.0" stroke="#92400e" stroke-width="3" marker-end="url(#a92400e)"/>
 <rect x="800" y="180.0" width="176" height="52" rx="5" fill="#ffffff" stroke="#64748b" stroke-width="2.2"/>
 <text x="888.0" y="201.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">female receptacle</text>
@@ -46,7 +46,7 @@
 <line x1="224" y1="310.0" x2="243" y2="310.0" stroke="#1d4ed8" stroke-width="3" marker-end="url(#a1d4ed8)"/>
 <rect x="252" y="284.0" width="104" height="52" rx="5" fill="#ecfdf5" stroke="#047857" stroke-width="2.6"/>
 <text x="304.0" y="305.0" font-size="12.5" font-weight="bold" fill="#047857" text-anchor="middle">FEMALE</text>
-<text x="304.0" y="324.0" font-size="10.5" font-weight="normal" fill="#047857" text-anchor="middle">receptacle</text>
+<text x="304.0" y="324.0" font-size="9.5" font-weight="normal" fill="#047857" text-anchor="middle">43645 + 43030</text>
 <line x1="356" y1="310.0" x2="383" y2="310.0" stroke="#1d4ed8" stroke-width="3" marker-end="url(#a1d4ed8)"/>
 <rect x="392" y="276.0" width="236" height="68" rx="5" fill="#ffffff" stroke="#334155" stroke-width="2.6"/>
 <text x="404" y="297.0" font-size="14" font-weight="bold" fill="#0f172a" text-anchor="start">K2</text>
@@ -58,7 +58,7 @@
 <line x1="628" y1="310.0" x2="655" y2="310.0" stroke="#1d4ed8" stroke-width="3" marker-end="url(#a1d4ed8)"/>
 <rect x="664" y="284.0" width="104" height="52" rx="5" fill="#ecfdf5" stroke="#047857" stroke-width="2.6"/>
 <text x="716.0" y="305.0" font-size="12.5" font-weight="bold" fill="#047857" text-anchor="middle">MALE</text>
-<text x="716.0" y="324.0" font-size="10.5" font-weight="normal" fill="#047857" text-anchor="middle">tab</text>
+<text x="716.0" y="324.0" font-size="9.5" font-weight="normal" fill="#047857" text-anchor="middle">43640 + 43031</text>
 <line x1="768" y1="310.0" x2="791" y2="310.0" stroke="#1d4ed8" stroke-width="3" marker-end="url(#a1d4ed8)"/>
 <rect x="800" y="284.0" width="176" height="52" rx="5" fill="#ffffff" stroke="#64748b" stroke-width="2.2"/>
 <text x="888.0" y="305.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">female receptacle</text>
@@ -82,7 +82,7 @@
 <line x1="224" y1="560.0" x2="243" y2="560.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
 <rect x="252" y="534.0" width="104" height="52" rx="5" fill="#ecfdf5" stroke="#047857" stroke-width="2.6"/>
 <text x="304.0" y="555.0" font-size="12.5" font-weight="bold" fill="#047857" text-anchor="middle">FEMALE</text>
-<text x="304.0" y="574.0" font-size="10.5" font-weight="normal" fill="#047857" text-anchor="middle">receptacle</text>
+<text x="304.0" y="574.0" font-size="9.5" font-weight="normal" fill="#047857" text-anchor="middle">.250 receptacle</text>
 <line x1="356" y1="560.0" x2="383" y2="560.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
 <rect x="392" y="526.0" width="236" height="68" rx="5" fill="#ffffff" stroke="#334155" stroke-width="2.6"/>
 <text x="404" y="547.0" font-size="14" font-weight="bold" fill="#0f172a" text-anchor="start">K3</text>
@@ -94,7 +94,7 @@
 <line x1="628" y1="560.0" x2="655" y2="560.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
 <rect x="664" y="534.0" width="104" height="52" rx="5" fill="#ecfdf5" stroke="#047857" stroke-width="2.6"/>
 <text x="716.0" y="555.0" font-size="12.5" font-weight="bold" fill="#047857" text-anchor="middle">MALE</text>
-<text x="716.0" y="574.0" font-size="10.5" font-weight="normal" fill="#047857" text-anchor="middle">tab</text>
+<text x="716.0" y="574.0" font-size="9.5" font-weight="normal" fill="#047857" text-anchor="middle">.250 male tab</text>
 <line x1="768" y1="560.0" x2="791" y2="560.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
 <rect x="800" y="534.0" width="176" height="52" rx="5" fill="#ffffff" stroke="#64748b" stroke-width="2.2"/>
 <text x="888.0" y="555.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">female receptacle</text>
@@ -108,7 +108,7 @@
 <line x1="224" y1="664.0" x2="243" y2="664.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
 <rect x="252" y="638.0" width="104" height="52" rx="5" fill="#ecfdf5" stroke="#047857" stroke-width="2.6"/>
 <text x="304.0" y="659.0" font-size="12.5" font-weight="bold" fill="#047857" text-anchor="middle">FEMALE</text>
-<text x="304.0" y="678.0" font-size="10.5" font-weight="normal" fill="#047857" text-anchor="middle">receptacle</text>
+<text x="304.0" y="678.0" font-size="9.5" font-weight="normal" fill="#047857" text-anchor="middle">.250 receptacle</text>
 <line x1="356" y1="664.0" x2="383" y2="664.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
 <rect x="392" y="630.0" width="236" height="68" rx="5" fill="#ffffff" stroke="#334155" stroke-width="2.6"/>
 <text x="404" y="651.0" font-size="14" font-weight="bold" fill="#0f172a" text-anchor="start">K4</text>
@@ -120,7 +120,7 @@
 <line x1="628" y1="664.0" x2="655" y2="664.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
 <rect x="664" y="638.0" width="104" height="52" rx="5" fill="#ecfdf5" stroke="#047857" stroke-width="2.6"/>
 <text x="716.0" y="659.0" font-size="12.5" font-weight="bold" fill="#047857" text-anchor="middle">MALE</text>
-<text x="716.0" y="678.0" font-size="10.5" font-weight="normal" fill="#047857" text-anchor="middle">tab</text>
+<text x="716.0" y="678.0" font-size="9.5" font-weight="normal" fill="#047857" text-anchor="middle">.250 male tab</text>
 <line x1="768" y1="664.0" x2="791" y2="664.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
 <rect x="800" y="638.0" width="176" height="52" rx="5" fill="#ffffff" stroke="#64748b" stroke-width="2.2"/>
 <text x="888.0" y="659.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">female receptacle</text>
@@ -128,7 +128,8 @@
 <line x1="976" y1="664.0" x2="1003" y2="664.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
 <rect x="1012" y="638.0" width="240" height="52" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="2.2"/>
 <text x="1132.0" y="667.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">both rear motors</text>
-<text x="44" y="742" font-size="11.5" font-weight="bold" fill="#78350f" text-anchor="start">Tabs keyed 90° apart — this plug CANNOT go in reversed.</text>
+<text x="44" y="742" font-size="11.5" font-weight="bold" fill="#78350f" text-anchor="start">Tabs keyed 90° apart — this plug cannot go in REVERSED. It CAN be swapped with the power tap: same .250, same key. See FMEA row 12.</text>
 <text x="24" y="806" font-size="12.5" font-weight="bold" fill="#334155" text-anchor="start">Restoring the vehicle: unplug MRider’s two assemblies and put the vehicle’s own plugs back on the module. No conductor was cut.</text>
-<text x="24" y="828" font-size="12" font-weight="normal" fill="#475569" text-anchor="start">Per vehicle: 2 taps × (2 female + 2 male) = 4 female + 4 male. Three vehicles: 12 female, 12 male, plus spares.</text>
+<text x="24" y="828" font-size="12.5" font-weight="normal" fill="#475569" text-anchor="start">Per vehicle: 2 taps × (2 female + 2 male) = 4 female + 4 male. Three vehicles: 12 female, 12 male, plus spares. The POWER tap is a third .250 pair, drawn in traction-supply.svg.</text>
+<text x="24" y="848" font-size="12" font-weight="normal" fill="#475569" text-anchor="start">Steering, full numbers: 43645-0200 housing + 43030-0001 terminals towards the module; 43640-0200 + 43031-0001 towards the plug. Drive and power: .250 uninsulated, 16–14 AWG.</text>
 </svg>

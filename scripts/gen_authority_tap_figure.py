@@ -72,7 +72,7 @@ import re
 
 OUT = pathlib.Path("docs/images/authority-tap-wiring.svg")
 
-W, H = 1300, 850
+W, H = 1300, 880
 
 # ---- geometry -------------------------------------------------------------
 X_ECU, W_ECU = 48, 176
@@ -97,6 +97,8 @@ TAPS = [
         motor="steering gearmotor",
         tint="#f0f9ff", edge="#0369a1", ink="#0c4a6e",
         key="No key seen on this plug \u2014 MARK the polarity before you unplug it.",
+        fem=("FEMALE", "43645 + 43030"),
+        mal=("MALE", "43640 + 43031"),
         rows=[
             ("K1", "M3\u2212", "#92400e", "brown", "brown \u2014 1 wire"),
             ("K2", "M3+", "#1d4ed8", "blue", "blue \u2014 1 wire"),
@@ -109,7 +111,10 @@ TAPS = [
         ab=["A", "B"],
         motor="both rear motors",
         tint="#fffbeb", edge="#b45309", ink="#78350f",
-        key="Tabs keyed 90\u00b0 apart \u2014 this plug CANNOT go in reversed.",
+        key="Tabs keyed 90\u00b0 apart \u2014 this plug cannot go in REVERSED. It CAN be "
+            "swapped with the power tap: same .250, same key. See FMEA row 12.",
+        fem=("FEMALE", ".250 receptacle"),
+        mal=("MALE", ".250 male tab"),
         rows=[
             ("K3", "horizontal tab", "#334155", "net A", "2 wires \u2014 RECORD colours"),
             ("K4", "vertical tab", "#334155", "net B", "2 wires \u2014 RECORD colours"),
@@ -215,8 +220,8 @@ def build():
             out.append(arrow(X_ECU + W_ECU, ry, X_FEM, col))
 
             out.append(box(X_FEM, ry - 26, W_FEM, 52, "#ecfdf5", NEW, 2.6))
-            out.append(txt_in(X_FEM, W_FEM, ry - 5, "FEMALE", 12.5, "bold", NEW))
-            out.append(txt_in(X_FEM, W_FEM, ry + 14, "receptacle", 10.5, "normal", NEW))
+            out.append(txt_in(X_FEM, W_FEM, ry - 5, tap["fem"][0], 12.5, "bold", NEW))
+            out.append(txt_in(X_FEM, W_FEM, ry + 14, tap["fem"][1], 9.5, "normal", NEW))
 
             out.append(arrow(X_FEM + W_FEM, ry, X_REL, col))
 
@@ -234,8 +239,8 @@ def build():
             out.append(arrow(X_REL + W_REL, ry, X_MAL, col))
 
             out.append(box(X_MAL, ry - 26, W_MAL, 52, "#ecfdf5", NEW, 2.6))
-            out.append(txt_in(X_MAL, W_MAL, ry - 5, "MALE", 12.5, "bold", NEW))
-            out.append(txt_in(X_MAL, W_MAL, ry + 14, "tab", 10.5, "normal", NEW))
+            out.append(txt_in(X_MAL, W_MAL, ry - 5, tap["mal"][0], 12.5, "bold", NEW))
+            out.append(txt_in(X_MAL, W_MAL, ry + 14, tap["mal"][1], 9.5, "normal", NEW))
 
             out.append(arrow(X_MAL + W_MAL, ry, X_VEH, col))
 
@@ -259,7 +264,13 @@ def build():
                    12.5, "bold", "#334155"))
     out.append(txt(24, y + 42,
                    "Per vehicle: 2 taps \u00d7 (2 female + 2 male) = 4 female + 4 male. "
-                   "Three vehicles: 12 female, 12 male, plus spares.",
+                   "Three vehicles: 12 female, 12 male, plus spares. The POWER tap is "
+                   "a third .250 pair, drawn in traction-supply.svg.",
+                   12.5, "normal", "#475569"))
+    out.append(txt(24, y + 62,
+                   "Steering, full numbers: 43645-0200 housing + 43030-0001 terminals "
+                   "towards the module; 43640-0200 + 43031-0001 towards the plug. "
+                   "Drive and power: .250 uninsulated, 16\u201314 AWG.",
                    12, "normal", "#475569"))
     out.append("</svg>")
     return "\n".join(out)
@@ -284,6 +295,15 @@ def check(svg):
     assert "87a" in svg and svg.count("30 \u2192") == 4
 
     # text must fit the box it was drawn in - the check the first draft lacked
+    # The canvas is a fixed H. check() has always measured text WIDTH against
+    # its box and never measured whether the drawing still fits the page: on
+    # 2026-11-07 a second footer line landed at y=848 of 850 and nothing would
+    # have said so at 851. An SVG does not complain, it crops.
+    ys = [float(m) for m in re.findall(r'y="([0-9.]+)"', svg)]
+    assert ys, "no y coordinates - the figure is empty"
+    assert max(ys) <= H - 8, (
+        f"content reaches y={max(ys):.0f} on a {H} px canvas. Raise H.")
+
     for s, size, avail in FITS:
         w = len(s) * size * 0.60
         assert w <= avail, f"text {s!r} is ~{w:.0f} px in a {avail:.0f} px box"

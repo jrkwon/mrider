@@ -535,6 +535,36 @@ the person wiring them is not the person who read this table.
 > that **one fit test settles both steering halves** are in
 > [01 § tap terminations](01-bom-sourcing.md).
 
+#### The same two taps, part number by part number
+
+The figure above carries the **authority** story — `30` resting on `87a` with the coil off is
+what *"factory stock"* means, and no harness drawing can say that. This one carries what the
+bench needs instead: which part, which gauge, which gender, how many.
+
+![The two authority taps drawn connector by connector, top to bottom: the module's Micro-Fit
+header and its .250 tabs each mating MRider's half, then wire to the four-pole relay MUX on its
+87a contacts, out again from the 30 contacts, and into MRider's other half which receives the
+vehicle's own plug. Steering runs brown and blue on 20 AWG, drive runs two nets on 16 AWG.
+Every connector states whether it is the vehicle's part or one MRider buys](../images/authority-taps.svg)
+
+**Generated from [`harness/authority-taps.yml`](https://github.com/jrkwon/mrider/blob/main/harness/authority-taps.yml).**
+*Edit the YAML, never the SVG.*
+
+> [!NOTE]
+> **Read the generated BOM as contacts, not boxes**
+>
+> [`harness/authority-taps.bom.tsv`](https://github.com/jrkwon/mrider/blob/main/harness/authority-taps.bom.tsv)
+> counts **connectors**, and lists each as *"2 pins"*. For the steering tap one connector is one
+> housing plus two terminals, which is what you buy. For the drive tap **there is no housing** —
+> the `.250` terminals are loose — so *"1 connector, 2 pins"* means **two terminals**.
+>
+> | per vehicle | female | male |
+> |---|---:|---:|
+> | steering — Micro-Fit `43645`/`43640` housings | 1 | 1 |
+> | drive — `.250` loose contacts | 2 | 2 |
+> | power — `.250` loose contacts *(traction-supply.yml)* | 2 | 2 |
+> | **three vehicles, `.250` contacts** | **12** | **12** |
+
 All four coils sit on **one bus** — see the
 [relay-driver board](../images/relay-driver-board.svg) for the driver side: the four coils in
 parallel across the E-stop-fed logic feed and a single `IRLZ44N` pulling all four low sides. The
