@@ -1,0 +1,46 @@
+name: tools
+
+# The course tooling had no CI. mkdocs is built, the ROS workspace is built,
+# the firmware is built - and scripts/lab_report.py, which decides what mark
+# thirteen students get, was run only by the person running it.
+#
+# An external review on 2026-11-07 found three defects on the path between a
+# submitted .zip and a file in dist/grade, and all three were SILENT: a
+# uniqname read from a student-written file became a filename and could write
+# outside the output directory, "keep the last" kept the first download so a
+# resubmission was graded as the work it replaced, and one corrupt archive
+# ended grading for everyone behind it. None of them would ever have produced
+# an error message.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/**'
+      - 'cad/**'
+      - 'docs/**'
+      - '.github/workflows/tools.yml'
+  pull_request:
+    paths:
+      - 'scripts/**'
+      - 'cad/**'
+      - 'docs/**'
+      - '.github/workflows/tools.yml'
+  workflow_dispatch:
+
+jobs:
+  grading:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      # A clean pytest, not the host's. The machine this was written on had an
+      # anyio plugin that is incompatible with its system pytest, which is the
+      # sort of thing that makes "works for me" and nothing else.
+      - run: pip install --quiet pytest
+      - name: the grading path
+        run: python3 -m pytest scripts/tests -q
+      - name: lab_report's own selftest - checks and templates
+        run: python3 scripts/lab_report.py selftest

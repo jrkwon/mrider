@@ -55,3 +55,6 @@ harness/*.gv
 harness/*.html
 harness/*.png
 docs/images/.system-overview.gv
+
+# pytest
+.pytest_cache/
