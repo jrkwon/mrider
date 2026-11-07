@@ -466,9 +466,12 @@ def die(msg):
     sys.exit(1)
 
 
-def git(*args, cwd=None, check=True):
+def git(*args, cwd=None, check=True, timeout=None):
+    """Run git. `timeout` is REQUIRED of anything that touches the network:
+    subprocess.run raises TimeoutExpired, and check=False does not suppress it,
+    so a caller that wants to survive a dead network has to catch it."""
     r = subprocess.run(['git', *args], cwd=str(cwd or REPO),
-                       capture_output=True, text=True)
+                       capture_output=True, text=True, timeout=timeout)
     if check and r.returncode != 0:
         die(f'git {" ".join(args)} failed:\n{r.stderr.strip()}')
     return r.stdout.strip()
@@ -514,10 +517,22 @@ def commits_behind(fetch=False):
     """
     if fetch:
         # Network, so keep it short and never fatal - a student working offline
-        # is still allowed to write their report.
-        subprocess.run(['git', 'fetch', '--quiet', 'origin', 'main'],
-                       cwd=str(REPO), capture_output=True, timeout=20, check=False)
-    out = git('rev-list', '--count', 'HEAD..origin/main', check=False)
+        # is still allowed to write their report. `timeout=` ALONE does not
+        # deliver that: subprocess.run RAISES TimeoutExpired, and check=False
+        # does nothing about it, so the promise in the sentence above was not
+        # kept by the code under it. A dead network does not just make this
+        # unknowable, it killed the whole report. Caught since 2026-11-07.
+        try:
+            subprocess.run(['git', 'fetch', '--quiet', 'origin', 'main'],
+                           cwd=str(REPO), capture_output=True, timeout=20,
+                           check=False)
+        except (subprocess.TimeoutExpired, OSError):
+            return None          # unknowable, which is what the caller prints
+    try:
+        out = git('rev-list', '--count', 'HEAD..origin/main', check=False,
+                  timeout=20)
+    except (subprocess.TimeoutExpired, OSError):
+        return None
     try:
         return int(out)
     except ValueError:
@@ -1078,7 +1093,15 @@ def cmd_grade(args):
             if z in seen:
                 continue
             seen.add(z)
-            row = grade_zip(n, z)
+            # One unreadable archive is one student's problem, not the run's.
+            # Without this, a truncated download ends grading for everybody
+            # behind it in the directory listing.
+            try:
+                row = grade_zip(n, z)
+            except (zipfile.BadZipFile, ValueError, OSError) as exc:
+                print(f'SKIP  {z.name}: {exc}')
+                rows.append((None, [f'{z.name}: {exc}'], [], ''))
+                continue
             rows.append(row)
             # Arrival time, kept beside the row. For an LMS download the file
             # mtime is when it was fetched, which is the only ordering signal
@@ -1187,10 +1210,30 @@ def _grade_tree(n, who, root):
     return who, fails, warns, '\n'.join(lines) + '\n'
 
 
+# A lab archive is a few dozen text files. These ceilings are two orders of
+# magnitude above that and still refuse a zip bomb, which decompresses to
+# whatever it likes from a few hundred kilobytes on disk.
+MAX_MEMBERS = 4000
+MAX_UNPACKED = 256 * 1024 * 1024        # 256 MiB
+
+
 def grade_zip(n, path):
     tmp = Path(tempfile.mkdtemp(prefix='grade-'))
     try:
         with zipfile.ZipFile(path) as z:
+            infos = z.infolist()
+            # Check the declared sizes BEFORE extracting. Reading first and
+            # measuring afterwards is how the disk fills.
+            if len(infos) > MAX_MEMBERS:
+                raise ValueError(f'{len(infos)} members, limit {MAX_MEMBERS}')
+            total = sum(i.file_size for i in infos)
+            if total > MAX_UNPACKED:
+                raise ValueError(f'unpacks to {total / 1e6:.0f} MB, limit '
+                                 f'{MAX_UNPACKED / 1e6:.0f} MB')
+            # zipfile.extractall sanitises member paths - leading separators
+            # and .. components are stripped - so zip-slip is the stdlib's
+            # problem and not ours. The identity inside the report is not,
+            # which is what safe_who() is for.
             z.extractall(tmp)
         # git archive wrote a single top-level prefix directory.
         roots = [p for p in tmp.iterdir() if p.is_dir()]
@@ -1223,8 +1266,17 @@ def grade_remote(n, who, url):
     tmp = Path(tempfile.mkdtemp(prefix='grade-'))
     try:
         branch = f'student/{who}'
-        r = subprocess.run(['git', 'clone', '--depth', '1', '--branch', branch,
-                            url, str(tmp / 'r')], capture_output=True, text=True)
+        # A clone with no limit is a grading run that one unreachable student
+        # repository can stop for good, with thirteen more behind it.
+        try:
+            r = subprocess.run(['git', 'clone', '--depth', '1',
+                                '--branch', branch, url, str(tmp / 'r')],
+                               capture_output=True, text=True, timeout=120)
+        except subprocess.TimeoutExpired:
+            print(f'FAIL  {who}: clone of {branch} timed out after 120 s')
+            return who, [f'clone of {branch} from {url} timed out after 120 s'], \
+                [], (f'# Lab {n} - {who}\n\nCloning `{branch}` from `{url}` '
+                     f'timed out. Graded as unfetched, not as unsubmitted.\n')
         if r.returncode != 0:
             print(f'FAIL  {who}: cannot clone {branch} from {url}')
             return who, [f'cannot clone {branch} from {url}: {r.stderr.strip()}'], [], \
