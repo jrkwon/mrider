@@ -3,7 +3,7 @@
 <package format="3">
   <name>mitt_localization</name>
   <version>0.1.0</version>
-  <description>MITT robot_localization EKF configuration</description>
+  <description>MITT robot_localization EKF: configuration and launch. Owns odom-&gt;base_link, and only that.</description>
   <maintainer email="jrkwon@umich.edu">Jaerock Kwon</maintainer>
   <license>Apache-2.0</license>
   <buildtool_depend>ament_cmake</buildtool_depend>

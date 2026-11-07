@@ -86,8 +86,22 @@ SLAM's `map → odom`.
     ros2 launch mitt_navigation slam.launch.py
     ```
 
-    Starts `slam_toolbox` in mapping mode. It owns `map → odom`; the EKF owns
-    `odom → base_link`.
+    Starts `slam_toolbox` in mapping mode **and the EKF**. `slam_toolbox` owns
+    `map → odom`; the EKF owns `odom → base_link`.
+
+    **Already have a map?** Use AMCL instead — same EKF, no mapping:
+
+    ```bash
+    ros2 launch mitt_navigation localization.launch.py map:=/abs/path/map.yaml
+    ```
+
+    Give it a **2D Pose Estimate** in RViz first: `set_initial_pose` is
+    `false`, so AMCL does not assume where the vehicle is. A particle cloud
+    that never converges is almost always that.
+
+    **Do not run both.** Two publishers for `map → odom` is a map that jitters
+    against the scan, and it is miserable to diagnose. Each file takes
+    `ekf:=false` for the case where one is already running.
 
 === "3. Nav2"
 

@@ -9,6 +9,11 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
   <exec_depend>slam_toolbox</exec_depend>
   <exec_depend>nav2_bringup</exec_depend>
+  <!-- slam.launch.py and localization.launch.py both INCLUDE
+       mitt_localization/launch/ekf.launch.py. Declared so a partial
+       build cannot leave a launch file pointing at a package that is
+       not there - the failure arrives at runtime otherwise. -->
+  <exec_depend>mitt_localization</exec_depend>
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
   <export>

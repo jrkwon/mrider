@@ -13,22 +13,39 @@
 # limitations under the License.
 
 """
-SLAM (slam_toolbox) + EKF for the MITT twin.
+SLAM (slam_toolbox) for the MITT twin, and the EKF it needs underneath.
 
     ros2 launch mitt_navigation slam.launch.py
+    ros2 launch mitt_navigation slam.launch.py ekf:=false   # EKF already up
 
 TF ownership, which is the thing that goes wrong most often:
-    map  -> odom        slam_toolbox   (this file)
-    odom -> base_link   robot_localization EKF (this file)
-    base_link -> *      robot_state_publisher (sim.launch.py, from the URDF)
+    map  -> odom          slam_toolbox            (this file)
+    odom -> base_link     robot_localization EKF  (mitt_localization)
+    base_link -> *        robot_state_publisher   (sim.launch.py, from the URDF)
 
-The ackermann_steering_controller has enable_odom_tf: false precisely so it
-does NOT also publish odom->base_link. Two publishers for one transform gives
-a robot that visibly jitters and is miserable to diagnose.
+WHAT CHANGED ON 2026-11-07, AND WHY IT IS NOT JUST TIDYING
+-----------------------------------------------------------
+The EKF node used to be declared HERE, which tied odom->base_link to wanting
+to build a map. They are unrelated. The EKF fuses wheel odometry and the IMU
+and is needed whenever the vehicle moves; running on a saved map, or with no
+map at all, meant either re-assembling this launch by hand or starting
+slam_toolbox purely to get a transform that has nothing to do with SLAM.
+
+It now lives in mitt_localization/launch/ekf.launch.py and is INCLUDED here,
+on by default. Every command already written down still works unchanged. What
+is new is that the two can be run apart - see localization.launch.py for the
+saved-map case, which is the one this arrangement previously made awkward.
+
+`ekf:=false` exists for the case where something else already started it.
+Starting a second ekf_node gives two publishers for odom->base_link, which is
+a robot that visibly jitters and is miserable to diagnose - the same failure
+`enable_odom_tf: false` on the steering controller is there to prevent.
 """
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.conditions import IfCondition
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
@@ -36,22 +53,27 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
     nav_pkg = FindPackageShare("mitt_navigation")
-    loc_pkg = FindPackageShare("mitt_localization")
     use_sim_time = LaunchConfiguration("use_sim_time")
+
+    ekf = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([
+                FindPackageShare("mitt_localization"),
+                "launch", "ekf.launch.py",
+            ])
+        ]),
+        launch_arguments={"use_sim_time": use_sim_time}.items(),
+        condition=IfCondition(LaunchConfiguration("ekf")),
+    )
 
     return LaunchDescription([
         DeclareLaunchArgument("use_sim_time", default_value="true"),
+        DeclareLaunchArgument(
+            "ekf", default_value="true",
+            description="Start the EKF. Set false only if one is already "
+                        "running - two publishers for odom->base_link jitter."),
 
-        Node(
-            package="robot_localization",
-            executable="ekf_node",
-            name="ekf_filter_node",
-            output="screen",
-            parameters=[
-                PathJoinSubstitution([loc_pkg, "config", "ekf_indoor.yaml"]),
-                {"use_sim_time": use_sim_time},
-            ],
-        ),
+        ekf,
 
         Node(
             package="slam_toolbox",
