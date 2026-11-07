@@ -19,8 +19,16 @@ Nav2 for the MITT twin.
 
 Run AFTER slam.launch.py - Nav2 needs map->odom to exist.
 
-Nav2's output is remapped to cmd_vel_nav so twist_mux arbitrates it against
-joystick input, with the joystick winning (mitt_control/config/twist_mux.yaml).
+twist_mux arbitrates Nav2 against joystick input on **/cmd_vel**, with the
+joystick winning (mitt_control/config/twist_mux.yaml).
+
+NOT cmd_vel_nav, which this docstring claimed until 2026-11-07. Inside
+nav2_bringup, cmd_vel_nav is controller_server's output and the INPUT to
+velocity_smoother, whose output is /cmd_vel. Subscribing a stage earlier
+would work and would silently discard the acceleration limiting - which
+matters more on a steered vehicle than a differential one. The reasoning
+lives in twist_mux.yaml, beside the parameter it justifies; this file states
+the contract and points there.
 """
 
 from launch import LaunchDescription

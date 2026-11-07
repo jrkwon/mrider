@@ -228,8 +228,12 @@ e('<text x="180" y="1300" font-size="12" fill="#0f766e">The AS5600 breakout may 
 e('<text x="180" y="1320" font-size="12" fill="#0f766e">Rows A–E of every board are left unused here. That is normal; a half-size board has far more holes than this needs.</text>')
 
 e('</svg>')
-open(__import__('pathlib').Path(__file__).resolve().parent.parent/'docs'/'images'/'breadboard-layout.svg','w',encoding='utf-8').write('\n'.join(out))
-print('written')
+# Importing this module must not rewrite the documentation. Only the file
+# writes move under the guard; the drawing above still runs on import, which
+# is what lets another script or a test reuse it without a side effect.
+if __name__ == "__main__":
+    open(__import__('pathlib').Path(__file__).resolve().parent.parent/'docs'/'images'/'breadboard-layout.svg','w',encoding='utf-8').write('\n'.join(out))
+    print('written')
 
 
 # ======================= FIGURE 2 =======================
@@ -301,5 +305,9 @@ panel(24,706,1132,186,'#fef2f2','#ef4444','Before a single wire goes in','#991b1
 
 
 e('</svg>')
-open(__import__('pathlib').Path(__file__).resolve().parent.parent/'docs'/'images'/'breadboard-procedure.svg','w',encoding='utf-8').write('\n'.join(out))
-print('written 2')
+# Importing this module must not rewrite the documentation. Only the file
+# writes move under the guard; the drawing above still runs on import, which
+# is what lets another script or a test reuse it without a side effect.
+if __name__ == "__main__":
+    open(__import__('pathlib').Path(__file__).resolve().parent.parent/'docs'/'images'/'breadboard-procedure.svg','w',encoding='utf-8').write('\n'.join(out))
+    print('written 2')

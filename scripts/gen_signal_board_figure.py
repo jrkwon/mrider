@@ -606,10 +606,16 @@ out[0] = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
 out[1] = f'<rect width="{W}" height="{H}" fill="#ffffff"/>'
 e("</svg>")
 
-dst = Path("docs/images/signal-board-perfboard-layout.svg")
-io.open(dst, "w", encoding="utf-8").write("\n".join(out))
-print(f"wrote {dst}  ({COLS}x{ROWS} holes, {COLS-2*BORDER}x{ROWS-2*BORDER} usable, "
-      f"{len(PARTS)} parts, {len(TERMINALS)} terminals, {len(HEADERS)} headers, "
-      f"{len(DOUBLED)} doubled pads, canvas {W}x{H})")
-print("assertions passed: no hole carries three, reverse side exactly where the "
-      "GND bus is crossed, every bus fed, every passive beside its pin")
+# Script-relative, not CWD-relative: this is run from CI and from a
+# regeneration check, and neither should have to cd first.
+dst = Path(__file__).resolve().parent.parent / "docs/images/signal-board-perfboard-layout.svg"
+# Importing this module must not rewrite the documentation. Only the file
+# writes move under the guard; the drawing above still runs on import, which
+# is what lets another script or a test reuse it without a side effect.
+if __name__ == "__main__":
+    io.open(dst, "w", encoding="utf-8").write("\n".join(out))
+    print(f"wrote {dst}  ({COLS}x{ROWS} holes, {COLS-2*BORDER}x{ROWS-2*BORDER} usable, "
+          f"{len(PARTS)} parts, {len(TERMINALS)} terminals, {len(HEADERS)} headers, "
+          f"{len(DOUBLED)} doubled pads, canvas {W}x{H})")
+    print("assertions passed: no hole carries three, reverse side exactly where the "
+          "GND bus is crossed, every bus fed, every passive beside its pin")

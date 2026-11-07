@@ -44,6 +44,13 @@
 #                                ("the traction pack"), exactly as
 #                                architecture.md already does; the number lives
 #                                in vehicle.md, bom.md and the order log.
+#  17. figures are current   - a generator edited and not re-run. Every
+#                                generated figure says "edit the script and
+#                                re-run it; do not edit the SVG", and nothing
+#                                enforced the second half. Could not be
+#                                written until four generators stopped writing
+#                                their output from top-level code, because
+#                                importing one rewrote the documentation.
 #  16. vehicle geometry      - wheelbase, track and wheel radius restated in
 #                                three packages, and Nav2's turning radii
 #                                derived from them. mitt_controllers.yaml said
@@ -391,6 +398,15 @@ printf "%s16. vehicle geometry agrees across packages%s\n" "$B" "$N"
 # copies would be wrong; checking the inequality is the real contract.
 if ! python3 scripts/check_vehicle_dims.py; then
     fail "vehicle geometry disagrees across packages"
+fi
+printf "\n"
+
+printf "%s17. generated figures match their generators%s\n" "$B" "$N"
+# Re-runs every gen_*.py and compares. Generators needing a tool that may be
+# absent (openscad, graphviz) are skipped BY NAME and printed - a check that
+# quietly tests less than it claims is worse than one that fails.
+if ! python3 scripts/check_figures_current.py; then
+    fail "a generated figure is stale, or its generator no longer runs"
 fi
 printf "\n"
 

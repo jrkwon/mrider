@@ -348,11 +348,16 @@ e(f'  <text x="652" y="{P3Y+256}" font-size="11.5" fill="#7f1d1d">'
 e('</svg>')
 
 p = pathlib.Path(__file__).resolve().parent.parent / "docs/images/nose-diameter-decides.svg"
-p.write_text("\n".join(out) + "\n")
-print(f"wrote {p}")
-print(f"  R hub {R_HUB:.2f} · bore {R_BORE:.2f} · track {R_TRACK:.2f} "
-      f"· face {R_FACE:.2f} · out {R_OUT:.2f}")
-print(f"  nose candidates: R {NOSE_SMALL[0]/2:.1f}-{NOSE_SMALL[1]/2:.1f} "
-      f"and R {NOSE_LARGE[0]/2:.1f}-{NOSE_LARGE[1]/2:.1f}")
 assert NOSE_SMALL[1] / 2 < R_TRACK < NOSE_LARGE[0] / 2, \
     "the figure's whole argument is that the two readings straddle the track"
+
+# Importing this module must not rewrite the documentation. Only the file
+# writes move under the guard; the drawing above still runs on import, which
+# is what lets another script or a test reuse it without a side effect.
+if __name__ == "__main__":
+    p.write_text("\n".join(out) + "\n")
+    print(f"wrote {p}")
+    print(f"  R hub {R_HUB:.2f} · bore {R_BORE:.2f} · track {R_TRACK:.2f} "
+          f"· face {R_FACE:.2f} · out {R_OUT:.2f}")
+    print(f"  nose candidates: R {NOSE_SMALL[0]/2:.1f}-{NOSE_SMALL[1]/2:.1f} "
+          f"and R {NOSE_LARGE[0]/2:.1f}-{NOSE_LARGE[1]/2:.1f}")
