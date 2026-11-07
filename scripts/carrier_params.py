@@ -85,6 +85,24 @@ def read():
     d["PROUD_MIN"] = p["SET_SCREW_L"] - d["SPAN_MAX"]
     d["PROUD_MAX"] = p["SET_SCREW_L"] - d["SPAN_MIN"]
 
+    # BUILD FIGURES vs COMPUTED FIGURES, and when each is right.
+    #
+    # 01-bom-sourcing.md states the convention: "Build to the round figures -
+    # pitch 13.60, offset 6.80 ... carrying the extra digit into a drawing
+    # would be false precision, and the figures deliberately keep 6.80." A
+    # 0.2 mm print layer and a hand-placed TO-92 cannot hold a hundredth.
+    #
+    # So a DIMENSION SOMEONE BUILDS TO is rounded, and a MARGIN SOMEONE CHECKS
+    # is not: the grub screw's 0.05 mm of clearance IS the point of that panel
+    # and rounding it to 0.1 would destroy the argument. The two are different
+    # kinds of number and the module hands out both, named.
+    d["PITCH_BUILD"] = round(d["PITCH"], 1)
+    d["OFFSET_BUILD"] = round(d["OFFSET"], 1)
+    assert abs(d["PITCH_BUILD"] - 13.60) < 1e-9, (
+        f"pitch rounds to {d['PITCH_BUILD']}, but the docs build to 13.60")
+    assert abs(d["OFFSET_BUILD"] - 6.80) < 1e-9, (
+        f"offset rounds to {d['OFFSET_BUILD']}, but the docs build to 6.80")
+
     # The sensors. A sits on the MAGNET nearest the top of a drawing and B is A
     # plus the quadrature offset as an angle, which is half a pitch - so B
     # necessarily lands on a BOUNDARY. Deriving them is the point: putting A at

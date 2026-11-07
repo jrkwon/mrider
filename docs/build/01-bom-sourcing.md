@@ -815,13 +815,22 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > **Crests, not valleys — and that is what sets the length**
 >
 > `HUB_D = 62.82` is measured **across opposite lobe crests**, so **every span figure derived from it
-> is a distance to a crest.** `SPAN_MAX = 7.90 mm` is the wall plus the largest radial gap **at a
+> is a distance to a crest.** `SPAN_MAX = 7.95 mm` is the wall plus the largest radial gap **at a
 > crest**. A valley sits deeper by the lobe depth, **which nobody has measured**, so an M3 × 8
 > cannot be assumed to reach one and must not be asked to.
 >
-> **Assembly rule: tighten on a crest.** Seated there, the screw stands **0.10–0.70 mm proud of the
+> **Assembly rule: tighten on a crest.** Seated there, the screw stands **0.05–0.75 mm proud of the
 > OD**. If one winds in past that without going tight, it is heading **down a flank or into a
 > valley** — back it out, rotate the ring, try again.
+>
+> **And the margin is 0.05 mm, not a comfortable one.** An `M3 × 8` reaches
+> `SET_SCREW_L − WALL = `**`1.00 mm`** past the bore and has to close up to
+> `(BORE_CLEAR + HUB_TOL) / 2 = `**`0.95 mm`** of it — **1.05×, not the “five times” an earlier
+> revision of this page and two of its figures claimed.** That `5×` was arithmetic from the
+> **`M3 × 10` that [#6d](../order-log.md) rejected** for standing 1.9–2.7 mm proud of the sensing
+> surface: `10 − 7 = 3`. *Corrected 2026-11-07, when the figures were moved onto
+> [`scripts/carrier_params.py`](https://github.com/jrkwon/mrider/blob/main/scripts/carrier_params.py)
+> and three of them disagreed with the model.*
 >
 > **The flank is the case that bites.** A screw part-way down one **does** clamp, but at a smaller
 > radius — and because six lobes at 60° against three screws at 120° is exactly two lobe pitches,
@@ -898,7 +907,7 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > | a polygon "chord" correction, +0.75 | Argued on top of it, pushing the figure to 66.0 — **in the wrong direction**, and for a crest form this hub does not have |
 >
 > **Net: `HUB_D` was carried 2.3 mm too large, the bore came out 4 mm oversize, and a 20 g ring was
-> printed that could not be clamped** — the grub screws reach 3 mm past the bore and the gap was
+> printed that could not be clamped** — the grub screws reach **1.00 mm** past the bore and the gap was
 > 2 mm per side, so it was marginal rather than impossible, but it was not the part. The fit mule
 > exists to cost 12 g instead of 20 at exactly this moment.
 >

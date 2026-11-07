@@ -44,6 +44,15 @@
 #                                ("the traction pack"), exactly as
 #                                architecture.md already does; the number lives
 #                                in vehicle.md, bom.md and the order log.
+#  15. carrier numbers       - prose and figures quoting the drive-encoder
+#                                carrier differently from the model that was
+#                                printed. On 2026-11-07 three figures were
+#                                moved onto the .scad and every one of them
+#                                disagreed with it - and then the PROSE turned
+#                                out to carry the same three errors, because
+#                                the pages and the figures had been copying
+#                                each other rather than the part. Generating a
+#                                figure does nothing for a sentence.
 #  14. no orphaned figures    - a figure kept up to date that nothing links
 #                                to. measurement-sheet.svg was edited three
 #                                times, most recently 2026-11-04, while no
@@ -358,5 +367,17 @@ fi
 printf "   %sok%s  (%s live, %s archived)\n\n" "$G" "$N" \
     "$(ls docs/images/*.svg docs/images/*.png 2>/dev/null | wc -l | tr -d ' ')" \
     "$(ls docs/images/archive/*.svg docs/images/archive/*.png 2>/dev/null | wc -l | tr -d ' ')"
+
+printf "%s15. figures and prose quote the carrier as the model computes it%s\n" "$B" "$N"
+# Two rules that pull in opposite directions, which is why this is a script
+# and not a grep. A SUPERSEDED value must not reappear - it is an old answer,
+# and an old answer reads exactly like a current one. But a value someone
+# BUILDS TO is deliberately rounded, so a drawing quoting 13.62 or 6.81 is
+# wrong the other way. A margin someone CHECKS keeps its digits: 0.05 is not
+# rounded to 0.1, because the thinness of it is the whole point.
+if ! python3 scripts/check_carrier_numbers.py; then
+    fail "carrier figures or prose disagree with cad/drive_encoder_carrier.scad"
+fi
+printf "\n"
 
 printf "%sDocs are publishable.%s\n" "$G" "$N"

@@ -186,7 +186,7 @@ def build(d):
     o.append(f'<line x1="{ax:.1f}" y1="{ytop:.1f}" x2="{bx:.1f}" y2="{ytop:.1f}" '
              f'stroke="{GREEN}" stroke-width="2"/>')
     midx = (ax + bx) / 2
-    o.append(txt(midx, ytop - 8, f"{d['OFFSET']:.2f} mm", 11.5, "bold", GREEN, "middle"))
+    o.append(txt(midx, ytop - 8, f"{d['OFFSET_BUILD']:.2f} mm", 11.5, "bold", GREEN, "middle"))
     o.append(txt(midx, ytop - 22, "= HALF a magnet pitch", 10.5, "normal", GREEN, "middle"))
     o.append(txt(midx, ytop - 36, "A on a magnet → B on a BOUNDARY",
                  10, "normal", GREEN, "middle"))
@@ -196,7 +196,7 @@ def build(d):
     o.append(txt(44, 178, "carrier's. Bore is round.", 10.5, "normal", MUTED,
                  limit=188))
     o.append(txt(44, 560, f"{d['N_MAG']} magnets, alternating", 11.5, "bold", BLUE))
-    o.append(txt(44, 576, f"pitch {d['PITCH']:.2f} mm · {d['COUNTS']} counts/rev",
+    o.append(txt(44, 576, f"pitch {d['PITCH_BUILD']:.2f} mm · {d['COUNTS']} counts/rev",
                  10.5, "normal", BLUE2))
     o.append(txt(290, 606, f"{d['N_SET']} × M3 grub screw", 11.5, "bold", RED))
     o.append(txt(290, 622, f"recessed below the OD Ø{d['OD']:.2f}", 10.5, "normal", RED))
