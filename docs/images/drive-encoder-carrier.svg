@@ -1,11 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 700" width="980" height="700"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 760" width="980" height="760"
      font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
   <title>Drive encoder carrier — one-piece ring on a six-lobe hub</title>
   <desc>Left: looking along the axle. A one-piece printed ring slides onto the gearbox output
   hub, which is six broad lobes separated by narrow gaps, and presents a plain cylinder carrying
   eighteen magnets in alternating polarity. Three recessed grub screws, 120 degrees apart and so
   exactly two lobe pitches apart, are shown dropped into lobe gaps. Two Hall sensors sit radially
-  outside the track, half a magnet pitch apart. Right: the same assembly in axial section.</desc>
+  outside the track, half a magnet pitch apart, so that when A is over a magnet B is over the
+  boundary between two. Right: the same assembly in axial section, with each magnet drawn
+  magnetised RADIALLY - poles stacked through the ring wall, outward face alternating N, S,
+  N, S - and a sensor above the track reading that outward face.</desc>
   <defs>
     <marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
       <path d="M0,0 L0,6 L8,3 z" fill="#b91c1c"/></marker>
@@ -14,10 +17,10 @@
     <pattern id="h" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
       <line x1="0" y1="0" x2="0" y2="7" stroke="#94a3b8" stroke-width="2.5"/></pattern>
   </defs>
-  <rect width="980" height="700" fill="#ffffff"/>
+  <rect width="980" height="760" fill="#ffffff"/>
   <text x="24" y="34" font-size="19" font-weight="bold" fill="#0f172a">Carrier and magnet track — one piece, nothing standing proud</text>
   <text x="24" y="56" font-size="13" fill="#475569">Hub measures 62.82 mm across opposite lobe crests (caliper). Left: end view, looking along the axle. Right: axial section.</text>
-  <rect x="24" y="76" width="492" height="600" rx="8" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+  <rect x="24" y="76" width="492" height="660" rx="8" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
   <text x="44" y="102" font-size="15" font-weight="bold" fill="#0f172a">END VIEW — looking along the axle</text>
   <circle cx="262" cy="346" r="109.4" fill="#fde68a" stroke="#b45309" stroke-width="2.5"/>
   <circle cx="262" cy="346" r="90.5" fill="#ffffff" stroke="#475569" stroke-width="1.5"/>
@@ -50,10 +53,11 @@
   <g transform="translate(226.9,442.4) rotate(-250.0)"><rect x="-6.8" y="-6.2" width="13.5" height="12.4" rx="1.5" fill="#fecaca" stroke="#7f1d1d" stroke-width="1.5"/></g>
   <line x1="352.4" y1="346.0" x2="363.2" y2="346.0" stroke="#0f172a" stroke-width="3" stroke-dasharray="4 3"/>
   <g transform="translate(241.4,229.0) rotate(-100.0)"><rect x="-6" y="-9" width="12" height="18" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/></g><text x="241.4" y="233.0" font-size="10" font-weight="bold" fill="#14532d" text-anchor="middle">A</text>
-  <g transform="translate(282.6,229.0) rotate(-80.0)"><rect x="-6" y="-9" width="12" height="18" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/></g><text x="282.6" y="233.0" font-size="10" font-weight="bold" fill="#14532d" text-anchor="middle">B</text>
-  <line x1="239.3" y1="217.2" x2="284.7" y2="217.2" stroke="#15803d" stroke-width="2" marker-start="url(#g)" marker-end="url(#g)"/>
-  <text x="262" y="199" font-size="11.5" font-weight="bold" fill="#15803d" text-anchor="middle">6.80 mm</text>
-  <text x="262" y="185" font-size="10.5" fill="#15803d" text-anchor="middle">= HALF a magnet pitch</text>
+  <g transform="translate(262.0,227.2) rotate(-90.0)"><rect x="-6" y="-9" width="12" height="18" rx="2" fill="#bbf7d0" stroke="#15803d" stroke-width="2"/></g><text x="262.0" y="231.2" font-size="10" font-weight="bold" fill="#14532d" text-anchor="middle">B</text>
+  <line x1="241.4" y1="213.0" x2="262.0" y2="213.0" stroke="#15803d" stroke-width="2" marker-start="url(#g)" marker-end="url(#g)"/>
+  <text x="251.7" y="205" font-size="11.5" font-weight="bold" fill="#15803d" text-anchor="middle">6.80 mm</text>
+  <text x="251.7" y="191" font-size="10.5" fill="#15803d" text-anchor="middle">= HALF a magnet pitch</text>
+  <text x="251.7" y="177" font-size="10" fill="#15803d" text-anchor="middle">A on a magnet → B on a BOUNDARY</text>
   <line x1="382" y1="272" x2="352" y2="284" stroke="#b45309" stroke-width="1.2"/>
   <text x="386" y="252" font-size="11.5" font-weight="bold" fill="#b45309">one-piece ring</text>
   <text x="386" y="266" font-size="10.5" fill="#92400e">bore Ø64.02 (clearance)</text>
@@ -78,7 +82,7 @@
   <rect x="40" y="606" width="460" height="56" rx="6" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
   <text x="56" y="628" font-size="12.5" font-weight="bold" fill="#92400e">6 lobes at 60° · 3 screws at 120° = exactly two lobe pitches.</text>
   <text x="56" y="647" font-size="12" fill="#78350f">So all three land together. Turn the ring one lobe to seat them in gaps.</text>
-  <rect x="532" y="76" width="424" height="600" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+  <rect x="532" y="76" width="424" height="660" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
   <text x="552" y="102" font-size="15" font-weight="bold" fill="#14532d">AXIAL SECTION — where the 8 mm goes</text>
   <line x1="560" y1="470" x2="930" y2="470" stroke="#64748b" stroke-width="1.5" stroke-dasharray="9 5"/>
   <text x="860" y="464" font-size="10.5" fill="#64748b">centreline</text>
@@ -90,8 +94,9 @@
   <rect x="660" y="372" width="96" height="98" fill="#e2e8f0" stroke="#475569" stroke-width="2"/>
   <text x="664" y="492" font-size="11" font-weight="bold" fill="#1e3a8a">lobed boss · ROTATES</text>
   <rect x="668" y="344" width="80" height="28" fill="#fde68a" stroke="#b45309" stroke-width="2"/>
-  <rect x="672" y="336" width="72" height="10" fill="#1e3a8a"/>
-  <g font-size="8" fill="#fff" text-anchor="middle"><text x="682" y="344">N</text><text x="700" y="344">S</text><text x="718" y="344">N</text><text x="736" y="344">S</text></g>
+  <rect x="672" y="330" width="18" height="8" fill="#b91c1c"/><rect x="672" y="338" width="18" height="8" fill="#1e3a8a"/><rect x="690" y="330" width="18" height="8" fill="#1e3a8a"/><rect x="690" y="338" width="18" height="8" fill="#b91c1c"/><rect x="708" y="330" width="18" height="8" fill="#b91c1c"/><rect x="708" y="338" width="18" height="8" fill="#1e3a8a"/><rect x="726" y="330" width="18" height="8" fill="#1e3a8a"/><rect x="726" y="338" width="18" height="8" fill="#b91c1c"/>
+  <rect x="672" y="330" width="72" height="16" fill="none" stroke="#1e293b" stroke-width="1"/>
+  <g font-size="7" fill="#fff" text-anchor="middle"><text x="681" y="337">N</text><text x="681" y="345">S</text><text x="699" y="337">S</text><text x="699" y="345">N</text><text x="717" y="337">N</text><text x="717" y="345">S</text><text x="735" y="337">S</text><text x="735" y="345">N</text></g>
   <line x1="700" y1="346" x2="700" y2="380" stroke="#7f1d1d" stroke-width="5" stroke-linecap="round"/>
   <rect x="768" y="300" width="30" height="170" rx="5" fill="#f1f5f900" stroke="#94a3b8" stroke-width="2"/>
   <text x="804" y="392" font-size="11" fill="#64748b">wheel</text>
@@ -117,5 +122,8 @@
   <text x="552" y="592" font-size="12.5" fill="#14532d">The sensors sit <tspan font-weight="bold">radially outside</tspan> the magnets, not beside</text>
   <text x="552" y="610" font-size="12.5" fill="#14532d">them — so the 8 mm holds the track width and the sensor&#39;s</text>
   <text x="552" y="628" font-size="12.5" fill="#14532d">thickness <tspan font-weight="bold">side by side</tspan>, not stacked. Both fit comfortably.</text>
-  <text x="552" y="652" font-size="12" fill="#15803d" font-style="italic">Radial room: not measured. The fit mule either spins or it does not.</text>
+  <text x="552" y="652" font-size="12.5" fill="#14532d">Each magnet is magnetised <tspan font-weight="bold">radially</tspan> — its poles stack through</text>
+  <text x="552" y="670" font-size="12.5" fill="#14532d">the ring wall, they do not run along it. What the sensor reads is</text>
+  <text x="552" y="688" font-size="12.5" fill="#14532d">the <tspan font-weight="bold">outward</tspan> face, and that is what alternates N, S, N, S.</text>
+  <text x="552" y="712" font-size="12" fill="#15803d" font-style="italic">Radial room: not measured. The fit mule either spins or it does not.</text>
 </svg>
