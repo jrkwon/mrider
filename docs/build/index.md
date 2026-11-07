@@ -33,6 +33,35 @@ These steps map onto the staged bring-up protocol in
 are Stages 0–4 of that protocol; step 7 is Stage 5. **No stage begins until the previous
 stage passes.**
 
+## The whole vehicle on one page
+
+Every other figure in this guide is a close-up. This one is the map they are close-ups **of** —
+every box, what joins it to what, and which of them the vehicle already came with.
+
+[![MRider system overview: five groups. The vehicle as delivered holds the traction pack, the
+stock inline protector, the stock ECU with its four sockets, the steering gearmotor and the
+paralleled rear motors. The power box holds the 25 A fuse, XT60, E-stop contactor and button,
+the barrier block, the four-pole relay MUX and the motor driver. The logic box holds the
+isolated LiFePO4 pack, two UBECs, the Teensy on its signal perfboard, the RC servo MUX and the
+RC receiver. Sensors and the autonomy laptop hang off those. Edges are coloured by what the
+wire carries: traction, authority through the MUX, logic rail, signal and
+USB](../images/system-overview.svg)](../images/system-overview.svg)
+
+**Generated** — [`scripts/gen_system_figure.py`](https://github.com/jrkwon/mrider/blob/main/scripts/gen_system_figure.py).
+*Edit the script and re-run it; do not edit the SVG.*
+
+> [!NOTE]
+> **It names parts on purpose, and [architecture.md](../design/architecture.md) does not**
+>
+> The design-side block diagram says *"traction battery pack"* and *"motor driver"* so that it
+> does not go stale when a part changes — and it did not, when the Sabertooth was cancelled.
+> This figure is the opposite document: it names the actual part, the actual pin and the actual
+> tap, so a builder can trace one wire end to end without opening six pages.
+>
+> **The two are allowed to look different. They are not allowed to disagree about what connects
+> to what.** The generator asserts that every `#n` it prints is a real line in the
+> [Order Log](../order-log.md), so a figure that cites procurement cannot quietly drift from it.
+
 ## One sheet to carry with you
 
 Many rows in these pages read *(measure during bring-up)*. They are not placeholders anybody
