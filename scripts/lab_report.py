@@ -52,20 +52,42 @@ WHY PROVENANCE IS GENERATED, NOT TYPED
 Host, OS, RMW, isolation variables and the course commit are stamped in by the
 generator. A student cannot forget them, and a report produced on a machine
 whose environment was never correct says so in its own header.
+
+WHERE THE REST OF IT IS
+-----------------------
+This file is the student's half and the entry point: generate a report,
+validate one, submit one.
+
+    lab_labs.py     what each lab asks for and what counts as right. Imports
+                    nothing, so a lab definition cannot reach the filesystem.
+    lab_grading.py  the instructor's half - grade a cohort, record the marks.
+                    NOT shipped in the student bundle, which is why it moved.
+
+The dependency runs one way only: lab_labs <- lab_report <- lab_grading. The
+single upward reference is the lazy import in main(), which is also what lets
+`grade` be absent from a bundle and say so in a sentence.
 """
 import argparse
 import configparser
 import os
 import platform
 import re
-import shutil
 import socket
 import subprocess
 import sys
-import tempfile
-import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
+
+# lab_labs sits beside this file. Python puts a script's own directory on
+# sys.path, and the two callers that import this module (scripts/check_docs.sh
+# and scripts/provision_labs.sh) already insert `scripts`, so this line is only
+# needed for a third kind of caller: one that loads this file BY PATH, with
+# importlib. Two lines here means such a caller keeps working.
+_HERE = Path(__file__).resolve().parent
+if str(_HERE) not in sys.path:
+    sys.path.insert(0, str(_HERE))
+
+from lab_labs import LABS, SELFTEST                            # noqa: E402
 
 REPO = Path(__file__).resolve().parent.parent
 CONFIG = REPO / '.labconfig'
@@ -108,355 +130,6 @@ def student_repo_url(uniqname):
 # missing rather than just "a placeholder".
 TODO = 'TODO'
 PASTE = 'PASTE'
-
-
-# --- report block types ------------------------------------------------------
-#
-# A lab's report is a flat list of these. Keeping it flat keeps the generator,
-# the validator and the grader reading the same structure.
-
-def h2(title):
-    return ('h2', title, None, None)
-
-
-def evidence(key, title, command, lang='text'):
-    """A fenced block the student pastes real terminal output into."""
-    return ('evidence', title, f'{key}|{lang}', command)
-
-
-def question(key, prompt):
-    """A numbered question from the lab, answered in prose."""
-    return ('question', key, prompt, None)
-
-
-def prose(key, title, prompt):
-    """A free-form write-up section, typically the 'break it' diagnosis."""
-    return ('prose', key, title, prompt)
-
-
-def image(key, title, filename, prompt):
-    """An image deliverable, referenced from the report so it cannot be orphaned."""
-    return ('image', key, f'{title}|{filename}', prompt)
-
-
-# --- per-lab measurement checks ----------------------------------------------
-#
-# Each returns a list of (level, message). Levels: 'FAIL' contradicts the lab,
-# 'WARN' is outside the expected band but could be a legitimate difference.
-
-def _num(m, key):
-    """Measurement as float, or None if absent or not a number."""
-    try:
-        return float(str(m.get(key, '')).strip())
-    except ValueError:
-        return None
-
-
-def _band(out, m, key, lo, hi, what):
-    v = _num(m, key)
-    if v is not None and not (lo <= v <= hi):
-        out.append(('WARN', f'{key} = {v:g}; expected roughly {lo:g}-{hi:g} ({what})'))
-
-
-def check_lab1(m):
-    out = []
-    unsourced, sourced = _num(m, 'topics_unsourced'), _num(m, 'topics_sourced')
-    nodes = _num(m, 'nodes_unsourced')
-    if unsourced is not None and sourced is not None and unsourced >= sourced:
-        out.append(('FAIL', f'topics_unsourced ({unsourced:g}) is not fewer than '
-                            f'topics_sourced ({sourced:g}) - the whole point of Part 5 '
-                            f'is that the unsourced terminal sees less of the graph'))
-    if _num(m, 'exit_code') not in (None, 0):
-        out.append(('FAIL', 'exit_code is not 0; Part 5 turns on the failure being silent'))
-    if _num(m, 'stderr_bytes') not in (None, 0):
-        out.append(('FAIL', 'stderr_bytes is not 0; Part 5 turns on the failure being silent'))
-    _band(out, m, 'topics_unsourced', 1, 12, 'the whole 2026 cohort measured 2')
-    _band(out, m, 'topics_sourced', 15, 30, 'the whole 2026 cohort measured 21')
-    # 0 is the expected answer. A non-zero count means a SECOND mismatch as well
-    # (usually RMW_IMPLEMENTATION differing between the shell and the simulator),
-    # which is a different and more misleading failure - worth looking at, not
-    # worth failing.
-    if nodes is not None and nodes > 0:
-        out.append(('WARN', f'nodes_unsourced = {nodes:g}; the 2026 cohort all measured 0. '
-                            f'A partial graph usually means RMW_IMPLEMENTATION differs too'))
-    return out
-
-
-def check_lab2(m):
-    out = []
-    one, three = _num(m, 'drift_after_1_square_m'), _num(m, 'drift_after_3_squares_m')
-    if one is not None and three is not None and three <= one:
-        out.append(('FAIL', f'drift_after_3_squares_m ({three:g}) is not greater than '
-                            f'drift_after_1_square_m ({one:g}) - open-loop drift '
-                            f'accumulates; this pair says it did not'))
-    for key in ('drift_after_1_square_m', 'drift_after_3_squares_m'):
-        v = _num(m, key)
-        if v is not None and v < 0:
-            out.append(('FAIL', f'{key} is negative; it is a distance'))
-    _band(out, m, 'stall_period_s', 0.4, 0.6,
-          'reference_timeout is 0.5 s in mitt_controllers.yaml')
-    return out
-
-
-def check_lab3(m):
-    out = []
-    clamp_to = _num(m, 'clamped_to_mps')
-    clamp_from = _num(m, 'clamped_from_mps')
-    limit = _num(m, 'max_speed_param_mps')
-    if clamp_to is not None and limit is not None and clamp_to > limit + 1e-6:
-        out.append(('FAIL', f'clamped_to_mps ({clamp_to:g}) exceeds max_speed_param_mps '
-                            f'({limit:g}) - the governor did not govern'))
-    if clamp_from is not None and clamp_to is not None and clamp_from <= clamp_to:
-        out.append(('WARN', 'clamped_from_mps is not above clamped_to_mps; nothing was clamped'))
-    rel = str(m.get('scan_reliability', '')).strip().upper()
-    if rel and rel not in ('RELIABLE', 'BEST_EFFORT', 'BEST EFFORT', 'BESTEFFORT'):
-        out.append(('FAIL', f'scan_reliability = {rel!r}; expected RELIABLE or BEST_EFFORT '
-                            f'as printed by `ros2 topic info --verbose`'))
-    return out
-
-
-def check_lab4(m):
-    """
-    Lab 4's finding is the steering clamp: at w=1.0 and w=2.0 the vehicle is
-    already at its mechanical limit, so two commanded radii differing by a
-    factor of two produce ONE measured radius. That equality is the lab.
-    """
-    out = []
-    r100, r200 = _num(m, 'measured_R_w100_m'), _num(m, 'measured_R_w200_m')
-    r030 = _num(m, 'measured_R_w030_m')
-    r075 = _num(m, 'measured_R_wheelbase_075_m')
-
-    if r100 is not None and r200 is not None:
-        if abs(r100 - r200) > 0.15:
-            out.append(('FAIL', f'measured_R_w100_m ({r100:g}) and measured_R_w200_m '
-                                f'({r200:g}) differ by {abs(r100 - r200):.2f} m. Both '
-                                f'commands are past the 22.5 deg limit, so both should '
-                                f'clamp to the same radius'))
-    if r200 is not None and r200 < 1.0:
-        out.append(('FAIL', f'measured_R_w200_m = {r200:g} m. The vehicle cannot turn '
-                            f'inside R_min = 0.63/tan(22.5 deg) = 1.52 m'))
-    if r030 is not None and r100 is not None and r030 <= r100:
-        out.append(('WARN', 'measured_R_w030_m is not larger than measured_R_w100_m; '
-                            'w = 0.30 requests 1.67 m, which is inside the achievable range'))
-    if r075 is not None and r200 is not None and r075 <= r200:
-        out.append(('FAIL', f'measured_R_wheelbase_075_m ({r075:g}) is not greater than '
-                            f'measured_R_w200_m ({r200:g}). R = L/tan(d): a longer '
-                            f'wheelbase at the same steering limit must turn wider'))
-    _band(out, m, 'measured_R_w200_m', 1.35, 1.70, 'theory 1.52 m, measured 1.49 m')
-    _band(out, m, 'measured_R_wheelbase_075_m', 1.60, 2.05, 'theory 0.75/tan(22.5 deg) = 1.81 m')
-    return out
-
-
-def check_lab5(m):
-    out = []
-    yaw = _num(m, 'rear_camera_yaw_rad')
-    if yaw is not None and abs(abs(yaw) - 3.14159265) > 0.02:
-        out.append(('FAIL', f'rear_camera_yaw_rad = {yaw:g}; a rear-facing camera is at '
-                            f'yaw = +/-pi. This one is not pointing backwards'))
-    _band(out, m, 'rear_camera_x_m', -0.30, -0.05, 'the joint origin places it behind base_link')
-    return out
-
-
-# --- lab definitions ---------------------------------------------------------
-
-LABS = {
-    1: dict(
-        title='Bring Up the Twin',
-        week=1, due='2026-09-21',
-        # Repo paths, beyond labs/lab1/, that belong in this submission.
-        paths=[],
-        measurements=[
-            ('topics_unsourced', 'Part 5: `ros2 topic list --no-daemon | wc -l` before sourcing'),
-            ('topics_sourced', 'Part 5: the same count after sourcing setup_env.sh'),
-            ('nodes_unsourced', 'Part 5: how many nodes `ros2 node list --no-daemon` showed'),
-            ('exit_code', 'Part 5: the exit code the failing command returned'),
-            ('stderr_bytes', 'Part 5: bytes it wrote to stderr'),
-            ('joint_states_hz', 'Part 3: `ros2 topic hz /joint_states`, averaged'),
-        ],
-        checks=check_lab1,
-        blocks=[
-            h2('Part 1 - Prove your environment'),
-            evidence('env_check', 'Evidence', 'bash scripts/check_env.sh'),
-            h2('Part 2 - Bring up the twin'),
-            evidence('controllers', 'Evidence', 'ros2 control list_controllers'),
-            h2('Part 3 - Map the computation graph'),
-            evidence('graph', 'Evidence', 'ros2 node list && ros2 topic list'),
-            evidence('topic_info', 'Evidence',
-                     'the three `ros2 topic` commands in Part 3'),
-            image('rqt', 'Evidence', 'rqt_graph.png', 'Screenshot of `rqt_graph`.'),
-            question('q1', 'Which node publishes `/scan`, and which one publishes '
-                           '`/joint_states`?'),
-            question('q2', '`/cmd_vel_joy` and `/cmd_vel` both exist. What subscribes to '
-                           '**both**, and what does that node publish?'),
-            question('q3', 'What is the message *type* on '
-                           '`/ackermann_steering_controller/reference_unstamped`?'),
-            h2('Part 5 - Break it on purpose'),
-            evidence('break', 'Evidence', 'the unsourced terminal, and the same commands '
-                                          'after sourcing'),
-            prose('diagnosis', 'Diagnosis',
-                  'What you observed, exactly: both topic counts, the node list, the exit '
-                  'code, the stderr size. Which setting caused it. And why partial '
-                  'visibility is worse than seeing nothing at all.'),
-        ],
-    ),
-    2: dict(
-        title='Drive a Square',
-        week=2, due='2026-09-28',
-        paths=['ros2_ws/src/lab2_square'],
-        measurements=[
-            ('drift_after_1_square_m', 'Part 3: drift from start after one square'),
-            ('drift_after_3_squares_m', 'Part 3: drift from start after three squares'),
-            ('stall_period_s', 'Part 5: how long the vehicle stopped for, each cycle'),
-        ],
-        checks=check_lab2,
-        blocks=[
-            h2('Part 2 - Publish a square'),
-            evidence('build', 'Evidence', 'colcon build --packages-select lab2_square'),
-            h2('Part 3 - Subscribe to the feedback'),
-            evidence('odom', 'Evidence',
-                     'the logged drift, covering one square through three'),
-            h2('Part 4 - Why the square does not close'),
-            question('q1', 'What was your drift from start after one square? After three?'),
-            question('q2', 'Name **two** distinct reasons an open-loop square does not close '
-                           'on this vehicle.'),
-            question('q3', 'The odometry you subscribed to reports a position. Where does '
-                           'that number physically come from, and what can it not possibly '
-                           'know?'),
-            h2('Part 5 - Break it on purpose'),
-            evidence('stall', 'Evidence', 'the node running at 1 Hz'),
-            prose('diagnosis', 'Diagnosis',
-                  'What you observed. Which parameter caused it and what it does. And why '
-                  'this behaviour is **correct** - why a controller that kept executing the '
-                  'last command it received would be a serious defect on a real vehicle.'),
-        ],
-    ),
-    3: dict(
-        title='A Speed Governor',
-        week=3, due='2026-10-05',
-        paths=['ros2_ws/src/lab3_governor'],
-        measurements=[
-            ('max_speed_param_mps', 'Part 1: the `max_speed` parameter in effect'),
-            ('clamped_from_mps', 'Part 1: the speed you commanded'),
-            ('clamped_to_mps', 'Part 1: the speed the governor passed through'),
-            ('scan_reliability', 'Part 3: `/scan` Reliability, as printed'),
-            ('scan_durability', 'Part 3: `/scan` Durability, as printed'),
-        ],
-        checks=check_lab3,
-        blocks=[
-            h2('Part 1 - A node with parameters'),
-            evidence('clamp', 'Evidence', 'the governor clamping, and `ros2 param set` '
-                                          'changing the limit live'),
-            h2('Part 2 - A service to disable it'),
-            evidence('service', 'Evidence', 'ros2 service call /governor/enable ...'),
-            question('q1', 'What is the difference between a **parameter** and a **service** '
-                           'here? Both change the node\'s behaviour at runtime - why would '
-                           'you choose one over the other?'),
-            question('q2', 'You just built something that can disable a safety limit over the '
-                           'network, with no authentication. Name two reasons this pattern is '
-                           'unacceptable as a real safety mechanism on a vehicle.'),
-            h2('Part 3 - QoS: the silent one'),
-            evidence('qos_scan', 'Evidence', 'ros2 topic info /scan --verbose'),
-            question('q3', 'Record `/scan`\'s Reliability and Durability. Was that what you '
-                           'expected for a sensor topic, and why?'),
-            h2('Part 4 - Reflect on the failure mode'),
-            prose('reflection', 'Reflection',
-                  'What the two silent failures you have now met have in common. Why "it '
-                  'isn\'t working and there\'s no error" should push you toward a specific '
-                  'class of hypothesis before you start reading your own code. And one thing '
-                  'you could add to a node so this class of failure is not silent.'),
-            h2('Part 5 - Break it on purpose'),
-            evidence('qos_break', 'Evidence',
-                     'ros2 topic info /cmd_vel_joy --verbose, with the best-effort publisher'),
-            prose('diagnosis', 'Diagnosis',
-                  'What you saw, and how you would have found this if you had **not** been '
-                  'told the cause. That last part is the one worth the marks.'),
-        ],
-    ),
-    4: dict(
-        title='How Tightly Can It Turn?',
-        week=4, due='2026-10-12',
-        paths=['ros2_ws/src/lab4_radius',
-               'ros2_ws/src/mitt_description/config/mitt_dimensions.yaml'],
-        measurements=[
-            ('predicted_R_w030_m', 'Part 2: requested R = v/w at w = 0.30, predicted actual'),
-            ('predicted_R_w100_m', 'Part 2: predicted actual R at w = 1.00'),
-            ('predicted_R_w200_m', 'Part 2: predicted actual R at w = 2.00'),
-            ('measured_R_w030_m', 'Part 3: fitted radius at w = 0.30 rad/s'),
-            ('measured_R_w100_m', 'Part 3: fitted radius at w = 1.00 rad/s'),
-            ('measured_R_w200_m', 'Part 3: fitted radius at w = 2.00 rad/s'),
-            ('measured_R_wheelbase_075_m', 'Part 5: fitted radius with wheelbase = 0.75'),
-        ],
-        checks=check_lab4,
-        blocks=[
-            h2('Part 2 - Predict before you measure'),
-            prose('predictions', 'Predictions',
-                  'The Part 2 table, filled in BEFORE you measured. Reproduce all six '
-                  'columns. Your predicted values also go in the Measurements block above.'),
-            h2('Part 3 - Measure it'),
-            evidence('results', 'Evidence', 'your measurement node, all three cases'),
-            h2('Part 4 - Explain what you found'),
-            question('q7', 'Why do w = 1.00 and w = 2.00 produce an identical measured '
-                           'radius despite commanding radii that differ by a factor of two?'),
-            question('q8', 'The vehicle silently ignored your command. Relate this to the '
-                           'silent failures in Labs 1 and 3. What should a planner do '
-                           'about it?'),
-            question('q9', 'Theory says 1.52 m, measurement says about 1.49 m. Propose at '
-                           'least two distinct explanations, and state how you would test '
-                           'each one.'),
-            h2('Part 5 - Break it on purpose'),
-            evidence('wheelbase', 'Evidence', 'the repeated measurement at wheelbase = 0.75'),
-            question('q10', 'What happened to the measured minimum radius? Does it match the '
-                            'new theoretical `0.75/tan(22.5 deg)`?'),
-            question('q11', 'Suppose the *simulation* says 0.63 m and the *real vehicle* is '
-                            '0.75 m. Nav2 plans a path it believes is feasible. What happens '
-                            'when the real car tries to follow it - and at what point in the '
-                            'process does anyone find out?'),
-        ],
-    ),
-    5: dict(
-        title='Describe the Robot',
-        week=5, due='2026-10-19',
-        paths=['ros2_ws/src/mitt_description/urdf/mitt_sensors.xacro'],
-        measurements=[
-            ('rear_camera_x_m', 'Part 3: base_link -> rear_camera_link translation x'),
-            ('rear_camera_z_m', 'Part 3: the same translation z'),
-            ('rear_camera_yaw_rad', 'Part 3: the yaw of that transform'),
-            ('laser_x_m', 'Part 2: base_link -> laser_link translation x'),
-        ],
-        checks=check_lab5,
-        blocks=[
-            h2('Part 1 - Read the description you already have'),
-            evidence('xacro', 'Evidence', 'wc -l on the expanded URDF and the xacro sources'),
-            question('q1', 'Find **every** place `wheelbase` influences the expanded URDF.'),
-            question('q2', '`base_link_height` is `0.09`, and so is `wheel_radius`. Why is '
-                           'that not a coincidence, and where is `base_link` physically '
-                           'located on the vehicle?'),
-            h2('Part 2 - Look at the transform tree'),
-            evidence('tf_laser', 'Evidence', 'tf2_echo base_link laser_link'),
-            image('frames', 'Evidence', 'frames.pdf',
-                  'The TF tree from `view_frames`, showing `rear_camera_link`.'),
-            question('q3', 'Which node publishes the `base_link -> laser_link` transform, and '
-                           'which publishes `odom -> base_link`? Why are those two '
-                           'different nodes?'),
-            question('q4', 'Is `base_link -> laser_link` static or dynamic? How can you tell '
-                           'from the data alone?'),
-            h2('Part 3 - Add a rear-facing camera'),
-            evidence('tf_camera', 'Evidence', 'tf2_echo base_link rear_camera_link'),
-            h2('Part 4 - Where sensor frames come from in reality'),
-            question('q5', 'What is the procedure for determining the real LiDAR\'s transform '
-                           'to `base_link`? How accurate can you expect to be?'),
-            question('q6', 'If your measured LiDAR position is off by 3 cm in *x*, what '
-                           'specifically goes wrong downstream? Name the affected subsystem.'),
-            h2('Part 5 - Break it on purpose'),
-            image('map_good', 'Evidence', 'map_good.png', 'The map before the 5 cm error.'),
-            image('map_broken', 'Evidence', 'map_broken.png', 'The map after it.'),
-            prose('diagnosis', 'Diagnosis',
-                  'What the failure looked like, specifically. Why a **constant** offset '
-                  'produces a **heading-dependent** error. And why this is much harder to '
-                  'diagnose than a sensor that has simply stopped publishing.'),
-        ],
-    ),
-}
 
 
 # --- small helpers -----------------------------------------------------------
@@ -1028,405 +701,7 @@ def cmd_submit(args):
     print()
     return 0
 
-
-# --- grade -------------------------------------------------------------------
-
-# A uniqname becomes a FILENAME in dist/grade/, and it is read out of a file a
-# student wrote. Without this, "../../../docs/build/03-electrical" in the
-# Uniqname cell of a submitted report overwrites a page of the build guide the
-# next time anyone grades, and "/tmp/x" escapes by the other route entirely,
-# because Path('/a/b') / '/tmp/x' is '/tmp/x' - an absolute right-hand side
-# discards the left. Neither needs a malicious student; a paste accident is
-# enough.
-UNIQNAME_RE = re.compile(r'^[a-z][a-z0-9_-]{1,30}$', re.I)
-
-
-def safe_who(who, where):
-    """A uniqname that is safe to use as a path component, or a complaint."""
-    if not UNIQNAME_RE.match(who or ''):
-        return None, (f'{where}: {who!r} is not a usable uniqname - letters, '
-                      f'digits, dash and underscore only')
-    return who, None
-
-
-def read_roster(path):
-    """
-    Parse the cohort roster into (uniqname, github_username, clone_url).
-
-    ONE FILE, read by both scripts/provision_labs.sh and `grade --roster`, so a
-    late registrant is added in exactly one place.
-
-        # uniqname   github-username   [clone url, if not the standard one]
-        jdoe         janedoe99
-
-    The URL is derived from COURSE_ORG/COURSE_TERM unless a third column
-    overrides it - which is the escape hatch for a student who, for whatever
-    reason, is submitting from somewhere else.
-    """
-    out = []
-    for lineno, raw in enumerate(Path(path).read_text().splitlines(), start=1):
-        line = raw.split('#', 1)[0].strip()
-        if not line:
-            continue
-        parts = line.split()
-        if len(parts) == 1:
-            print(f'WARN  {path}:{lineno}: no github username, ignoring: {line}')
-            continue
-        who, github = parts[0], parts[1]
-        url = parts[2] if len(parts) > 2 else student_repo_url(who)
-        out.append((who, github, url))
-    return out
-
-
-def cmd_grade(args):
-    n = args.lab
-    if not args.zips and not args.roster:
-        die('grade needs --zips DIR or --roster FILE')
-
-    rows = []
-    arrived = {}
-    if args.zips:
-        zips = sorted(Path(args.zips).glob(f'lab{n}_*.zip')) + \
-               sorted(Path(args.zips).glob('*.zip'))
-        seen = set()
-        for z in zips:
-            if z in seen:
-                continue
-            seen.add(z)
-            # One unreadable archive is one student's problem, not the run's.
-            # Without this, a truncated download ends grading for everybody
-            # behind it in the directory listing.
-            try:
-                row = grade_zip(n, z)
-            except (zipfile.BadZipFile, ValueError, OSError) as exc:
-                print(f'SKIP  {z.name}: {exc}')
-                rows.append((None, [f'{z.name}: {exc}'], [], ''))
-                continue
-            rows.append(row)
-            # Arrival time, kept beside the row. For an LMS download the file
-            # mtime is when it was fetched, which is the only ordering signal
-            # the archive carries.
-            arrived[id(row)] = z.stat().st_mtime
-    if args.roster:
-        for who, _github, url in read_roster(args.roster):
-            rows.append(grade_remote(n, who, url))
-
-    # Rejected identities never reach the output directory, and they are not
-    # silently dropped either - an ungradeable submission is a thing a human
-    # has to deal with, so it is printed and counted.
-    rejected = [r for r in rows if r[0] is None]
-    rows = [r for r in rows if r[0] is not None]
-    for _who, fails, _warns, _detail in rejected:
-        print(f'SKIP  {fails[0]}')
-
-    # A duplicate LMS download is the same submission twice, not two students.
-    # Identity comes from inside the archive, so they collapse - but WHICH copy
-    # to keep was wrong, and wrong silently.
-    #
-    # It kept the last in SORTED FILENAME order, reasoning that a later file is
-    # a resubmission. Filename order is not arrival order. The LMS appends "-1"
-    # to a second copy and '-' (0x2D) sorts before '.' (0x2E):
-    #
-    #     sorted(['lab1_smith.zip', 'lab1_smith-1.zip'])
-    #       -> ['lab1_smith-1.zip', 'lab1_smith.zip']
-    #
-    # so "keep the last" kept the FIRST download - the opposite of the comment.
-    # Nobody would have noticed: the wrong archive grades cleanly and a student
-    # is marked on work they replaced.
-    if args.zips:
-        by_who = {}
-        for r in rows:
-            who = r[0]
-            prev = by_who.get(who)
-            if prev is None:
-                by_who[who] = r
-                continue
-            t_new, t_old = arrived.get(id(r), 0), arrived.get(id(prev), 0)
-            if abs(t_new - t_old) < 1.0:
-                print(f'note  {who}: two archives arrived together - the same '
-                      f'submission fetched twice; keeping one')
-            else:
-                print(f'note  {who}: more than one archive; keeping the one '
-                      f'that arrived later (by file mtime)')
-            if t_new > t_old:
-                by_who[who] = r
-        rows = list(by_who.values())
-
-    outdir = REPO / 'dist' / 'grade' / f'lab{n}'
-    outdir.mkdir(parents=True, exist_ok=True)
-    for who, fails, warns, detail in rows:
-        out = outdir / f'{who}.md'
-        # Belt and braces. safe_who() already refused anything with a path
-        # separator in it, but this is the line that actually writes, and a
-        # later code path that forgets to validate should fail here rather
-        # than somewhere in the repository.
-        assert out.resolve().parent == outdir.resolve(), \
-            f'refusing to write outside {outdir}: {out}'
-        out.write_text(detail)
-    # The per-student .md is rewritten on every run and dist/ is git-ignored, so
-    # neither is a place to keep a grade. This is the handoff to `scores`.
-    (outdir / 'auto.tsv').write_text(
-        ''.join(f'{who}\t{len(f)}\t{len(w)}\n' for who, f, w, _ in sorted(rows)))
-
-    print()
-    print('=' * 64)
-    print(f' Lab {n} - {len(rows)} submission{"s" if len(rows) != 1 else ""}')
-    print('=' * 64)
-    width = max([len(r[0]) for r in rows], default=8)
-    for who, fails, warns, _ in sorted(rows):
-        status = 'OK  ' if not fails else 'FAIL'
-        print(f'  {status}  {who.ljust(width)}  {len(fails)} fail  {len(warns)} warn')
-    clean = sum(1 for r in rows if not r[1])
-    print()
-    print(f'  {clean}/{len(rows)} pass the automated checks.')
-    print(f'  Per-student detail: {outdir.relative_to(REPO)}/')
-    print()
-    return 0
-
-
-def _grade_tree(n, who, root):
-    fails, warns = validate(n, root)
-    lines = [f'# Lab {n} - {who}', '']
-    report = root / 'labs' / f'lab{n}' / 'REPORT.md'
-    if report.exists():
-        m = re.search(r'^## Submission\s*$(.*?)^## ', report.read_text(errors='replace'),
-                      re.M | re.S)
-        if m:
-            lines += [m.group(1).strip(), '']
-    lines += ['## Automated checks', '']
-    if not fails and not warns:
-        lines.append('All automated checks pass.')
-    for f in fails:
-        lines.append(f'- **FAIL** {f}')
-    for w in warns:
-        lines.append(f'- WARN {w}')
-    lines += ['', '## Still to read by hand', '',
-              '- Evidence quality (3) - is the pasted output real, and does it show what it '
-              'claims?',
-              '- Understanding (2) - are the answers in their own words?',
-              '- The "break it on purpose" diagnosis, which is worth more than the happy path.']
-    status = 'OK  ' if not fails else 'FAIL'
-    print(f'{status}  {who}: {len(fails)} fail, {len(warns)} warn')
-    return who, fails, warns, '\n'.join(lines) + '\n'
-
-
-# A lab archive is a few dozen text files. These ceilings are two orders of
-# magnitude above that and still refuse a zip bomb, which decompresses to
-# whatever it likes from a few hundred kilobytes on disk.
-MAX_MEMBERS = 4000
-MAX_UNPACKED = 256 * 1024 * 1024        # 256 MiB
-
-
-def grade_zip(n, path):
-    tmp = Path(tempfile.mkdtemp(prefix='grade-'))
-    try:
-        with zipfile.ZipFile(path) as z:
-            infos = z.infolist()
-            # Check the declared sizes BEFORE extracting. Reading first and
-            # measuring afterwards is how the disk fills.
-            if len(infos) > MAX_MEMBERS:
-                raise ValueError(f'{len(infos)} members, limit {MAX_MEMBERS}')
-            total = sum(i.file_size for i in infos)
-            if total > MAX_UNPACKED:
-                raise ValueError(f'unpacks to {total / 1e6:.0f} MB, limit '
-                                 f'{MAX_UNPACKED / 1e6:.0f} MB')
-            # zipfile.extractall sanitises member paths - leading separators
-            # and .. components are stripped - so zip-slip is the stdlib's
-            # problem and not ours. The identity inside the report is not,
-            # which is what safe_who() is for.
-            z.extractall(tmp)
-        # git archive wrote a single top-level prefix directory.
-        roots = [p for p in tmp.iterdir() if p.is_dir()]
-        root = roots[0] if len(roots) == 1 else tmp
-        # The LMS renames downloads - it prefixes student names, and appends
-        # "-1" to a second copy of the same file. Trusting the filename turns a
-        # duplicate download into a second student and a prefixed name into a
-        # row that no longer matches the roster. The report states who wrote it;
-        # read that, and keep the filename only as a fallback.
-        who = None
-        report = root / 'labs' / f'lab{n}' / 'REPORT.md'
-        if report.exists():
-            m = re.search(r'^\|\s*Uniqname\s*\|\s*(\S+?)\s*\|',
-                          report.read_text(errors='replace'), re.M)
-            if m:
-                who = m.group(1)
-        if not who:
-            who = path.stem.replace(f'lab{n}_', '')
-        who, complaint = safe_who(who, path.name)
-        if complaint:
-            # Do not guess a replacement. A submission whose identity cannot be
-            # trusted is one a human has to look at.
-            return None, [complaint], [], complaint + '\n'
-        return _grade_tree(n, who, root)
-    finally:
-        shutil.rmtree(tmp, ignore_errors=True)
-
-
-def grade_remote(n, who, url):
-    tmp = Path(tempfile.mkdtemp(prefix='grade-'))
-    try:
-        branch = f'student/{who}'
-        # A clone with no limit is a grading run that one unreachable student
-        # repository can stop for good, with thirteen more behind it.
-        try:
-            r = subprocess.run(['git', 'clone', '--depth', '1',
-                                '--branch', branch, url, str(tmp / 'r')],
-                               capture_output=True, text=True, timeout=120)
-        except subprocess.TimeoutExpired:
-            print(f'FAIL  {who}: clone of {branch} timed out after 120 s')
-            return who, [f'clone of {branch} from {url} timed out after 120 s'], \
-                [], (f'# Lab {n} - {who}\n\nCloning `{branch}` from `{url}` '
-                     f'timed out. Graded as unfetched, not as unsubmitted.\n')
-        if r.returncode != 0:
-            print(f'FAIL  {who}: cannot clone {branch} from {url}')
-            return who, [f'cannot clone {branch} from {url}: {r.stderr.strip()}'], [], \
-                f'# Lab {n} - {who}\n\nCould not fetch `{branch}` from `{url}`.\n'
-        return _grade_tree(n, who, tmp / 'r')
-    finally:
-        shutil.rmtree(tmp, ignore_errors=True)
-
-
-# --- scores ------------------------------------------------------------------
-#
-# WHERE A GRADE LIVES
-#
-# Not in dist/grade/lab<N>/*.md: those are regenerated by every `grade` run, and
-# dist/ is git-ignored, so a number typed there is lost twice over.
-#
-# It lives in course/scores-<term>-lab<N>.tsv, which this command creates and
-# never overwrites. That file is git-ignored on purpose - it is student grade
-# data and this repository is public.
-
-SCORE_HEADER = """\
-# MRider lab {n} - marks. Git-ignored; this repository is public.
-#
-# Fill in EVIDENCE (0-3) and UNDERSTANDING (0-2). Leave a dot until you have
-# read the report. `auto` is correctness+reproducibility, proposed from the
-# automated checks - edit it if you disagree; it is a suggestion, not a verdict.
-#
-# late = whole days past the due date, from the LMS timestamp (not the commit).
-#        -10%/day, floor 50%, zero after 7 days.
-#
-# uniqname\tauto\tevidence\tunderstanding\tlate\tnote
-"""
-
-
-def scores_path(n):
-    return REPO / 'course' / f'scores-{COURSE_TERM}-lab{n}.tsv'
-
-
-def late_multiplier(days):
-    """The policy in grading.md, in one place."""
-    if days <= 0:
-        return 1.0
-    if days > 7:
-        return 0.0
-    return max(0.5, 1.0 - 0.10 * days)
-
-
-def cmd_scores(args):
-    n = args.lab
-    lab_spec(n)
-    sp = scores_path(n)
-    auto = REPO / 'dist' / 'grade' / f'lab{n}' / 'auto.tsv'
-
-    if not sp.exists():
-        if not auto.exists():
-            die(f'run `bash scripts/lab.sh grade {n} ...` first - it is what '
-                f'produces the list of submissions.')
-        rows = []
-        for line in auto.read_text().splitlines():
-            who, fails, _warns = line.split('\t')
-            rows.append(f'{who}\t{0 if int(fails) else 5}\t.\t.\t0\t')
-        sp.write_text(SCORE_HEADER.format(n=n) + '\n'.join(rows) + '\n')
-        print(f'created {sp.relative_to(REPO)} with {len(rows)} students')
-        print(f'\nFill in the evidence and understanding columns, then re-run:')
-        print(f'    bash scripts/lab.sh scores {n}')
-        return 0
-
-    marked, pending, out = [], [], []
-    for lineno, raw in enumerate(sp.read_text().splitlines(), 1):
-        line = raw.split('#', 1)[0].rstrip()
-        if not line.strip():
-            continue
-        f = line.split('\t')
-        if len(f) < 5:
-            die(f'{sp.name}:{lineno}: expected 5 tab-separated columns, got {len(f)}')
-        who, a, e, u, late = (x.strip() for x in f[:5])
-        note = f[5].strip() if len(f) > 5 else ''
-        if '.' in (a, e, u):
-            pending.append(who)
-            continue
-        try:
-            a, e, u, late = int(a), int(e), int(u), int(late)
-        except ValueError:
-            die(f'{sp.name}:{lineno}: auto/evidence/understanding/late must be whole numbers')
-        for name, v, hi in (('auto', a, 5), ('evidence', e, 3), ('understanding', u, 2)):
-            if not 0 <= v <= hi:
-                die(f'{sp.name}:{lineno}: {name}={v} is outside 0-{hi}')
-        raw_total = a + e + u
-        final = round(raw_total * late_multiplier(late), 1)
-        marked.append((who, a, e, u, late, raw_total, final, note))
-        out.append(f'{who},{raw_total},{late},{final}')
-
-    print(f'{"uniqname":<12} {"auto":>4} {"ev":>3} {"und":>4} {"late":>5} '
-          f'{"raw":>4} {"final":>6}')
-    print('-' * 46)
-    for who, a, e, u, late, rawt, fin, note in marked:
-        flag = '  <- late' if late else ''
-        print(f'{who:<12} {a:>4} {e:>3} {u:>4} {late:>5} {rawt:>4} {fin:>6.1f}{flag}')
-    if marked:
-        avg = sum(m[6] for m in marked) / len(marked)
-        print('-' * 46)
-        print(f'{"mean":<12} {"":>4} {"":>3} {"":>4} {"":>5} {"":>4} {avg:>6.1f}')
-    if pending:
-        print(f'\n{len(pending)} not yet marked: {", ".join(pending)}')
-
-    if marked:
-        csv = REPO / 'dist' / 'grade' / f'lab{n}' / 'final.csv'
-        csv.parent.mkdir(parents=True, exist_ok=True)
-        csv.write_text('uniqname,raw,late_days,final\n' + '\n'.join(out) + '\n')
-        print(f'\nLMS upload: {csv.relative_to(REPO)}')
-    return 0
-
-
-# --- selftest ----------------------------------------------------------------
-#
-# These rules decide part of a grade, so they get a guard of their own. Run by
-# scripts/check_docs.sh. Each case is (name, lab, measurements, expected FAIL
-# count) - a case that starts silently passing is as much a regression as one
-# that starts failing.
-
-SELFTEST = [
-    # What the 2026 cohort actually produced, all twelve of them.
-    ('lab1 nominal', 1, dict(topics_unsourced='2', topics_sourced='21', nodes_unsourced='0',
-                             exit_code='0', stderr_bytes='0'), 0),
-    # A partial graph is legal but means a second mismatch; warn, never fail.
-    ('lab1 partial graph', 1, dict(topics_unsourced='7', topics_sourced='21',
-                                   nodes_unsourced='1', exit_code='0', stderr_bytes='0'), 0),
-    ('lab1 unsourced sees more', 1, dict(topics_unsourced='25', topics_sourced='21'), 1),
-    ('lab1 not silent', 1, dict(exit_code='1', stderr_bytes='40'), 2),
-    ('lab2 nominal', 2, dict(drift_after_1_square_m='0.4',
-                             drift_after_3_squares_m='1.3', stall_period_s='0.5'), 0),
-    ('lab2 drift shrinks', 2, dict(drift_after_1_square_m='1.2',
-                                   drift_after_3_squares_m='0.4'), 1),
-    ('lab3 nominal', 3, dict(max_speed_param_mps='0.5', clamped_from_mps='3.0',
-                             clamped_to_mps='0.5', scan_reliability='BEST_EFFORT'), 0),
-    ('lab3 did not govern', 3, dict(max_speed_param_mps='0.5', clamped_from_mps='3.0',
-                                    clamped_to_mps='3.0'), 1),
-    ('lab4 nominal', 4, dict(measured_R_w030_m='1.71', measured_R_w100_m='1.49',
-                             measured_R_w200_m='1.49',
-                             measured_R_wheelbase_075_m='1.78'), 0),
-    ('lab4 no clamp', 4, dict(measured_R_w100_m='0.50', measured_R_w200_m='0.25'), 2),
-    ('lab4 wheelbase wrong way', 4, dict(measured_R_w200_m='1.49',
-                                         measured_R_wheelbase_075_m='1.20'), 1),
-    ('lab5 nominal', 5, dict(rear_camera_yaw_rad='3.142', rear_camera_x_m='-0.15'), 0),
-    ('lab5 camera faces forward', 5, dict(rear_camera_yaw_rad='0.0'), 1),
-    # A report with nothing filled in must not trip a numeric check - the
-    # missing-measurement check reports that, and saying it twice is noise.
-    *[(f'lab{n} empty', n, {}, 0) for n in LABS],
-]
-
+# --- selftest ---------------------------------------------------------------
 
 def cmd_selftest(args):
     bad = 0
@@ -1453,6 +728,24 @@ def cmd_selftest(args):
 
 # --- entry point -------------------------------------------------------------
 
+def _grading():
+    """lab_grading, imported only when an instructor command is actually run.
+
+    Two reasons it is lazy rather than a top-level import. It is the one
+    reference that points UP the dependency chain, and doing it inside a
+    function keeps that from being a cycle. And the student bundle does not
+    ship the file, so `grade` there has to fail in a sentence rather than
+    in a traceback at import time, before argparse has even parsed.
+    """
+    try:
+        import lab_grading
+    except ImportError:
+        die('grade and scores are instructor commands. scripts/lab_grading.py '
+            'is not in this bundle;\n'
+            '       run them from a clone of the course repository.')
+    return lab_grading
+
+
 def main():
     p = argparse.ArgumentParser(prog='lab.sh', description=__doc__.split('\n')[1])
     sub = p.add_subparsers(dest='cmd', required=True)
@@ -1477,11 +770,11 @@ def main():
     s.add_argument('lab', type=int)
     s.add_argument('--zips', metavar='DIR', help='directory of submitted .zip files')
     s.add_argument('--roster', metavar='FILE', help='lines of "uniqname  github-username"')
-    s.set_defaults(fn=cmd_grade)
+    s.set_defaults(fn=lambda a: _grading().cmd_grade(a))
 
     s = sub.add_parser('scores', help='instructor: record marks and export for the LMS')
     s.add_argument('lab', type=int)
-    s.set_defaults(fn=cmd_scores)
+    s.set_defaults(fn=lambda a: _grading().cmd_scores(a))
 
     s = sub.add_parser('selftest', help='check the grading rules themselves')
     s.set_defaults(fn=cmd_selftest)
@@ -1491,4 +784,10 @@ def main():
 
 
 if __name__ == '__main__':
+    # Running this file makes it `__main__`, so lab_grading's `import
+    # lab_report` would load a SECOND copy of it - two REPO constants, two
+    # die(). Registering this one under its own name first means both halves
+    # read the same module object, which is also what lets a test point
+    # grading at a temporary tree by assigning lab_report.REPO.
+    sys.modules.setdefault('lab_report', sys.modules['__main__'])
     main()

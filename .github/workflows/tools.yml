@@ -44,3 +44,9 @@ jobs:
         run: python3 -m pytest scripts/tests -q
       - name: lab_report's own selftest - checks and templates
         run: python3 scripts/lab_report.py selftest
+      # The split that created lab_grading.py is only worth anything while the
+      # bundle keeps not shipping it, and while the student half keeps not
+      # importing it. Both are invisible from here: everything passes in a
+      # clone, where all three files exist.
+      - name: lab tooling layering and what the student bundle ships
+        run: python3 scripts/check_lab_modules.py

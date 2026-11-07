@@ -44,6 +44,14 @@
 #                                ("the traction pack"), exactly as
 #                                architecture.md already does; the number lives
 #                                in vehicle.md, bom.md and the order log.
+#  18. lab tooling layering  - the student bundle shipping the grader, or the
+#                                reverse: a sibling import added to the
+#                                student half and not to the bundle's copy
+#                                list, which builds and zips and then dies
+#                                with ModuleNotFoundError on their machines.
+#                                lab_report.py was one 1,494-line file until
+#                                2026-11-07; this is what keeps the split
+#                                from quietly reassembling.
 #  17. figures are current   - a generator edited and not re-run. Every
 #                                generated figure says "edit the script and
 #                                re-run it; do not edit the SVG", and nothing
@@ -407,6 +415,17 @@ printf "%s17. generated figures match their generators%s\n" "$B" "$N"
 # quietly tests less than it claims is worse than one that fails.
 if ! python3 scripts/check_figures_current.py; then
     fail "a generated figure is stale, or its generator no longer runs"
+fi
+printf "\n"
+
+printf "%s18. lab tooling layering and the student bundle%s\n" "$B" "$N"
+# lab_report.py was one 1,494-line file until 2026-11-07. The split put the
+# grader in lab_grading.py, which the bundle deliberately does not copy. Add a
+# sibling import to the student half and forget the copy line and the bundle
+# still builds, still zips, still looks right - and `lab.sh new 1` dies with
+# ModuleNotFoundError on thirteen machines. There is no earlier symptom.
+if ! python3 scripts/check_lab_modules.py; then
+    fail "lab tooling layering, or what the student bundle ships"
 fi
 printf "\n"
 

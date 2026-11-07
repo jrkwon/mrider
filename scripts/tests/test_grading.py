@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-r"""Tests for the grading path in scripts/lab_report.py.
+r"""Tests for the grading path - scripts/lab_grading.py.
 
     python3 -m pytest scripts/tests -q
 
@@ -37,9 +37,9 @@ lab's checks are tightened, which is a thing that should be easy. These assert
 IDENTITY, ORDERING, CONTAINMENT and FAILURE ISOLATION - the properties that
 must hold whatever the checks say.
 """
-import importlib.util
 import re
 import subprocess
+import sys
 import time
 import types
 import zipfile
@@ -48,18 +48,18 @@ from pathlib import Path
 import pytest
 
 REPO = Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(REPO / "scripts"))
 
+# Plain imports, not importlib by path. The two modules have to be THE SAME
+# module objects for each other as they are for this file: lab_grading reads
+# the output directory as lab_report.REPO, and run_grade() below drives
+# cmd_grade by assigning it. Loading lab_report by path would give the test one
+# copy and lab_grading another, and the assignment would silently do nothing -
+# the grading run would write into this repository instead of tmp_path.
+import lab_grading as lg                                      # noqa: E402
+import lab_report as lr                                       # noqa: E402
 
-def load():
-    """Import lab_report without running it."""
-    spec = importlib.util.spec_from_file_location(
-        "lab_report", REPO / "scripts" / "lab_report.py")
-    m = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(m)
-    return m
-
-
-lr = load()
+assert lg.R is lr, "lab_grading must share this file's lab_report"
 
 
 def make_zip(path, uniqname, lab=1, prefix="mrider-main", mark=None):
@@ -86,7 +86,7 @@ def make_zip(path, uniqname, lab=1, prefix="mrider-main", mark=None):
     "jaerock", "ab", "ok-name_2", "A1",
 ])
 def test_safe_who_accepts_plausible_uniqnames(value):
-    who, complaint = lr.safe_who(value, "t")
+    who, complaint = lg.safe_who(value, "t")
     assert who == value and complaint is None
 
 
@@ -101,7 +101,7 @@ def test_safe_who_accepts_plausible_uniqnames(value):
     "../../../docs/build/03-electrical",
 ])
 def test_safe_who_refuses_anything_that_could_be_a_path(value):
-    who, complaint = lr.safe_who(value, "t")
+    who, complaint = lg.safe_who(value, "t")
     assert who is None and complaint
 
 
@@ -109,7 +109,7 @@ def test_identity_comes_from_the_report_not_the_filename(tmp_path):
     """The LMS prefixes student names onto downloads. Trusting the filename
     turns a renamed file into a row that no longer matches the roster."""
     z = make_zip(tmp_path / "SmithJohn_12345_lab1_whatever.zip", "jsmith")
-    who, *_ = lr.grade_zip(1, z)
+    who, *_ = lg.grade_zip(1, z)
     assert who == "jsmith"
 
 
@@ -117,7 +117,7 @@ def test_filename_is_the_fallback_when_the_report_has_no_identity(tmp_path):
     p = tmp_path / "lab1_fallback.zip"
     with zipfile.ZipFile(p, "w") as z:
         z.writestr("mrider-main/labs/lab1/REPORT.md", "no identity table here\n")
-    who, *_ = lr.grade_zip(1, p)
+    who, *_ = lg.grade_zip(1, p)
     assert who == "fallback"
 
 
@@ -125,7 +125,7 @@ def test_a_uniqname_that_escapes_the_output_dir_is_refused(tmp_path):
     """The P1. Before 2026-11-07 this wrote outside dist/grade - including
     over files in this repository."""
     z = make_zip(tmp_path / "evil.zip", "../../../docs/build/03-electrical")
-    who, fails, _warns, _detail = lr.grade_zip(1, z)
+    who, fails, _warns, _detail = lg.grade_zip(1, z)
     assert who is None
     assert "not a usable uniqname" in fails[0]
 
@@ -135,16 +135,16 @@ def test_a_corrupt_archive_raises_rather_than_corrupting_the_run(tmp_path):
     p = tmp_path / "lab1_broken.zip"
     p.write_bytes(b"PK\x03\x04 definitely not a zip")
     with pytest.raises(zipfile.BadZipFile):
-        lr.grade_zip(1, p)
+        lg.grade_zip(1, p)
 
 
 def test_too_many_members_is_refused_before_extraction(tmp_path):
     p = tmp_path / "lab1_many.zip"
     with zipfile.ZipFile(p, "w") as z:
-        for i in range(lr.MAX_MEMBERS + 1):
+        for i in range(lg.MAX_MEMBERS + 1):
             z.writestr(f"mrider-main/f{i}.txt", "x")
     with pytest.raises(ValueError, match="members"):
-        lr.grade_zip(1, p)
+        lg.grade_zip(1, p)
 
 
 def test_a_zip_bomb_is_refused_on_its_DECLARED_size(tmp_path):
@@ -152,10 +152,10 @@ def test_a_zip_bomb_is_refused_on_its_DECLARED_size(tmp_path):
     the disk fills."""
     p = tmp_path / "lab1_bomb.zip"
     with zipfile.ZipFile(p, "w", zipfile.ZIP_DEFLATED) as z:
-        z.writestr("mrider-main/big.bin", b"\0" * (lr.MAX_UNPACKED + 1))
+        z.writestr("mrider-main/big.bin", b"\0" * (lg.MAX_UNPACKED + 1))
     assert p.stat().st_size < 2 * 1024 * 1024, "the fixture should be small on disk"
     with pytest.raises(ValueError, match="unpacks to"):
-        lr.grade_zip(1, p)
+        lg.grade_zip(1, p)
 
 
 def test_one_bad_archive_does_not_stop_the_ones_after_it(tmp_path, capsys):
@@ -229,7 +229,7 @@ def run_grade(zipdir, outdir, lab=1):
     try:
         lr.REPO = outdir.parent / "fakerepo"
         (lr.REPO / "dist").mkdir(parents=True, exist_ok=True)
-        lr.cmd_grade(monkey)
+        lg.cmd_grade(monkey)
         graded = lr.REPO / "dist" / "grade" / f"lab{lab}"
         for p in sorted(graded.glob("*.md")):
             rows[p.stem] = (p.stem, p.read_text())

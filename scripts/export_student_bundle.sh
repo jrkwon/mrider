@@ -105,7 +105,13 @@ mkdir -p "${STAGE}/scripts"
 cp "${REPO}/scripts/check_env.sh" "${STAGE}/scripts/"
 # Lab submission tooling. `new` and `check` work in an unzipped bundle;
 # `submit` needs a git clone, and says so rather than failing obscurely.
-cp "${REPO}/scripts/lab.sh" "${REPO}/scripts/lab_report.py" "${STAGE}/scripts/"
+#
+# scripts/lab_grading.py is DELIBERATELY not copied. It is the instructor half -
+# the roster reader, the late-penalty table, where marks are stored - and until
+# it was split out of lab_report.py on 2026-11-07 every bundle shipped all of it
+# to the students. `lab.sh grade` without it says so in one sentence.
+cp "${REPO}/scripts/lab.sh" "${REPO}/scripts/lab_report.py" \
+   "${REPO}/scripts/lab_labs.py" "${STAGE}/scripts/"
 cp -r "${REPO}/ros2_ws" "${STAGE}/"
 rm -rf "${STAGE}/ros2_ws/build" "${STAGE}/ros2_ws/install" \
        "${STAGE}/ros2_ws/log"   "${STAGE}/ros2_ws/src/gz_ros2_control"

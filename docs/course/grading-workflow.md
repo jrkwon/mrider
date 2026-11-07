@@ -26,6 +26,14 @@ is the mechanics.
 Half the rubric is machine-checked and it is not the interesting half. See
 [how the two human scores are decided](grading.md#how-the-two-human-scores-are-decided).
 
+> [!NOTE]
+> **`grade` and `scores` need a clone, not the student bundle**
+>
+> They live in `scripts/lab_grading.py`, which `export_student_bundle.sh` does not copy — the
+> roster reader, the late-penalty table and where marks are stored are not a student's to run.
+> Everything else (`new`, `check`, `submit`, `selftest`) works in either place. Run `grade` from
+> your clone of the course repository; in a bundle it says so in one line.
+
 ---
 
 ## The loop
