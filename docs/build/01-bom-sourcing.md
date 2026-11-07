@@ -2068,16 +2068,16 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > nothing is soldered to a board. *Found by following the cross-reference printed on the terminal's
 > own listing rather than reasoning about what a pin family must look like.*
 >
-> **The four part numbers, ×three vehicles** — devicemart `ㅌㅏㄱㄹㄹㄴㄷㅏ` › ㅭㄹㄹㅡㅅㄱ › Micro-Fit 3.0™,
-> priced 2026-11-07:
+> **The four parts**, found in devicemart's Micro-Fit 3.0™ category 2026-11-07:
 >
-> | | part | goods no. | each | needed | **MOQ** | cost |
-> |---|---|---|---:|---:|---:|---:|
-> | **module side** (`87a`) — housing, female terminals | `43645-0200` | `1271915` | ₩460 | 3 | 1 | ₩1,380 |
-> | **vehicle side** (`30`) — housing, male terminals | `43640-0200` | `1271917` | ₩490 | 3 | 1 | ₩1,470 |
-> | female crimp terminal, AWG 20–24 | `43030-0001` | `1271920` | ₩50 | 6 | **50** | ₩2,500 |
-> | male crimp terminal, AWG 20–24 | `43031-0001` | `1271922` | ₩60 | 6 | **100** | ₩6,000 |
-> | | | | | | | **₩11,350** |
+> | | part | terminals |
+> |---|---|---|
+> | **module side** (`87a`) | `43645-0200` housing | `43030-0001`, female, AWG 20–24 |
+> | **vehicle side** (`30`) | `43640-0200` housing | `43031-0001`, male, AWG 20–24 |
+>
+> **₩11,350 for all three vehicles.** Goods numbers, unit prices and the links to click are on
+> the order line that buys them, **[#12c](../order-log.md#L123)** — not here, so that a price has
+> one place to be checked and a reason has another.
 >
 > Which housing is which is settled by the listings' own cross-references, and they also
 > **re-confirm the identification**: `43645` is listed as mating with `43640`, **`43650`** and
@@ -2386,7 +2386,22 @@ you need all of them before step 3:
 **Signal side (logic level)**
 
 - Keyed inline connectors ×3 for the throttle, steering, and power taps — the reversibility
-  requirement of [dbw.md §11.5](../design/dbw.md#115-3-tap-connector-spec-minimally-invasive)
+  requirement of [dbw.md §11.5](../design/dbw.md#115-3-tap-connector-spec-minimally-invasive).
+  **All three are mating halves of connectors the vehicle already has, so they are identified
+  rather than chosen.** As identified on vehicle #1:
+
+  | tap | MRider's two halves | ordering |
+  |---|---|---|
+  | **steering** | Micro-Fit 3.0, 2-way — `43645-0200` + `43030` towards the module, `43640-0200` + `43031` towards the vehicle's plug | **[order log #12c](../order-log.md#L123)** — goods numbers, prices, links |
+  | **drive** | flat blade `6.3 × 0.8` (`.250`), **uninsulated** — receptacle towards the module, male tab towards the vehicle's plug | still to source |
+  | **power** | mating half of the pack's red keyed 2-pin, or harvested from a spare lead | still to source |
+
+  Plus the drive tap's tee, **[order log #12d](../order-log.md#L124)** — the relay's `30` has to
+  reach two stock conductors per net. Why these parts and not others, and the measurements that
+  identified them, are in [§1.2.4 #12](#7-8-11-12-14-what-to-actually-buy); **what to click is in
+  the order log.** *Vendor SKUs live on the order line that buys them — the same convention
+  [#12b](../order-log.md#L122) follows — so there is one place to check a price and one place to
+  check a reason.*
 - Dupont / JST-XH pigtails for Teensy ↔ angle sensor (I²C: SDA/SCL/3V3/GND), Teensy ↔ steering
   encoder, Teensy ↔ drive encoder
 - Servo-style 3-wire leads: Teensy → signal MUX master inputs (×2), RC receiver → MUX slave
