@@ -951,6 +951,21 @@ code can be blamed for it.
 
 ![Mapping from the three bench breadboards to what is actually built: only the Teensy board becomes a perfboard, the two sensor boards disappear because the sensors live on the ends of cables, and a relay-driver board that was never breadboarded appears; plus the signal perfboard layout with each passive labelled by the signal it serves — 10 k and 1 nF on drive A and B, 4.7 k on SDA and SCL — the build order, and the cautions](../images/perfboard-transfer.svg)
 
+> [!NOTE]
+> **This figure is the map, not the build. Two further figures place every hole.**
+>
+> The one above answers *which boards exist* and nothing else — it has no grid, so it cannot tell
+> you where a resistor goes. Each surviving board has its own generated placement drawing on the
+> hole grid the part actually has:
+>
+> | Board | Placement figure | Grid |
+> |---|---|---|
+> | Signal | **[Where it all sits on the signal board](#where-it-all-sits-on-the-signal-board)** — [`signal-board-perfboard-layout.svg`](../images/signal-board-perfboard-layout.svg) | `GA2`, 29 × 29 |
+> | Relay driver | **[Where it all sits on the board](#where-it-all-sits-on-the-board)** — [`relay-board-perfboard-layout.svg`](../images/relay-board-perfboard-layout.svg) | `GA6`, 18 × 29 |
+>
+> *Do not solder from the map.* It is drawn to settle an argument about **how many boards there
+> are**, and reading it as a layout is how a part ends up where the drawing never put it.
+
 > [!IMPORTANT]
 > **The three bench boards do not become three perfboards. Two of them disappear.**
 >
@@ -961,10 +976,10 @@ code can be blamed for it.
 >
 > | Bench | Vehicle |
 > |---|---|
-> | Board A — Teensy | **Signal perfboard**, `GA2 80 × 80`, in the logic box |
+> | Board A — Teensy | **Signal perfboard**, `GA2 80 × 80`, in the logic box — **[hole-by-hole placement](#where-it-all-sits-on-the-signal-board)** |
 > | Board B — Hall latches | *no board* — a bracket at the hub, on a cable |
 > | Board C — AS5600 | *no board* — a bracket at the kingpin, on a cable |
-> | *(never breadboarded)* | **Relay-driver perfboard**, `GA6 50 × 80`, in the power box |
+> | *(never breadboarded)* | **Relay-driver perfboard**, `GA6 50 × 80`, in the power box — **[hole-by-hole placement](#where-it-all-sits-on-the-board)** |
 
 **Build order, and the first step is not a component.**
 

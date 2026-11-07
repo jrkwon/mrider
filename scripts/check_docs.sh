@@ -44,6 +44,14 @@
 #                                ("the traction pack"), exactly as
 #                                architecture.md already does; the number lives
 #                                in vehicle.md, bom.md and the order log.
+#  14. no orphaned figures    - a figure kept up to date that nothing links
+#                                to. measurement-sheet.svg was edited three
+#                                times, most recently 2026-11-04, while no
+#                                document mentioned it at all - a printable
+#                                page of every outstanding measurement that
+#                                nobody could find. The reverse, a reference
+#                                to a figure that was deleted or renamed,
+#                                is caught here too.
 #  13. request reconciles      - the purchase request's Amendments net
 #                                drifting away from what the order log
 #                                actually records. Check 11 only verifies
@@ -315,5 +323,40 @@ if [ "$LOG_PROJ" != "$REQ_PROJ" ]; then
     fail "purchase request does not reconcile with the order log"
 fi
 printf "   %sok%s  (both project ₩%s)\n\n" "$G" "$N" "$LOG_PROJ"
+
+printf "%s14. every figure is linked, and every link has a figure%s\n" "$B" "$N"
+# A figure nobody links to is not a figure, it is a file. And a link to a
+# figure that is gone renders as a broken image, which check 4 cannot see
+# because it only reads heading slugs.
+#
+# Two things this must NOT do. It must not search itself, or naming a file
+# in the comment above would make that file look referenced. And it must
+# only count real image links - the course labs list student deliverables
+# like `evidence/rqt_graph.png` in tables, and those are filenames the
+# student creates, not figures this repo ships.
+ORPHAN=""
+for f in docs/images/*.svg docs/images/*.png; do
+    [ -e "$f" ] || continue
+    b="$(basename "$f")"
+    HITS="$(grep -rlF "$b" --include='*.md' --include='*.py' --include='*.yml' \
+              --include='*.yaml' docs scripts mkdocs.yml README.md 2>/dev/null \
+            | grep -v '^docs/images/' || true)"
+    [ -z "$HITS" ] && ORPHAN="$ORPHAN $b"
+done
+MISSING=""
+for ref in $(grep -rhoE '(\]\(|src=")[^")]*images/[A-Za-z0-9._-]+\.(svg|png)' \
+                 --include='*.md' docs README.md 2>/dev/null \
+             | sed 's|.*/||' | sort -u); do
+    [ -e "docs/images/$ref" ] || MISSING="$MISSING $ref"
+done
+if [ -n "$ORPHAN" ] || [ -n "$MISSING" ]; then
+    [ -n "$ORPHAN" ]  && printf "   nothing links to:%s\n" "$ORPHAN" >&2
+    [ -n "$MISSING" ] && printf "   linked but absent:%s\n" "$MISSING" >&2
+    printf "   Link it from the page it belongs to, or move it to docs/images/archive/.\n" >&2
+    fail "orphaned or missing figures"
+fi
+printf "   %sok%s  (%s live, %s archived)\n\n" "$G" "$N" \
+    "$(ls docs/images/*.svg docs/images/*.png 2>/dev/null | wc -l | tr -d ' ')" \
+    "$(ls docs/images/archive/*.svg docs/images/archive/*.png 2>/dev/null | wc -l | tr -d ' ')"
 
 printf "%sDocs are publishable.%s\n" "$G" "$N"

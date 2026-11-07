@@ -33,6 +33,22 @@ These steps map onto the staged bring-up protocol in
 are Stages 0–4 of that protocol; step 7 is Stage 5. **No stage begins until the previous
 stage passes.**
 
+## One sheet to carry with you
+
+Many rows in these pages read *(measure during bring-up)*. They are not placeholders anybody
+remembers to come back to — so they are collected on **one printable page**, grouped by where
+the measurement is taken rather than by which step needs it, because you take them with a
+caliper in your hand and not with a document open.
+
+[![MRider measurement sheet: a single printable page listing every outstanding measurement on
+the build, grouped by where it is taken — deck and lid, drive encoder, steering, sensors,
+electronics and electrical checks — each row giving the quantity, a blank to write in, and one
+line on what it unblocks](../images/measurement-sheet.svg)](../images/measurement-sheet.svg)
+
+*This sheet was edited three times and linked from nowhere until 2026-11-07, which is why
+[`check_docs.sh`](https://github.com/jrkwon/mrider/blob/main/scripts/check_docs.sh) now fails
+on a figure no page references.*
+
 ## Prerequisites (whole build)
 
 - All design documents reviewed — start with the [design overview](../design/overview.md).
