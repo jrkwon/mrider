@@ -45,6 +45,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import carrier_params  # noqa: E402
+from svg_common import esc  # noqa: E402
 
 REPO = Path(__file__).resolve().parent.parent
 OUT = REPO / "docs" / "images" / "hub-and-bore.svg"
@@ -61,8 +62,6 @@ DRED = "#7f1d1d"
 FITS = []
 
 
-def esc(s):
-    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
 class Flow:

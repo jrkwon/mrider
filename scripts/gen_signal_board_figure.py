@@ -40,6 +40,7 @@ VERIFY TEXT IN A BROWSER, NOT IN IMAGEMAGICK - see gen_relay_board_figure.py.
 """
 
 import io
+import sys
 from pathlib import Path
 
 # ---------------------------------------------------------------- the geometry
@@ -309,15 +310,10 @@ def check():
 DOUBLED = check()
 
 # ------------------------------------------------------------------- drawing
-BOLD, EB = '<tspan font-weight="bold">', "</tspan>"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from svg_common import BOLD, EB, esc, rich  # noqa: E402,F401
 
 
-def rich(line):
-    """`**bold**` -> tspans. Panels write plain strings, never f-string markup."""
-    assert line.count("**") % 2 == 0, f"unbalanced bold: {line}"
-    assert "{" not in line and "}" not in line, f"stray brace, missing f-prefix?: {line}"
-    return "".join(f"{BOLD}{p}{EB}" if i % 2 else p
-                   for i, p in enumerate(line.split("**")) if p)
 
 
 out = []

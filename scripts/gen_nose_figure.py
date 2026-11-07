@@ -30,6 +30,10 @@ label can never end up under a circle.
 """
 
 import pathlib
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from svg_common import esc  # noqa: E402
 
 # ---- from cad/drive_encoder_carrier.scad ---------------------------------
 HUB_D = 62.82           # across opposite lobe crests, 2026-11-04, gearbox out
@@ -60,8 +64,6 @@ out = []
 e = out.append
 
 
-def esc(t):
-    return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
 # =========================================================================

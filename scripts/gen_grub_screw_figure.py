@@ -47,6 +47,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import carrier_params  # noqa: E402
+from svg_common import esc  # noqa: E402
 
 REPO = Path(__file__).resolve().parent.parent
 OUT = REPO / "docs" / "images" / "grub-screw-points.svg"
@@ -64,8 +65,6 @@ FITS = []
 SCREWS = []     # x of each screw in panel B, checked against the crests
 
 
-def esc(s):
-    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
 def txt(x, y, s, size=11, weight="normal", fill=INK, anchor="start", limit=None):

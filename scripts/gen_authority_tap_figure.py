@@ -66,9 +66,13 @@ tab is recorded nowhere yet, so the figure prints the question rather than an
 answer. See 02-mechanical.md 2.2 step 2.
 """
 
-import html
 import pathlib
 import re
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from svg_common import esc  # noqa: E402
 
 OUT = pathlib.Path("docs/images/authority-tap-wiring.svg")
 
@@ -128,10 +132,6 @@ FOOT_H = 52
 
 
 FITS = []          # (text, size, available width) - checked after the build
-
-
-def esc(s):
-    return html.escape(s, quote=False)
 
 
 def box(x, y, w, h, fill, stroke, sw=2.2, rx=5):

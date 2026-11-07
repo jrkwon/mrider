@@ -70,11 +70,10 @@ GREEN_D = "#14532d"
 # those copies were wrong.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import carrier_params  # noqa: E402
+from svg_common import esc  # noqa: E402
 
 
 # ---- svg helpers -----------------------------------------------------------
-def esc(s):
-    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
 FITS = []   # (text, size, x, anchor, right-hand limit) - verified by check()

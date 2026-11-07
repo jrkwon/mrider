@@ -102,6 +102,7 @@ what caught the paint-order halo that erased the TO-220's G/D/S letters.
 """
 
 import io
+import sys
 from pathlib import Path
 
 # ---------------------------------------------------------------- the geometry
@@ -237,24 +238,14 @@ check()
 
 # ------------------------------------------------------------------ the drawing
 out = []
-BOLD, EB = '<tspan font-weight="bold">', '</tspan>'
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from svg_common import BOLD, EB, esc, rich  # noqa: E402,F401
 
 
 def e(s):
     out.append(s)
 
 
-def rich(line):
-    """`**bold**` -> tspans. Panels write plain strings, never f-string markup.
-
-    The first draft interpolated tspan constants into every line, and two lines
-    were missing their f-prefix, so the figure shipped a literal `{B}`. Marking
-    the text and converting it here removes that whole class of fault.
-    """
-    assert line.count("**") % 2 == 0, f"unbalanced bold: {line}"
-    assert "{" not in line and "}" not in line, f"stray brace, missing f-prefix?: {line}"
-    return "".join(f"{BOLD}{p}{EB}" if i % 2 else p
-                   for i, p in enumerate(line.split("**")) if p)
 
 
 # out[0] and out[1] are rewritten at the end, once H is known from the panels.
