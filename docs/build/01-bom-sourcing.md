@@ -2128,10 +2128,13 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > pair in its strongest form. *Stated three ways across three days as the connectors were
 > identified; this is the one that survived opening them.*
 >
-> **It does not extend to the third pair.** The power tap was found on 2026-11-07 to be `.250`
-> too — the same terminal as the drive tap — so those two are separated by housing and key, if
-> at all, and not by family. [§2.2](02-mechanical.md#22-teardown) carries the caution and the
-> question that settles it.
+> **It does not extend to the third pair, and that is now settled rather than open.** The power
+> tap's connector is **`M1` exactly** — same terminal, same housing, same 90° key, confirmed
+> 2026-11-07 — so the power and drive taps **can** be cross-plugged, and nothing about the parts
+> prevents it. One of the four wrong matings puts the pack onto the stock ECU's output
+> transistors through the relay's closed `87a`, **unfused and upstream of the E-stop**.
+> [§2.2](02-mechanical.md#22-teardown) has the table and the fix, which is **pigtail length**,
+> not a label.
 >
 > **And the connector is no longer the binding current constraint.** `6.3 × 0.8` is the size
 > the automotive trade runs at 20–30 A, so what limits the drive branch is the **1.5 mm² stock

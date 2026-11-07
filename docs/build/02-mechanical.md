@@ -145,18 +145,35 @@ Work in this order and bag-and-tag fasteners by panel.
    the three taps.*
 
    > [!CAUTION]
-   > **Two taps now share a family, so the "taps cannot cross-plug" property has a gap in it**
+   > **The pack's connector is `M1` exactly — same terminal, same housing, same 90° key — so the
+   > power and drive taps CAN be cross-plugged.** Confirmed 2026-11-07.
    >
-   > Steering is still safe by construction — a pin will not enter a blade receptacle. But
-   > **power and drive are both `.250` now**, and a cross-plug there puts the traction pack
-   > directly across the motor circuit, bypassing the driver and the contactor. **Check whether
-   > the pack's receptacle is keyed the way `M1` is**: `M1`'s two tabs sit **90° to each other**.
-   > If the pack's two contacts are **coplanar**, the key alone prevents the swap and the
-   > property survives on geometry. If the pack is keyed 90° as well, **the two plugs will
-   > mate** and the protection has to be a label and a build order instead.
+   > Steering is still safe by construction: a pin will not enter a blade receptacle. The
+   > question asked here a revision ago — whether the pack's two contacts might be coplanar and
+   > so keyed apart from `M1` — is **answered the unhelpful way.** The `M1` key no longer
+   > separates anything; it only separates a plug from itself reversed.
    >
-   > *Recorded as an open question rather than an assumption: "the same as `M1`" was reported of
-   > the terminal, and whether it extends to the housing's key has not been stated.*
+   > **The four wrong matings are not equally bad, and only one of them is severe.** MRider's
+   > halves are two male and two female, so four wrong pairs exist:
+   >
+   > | Plug the wrong half in here | What it builds | Result |
+   > |---|---|---|
+   > | **relay `30` male → the PACK's receptacle** | relay is at rest, so `30`–`87a` is closed: pack straight into the **stock ECU's motor-output transistors** | **Severe.** This node is upstream of MRider's 25 A fuse *and* upstream of the contactor, so it is **unfused and the E-stop cannot cut it** |
+   > | relay `87a` female → the stock ECU's supply lead | battery rail → `87a` → relay → `30` → both rear motors, with no speed control | Vehicle lurches at full voltage — but this lead is **downstream of the contactor**, so the **E-stop stops it** and the 25 A fuse is in the path |
+   > | pack-feed male → the vehicle's own `M1` plug | MRider's traction input meets the motors; the pack is unplugged | Dead. Harmless |
+   > | pass-through female → the module's `M1` tabs | ECU motor output backfeeds MRider's traction bus | Mostly dead; may stress the ECU output |
+   >
+   > **What the severe one destroys is the thing this whole connector exercise was protecting.**
+   > `#12c`/`#12e` were bought so that **nothing is cut** and the vehicle can always go back to
+   > stock — and the stock ECU is what "back to stock" means. *A swap that costs five minutes
+   > ends the reversibility promise permanently.*
+   >
+   > **Restore the property with geometry, not with a label.** Cut MRider's **power-tap pigtails
+   > too short to reach the ECU**, and the **drive-tap pigtails too short to reach the pack**.
+   > That is the same class of protection the 90° key used to provide, and it survives a tired
+   > student at midnight in a way a label does not. Colour-code and label as well; order the
+   > build so the power tap is fitted and verified before the drive tap is ever opened. But
+   > **length is the one that cannot be forgotten.**
 
    > [!NOTE]
    > **The gender here is the mirror of the drive tap's, and the rating question is already
