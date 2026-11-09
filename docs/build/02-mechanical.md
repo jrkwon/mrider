@@ -77,13 +77,17 @@ Work in this order and bag-and-tag fasteners by panel.
 
    ![The stock ECU's bare board, component side up. The silkscreen along the top edge reads M3- M3+ over M2- M2+ beside a white two-position header, then M1 beside a pair of large solder pads, then P1 beside a minus and a plus pad; JINGRAN TECHNOLOGY is printed across the middle and JR1630RX 20201216 at the lower right, above a yellow multiway connector whose pins are marked H/L, S/F, S/B, VSS and +BA](../images/photos/stock-ecu-pcb-silkscreen.jpg)
 
-   ![The same module installed, lid on, with its wire bundle leaving the near edge: a red and a green conductor, a blue and a yellow conductor, a brown one and a white one, running to a white two-position plug and on into the loom. The case is printed JR1630RX-12V, Remote Control Car Motor Controller](../images/photos/stock-ecu-wire-colours.jpg)
+   ![The same module installed, lid on, seen from above. Its case reads JR1630RX-12V, Remote Control Car Motor Controller, Supply Voltage DC 12V, Load Current Max 20A. A brown and a blue conductor bend up into a small white two-position connector; below it a wider white connector takes a red and green pair and a yellow and blue pair, four conductors into two positions](../images/photos/stock-ecu-wire-colours.jpg)
 
    *Vehicle #1, 2026-11-06 ([provenance](../images/photos/MANIFEST.md)). **The silkscreen above is
-   what the table was read off.** The colours in the second photograph are vehicle #1's and were
-   traced individually; treat them as a sanity check on your own tracing, never as a wiring
-   instruction — [03-electrical §3.3](03-electrical.md#33-the-three-taps) says why colour is the
-   weakest evidence available here.*
+   what the table was read off.** The second photograph is the same module with the plugs in, and
+   it shows the one thing a colour list cannot: **which pair enters which connector.** Brown and
+   blue go to the small two-position housing — steering. Red, green, yellow and blue go to the
+   wider one — **both** rear motors, four conductors on two blades, which is why `M1` is a single
+   tap and not two. The colours are vehicle #1's and were traced individually; treat them as a
+   sanity check on your own tracing, never as a wiring instruction —
+   [03-electrical §3.3](03-electrical.md#33-the-three-taps) says why colour is the weakest evidence
+   available here.*
 
    > [!WARNING]
    > **`P1` is on this list because it is on the module, not because you tap there.**
