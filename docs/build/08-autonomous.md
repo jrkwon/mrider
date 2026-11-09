@@ -13,9 +13,9 @@ end-to-end behavior-cloning pipeline (mrover `neural_net/` lineage) for an auton
 > **Draft — not yet validated on hardware**
 >
 > Derived from [software.md §4–§5](../design/software.md#4-slam-nav2-ekf-configuration-plan).
-> No map has been built, no Nav2 goal executed, and no policy trained on MRider. Nav2
-> parameter values, dataset sizes, and training hyperparameters are marked
-> *(measure during bring-up)* or *(record)*.
+> No map has been built, no Nav2 goal executed, and no policy trained on MRider. Every
+> reference in this page is therefore a **fixed value, a target, or the B-MROVER number you
+> are being told not to copy** — never a measurement from this vehicle. [Reference and Yours](index.md#reference-and-yours).
 
 > [!CAUTION]
 > **Autonomy does not remove the operator**
@@ -78,16 +78,16 @@ Mapping technique that matters on this vehicle:
 ros2 run nav2_map_server map_saver_cli -f config/maps/test_course
 ```
 
-**Record sheet — mapping**
+**Record sheet — mapping** · [how to read the Reference column](index.md#reference-and-yours)
 
-| Item | Value |
-|---|---|
-| Course dimensions | *(measure)* m × *(measure)* m |
-| Map resolution | 0.05 m/cell |
-| `max_laser_range` used | *(record)* m |
-| Loop-closure error at start point | *(measure)* m |
-| Mapping run duration | *(record)* |
-| Artifact | `config/maps/test_course.{pgm,yaml}` |
+| Item | Reference | Yours | Why that reference |
+|---|---|---|---|
+| Course dimensions | — *(your course)* | m × m | Feeds `robot_radius` and the Nav2 velocity caps below |
+| Map resolution | **0.05 m/cell** *(fixed)* | | Changing it invalidates the costmap tuning that follows |
+| `max_laser_range` used | — *(your LiDAR)* | m | Record it: a map made at a different range will not localize the same |
+| Loop-closure error at start point | — *(gate: the map closes)* | m | Doubled walls mean drift or bad extrinsics, not a tuning problem |
+| Mapping run duration | — *(your run)* | | |
+| Artifact | `config/maps/test_course.{pgm,yaml}` | | |
 
 **Gate:** the map closes, walls are single-thickness (not doubled — doubling means drift or
 bad extrinsics), and the start point returns to itself.
@@ -139,14 +139,14 @@ then progressing to goals requiring turns.
 
 **Record sheet — Nav2**
 
-| Test | Result |
-|---|---|
-| Straight-line goal, 5 m | *(record)* |
-| Goal requiring a single turn | *(record)* |
-| Goal requiring reversing/recovery | *(record)* |
-| Path-tracking error, worst case | *(measure)* m |
-| Recovery behaviors triggered | *(count)* |
-| Controller retained | DWB / swapped to RPP — *(record + why)* |
+| Test | Expected | Yours | Why that expectation |
+|---|---|---|---|
+| Straight-line goal, 5 m | reaches it | | The simplest goal there is; a failure here is localization, not planning |
+| Goal requiring a single turn | reaches it | | First goal the ±22.5° limit constrains — `max_vel_theta` must already be derived |
+| Goal requiring reversing/recovery | reaches it | | **MRider has no rear sensing** — [software.md §4.5](../design/software.md). A recovery that reverses is driving blind |
+| Path-tracking error, worst case | — *(your course)* | m | No reference: compare against your own earlier runs |
+| Recovery behaviors triggered | **as few as possible** | | Frequent recoveries mean the costmap or the velocity caps are wrong, not that Nav2 is working |
+| Controller retained | DWB *(default)* | | Record a swap to RPP **and why** — a silent swap makes every later lap incomparable |
 
 **Gate:** goals are reached without repeated recovery behaviors, and the vehicle never
 commands a steering angle it cannot achieve.
@@ -196,17 +196,17 @@ Collection guidance:
   ([sensors.md §1](../design/sensors.md#1-front-camera)) — do not undermine it with a
   variable exposure that motion-blurs instead.
 
-**Record sheet — dataset**
+**Record sheet — dataset** · [how to read the Reference column](index.md#reference-and-yours)
 
-| Item | Value |
-|---|---|
-| Laps recorded (CW / CCW) | *(record)* / *(record)* |
-| Total samples | *(record)* |
-| Steering label distribution (straight / left / right) | *(record)* |
-| Recovery samples included | *(record)* |
-| Image resolution recorded | *(record)* |
-| Lighting conditions | *(record)* |
-| Dataset path | `e2e_data/<date>_<course>` |
+| Item | Reference | Yours | Why that reference |
+|---|---|---|---|
+| Laps recorded (CW / CCW) | **balanced both ways** *(target)* | / | One direction only teaches the policy to turn one way — see §8.7 |
+| Total samples | — *(your run)* | | |
+| Steering label distribution (straight / left / right) | **not straight-dominated** *(target)* | | A straight-dominated set is the first symptom row in §8.7 |
+| Recovery samples included | **yes** *(target)* | | Without them the policy cannot return from an error it has never seen |
+| Image resolution recorded | **160×160×3** *(fixed)* | | What `model_ce491` expects; a mismatch fails at inference, not at training |
+| Lighting conditions | — *(your run)* | | Record it: a policy trained at one lighting does not transfer silently |
+| Dataset path | `e2e_data/<date>_<course>` | | |
 
 ## 8.6 Phase E — Train and deploy the policy
 
@@ -224,17 +224,17 @@ python neural_net/train.py --data e2e_data/<date>_<course> \
   --config config/neural_net/mrider.yaml
 ```
 
-**Record sheet — training**
+**Record sheet — training** · [how to read the Reference column](index.md#reference-and-yours)
 
-| Item | Value |
-|---|---|
-| `network_type` | *(record)* |
-| `num_outputs` | 1 (steering) / 2 (+ throttle) — *(record)* |
-| Input image size | 160×160×3 |
-| Train/validation split | *(record)* |
-| Epochs | *(record)* |
-| Final validation loss | *(record)* |
-| Weights artifact | *(record path)* |
+| Item | Reference | Yours | Why that reference |
+|---|---|---|---|
+| `network_type` | **`model_ce491`** *(reused verbatim)* | | PilotNet, from software.md §5.2 — substituting one is a deliberate choice to record |
+| `num_outputs` | 1 (steering) | | 2 adds throttle; say which, because the deploy node has to agree |
+| Input image size | **160×160×3** *(fixed)* | | Must equal the dataset row above |
+| Train/validation split | — *(your run)* | | |
+| Epochs | — *(your run)* | | |
+| Final validation loss | — *(your run)* | | Compare against your own earlier runs; there is no cross-course reference |
+| Weights artifact | — *(your path)* | | |
 
 **Deploy for inference.** The policy drives `ros2_control` — **the exact same datapath as Nav2
 and teleop**. The learned policy gets no special privileges and no shortcut to the motors.
@@ -258,7 +258,8 @@ ros2 run run_neural run_neural --ros-args -p weights:=<path>
 Progress in this order: **straight segment → single corner → half lap → full lap.** Do not
 jump to a full lap because the straight worked.
 
-**Record sheet — autonomous lap**
+**Record sheet — autonomous lap** — *a worksheet: four attempts of increasing scope. The
+success criterion below governs the set, not any single attempt.*
 
 | Attempt | Segment | Interventions | Outcome |
 |---|---|---|---|
@@ -285,8 +286,8 @@ consecutive attempts. One lucky lap is not a working policy.
 ## 8.8 You are done — now write it down
 
 The build is complete. The most valuable remaining artifact is the record of what actually
-happened, because every *(measure during bring-up)* placeholder in this guide is a question
-that only your build can answer.
+happened, because every blank **Yours** cell in this guide is a question that only your build
+can answer — and for most of them, nobody has answered it yet at all.
 
 - [ ] All calibration artifacts committed under `config/calibration/` with full stamps
 - [ ] Map and Nav2 parameters committed

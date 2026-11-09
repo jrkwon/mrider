@@ -17,8 +17,9 @@ rail isolation and default-to-stock behavior before energizing anything downstre
 > This wiring plan is derived from the
 > [architecture.md power tree](../design/architecture.md#5-power-tree-and-safetyauthority-chain)
 > and [safety.md](../design/safety.md). It has **not** been built. Fuse values, wire gauges,
-> and relay contact ratings depend on the stall currents you measured in step 2 and are
-> marked *(measure during bring-up)*.
+> and relay contact ratings depend on the stall currents you measured in step 2, so the record
+> sheets below carry the **limit** each one must clear rather than a number from vehicle #1 —
+> [Reference and Yours](index.md#reference-and-yours).
 
 > [!CAUTION]
 > **This is the step where mistakes become dangerous**
@@ -1589,16 +1590,16 @@ Only after §3.6 and §3.7 pass.
    not sag.** If it does, your isolation is inadequate — add hold-up capacitance before
    continuing.
 
-**Record sheet — rail measurements**
+**Record sheet — rail measurements** · [how to read the Reference column](index.md#reference-and-yours)
 
-| Measurement | Value |
-|---|---|
-| Traction rail, at rest | *(measure during bring-up)* V |
-| Traction rail, under drive-motor stall | *(measure during bring-up)* V |
-| Logic rail, at rest | *(measure during bring-up)* V |
-| Logic rail, during traction stall | *(measure during bring-up)* V |
-| Logic-rail sag under stall | *(measure during bring-up)* V — target: negligible |
-| Undervoltage monitor trip point | *(record setting)* V |
+| Measurement | Units | Reference | Yours | Why that reference |
+|---|---|---|---|---|
+| Traction rail, at rest | V | **12** *(nominal)* | | The pack class set by [ADR D-R](../design/vehicle.md) |
+| Traction rail, under drive-motor stall | V | — *(not measured on #1)* | | Sag here is the pack's internal resistance, and is expected |
+| Logic rail, at rest | V | **12** *(nominal)* | | Its own LiFePO4 pack, not tapped from traction — §3.1 |
+| Logic rail, during traction stall | V | ≈ at rest | | This is the whole point of the two-rail split |
+| Logic-rail sag under stall | V | **negligible** *(target)* | | A sag means the isolation is inadequate; add hold-up capacitance before continuing |
+| Undervoltage monitor trip point | V | — *(your setting)* | | Record what you set, not what you measured |
 
 ## 3.9 Gate to step 4
 

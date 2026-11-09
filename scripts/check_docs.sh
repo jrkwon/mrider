@@ -44,6 +44,12 @@
 #                                ("the traction pack"), exactly as
 #                                architecture.md already does; the number lives
 #                                in vehicle.md, bom.md and the order log.
+#  19. record sheets         - a build page asking for a measurement with no
+#                                reference beside the blank, so a reader cannot
+#                                tell whether their number is wrong, merely
+#                                different, or the first one anybody has taken.
+#                                Also catches the old "(measure during
+#                                bring-up)" shape coming back.
 #  18. lab tooling layering  - the student bundle shipping the grader, or the
 #                                reverse: a sibling import added to the
 #                                student half and not to the bundle's copy
@@ -426,6 +432,19 @@ printf "%s18. lab tooling layering and the student bundle%s\n" "$B" "$N"
 # ModuleNotFoundError on thirteen machines. There is no earlier symptom.
 if ! python3 scripts/check_lab_modules.py; then
     fail "lab tooling layering, or what the student bundle ships"
+fi
+printf "\n"
+
+printf "%s19. record sheets carry a reference, or say why not%s\n" "$B" "$N"
+# Every sheet was one blank column reading "(measure during bring-up)" until
+# 2026-11-09, which is indistinguishable from an oversight and threw away the
+# little that vehicle #1's teardown did produce. A sheet is now either a
+# REFERENCE sheet (rows are quantities, each carries #1's value or the limit it
+# must clear) or a declared WORKSHEET (rows are samples - calibration points,
+# runs, attempts - where a per-row reference is a category error). The third
+# shape is what spread to fifteen tables across five pages by default.
+if ! python3 scripts/check_record_sheets.py; then
+    fail "a record sheet is neither a reference sheet nor a declared worksheet"
 fi
 printf "\n"
 

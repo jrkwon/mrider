@@ -14,10 +14,12 @@ encoder. Keep the modifications minimally invasive and reversible.
 > [!WARNING]
 > **Draft — not yet validated on hardware**
 >
-> No MRider vehicle has been disassembled yet. **There are no teardown photos, no bracket
-> dimensions, and no torque figures in this page, because none have been measured.** Every
-> such value is marked *(measure during bring-up)*. This page gives you the procedure and
-> the record sheets; you produce the numbers.
+> Vehicle #1 was torn down on **2026-11-06**, and what that produced is in the **Reference**
+> column of each record sheet below — the steering header and its polarity, the drive tap's
+> `.250` dimensions. It is a short list. **No teardown photographs were kept, and no bracket
+> or torque figures were measured at all.** The three vehicles went to the teams in the week
+> of 2026-11-02, so a reference that is missing now stays missing: see [Reference and Yours](index.md#reference-and-yours). This page gives
+> you the procedure and the record sheets; you produce the numbers.
 
 ---
 
@@ -31,14 +33,16 @@ Run the [vehicle.md §3 verification checklist](../design/vehicle.md) on the uni
 actually bought — the candidate models in the design doc were evaluated from listings, not
 in person. Specifically confirm:
 
-| Check | Why it matters | Result |
-|---|---|---|
-| Battery is genuinely 12 V | The whole power tree assumes it, and [ADR D-R](../design/vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08) pinned the class | *(measure during bring-up)* |
-| Two independent rear drive motors | [Throttle path](../design/dbw.md#7-throttle-path) parallels them onto Sabertooth M2 | *(measure during bring-up)* |
-| Steering column is accessible without cutting | Reversibility principle | *(measure during bring-up)* |
-| Column has a stock steering motor, or is hand-turned only | Determines whether the steering tap intercepts an existing motor or adds one | *(measure during bring-up)* |
-| Paralleled drive-motor **stall current** vs. 32 A/channel | Sabertooth rating limit ([dbw.md §7](../design/dbw.md#7-throttle-path)) | *(measure during bring-up)* |
-| Front wheel travel is ≈ ±22.5° | The pinned steering range ([dbw.md §12](../design/dbw.md#12-numeric-interface-contract)) | *(measure during bring-up)* |
+· [how to read the Reference column](index.md#reference-and-yours)
+
+| Check | Expected | Yours | Why it matters |
+|---|---|---|---|
+| Battery is genuinely 12 V | **12 V** | | The whole power tree assumes it, and [ADR D-R](../design/vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08) pinned the class |
+| Two independent rear drive motors | **2** | | [Throttle path](../design/dbw.md#7-throttle-path) parallels them onto Sabertooth M2 |
+| Steering column is accessible without cutting | **yes** | | Reversibility principle |
+| Column has a stock steering motor, or is hand-turned only | **motor** *(#1)* | | Determines whether the steering tap intercepts an existing motor or adds one |
+| Paralleled drive-motor **stall current** | **< 32 A** *(disputed)* | | 32 A is the Sabertooth 2x32; the fitted board is the **MDDS30** at 30 A continuous ([order log #3](../order-log.md#L3)). Measure it and the question closes — [03 §3.2](03-electrical.md#32-per-rail-fuse-and-gauge-table) |
+| Front wheel travel | **≈ ±22.5°** | | The pinned steering range ([dbw.md §12](../design/dbw.md#12-numeric-interface-contract)) |
 
 > [!CAUTION]
 > **Disconnect the battery before disassembly**
@@ -286,26 +290,26 @@ Work in this order and bag-and-tag fasteners by panel.
    [ADR C](../design/dbw.md#8-adr-c-drive-distance-encoding) — so pick the more accessible
    one and note which side, because your odometry inherits that side's behavior in turns.
 
-**Record sheet — teardown measurements**
+**Record sheet — teardown measurements** · [how to read the Reference column](index.md#reference-and-yours)
 
-| Measurement | Units | Value | Method |
-|---|---|---|---|
-| Column diameter | mm | *(measure during bring-up)* | Calipers |
-| Column lock-to-lock rotation | ° | *(measure during bring-up)* | Angle gauge on the wheel |
-| Road-wheel travel, center → full lock, left | ° | *(measure during bring-up)* | Angle gauge on the tire |
-| Road-wheel travel, center → full lock, right | ° | *(measure during bring-up)* | Angle gauge on the tire |
-| Column-to-road-wheel ratio | — | *(measure during bring-up)* | Derived from the two rows above |
-| Drive-motor shaft diameter | mm | *(measure during bring-up)* | Calipers |
-| Instrumented side | L / R | *(measure during bring-up)* | — |
-| Steering: which header is fitted, and which wire on − | — | *(vehicle #1: `M3`, brown `M3−` / blue `M3+`)* | Read against the silkscreen — step 2 |
-| Drive `M1`: which two colours on the **horizontal** tab | — | *(per vehicle — cross-check only, never recorded on #1)* | Look into the plug. The pairing is preserved by construction, so this confirms rather than decides |
-| Drive: **which net the driver's `+` must feed** for DBW-forward | — | *(record at [07 §7.4 step 4](07-manual-drive.md#74-phase-1-rc-only-no-laptop-autonomy))* | Not visible in the plug. Creep forward in DBW and watch which way it goes |
-| Drive `M1`: tab width × thickness | mm | **6.3 × 0.8** *(vehicle #1)* | Width off the receptacle slot, thickness off the tab |
-| Steering `M2M3`: **pitch**, centre to centre | mm | *(≈ 2.8 measured — resolve to 2.50 / 2.54 / 3.00)* | Across the module's header **pins**, not the plug's cavities |
-| Steering: polarity that drives **left** (e.g. *blue positive*) | — | *(measure during bring-up)* | Stock remote, wheels off the ground — step 2 |
-| Wheelbase (rear axle → front axle) | m | *(measure during bring-up)* | Tape |
-| Track (wheel separation) | m | *(measure during bring-up)* | Tape |
-| Loaded wheel rolling circumference | m | *(measure during bring-up)* | Mark tire, roll one revolution |
+| Measurement | Units | Reference | Yours | Method |
+|---|---|---|---|---|
+| Column diameter | mm | — *(not measured on #1)* | | Calipers |
+| Column lock-to-lock rotation | ° | — *(not measured on #1)* | | Angle gauge on the wheel |
+| Road-wheel travel, center → full lock, left | ° | — *(not measured on #1)* | | Angle gauge on the tire |
+| Road-wheel travel, center → full lock, right | ° | — *(not measured on #1)* | | Angle gauge on the tire |
+| Column-to-road-wheel ratio | — | — *(derived)* | | Derived from the two rows above |
+| Drive-motor shaft diameter | mm | — *(not measured on #1)* | | Calipers |
+| Instrumented side | L / R | — *(your choice)* | | Pick the accessible shaft; note which side |
+| Steering: which header is fitted, and which wire on − | — | `M3`, brown `M3−` / blue `M3+` *(#1)* | | Read against the silkscreen — step 2 |
+| Drive `M1`: which two colours on the **horizontal** tab | — | — *(never recorded on #1, and nothing needs it)* | | Look into the plug. The pairing is preserved by construction, so this confirms rather than decides |
+| Drive: **which net the driver's `+` must feed** for DBW-forward | — | must match STOCK forward | | Not visible in the plug — [07 §7.4 step 4](07-manual-drive.md#74-phase-1-rc-only-no-laptop-autonomy) |
+| Drive `M1`: tab width × thickness | mm | **6.3 × 0.8** *(#1)* | | Width off the receptacle slot, thickness off the tab |
+| Steering `M2M3`: **pitch**, centre to centre | mm | ≈ 2.8 *(#1 — unresolved)* | | Across the module's header **pins**, not the plug's cavities. Resolve to 2.50 / 2.54 / 3.00 |
+| Steering: polarity that drives **left** (e.g. *blue positive*) | — | — *(in class 2026-11-09)* | | Stock remote, wheels off the ground — step 2 |
+| Wheelbase (rear axle → front axle) | m | — *(not measured on #1)* | | Tape |
+| Track (wheel separation) | m | — *(not measured on #1)* | | Tape |
+| Loaded wheel rolling circumference | m | — *(not measured on #1)* | | Mark tire, roll one revolution |
 
 The last three rows feed the Ackermann parameters in
 [software.md §3.2](../design/software.md#32-ackermann-kinematic-parameters), which are
@@ -354,18 +358,18 @@ position loop — never as an angle
 4. **Check for interference through full travel** — turn lock to lock by hand and confirm
    nothing fouls the body, the linkage, or the wiring.
 
-**Record sheet — steering actuator**
+**Record sheet — steering actuator** · [how to read the Reference column](index.md#reference-and-yours)
 
-| Item | Value |
-|---|---|
-| Measured peak force `F` at rim, center → lock, stationary, full load | *(measure during bring-up)* N |
-| Lever radius `r` | *(measure during bring-up)* m |
-| Computed `τ_column = F × r` | *(measure during bring-up)* N·m |
-| Motor rated torque (through coupling ratio) | *(measure during bring-up)* N·m |
-| Margin achieved (target ≥ 2×) | *(measure during bring-up)* |
-| Coupling point | column / tie-rod arm |
-| Motor model + gear ratio | *(record)* |
-| Bracket source | printed / fabricated — *(record STL or drawing)* |
+| Item | Reference | Yours |
+|---|---|---|
+| Measured peak force `F` at rim, center → lock, stationary, full load | — *(not measured on #1)* | N |
+| Lever radius `r` | — *(not measured on #1)* | m |
+| Computed `τ_column = F × r` | — *(derived)* | N·m |
+| Motor rated torque (through coupling ratio) | from the datasheet of the motor you fitted | N·m |
+| Margin achieved | **≥ 2×** *(target)* | |
+| Coupling point | column / tie-rod arm | |
+| Motor model + gear ratio | — *(your choice)* | |
+| Bracket source | printed / fabricated | *(STL or drawing)* |
 
 If you have not yet done the torque measurement, the procedure is
 [dbw.md §2.2](../design/dbw.md#22-torque-measurement-procedure-before-sizing-the-gearmotor) —
@@ -858,7 +862,7 @@ Before moving to electrical, satisfy yourself that this is still a stock vehicle
 
 ## 2.9 Gate to step 3
 
-- [ ] Teardown record sheet complete — all *(measure during bring-up)* rows filled
+- [ ] Teardown record sheet complete — every **Yours** cell filled, including the ones whose Reference is a dash
 - [ ] Column travel measured; angle-sensor technology confirmed against it
 - [ ] Steering gearmotor mounted; ≥2× torque margin confirmed against measured `τ_column`
 - [ ] Absolute angle sensor coupled, clocked centered, rigidly mounted, strain-relieved

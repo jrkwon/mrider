@@ -9,9 +9,10 @@ and links to the design document that specifies the details.
 > [!WARNING]
 > **Draft — not yet validated on hardware**
 >
-> These procedures are derived from the design documents. They have **not** been performed
-> on a physical vehicle. Values marked *(measure during bring-up)* must be recorded and
-> these pages updated before they are used for teaching or external replication. The
+> These procedures are derived from the design documents. Except for the vehicle #1 teardown
+> on 2026-11-06, they have **not** been performed on a physical vehicle. Every blank in a
+> record sheet's **Yours** column must be filled and these pages updated before they are used
+> for teaching or external replication — see [Reference and Yours](#reference-and-yours). The
 > design documents remain the authoritative specification; where a build step and a design
 > document disagree, the design document is correct.
 
@@ -64,10 +65,11 @@ USB](../images/system-overview.svg)](../images/system-overview.svg)
 
 ## One sheet to carry with you
 
-Many rows in these pages read *(measure during bring-up)*. They are not placeholders anybody
-remembers to come back to — so they are collected on **one printable page**, grouped by where
-the measurement is taken rather than by which step needs it, because you take them with a
-caliper in your hand and not with a document open.
+The record sheets are spread across eight pages, and a blank nobody is standing in front of is
+a blank nobody fills. So the measurements that block **a cut, a print or a solder joint** — not
+every row, just those — are collected on **one printable page**, grouped by where the
+measurement is taken rather than by which step needs it, because you take them with a caliper
+in your hand and not with a document open.
 
 [![MRider measurement sheet: a single printable page listing every outstanding measurement on
 the build, grouped by where it is taken — deck and lid, drive encoder, steering, sensors,
@@ -112,6 +114,38 @@ Three things happen to a stock ride-on vehicle:
    the three taps and the vehicle is factory-stock again.
 
 ## Recording your build
+
+### Reference and Yours
+
+Every record sheet in these pages has the same two columns, and they mean different things.
+
+| Column | What goes in it |
+|---|---|
+| **Reference** | What vehicle #1 measured, or the spec or limit the value must satisfy. **Filled in already** — never by you. A dash with a parenthetical says *why* there is no reference, which is information, not an omission. |
+| **Yours** | Blank. Your vehicle's measurement. |
+
+**A reference is not an expected answer.** Where it is a vehicle #1 measurement it is one
+sample, and your vehicle may legitimately differ — the three were not built to a tolerance.
+Where it is a **limit** (`< 32 A`, `≤ 340°`) a disagreement is a fault; where it is a
+*(nominal)* or *(target)* a disagreement is a question. The *why that reference* column says
+which, so you never have to guess whether a mismatch matters.
+
+**Reference columns are sometimes named after their source** rather than "Reference" —
+[the Nav2 table](08-autonomous.md#84-phase-c-nav2-goals) uses
+*B-MROVER value*, because knowing the number came from the small rover is the whole reason
+not to copy it.
+
+**Some sheets have no Reference column, and say so.** Those are **worksheets**: their rows are
+samples rather than quantities — five steering calibration points, three odometry runs, four
+lap attempts, one pose per sensor. A per-row reference would be a category error there, so the
+acceptance criterion sits above the table instead, where the blanks are.
+
+Vehicle #1's references are sparse, and the honest reason is in the dashes: the three vehicles
+went to the teams in the week of **2026-11-02**, so what was never measured before then cannot
+be measured now. Filling a *Yours* column is therefore not homework duplicating a known answer.
+For most rows it is the first time anyone has measured the thing at all.
+
+### Where the files go
 
 Several steps produce values that are specific to *your* vehicle and must be written down:
 column torque, wheel rollout, steering counts-per-degree, stall currents. Create

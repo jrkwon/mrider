@@ -16,8 +16,9 @@ behave as specified while the vehicle is moving at walking speed.
 >
 > This is the first-drive protocol derived from
 > [safety.md §6 Stage 5](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first).
-> **No MRider has been driven.** Coast-down distances, joystick scaling, and the abort
-> criteria thresholds are marked *(measure during bring-up)*.
+> **No MRider has been driven.** Coast-down distances, joystick scaling and the abort-criteria
+> thresholds have no vehicle #1 reference at all, so those rows carry a target or a dash —
+> [Reference and Yours](index.md#reference-and-yours).
 
 > [!CAUTION]
 > **The vehicle is on the ground and moving from this point**
@@ -125,18 +126,18 @@ commanding anything yet.
 6. **Straight-line odometry check under motion.** Drive a measured distance and compare
    integrated odometry — this is the first check with real tire slip involved.
 
-**Record sheet — Phase 1**
+**Record sheet — Phase 1** · [how to read the Reference column](index.md#reference-and-yours)
 
-| Observation | Value |
-|---|---|
-| Drive direction in DBW matches STOCK forward | *(record: yes / nets swapped and fixed)* |
-| Which net the driver's `+` feeds for forward | *(record: horizontal / vertical tab)* |
-| Steering hunting at rest | *(record: none / amplitude)* |
-| Left/right travel symmetry | *(measure)* ° difference |
-| Steering dead-band around center | *(measure)* ° |
-| Minimum throttle that produces motion | *(measure)* % |
-| Logic rail minimum under steer-and-drive load | *(measure)* V |
-| Odometry error over measured distance | *(measure)* % |
+| Observation | Units | Reference | Yours | Why that reference |
+|---|---|---|---|---|
+| Drive direction in DBW matches STOCK forward | — | **must match** | | A mismatch is the crossed drive tap in step 4; fix the wire |
+| Which net the driver's `+` feeds for forward | — | — *(per vehicle)* | | Record it so a re-wire can be rebuilt the same way |
+| Steering hunting at rest | — | **none** *(target)* | | Sustained hunting at rest fails bring-up Stage 1 |
+| Left/right travel symmetry | ° | **0** *(ideal)* | | Real asymmetry is expected and must reach the Ackermann config, not be averaged away |
+| Steering dead-band around center | ° | — *(not measured on #1)* | | Large dead-band is a slipped coupler, not a gain problem |
+| Minimum throttle that produces motion | % | — *(not measured on #1)* | | Sets the creep speed every later test walks beside |
+| Logic rail minimum under steer-and-drive load | V | ≈ at rest | | Same two-rail criterion as [03 §3.8](03-electrical.md#38-first-power-on-of-the-traction-rail) |
+| Odometry error over measured distance | % | **≤ 2** *(acceptance)* | | [06 §odometry calibration](06-bench-test.md) verification drive |
 
 ## 7.5 Phase 2 — E-stop under motion
 
@@ -150,7 +151,8 @@ The test that could not be done on a stand:
 4. **Measure and record the coast-down distance.**
 5. Repeat at least three times — straight, mid-left-turn, mid-right-turn.
 
-**Record sheet — E-stop under motion**
+**Record sheet — E-stop under motion** — *a worksheet: three trials of the same test. The
+acceptance criterion is the behaviour column and the note below, not a reference per trial.*
 
 | Trial | Condition | Speed (m/s) | Coast-down distance (m) | Hand-steer force at rim (N) | Behavior |
 |---|---|---|---|---|---|

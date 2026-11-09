@@ -106,7 +106,7 @@ steps 1–2 (step 3 happens in [step 7](07-manual-drive.md) on the ground):
     - [ ] steering motor de-energized
     - [ ] column **turns freely by hand** with light force
 
-**Record:** hand-steer force at the rim after E-stop = *(measure during bring-up)* N
+**Record:** hand-steer force at the rim after E-stop = ________ N — *no reference: this is the first measurement of it. It becomes the one every later freewheel check compares against.*
 (spring-scale check; expect a few N).
 
 > [!NOTE]
@@ -136,18 +136,18 @@ steps 1–2 (step 3 happens in [step 7](07-manual-drive.md) on the ground):
 - [ ] Angle sensor monotonic across full travel — **no wrap** (FMEA row 2)
 - [ ] **No logic-rail brownout under steering stall** — measure it, do not assume
 
-**Record sheet — Stage 4**
+**Record sheet — Stage 4** · [how to read the Reference column](index.md#reference-and-yours)
 
-| Measurement | Value |
-|---|---|
-| Measured full-left road-wheel angle | *(measure during bring-up)* ° |
-| Measured full-right road-wheel angle | *(measure during bring-up)* ° |
-| Logic rail during steering stall | *(measure during bring-up)* V |
-| Logic rail sag vs. rest | *(measure during bring-up)* V |
-| Steering stall current | *(measure during bring-up)* A — **must clear the steering tap's connector rating.** Micro-Fit 3.0 is about **5 A a circuit**, and this motor stalls at its end-stops as a matter of course — [02-mechanical §2.2](02-mechanical.md#22-teardown) |
-| Drive stall current (paralleled) | *(measure during bring-up)* A — must be < 32 A |
-| Measured sensor-shaft travel, lock-to-lock | *(measure)* ° — must be ≤ 340° for AS5600 |
-| Drive-encoder PPR (measured, not inherited) | *(measure)* |
+| Measurement | Units | Reference | Yours | Why that reference |
+|---|---|---|---|---|
+| Measured full-left road-wheel angle | ° | ≈ 22.5 *(design limit)* | | [vehicle.md](../design/vehicle.md) steering limit |
+| Measured full-right road-wheel angle | ° | ≈ 22.5 *(design limit)* | | Asymmetry here is real and must reach the Ackermann config |
+| Logic rail during steering stall | V | — *(not measured on #1)* | | |
+| Logic rail sag vs. rest | V | **negligible** *(target)* | | A sag means the two-rail split is not isolating |
+| Steering stall current | A | **< 5 A** *(limit)* | | Micro-Fit 3.0 is about 5 A a circuit, and this motor stalls at its end-stops as a matter of course — [02-mechanical §2.2](02-mechanical.md#22-teardown) |
+| Drive stall current (paralleled) | A | **< 32 A** *(limit — disputed)* | | Every gate says 32 A, which is the **Sabertooth 2x32**. The board actually fitted is the **MDDS30**: 30 A continuous, 80 A peak, temperature-derated ([order log #3](../order-log.md#L3)). The lower number is the real one — open, see [03 §3.2](03-electrical.md#32-per-rail-fuse-and-gauge-table) |
+| Measured sensor-shaft travel, lock-to-lock | ° | **≤ 340°** *(limit)* | | Past 340° the AS5600 wraps and the angle is ambiguous |
+| Drive-encoder PPR (measured, not inherited) | — | **36 counts/rev** *(computed)* | | 18 magnets → 9 electrical cycles → ×4 decoding |
 
 ---
 
@@ -180,7 +180,8 @@ stamped with date, operator, vehicle serial, and the firmware/software git commi
 4. Fit `θ(counts) = k · (counts − c0)` where `k = (θ_L − θ_R) / (c_L − c_R)`.
 5. Store `c0` and `k` in `config/calibration/steering.yaml`.
 
-**Record sheet — steering calibration**
+**Record sheet — steering calibration** — *a worksheet, not a reference table: each row is one
+sample, and the acceptance criterion below governs the fit, not any single row.*
 
 | Point | Road-wheel angle θ (°) | Raw counts | Residual (°) |
 |---|---|---|---|
@@ -221,7 +222,8 @@ The roll-out calibration is authoritative because it **bypasses guessing the gea
 > your odometry off by an integer multiple — a scale error large enough to look like a
 > mechanical problem.
 
-**Record sheet — odometry calibration**
+**Record sheet — odometry calibration** — *a worksheet: three runs of the same measurement.
+Acceptance is on the mean and the verification drive below, not on any one run.*
 
 | Run | Measured distance `L` (m) | `Δticks` | `meters_per_tick` |
 |---|---|---|---|
@@ -294,6 +296,8 @@ onto the correct camera pixel through the intrinsics and both extrinsics chained
 `base_link`. Adjust until projection error is a few pixels / few cm.
 
 **Record sheet — extrinsics** (artifact: `config/calibration/extrinsics.yaml` or URDF joints)
+— *no reference column: the mast is deliberately left for each team to lay out, so every pose
+here is yours. Acceptance is the projection check below.*
 
 | Sensor | x (m) | y (m) | z (m) | roll (°) | pitch (°) | yaw (°) |
 |---|---|---|---|---|---|---|
