@@ -59,11 +59,22 @@ line and real overlaps hide. Use headless Chrome:
     google-chrome --headless --screenshot=out.png \
         --window-size=1300,980 file://$PWD/docs/images/authority-tap-wiring.svg
 
-WHAT IS STILL OPEN
-------------------
-The drive tap's two wires per contact: which two colours share the horizontal
-tab is recorded nowhere yet, so the figure prints the question rather than an
-answer. See 02-mechanical.md 2.2 step 2.
+WHAT THE DRIVE ROWS USED TO ASK FOR, AND WHY THEY STOPPED
+---------------------------------------------------------
+They printed "RECORD colours", which treated the colour pairing at M1 as an
+open question. It is not one, and it never was.
+
+The pairing lives in the VEHICLE's plug, and this tap reuses that plug intact:
+the relay's 30 leaves on a male tab and enters it on the way to the motors.
+Nothing is unterminated, so the two wires that shared a receptacle still share
+it afterwards. The pairing is preserved by construction and cannot be built
+wrong. Recording the colours would be a per-vehicle cross-check of a thing the
+build cannot get wrong, and the three vehicles need not agree.
+
+What CAN be built wrong is which net the driver's positive output feeds, and no
+colour answers that - a plug shows pairing, never polarity. So the rows name
+the property that holds, and the check for the one that does not is
+07-manual-drive.md 7.4 step 4.
 """
 
 import pathlib
@@ -120,8 +131,8 @@ TAPS = [
         fem=("FEMALE", ".250 receptacle"),
         mal=("MALE", ".250 male tab"),
         rows=[
-            ("K3", "horizontal tab", "#334155", "net A", "2 wires \u2014 RECORD colours"),
-            ("K4", "vertical tab", "#334155", "net B", "2 wires \u2014 RECORD colours"),
+            ("K3", "horizontal tab", "#334155", "net A", "2 wires \u2014 pair preserved"),
+            ("K4", "vertical tab", "#334155", "net B", "2 wires \u2014 pair preserved"),
         ],
     ),
 ]

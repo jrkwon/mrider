@@ -219,16 +219,28 @@ Work in this order and bag-and-tag fasteners by panel.
    all three pairs**: the power tap turned out to be `.250` as well, so see the caution above.
 
    > [!NOTE]
-   > **The drive tap's net map is visible — no meter needed**
+   > **The drive tap's net map cannot be built wrong — and the thing that can is not a colour**
    >
    > `M1` has **two** contacts and **four** wires, so **two wires are crimped onto each blade.**
    > *That is the paralleling, and it lives in the plug.* The two sharing the **horizontal**
-   > tab are one net; the two on the **vertical** tab are the other. Record which colours go
-   > where — the motors are mirror-mounted, so the pairing need not be left-and-left.
+   > tab are one net; the two on the **vertical** tab are the other.
    >
-   > **And the 90° key means this tap cannot be plugged in reversed.** The polarity error that
-   > remains possible is on the relay side, not here —
-   > [03-electrical §3.4](03-electrical.md#34-wire-the-e-stop-and-mux-first).
+   > **You never unterminate that plug.** The relay's `30` leaves on a male tab MRider supplies
+   > and enters the vehicle's own female plug on the way to the motors, so the two wires that
+   > shared a receptacle still share it afterwards. The pairing is **preserved by construction**.
+   > Reading the colours is a cross-check of something the build cannot get wrong, it is per
+   > vehicle, and the three need not agree — so it is not a prerequisite for anything. It was
+   > never recorded on vehicle #1 and that costs nothing.
+   >
+   > **What can be built wrong is which net the driver's `+` feeds, and no colour shows that.**
+   > A plug shows pairing; it never shows polarity. Both nets look identical and the key cannot
+   > help, because the error is on the relay side — see
+   > [03-electrical §3.4](03-electrical.md#34-wire-the-e-stop-and-mux-first) for the consistency
+   > rule, and [07-manual-drive §7.4 step 4](07-manual-drive.md#74-phase-1-rc-only-no-laptop-autonomy)
+   > for the check that catches it. It is the one drive-tap error the stock remote cannot reveal:
+   > the NC side is wired straight through, so STOCK keeps driving forward while DBW drives back.
+   >
+   > **And the 90° key means this tap cannot be plugged in reversed.**
 
    > [!WARNING]
    > **Mark the steering plug's polarity before you unterminate it.**
@@ -286,7 +298,8 @@ Work in this order and bag-and-tag fasteners by panel.
 | Drive-motor shaft diameter | mm | *(measure during bring-up)* | Calipers |
 | Instrumented side | L / R | *(measure during bring-up)* | — |
 | Steering: which header is fitted, and which wire on − | — | *(vehicle #1: `M3`, brown `M3−` / blue `M3+`)* | Read against the silkscreen — step 2 |
-| Drive `M1`: which two colours on the **horizontal** tab | — | *(record during teardown)* | Look into the plug — **this is the net map** |
+| Drive `M1`: which two colours on the **horizontal** tab | — | *(per vehicle — cross-check only, never recorded on #1)* | Look into the plug. The pairing is preserved by construction, so this confirms rather than decides |
+| Drive: **which net the driver's `+` must feed** for DBW-forward | — | *(record at [07 §7.4 step 4](07-manual-drive.md#74-phase-1-rc-only-no-laptop-autonomy))* | Not visible in the plug. Creep forward in DBW and watch which way it goes |
 | Drive `M1`: tab width × thickness | mm | **6.3 × 0.8** *(vehicle #1)* | Width off the receptacle slot, thickness off the tab |
 | Steering `M2M3`: **pitch**, centre to centre | mm | *(≈ 2.8 measured — resolve to 2.50 / 2.54 / 3.00)* | Across the module's header **pins**, not the plug's cavities |
 | Steering: polarity that drives **left** (e.g. *blue positive*) | — | *(measure during bring-up)* | Stock remote, wheels off the ground — step 2 |

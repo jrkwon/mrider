@@ -98,7 +98,7 @@
 <line x1="768" y1="560.0" x2="791" y2="560.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
 <rect x="800" y="534.0" width="176" height="52" rx="5" fill="#ffffff" stroke="#64748b" stroke-width="2.2"/>
 <text x="888.0" y="555.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">female receptacle</text>
-<text x="888.0" y="574.0" font-size="10.5" font-weight="normal" fill="#334155" text-anchor="middle">2 wires — RECORD colours</text>
+<text x="888.0" y="574.0" font-size="10.5" font-weight="normal" fill="#334155" text-anchor="middle">2 wires — pair preserved</text>
 <line x1="976" y1="560.0" x2="1003" y2="560.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
 <rect x="1012" y="534.0" width="240" height="52" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="2.2"/>
 <text x="1132.0" y="563.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">both rear motors</text>
@@ -124,7 +124,7 @@
 <line x1="768" y1="664.0" x2="791" y2="664.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
 <rect x="800" y="638.0" width="176" height="52" rx="5" fill="#ffffff" stroke="#64748b" stroke-width="2.2"/>
 <text x="888.0" y="659.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">female receptacle</text>
-<text x="888.0" y="678.0" font-size="10.5" font-weight="normal" fill="#334155" text-anchor="middle">2 wires — RECORD colours</text>
+<text x="888.0" y="678.0" font-size="10.5" font-weight="normal" fill="#334155" text-anchor="middle">2 wires — pair preserved</text>
 <line x1="976" y1="664.0" x2="1003" y2="664.0" stroke="#334155" stroke-width="3" marker-end="url(#a334155)"/>
 <rect x="1012" y="638.0" width="240" height="52" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="2.2"/>
 <text x="1132.0" y="667.0" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">both rear motors</text>

@@ -94,8 +94,32 @@ commanding anything yet.
 3. **Stationary steering.** With no throttle, sweep the RC steering stick lock to lock. Watch
    `steering_angle` track `steering_setpoint`. Look for hunting, dead-band, or asymmetry between left
    and right.
-4. **Creep forward.** Smallest throttle that produces motion. Walk alongside. Stop with
-   throttle only.
+4. **Creep forward — and confirm it is forward.** Smallest throttle that produces motion.
+   Walk alongside. Stop with throttle only.
+
+   > [!WARNING]
+   > **If it creeps backward, the drive tap's two nets are crossed. This is the first and only
+   > check that can tell you.**
+   >
+   > The drive tap carries two nets — the stock ECU's two motor leads — and which one the motor
+   > driver's `+` feeds is a choice made at the relay, not something the plug can show. A plug
+   > shows pairing; it never shows polarity, and both `.250` tabs look identical.
+   >
+   > **Everything before this point passes with the fault present.** The NC side is wired
+   > straight through, so the stock remote drives forward normally — which is what
+   > [03 §3.8 step 3](03-electrical.md#38-first-power-on-of-the-traction-rail) and the
+   > [§3.9 gate](03-electrical.md#39-gate-to-step-4) check. The MUX bench test in
+   > [§3.7](03-electrical.md#37-relay-mux-bench-test-procedure) exercises contacts, not
+   > direction. Nothing fails until a DBW throttle command moves the vehicle the wrong way.
+   >
+   > **Fix the wire. Do not flip the sign in firmware.** Swap the two nets at the relays' `30`,
+   > keeping both poles of a pair consistent per
+   > [§3.4](03-electrical.md#34-wire-the-e-stop-and-mux-first). The odometry sign, the
+   > Ackermann convention and every later check assume STOCK and DBW agree about forward; a
+   > firmware sign makes them disagree somewhere you will not be looking.
+   >
+   > *Creep speed with nobody riding and a walker alongside is the cheapest place for this to
+   > surface, which is why it is step 4 and not step 6.*
 5. **Creep and steer.** Gentle S-curves at walking pace. Confirm the vehicle goes where it is
    pointed and that steering effort under load does not sag the logic rail.
 6. **Straight-line odometry check under motion.** Drive a measured distance and compare
@@ -105,6 +129,8 @@ commanding anything yet.
 
 | Observation | Value |
 |---|---|
+| Drive direction in DBW matches STOCK forward | *(record: yes / nets swapped and fixed)* |
+| Which net the driver's `+` feeds for forward | *(record: horizontal / vertical tab)* |
 | Steering hunting at rest | *(record: none / amplitude)* |
 | Left/right travel symmetry | *(measure)* ° difference |
 | Steering dead-band around center | *(measure)* ° |
