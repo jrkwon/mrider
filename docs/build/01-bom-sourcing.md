@@ -1065,6 +1065,12 @@ oval gearbox body and it is not the lobed hub itself. **The one-finger test sett
 finger on it and turn the wheel. What turns is the hub and takes the carrier; what stays still is
 the nose and takes the bracket.
 
+![The drive gearbox off the vehicle, held in one hand. The white six-lobe hub stands proud at the output end with the axle bore at its centre; the grey housing it emerges from finishes in a short collar concentric with that hub, and that collar is the nose. The oval gearbox body behind it is not the nose, and the lobed white boss itself is not the nose](../images/photos/drive-gearbox-hub-and-nose.jpg)
+
+*Vehicle #1, 2026-11-04 ([provenance](../images/photos/MANIFEST.md)). **This settles which ring
+is which, and nothing else.** The nose diameter is still unmeasured, and reading one off this
+photograph is precisely the mistake named at the end of this section.*
+
 | | Bolt to screw bosses | **Clamp the housing nose** |
 |---|---|---|
 | What must be measured | Boss count, thread, positions, and whether any of them face the right way | **One diameter and one length** |

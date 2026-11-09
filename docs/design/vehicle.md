@@ -177,6 +177,11 @@ Read off the pack on the delivered vehicle. **This is the authoritative record**
 that need it — the driver's battery-monitor switches, the rail record sheet, the enclosure
 rules — cite this section rather than restating it.
 
+![The traction pack's own label, photographed on the vehicle. It reads Aroma 6-FM-4.5 (12V4.5Ah/20Hr), Rechargeable Battery, NON-SPILLABLE, above a CHARGE CAUTION table at 25 degrees C giving Cycle use 14.4V to 15.0V at less than 1.1A and Standby use 13.6V to 13.8V; below that, warnings against shorting the terminals and against charging in a sealed container, a 55 degree temperature limit, the statement that the battery includes Pb 70 percent at most, a crossed-out wheelie bin with the Pb symbol, and the maker Zhejiang Pinghu Hualong Industrial](../images/photos/traction-pack-label.jpg)
+
+*Vehicle #1 ([provenance](../images/photos/MANIFEST.md)). Every number in the table below is read
+off this label; the table exists so that nobody has to squint at the photograph, not instead of it.*
+
 | | |
 |---|---|
 | Type | **`Aroma 6-FM-4.5`** — `6` cells × 2 V = **12 V**, `FM` = valve-regulated sealed, `4.5` = Ah |

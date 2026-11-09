@@ -16,8 +16,10 @@ encoder. Keep the modifications minimally invasive and reversible.
 >
 > Vehicle #1 was torn down on **2026-11-06**, and what that produced is in the **Reference**
 > column of each record sheet below — the steering header and its polarity, the drive tap's
-> `.250` dimensions. It is a short list. **No teardown photographs were kept, and no bracket
-> or torque figures were measured at all.** The three vehicles went to the teams in the week
+> `.250` dimensions. It is a short list. **No bracket or torque figures were measured at all.**
+> *(Until 2026-11-09 this also said no teardown photographs were kept. Three were recovered that
+> day from the build log and are published under [docs/images/photos](../images/photos/MANIFEST.md);
+> they are the ones this page and 01-bom-sourcing already cited.)* The three vehicles went to the teams in the week
 > of 2026-11-02, so a reference that is missing now stays missing: see [Reference and Yours](index.md#reference-and-yours). This page gives
 > you the procedure and the record sheets; you produce the numbers.
 
@@ -471,6 +473,12 @@ mechanically, it just needs a secure, ventilated place to sit.
 > **Lift the seat and the traction battery and the stock controller are sitting in an open bay whose
 > walls finish in a continuous flat rim.** The contour that looked like a moulded plinth belonged to
 > the seat pan, not to the vehicle.
+>
+> ![The photograph that settled it: the seat lifted off, looking down into the open bay. The traction battery sits on the floor of the bay with the stock controller beside it and the charge pigtail running between them; the bay walls rise to a continuous flat rim all the way round, with no moulded bosses standing up out of it, and the steering wheel and footwell are visible at the right](../images/photos/battery-bay-under-seat.jpg)
+>
+> *Vehicle #1, 2026-10-19 — the photograph this paragraph cites
+> ([provenance](../images/photos/MANIFEST.md)). The bay's dimensions were measured separately and
+> are in the record sheet below; do not scale them off this.*
 >
 > **So the equipment plate is simply that bay's lid — and that is both simpler and stronger.** One
 > rectangle, one cut, one measurement, and the four individually-measured printed standoffs
