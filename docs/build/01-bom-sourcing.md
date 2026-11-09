@@ -695,7 +695,7 @@ count. The **bore** is the hole in the printed carrier, and you *print* it. The 
 
 | | |
 |---|---:|
-| Hub, lobe crest Ø | **62.82 mm** *(caliper, 2026-11-04, gearbox out of the vehicle — the cleanest access yet. 62.7 on 2026-10-15 and 62.23 on the steering gearbox; **the model takes the largest, because the bore has to clear it**)* |
+| Hub, lobe crest Ø | **62.82 mm** *(caliper, 2026-11-04, gearbox out of the vehicle — the cleanest access yet. [Photographed](../images/photos/drive-hub-caliper.jpg) as it was read. 62.7 on 2026-10-15 and 62.23 on the steering gearbox; **the model takes the largest, because the bore has to clear it**)* |
 | Printed ring bore — **clearance, not a fit** | **Ø64.02 mm** |
 | Printed ring, 7 mm wall | **OD 78.02 mm** |
 | Magnet track circumference | **245.1 mm** |
@@ -960,6 +960,12 @@ the transitions. **Print both sensors into one bracket** so the spacing is fixed
 > | tape across opposite crests | 63.00 | right method, coarse instrument |
 > | thin paper wrap, 195 mm | 62.00 | chorded the six gaps and read low |
 > | **caliper across opposite crests** | **62.70** | |
+>
+> ![The direct measurement being taken: a digital caliper spans the white six-lobe hub across two opposite lobe crests and reads 62.82 mm, with the gearbox out of the vehicle and resting on a bench](../images/photos/drive-hub-caliper.jpg)
+>
+> *Vehicle #1, 2026-11-04 ([provenance](../images/photos/MANIFEST.md)). **The jaws are on two
+> opposite crests, which is the whole method** — a reading taken anywhere else is one of the five
+> above. Your hub is one of three and may differ; the row above is the reference, not your answer.*
 >
 > **Every indirect method missed, and the direct one was available from the first day.** Six lobes
 > is an even count, so opposite crests face each other — that was true before any of this. It took
@@ -1620,6 +1626,14 @@ floating gate can partially enhance.
 > is **35–42 A against a 20 A limit — 1.75–2.1×.** The 4-pin is marked **`NO 40A 14VDC`**
 > (`KKA V4`, `012-1H-12`), exactly as its listing said, and the resistive-break argument below is
 > unaffected.
+>
+> ![The 5-pin relay's moulding, photographed close. It reads KKA B8, COIL:12VDC, 0121Z23, 70A/14VDC, 40A/28VDC, RoHS, CE, IATF 16949, above a moulded schematic whose common terminal 30 goes to a changeover pair 87a and 87, with the coil across 85 and 86](../images/photos/relay-5-pin-body.jpg)
+>
+> ![The 4-pin relay's moulding. It reads KKA V4, 012-1H-12, JD1912 and NO 40A 14VDC, above a schematic with four terminals only: 30 to 87 through a normally-open contact, and the coil across 85 and 86 — there is no 87a](../images/photos/relay-4-pin-body.jpg)
+>
+> *Both vehicle #1's parts, 2026-10-26 ([provenance](../images/photos/MANIFEST.md)). These are the
+> photographs this answer was read off. The 5-pin's **87a** is visible in its schematic and absent
+> from the 4-pin's, which is the difference the authority MUX depends on.*
 >
 > *The lesson is small and repeatable: three listings could not answer this and one photograph of
 > the moulding did. **Read the part, not the page.***
@@ -2342,6 +2356,11 @@ you need all of them before step 3:
 > housing, and the stock inline protector sits just downstream of it. **There is nothing to bolt a
 > ring terminal to**, which changes the power tap from a *take-off* into an *interception* like the
 > other two:
+>
+> ![The pack end in the bay: a black and a red conductor leave the sealed pack and terminate in a red keyed two-position housing, with its mating half plugged in alongside and a second red housing above; a white inline body sits downstream on the same run, and a red WARNING label hangs from the pack. No posts, studs or ring terminals are present anywhere on the pack](../images/photos/traction-pack-connector.jpg)
+>
+> *Vehicle #1, 2026-10-02 — the photograph this note cites
+> ([provenance](../images/photos/MANIFEST.md)).*
 >
 > ```
 > stock:   pack ─[conn]─ protector ─ stock ECU

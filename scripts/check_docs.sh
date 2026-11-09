@@ -13,6 +13,17 @@
 # Thirteen checks. Each one exists because this repository has already shipped the
 # defect it catches, or is one cohort away from it:
 #
+#  22. photograph manifest   - a published photograph with no written date,
+#                                no stated vehicle, or nothing linking to it.
+#                                A drawing carries its date implicitly because
+#                                check 17 reproduces it from its generator; a
+#                                photograph cannot, and checks 12, 20 and 21
+#                                all read TEXT - a photograph of the Sabertooth
+#                                that was never fitted would pass every one of
+#                                them. Check 14 cannot cover this: it globs
+#                                docs/images/*.svg and *.png and never
+#                                descends into docs/images/photos/.
+#
 #   1. mkdocs build --strict   - broken file links, bad nav entries, config errors
 #   2. portable Markdown       - MkDocs-only `!!!` blocks, which render as a
 #                                literal marker in any generic viewer
@@ -482,6 +493,19 @@ printf "%s21. claims that something is unrecorded carry a date%s\n" "$B" "$N"
 # true; it makes it checkable by the reader, which is the next best thing.
 if ! python3 scripts/check_absence_claims.py; then
     fail "an absence claim with no date"
+fi
+printf "\n"
+
+printf "%s22. every published photograph is dated, placed and used%s\n" "$B" "$N"
+# The build guide argues from a photograph in sixteen places and, until
+# 2026-11-09, showed none of them. Recovering them introduces a hazard the
+# drawings do not have: a drawing is reproduced from its generator by check 17,
+# so it carries its date implicitly, while a photograph of a superseded part
+# reads exactly like one of the part on the vehicle today. Checks 12, 20 and 21
+# would all pass a photograph of the Sabertooth that was never fitted, because
+# every one of them reads text. The only defence is a written row per file.
+if ! python3 scripts/check_photo_manifest.py; then
+    fail "a photograph with no manifest row, no date, or nothing linking to it"
 fi
 printf "\n"
 

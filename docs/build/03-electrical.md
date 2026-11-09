@@ -1369,6 +1369,12 @@ outermost pad.
 > not have carried one.** The photograph and the hole count agree, which is exactly the check the
 > derived figure failed.
 >
+> ![The two perfboards as they arrived, lying side by side on a bench: a dense rectangular array of plated through-holes on each, with a blank margin all round and a plated mounting hole at each of the four corners, outside the array](../images/photos/perfboards-as-delivered.jpg)
+>
+> *The boards bought for vehicle #1, 2026-11-05 — the photograph this paragraph argues from
+> ([provenance](../images/photos/MANIFEST.md)). **Count the holes on yours before you trust either
+> layout figure**; that is what caught the derived margin out.*
+>
 > **Mounting needs no decision at all** — *and an earlier revision of this page got that wrong.*
 > **The board ships with four plated corner holes**, in the blank margin outside the pad array
 > (photographed 2026-11-05). Nothing is drilled and no pad is spent. *The superseded note reasoned

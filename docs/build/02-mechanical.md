@@ -75,6 +75,16 @@ Work in this order and bag-and-tag fasteners by panel.
    | **Motor** | `M1` | **both rear motors** — **two** contacts, **four** wires: two crimped on each blade. *The paralleling is inside the plug* | right **yellow + blue**, left **green + red** |
    | **Power** | `P1` ⊕⊖ | the traction pack | **— and the power tap does NOT go here.** See the warning below |
 
+   ![The stock ECU's bare board, component side up. The silkscreen along the top edge reads M3- M3+ over M2- M2+ beside a white two-position header, then M1 beside a pair of large solder pads, then P1 beside a minus and a plus pad; JINGRAN TECHNOLOGY is printed across the middle and JR1630RX 20201216 at the lower right, above a yellow multiway connector whose pins are marked H/L, S/F, S/B, VSS and +BA](../images/photos/stock-ecu-pcb-silkscreen.jpg)
+
+   ![The same module installed, lid on, with its wire bundle leaving the near edge: a red and a green conductor, a blue and a yellow conductor, a brown one and a white one, running to a white two-position plug and on into the loom. The case is printed JR1630RX-12V, Remote Control Car Motor Controller](../images/photos/stock-ecu-wire-colours.jpg)
+
+   *Vehicle #1, 2026-11-06 ([provenance](../images/photos/MANIFEST.md)). **The silkscreen above is
+   what the table was read off.** The colours in the second photograph are vehicle #1's and were
+   traced individually; treat them as a sanity check on your own tracing, never as a wiring
+   instruction — [03-electrical §3.3](03-electrical.md#33-the-three-taps) says why colour is the
+   weakest evidence available here.*
+
    > [!WARNING]
    > **`P1` is on this list because it is on the module, not because you tap there.**
    >
@@ -587,6 +597,12 @@ stub if a cut goes wrong.
 >
 > **Measured 2026-10-20: the bay is 370 × 210 × 130 deep**, the body rim sits **130** above it, the
 > **seat screws are 300 apart laterally**, and the **spare battery holes 100 apart**.
+>
+> ![The bay photographed from above with the measurements drawn on in yellow: 37 cm along its length and 21 cm across, 30 cm between the seat screws, 10 cm between the spare holes, and 13 cm twice for the depth of the bay and the height of the body rim above it. The stock controller lies flat at the left, the traction battery stands at the centre with its red connector, and the steering wheel is at the lower right](../images/photos/battery-bay-measured.jpg)
+>
+> *Vehicle #1, 2026-10-20, with the measurements marked at the time
+> ([provenance](../images/photos/MANIFEST.md)). **Your bay is one of three** — check yours against
+> the figures rather than assuming them.*
 >
 > **A 250 mm fore-aft rail does not fit a 210 mm bay** — 20 mm hangs off each edge and the end bolts
 > land on nothing. **Rail 210, stubs 140: a 210 × 300 base.**
