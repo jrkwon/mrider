@@ -1140,6 +1140,23 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 | **Does the lobed boss stand clear of the housing end?** | **Yes — about 10 mm of it** *(2026-10-08 side view). This was the risk that could have killed Branch C: an end-on photograph made the hub look recessed inside the housing collar, and a Ø81 ring cannot reach a hub sunk inside a ~Ø72 bore. It is not sunk. The 6 mm ring goes on with room to spare — and therefore does not locate itself, so see the assembly note.* |
 | **Gearbox housing nose — diameter and reachable length** | *(Open. **This is what the sensor bracket needs** — it replaces the screw-boss question, which the nose clamp makes unnecessary)* |
 
+![The drive gearbox held in the hand with its output end towards the camera. The white hub
+stands proud of the grey housing as six broad lobes separated by six narrow gaps, a bearing and
+an open bore at its centre; a red wire lies in the gaps where it was wrapped to measure the
+circumference](../images/photos/drive-hub-lobes-end-on.jpg)
+
+*Six lobes, six gaps — 2026-10-06, the photographs the form row cites. **This settles the form
+and nothing else.** The red wire is the circumference measurement the reading history below then
+threw out, and the bore is empty because the gearbox is off the vehicle.*
+
+![The same gearbox from the side, lying in the chassis with a tape measure along it. The white
+hub leaves the end of the grey housing as a separate step standing clear of it, between the
+housing and the wheel face](../images/photos/drive-gearbox-nose-side-view.jpg)
+
+*The 2026-10-08 side view that answered the row above it: the lobed boss **stands clear**, it is
+not sunk inside the housing bore. **Not evidence for the 10 mm** — that is a tape read against a
+curved grey step, and the fit mule is what confirms it.*
+
 > [!IMPORTANT]
 > **8 mm is an AXIAL budget, and it is more comfortable than it first looked**
 >
@@ -1169,7 +1186,10 @@ Both forms need the hub measured; C-inc needs it to size the ring and the pitch 
 > **The hub is splined, and a ring magnet's bore is not**
 >
 > "Hub outside diameter" means the **rotating output of the gearbox that drives the wheel** — the
-> part photographed at teardown as a splined plastic boss with the axle through its bore.
+> part [photographed at teardown](../images/photos/drive-hub-lobes-end-on.jpg) as a splined
+> plastic boss with a bore through its centre, which the axle runs through once the gearbox
+> is back in the vehicle. *(That photograph shows the bore **empty**; until 2026-11-09 this
+> sentence said “with the axle through its bore”, which is not what it shows.)*
 >
 > A multipole ring has a **plain round bore**, so it cannot grip splines. Two cases:
 >
@@ -2080,7 +2100,14 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > both terminate in keyed 2-pin connectors, so two of the three taps are **unplugs**. What to buy
 > is the **mating half of what the vehicle already has**, identified by pin pitch and housing, or
 > harvested from a spare lead. The XT30/small-2-pin scheme below applies only to a tap that turns
-> out to be soldered or spliced — check the steering motor, which has not been photographed yet.
+> out to be soldered or spliced.
+>
+> *Moot since 2026-11-06, and this sentence took three days to catch up.* It used to end
+> “— check the steering motor, which has not been photographed yet”: an absence claim with no
+> date on it, about the wrong end of the vehicle. **The steering tap is taken at the module**,
+> where the row below records a Micro-Fit 3.0 plug
+> [measured and photographed 2026-11-06](02-mechanical.md#22-teardown). The motor end is never
+> opened, so whatever terminates there does not matter. **All three taps are unplugs.**
 >
 > | tap | termination found | what to buy |
 > |---|---|---|

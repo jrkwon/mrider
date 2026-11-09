@@ -106,6 +106,19 @@ Work in this order and bag-and-tag fasteners by panel.
    | Steering `M2M3` | **2** | **8.35 mm** | **pin-and-socket, 3.0 mm pitch** — Micro-Fit 3.0 and its clones | brown `M3−`, blue `M3+` |
    | Drive `M1` | **2** | **16.19 mm** | flat blade **6.3 × 0.8** (`.250`), **the two tabs keyed 90° to each other** | **four wires, two per blade** |
 
+   ![A digital caliper closed across a small white two-position connector housing down in the
+   vehicle's loom, its display reading 8.35 mm. Blue, brown, red and yellow conductors run past
+   behind it](../images/photos/steering-tap-caliper.jpg)
+
+   ![A digital caliper across a wider white two-position flat-blade housing held in the hand,
+   its display reading 16.19 mm. The stock module sits behind, its case lettering ending
+   RX-12V](../images/photos/drive-tap-caliper.jpg)
+
+   *Both widths as they were read, on vehicle #1, 2026-11-06. **Neither width is the
+   specification** — the blade tap is specified by its tab cross-section and the pin tap by its
+   pitch, both set out below. The two figures are here so that the halves cannot be mistaken for
+   each other, which is the whole of what the table above uses them for.*
+
    **The two taps are not the same kind of connector, and they are not specified the same way.**
 
    | | contact | what identifies it |

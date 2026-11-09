@@ -37,6 +37,26 @@ which is the next best thing and costs six characters. "No document records
 the pack's chemistry (2026-11-01)" sitting next to a table dated 2026-11-05
 is a contradiction anyone can see. Without the date it is invisible.
 
+EXTENDED 2026-11-09 TO COVER PHOTOGRAPHS
+----------------------------------------
+Publishing the first eleven photographs produced two more absence claims of
+exactly this shape, and the patterns above caught neither:
+
+    "No teardown photographs were kept."          (02-mechanical, written true)
+    "check the steering motor, which has not
+     been photographed yet"                       (01-bom-sourcing, long false)
+
+The first went stale the same afternoon - the photographs were recovered from
+the build log hours later. The second had been false since 2026-11-06, when
+that tap was measured and photographed, and the table two rows below it in the
+same block already said so.
+
+Both are about the record, not about the hardware, which is why they belong
+here. The reason they were missed is that the earlier list named the verbs for
+writing things down - recorded, measured, written - and a photograph is none of
+them. "Kept" was missed for the same reason: it is what you do with a
+photograph, not with a figure.
+
 WHAT IT DOES NOT DO
 -------------------
 Verify the claim. It cannot - the claim is about everything that is not
@@ -62,8 +82,11 @@ CLAIMS = [
         r'\bis\s+not\s+recorded\b',
         r'\bare\s+not\s+recorded\b',
         r'\bno\s+record\s+of\b',
-        r'\bhas\s+never\s+been\s+(?:recorded|measured|written)\b',
-        r'\bnever\s+been\s+(?:recorded|measured)\b',
+        r'\bhas\s+never\s+been\s+(?:recorded|measured|written|photographed)\b',
+        r'\bnever\s+been\s+(?:recorded|measured|photographed)\b',
+        r'\bnot\s+been\s+photographed\b',
+        r'\bno\s+(?:\w+\s+){0,3}(?:photograph|record|note|measurement)s?\s+(?:were|was)\s+kept\b',
+        r'\bnone\s+(?:were|was)\s+kept\b',
         r'\bno\s+(?:\w+\s+){0,3}(?:figure|number|value|spec)\b[^.]{0,40}\bexists\b',
     )
 ]
