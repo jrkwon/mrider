@@ -306,7 +306,11 @@ laptop  /mitt/dbw/command  (DbwCommand, steering_angle in rad)
 | `SW3:SW4=11` independent is the manual's own recommendation *"if controlled using Microcontroller"*, so the §4 decision is confirmed by the new part rather than merely compatible with it. | ✓ |
 | The board is **cheaper and locally stocked** (₩143,440 incl. VAT, 디바이스마트), which is what let four be bought — three fitted, one spare, for thirteen students. | ✓ |
 
-**Still open after this substitution.** `SW7:SW8` is the battery monitor and `00` is LiPo, which nothing on this vehicle is: `10` for SLA, `11` to disable. **No document in this repository records the traction pack's chemistry**, so that label has to be read before the switches are set.
+**Closed on 2026-11-09.** `SW7:SW8` is the battery monitor and `00` is LiPo, which nothing on this vehicle is. The traction pack is an **`Aroma 6-FM-4.5`, 12 V 4.5 Ah valve-regulated sealed lead-acid**, so **`10`** — full plate at [vehicle.md §3.1.1](vehicle.md#311-the-traction-pack-from-its-own-label).
+
+*This section said the chemistry was recorded nowhere. It was wrong when written: [03-electrical §3.5](../build/03-electrical.md#35-signal-wiring)'s switch table had carried the label since 2026-11-05, and the sentence was copied out of a stale paragraph four rows below that table. A claim that something is unrecorded is still a claim, and this one was not checked against the thing it was about.*
+
+**And setting it is not a protection.** The manual is explicit that on under-voltage the error LED blinks and *"the power to the motor will be maintained and will not be cut out."* The monitor **warns; it does not cut.** Nothing in the failsafe matrix may rest on it.
 
 ---
 

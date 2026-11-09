@@ -171,6 +171,40 @@ would have breached the ceiling, and this is not one.
 > windings. **The measurement above is the only authority in this project**, and
 > its result belongs in the Order Log.
 
+### 3.1.1 The traction pack, from its own label
+
+Read off the pack on the delivered vehicle. **This is the authoritative record**; the places
+that need it — the driver's battery-monitor switches, the rail record sheet, the enclosure
+rules — cite this section rather than restating it.
+
+| | |
+|---|---|
+| Type | **`Aroma 6-FM-4.5`** — `6` cells × 2 V = **12 V**, `FM` = valve-regulated sealed, `4.5` = Ah |
+| Chemistry | **Sealed lead-acid (VRLA)**. Marked `NON-SPILLABLE` and `Pb`, "includes Pb 70% at most" |
+| Capacity | **4.5 Ah at the 20-hour rate** — that is 225 mA for 20 h, *not* a figure that survives to high current |
+| Charge, cycle | **14.4 – 15.0 V**, initial current **< 1.1 A** (0.24 C) |
+| Charge, standby | **13.6 – 13.8 V** float |
+| Temperature | **≤ 55 °C** |
+| Maker | Zhejiang Pinghu Hualong Industrial |
+
+**Three things follow, and none of them are about the label.**
+
+- **The 20-hour rate is not the stall rate.** The driver is rated 30 A continuous, which on a
+  4.5 Ah pack is **6.7 C**. A VRLA at that rate delivers a fraction of its rated capacity and
+  sags hard, so the **pack's own internal resistance may be the real current limiter** — which
+  is a measurement, not an assumption, and is the open question in
+  [03-electrical §3.2](../build/03-electrical.md#32-per-rail-fuse-and-gauge-table).
+- **The rail is not 12 V while charging.** It reaches **15.0 V** on a cycle charge. Anything
+  tapped off the traction rail has to tolerate that, and a resting full pack sits near 12.8 V,
+  not 12.0 V.
+- **"Do not charge in a sealed container."** A VRLA vents under charge. The pack stays in the
+  chassis's own bay, in air — do not relocate it into either printed box, and keep it liftable
+  ([02-mechanical](../build/02-mechanical.md) row `D13`).
+
+*The charge-voltage rows are the evidence for the chemistry, not just a specification. A
+distinct **standby/float** voltage is a lead-acid signature: lithium chemistries are not float
+charged, a 12 V LiFePO₄ ends at 14.6 V with no float stage, and a 3S LiPo tops out at 12.6 V.*
+
 ### 3.2 OEM motor voltage configuration (critical)
 
 "24 V" ride-ons are built two ways, and it changes how the driver's B+ and

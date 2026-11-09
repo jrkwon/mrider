@@ -656,7 +656,7 @@ there and from the board's own manual, not from another board's table.
 > | `SW3` `SW4` | **`1` `1` — ON** | **independent both.** The manual's own words: *"Recommended this mode if controlled using Microcontroller"* |
 > | `SW5` | **`0`** | exponential OFF — response linear in the pulse width |
 > | `SW6` | **`0`** | centre calibrated at power-up; **100 ms signal-loss stop** |
-> | `SW7` `SW8` | **`1` `0` — SLA** | battery monitor. The pack is an **`Aroma 6-FM-4.5`, 4.5 Ah sealed lead-acid** — `NON-SPILLABLE`, `Pb`, label read 2026-11-05 |
+> | `SW7` `SW8` | **`1` `0` — SLA** | battery monitor. **`Aroma 6-FM-4.5`, 12 V 4.5 Ah VRLA** — `NON-SPILLABLE`, `Pb`, label read 2026-11-05 and the full plate transcribed 2026-11-09: [vehicle.md §3.1.1](../design/vehicle.md#311-the-traction-pack-from-its-own-label) |
 >
 > **`SW3:SW4 = 00` is MIXED, and on this vehicle that is not a degraded mode, it is a wrong one.**
 > The manual: *"the motor speed is controlled by channel `RC1` and direction is controlled by
@@ -665,10 +665,13 @@ there and from the board's own manual, not from another board's table.
 > motor and a steering command would drive the wheels. *It is the one setting that silently
 > redefines what both outputs mean.*
 >
-> **`SW7:SW8 = 00` selects LiPo**, which nothing on this vehicle is — the logic pack is LiFePO₄ and
-> the traction pack is the chassis's own. **No document records the traction pack's chemistry**,
-> so this is a label to read before the switches are set: `10` if it is the usual sealed lead-acid,
-> `11` to turn the monitor off and leave low-voltage protection to the pack.
+> **`SW7:SW8 = 00` selects LiPo**, which nothing on this vehicle is — the logic pack is LiFePO₄
+> and the traction pack is the chassis's own **sealed lead-acid**, so **`10`**. *This paragraph
+> said "no document records the traction pack's chemistry" until 2026-11-09, while the table
+> four rows above it already carried the label read on 2026-11-05. The table was updated and
+> the prose under it was not — and the stale half was then copied into
+> [dbw.md §4.1](../design/dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)
+> as an open question that had already been closed.* Full spec: [vehicle.md §3.1.1](../design/vehicle.md#311-the-traction-pack-from-its-own-label).
 >
 > *Five off, three on. Not eight off.*
 >
@@ -1596,7 +1599,7 @@ Only after §3.6 and §3.7 pass.
 
 | Measurement | Units | Reference | Yours | Why that reference |
 |---|---|---|---|---|
-| Traction rail, at rest | V | **12** *(nominal)* | | The pack class set by [ADR D-R](../design/vehicle.md) |
+| Traction rail, at rest | V | **12 nominal, ≈ 12.8 charged** | | `Aroma 6-FM-4.5` VRLA. **Up to 15.0 V while charging** — see [vehicle.md §3.1.1](../design/vehicle.md#311-the-traction-pack-from-its-own-label) |
 | Traction rail, under drive-motor stall | V | — *(not measured on #1)* | | Sag here is the pack's internal resistance, and is expected |
 | Logic rail, at rest | V | **12** *(nominal)* | | Its own LiFePO4 pack, not tapped from traction — §3.1 |
 | Logic rail, during traction stall | V | ≈ at rest | | This is the whole point of the two-rail split |

@@ -37,7 +37,7 @@ in person. Specifically confirm:
 
 | Check | Expected | Yours | Why it matters |
 |---|---|---|---|
-| Battery is genuinely 12 V | **12 V** | | The whole power tree assumes it, and [ADR D-R](../design/vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08) pinned the class |
+| Battery is genuinely 12 V | **12 V `Aroma 6-FM-4.5` VRLA** *(#1)* | | The whole power tree assumes it, and [ADR D-R](../design/vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08) pinned the class. Confirm yours matches — [vehicle.md §3.1.1](../design/vehicle.md#311-the-traction-pack-from-its-own-label) |
 | Two independent rear drive motors | **2** | | [Throttle path](../design/dbw.md#7-throttle-path) parallels them onto the MDDS30's **Right** output |
 | Steering column is accessible without cutting | **yes** | | Reversibility principle |
 | Column has a stock steering motor, or is hand-turned only | **motor** *(#1)* | | Determines whether the steering tap intercepts an existing motor or adds one |
