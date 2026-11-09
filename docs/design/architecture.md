@@ -69,7 +69,7 @@ All B-MROVER claims below were verified against the local checkout at
 |---|-----------|----------------|------------------|
 | 1 | **Autonomy laptop** | On-board computer. Runs ROS 2 Humble: perception, SLAM, Nav2, EKF, the `micro_ros_agent`, and `ros2_control`. Powered by its own internal battery (no traction→19 V rail in v1). | Same on-board-laptop topology. |
 | 2 | **Teensy 4.1 (DBW controller)** | Single MCU owning all actuation and vehicle sensing. Subscribes `DbwCommand`, publishes `DbwStatus` over micro-ROS. Closes the steering **position loop at ≥ 200 Hz**, shapes throttle, reads the absolute angle sensor and both encoders, decodes the RC serial stream, and runs the safety supervisor. Commands the motor driver over **servo PWM through the RC signal MUX**. | Replaces both the Pixhawk 6C and the Nano (D3). Encoder-read *logic* traces to `code/code.ino`. |
-| 3 | **Motor driver** ([which part](bom.md)) | Dual-channel. **M1** steering gearmotor, **M2** paralleled rear traction motors. Configured in **independent R/C (PWM) mode**; both signal lines come from the Teensy via the hardware RC signal MUX. | Same as B-MROVER's mode. Packetized serial was briefly adopted and reverted — it cannot coexist with an RC signal MUX ([dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)). |
+| 3 | **Motor driver** ([which part](bom.md)) | Dual-channel. **M1** steering gearmotor, **M2** paralleled rear traction motors. Configured in **independent R/C (PWM) mode**; both signal lines come from the Teensy via the hardware RC signal MUX. | Same as B-MROVER's mode. Packetized serial was briefly adopted and reverted — it cannot coexist with an RC signal MUX ([dbw.md §4](dbw.md#4-adr-motor-driver-control-mode-independent-rc-teensy-as-both-masters)). |
 | 4 | **Relay/contactor MUX** | Authority arbitration. A DPDT relay per motor circuit selects **STOCK** vs **DBW** source. Default (de-energized) = STOCK, so power loss reverts to the parent remote. | New. See [`safety.md`](safety.md). |
 | 5 | **Hardware RC signal MUX** | **The condition of D3's adoption.** An RC channel drives a signal multiplexer selecting Teensy output *or* direct RC input into the motor driver — making override a *wiring* property, independent of Teensy firmware. | New. Replaces PX4's software RC override with a stronger guarantee ([dbw.md §11.2](dbw.md#112-hardware-rc-signal-mux-the-d3-condition)). |
 | 6 | **RC transmitter + receiver** | Two roles: RC serial into the Teensy for normal closed-loop manual override, and a dedicated channel driving the hardware MUX (#5) as the independent fallback. | B-MROVER binds RC to the Pixhawk; here the RX serves both layers directly. |
@@ -131,7 +131,7 @@ flowchart LR
 - **The actuation frame rate is an open item, and deliberately visible.** A standard servo
   frame is ~50 Hz, which would cap closed-loop performance regardless of loop rate — the defect
   the superseded design carried unstated. **Measure it at Stage 1 and pin it**
-  ([`dbw.md §4`](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)).
+  ([`dbw.md §4`](dbw.md#4-adr-motor-driver-control-mode-independent-rc-teensy-as-both-masters)).
 - The driver's **R/C signal-loss timeout is inherent in this mode** — motors stop when
   pulses stop, with no configuration. One more layer independent of Teensy firmware.
 

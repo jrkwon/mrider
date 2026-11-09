@@ -196,19 +196,19 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 | Rail / branch | What protects it | Wire | Fuse? |
 |---|---|---|:---:|
 | **Traction pack → 25 A fuse → E-stop contactor → *everything*** | **25 A blade fuse, at the pack** | AWG 14 | **yes — 1** |
-| Driver M2 → **MUX** → paralleled drive motors | the driver's current limit, set to **20 A** | AWG 14 | no |
-| Driver M1 → **MUX** → steering gearmotor | same current limit | AWG 14 | no |
+| Driver Right output → **MUX** → paralleled drive motors | ~~the driver's current limit, set to **20 A**~~ — **no such setting on the MDDS30**, see the warning below | AWG 14 | **unresolved** |
+| Driver Left output → **MUX** → steering gearmotor | same, and the same gap | AWG 14 | **unresolved** |
 | **Logic pack → UBEC inputs + MUX coils** | **5 A blade fuse, at the pack** | AWG 18 | **yes — 1** |
 | UBEC → Teensy, sensor, RC RX, signal MUX | the UBEC's own 3 A limit | AWG 20 | no |
 
 **Two fuses per vehicle, one at each battery.** Not one per row.
 
 > [!WARNING]
-> **"The driver's current limit, set to 20 A" is a Sabertooth setting, and the board bought does
-> not appear to have it — OPEN**
+> **"The driver's current limit, set to 20 A" was a Sabertooth assumption. The board fitted
+> does not have the setting — OPEN**
 >
 > Two rows above justify **no fuse on the motor branches** on a *"current limit, set to 20 A"*.
-> **The `MDDS30` manual documents no user-settable limit.** It lists *"current limit protection"*
+> **Confirmed 2026-11-05: the `MDDS30` manual (rev 1.11) documents no user-settable limit** ([dbw.md §4.1](../design/dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)). It lists *"current limit protection"*
 > as a feature with no number, and the only current figures it gives are **30 A continuous and
 > 80 A peak per channel**, derated by temperature (80 A below 50 °C, 50 A to 70 °C, 40 A to
 > 100 °C, 30 A above).
@@ -249,13 +249,15 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 > those, and the driver's current limit sits downstream and never sees it.
 
 > [!CAUTION]
-> **Verify paralleled drive-motor stall current against 32 A/channel**
+> **Verify paralleled drive-motor stall current against the MDDS30's 30 A/channel continuous**
 >
 > This is [FMEA row 7](../design/safety.md#7-fmea-lightweight) and an explicit cross-check
 > in [dbw.md §13](../design/dbw.md#13-cross-checks-and-open-follow-ups). If the two
-> paralleled rear motors can exceed 32 A stalled, you must either current-limit in the
-> driver's configuration or select lower-draw motors. Measure it — a locked-rotor test
-> with a clamp meter and a current-limited supply — do not assume.
+> paralleled rear motors can exceed it stalled, the remedy is **not** *"current-limit in the
+> driver's configuration"* as this page said until 2026-11-09 — **the MDDS30 has no
+> user-settable current limit** ([dbw.md §4.1](../design/dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)). Lower-draw motors, a fuse on the
+> branch, or a firmware duty ceiling are what is left. Measure it — a locked-rotor test with
+> a clamp meter and a current-limited supply — do not assume.
 
 ## 3.3 The three taps
 
@@ -612,7 +614,7 @@ fixed and the convention has to match the part.*
 
 The motor driver runs in **independent R/C (PWM) mode**. Both signal lines come from the Teensy,
 and **both pass through the hardware RC signal MUX** on the way
-([dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)).
+([dbw.md §4](../design/dbw.md#4-adr-motor-driver-control-mode-independent-rc-teensy-as-both-masters)).
 Set the DIP switches for R/C mode before wiring. **The switch map differs between boards** —
 the configuration for the board actually purchased is recorded with it in the
 [Order Log](../order-log.md), including which switch enables the signal-loss stop. Set it from
@@ -638,7 +640,7 @@ there and from the board's own manual, not from another board's table.
 >
 > **`SW3:SW4 = 11` (independent both) is the manual's own recommendation for microcontroller
 > control**, and it is what the [Order Log](../order-log.md#L122) records. *Terminals are labelled
-> `RC1`/`RC2` on the board — `S1`/`S2` is Sabertooth naming and this page used it until
+> `RC1`/`RC2` on the MDDS30 — `S1`/`S2` is Sabertooth naming and this page used it until
 > 2026-11-05.*
 >
 > **The MUX is why R/C mode is not a convenience.** A hardware signal multiplexer switches *servo
@@ -699,7 +701,7 @@ there and from the board's own manual, not from another board's table.
 > available RC signal multiplexer switches *servo pulses*, and none can select between a
 > serial stream and RC PWM. Packetized serial and the RC signal MUX are mutually exclusive,
 > and the MUX is the condition D3 was adopted on. See
-> [dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters).
+> [dbw.md §4](../design/dbw.md#4-adr-motor-driver-control-mode-independent-rc-teensy-as-both-masters).
 >
 > The consolation: in R/C mode the driver has a signal-loss timeout. **It is not inherent and it
 > is not free — `SW6` turns it off**, which is why the [Order Log](../order-log.md#L122) calls that
@@ -1605,7 +1607,7 @@ Only after §3.6 and §3.7 pass.
 
 - [ ] Two-rail split built; steering gearmotor confirmed on the **traction** rail
 - [ ] Fuse table complete with measured values; every holder populated
-- [ ] Paralleled drive-motor stall current measured and confirmed < 32 A/channel
+- [ ] Paralleled drive-motor stall current measured and confirmed **< 30 A/channel continuous** (MDDS30)
 - [ ] Three keyed taps installed; no stock wire cut
 - [ ] E-stop hardwired in the traction path, latching, drops the MUX coil
 - [ ] MUX defaults to STOCK de-energized; verified 10× without chatter

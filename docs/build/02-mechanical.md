@@ -38,10 +38,10 @@ in person. Specifically confirm:
 | Check | Expected | Yours | Why it matters |
 |---|---|---|---|
 | Battery is genuinely 12 V | **12 V** | | The whole power tree assumes it, and [ADR D-R](../design/vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08) pinned the class |
-| Two independent rear drive motors | **2** | | [Throttle path](../design/dbw.md#7-throttle-path) parallels them onto Sabertooth M2 |
+| Two independent rear drive motors | **2** | | [Throttle path](../design/dbw.md#7-throttle-path) parallels them onto the MDDS30's **Right** output |
 | Steering column is accessible without cutting | **yes** | | Reversibility principle |
 | Column has a stock steering motor, or is hand-turned only | **motor** *(#1)* | | Determines whether the steering tap intercepts an existing motor or adds one |
-| Paralleled drive-motor **stall current** | **< 32 A** *(disputed)* | | 32 A is the Sabertooth 2x32; the fitted board is the **MDDS30** at 30 A continuous ([order log #3](../order-log.md#L3)). Measure it and the question closes — [03 §3.2](03-electrical.md#32-per-rail-fuse-and-gauge-table) |
+| Paralleled drive-motor **stall current** | **< 30 A** *(continuous)* | | The MDDS30's rating; 80 A peak, derated with temperature. *Every gate said 32 A until 2026-11-09, which was the board never fitted — [dbw.md §4.1](../design/dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)* |
 | Front wheel travel | **≈ ±22.5°** | | The pinned steering range ([dbw.md §12](../design/dbw.md#12-numeric-interface-contract)) |
 
 > [!CAUTION]
@@ -339,9 +339,9 @@ You ordered a sensor in step 1 based on an estimate. Confirm it now, before moun
 ## 2.4 Mount the steering gearmotor
 
 The gearmotor drives the column through the existing steering linkage and is driven by
-**Sabertooth channel 1 (M1)**. The Teensy commands it as a *signed effort* — the output of the
+the **MDDS30's Left channel**. The Teensy commands it as a *signed effort* — the output of the
 position loop — never as an angle
-([dbw.md §2.3](../design/dbw.md#23-why-the-sabertooth-receives-an-effort-command)).
+([dbw.md §2.3](../design/dbw.md#23-why-the-motor-driver-receives-an-effort-command)).
 
 1. **Decide the coupling point.** Either directly on the column (simplest, needs a coupler
    sized to the column diameter) or on the tie-rod arm (more mechanical advantage, more

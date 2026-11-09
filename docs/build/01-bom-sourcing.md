@@ -38,8 +38,12 @@ for where the money went and what was deferred rather than deleted.
 > [!TIP]
 > **Already have an mrover rig?**
 >
-> Reusable: **Sabertooth 2x32**, drive encoder + shaft adapter, 3D-printed enclosures
-> (though the controller cases need rework), and the laptop — roughly **−$173**.
+> Reusable: a **dual-channel R/C motor driver** (an mrover rig has a Sabertooth 2x32, which
+> also accepts servo pulses), drive encoder + shaft adapter, 3D-printed enclosures (though
+> the controller cases need rework), and the laptop — roughly **−$153**.
+>
+> *MRider itself bought three **Cytron MDDS30** boards on 2026-09-29, so this lever is spent
+> here — it is kept for anyone replicating the build. [dbw.md §4.1](../design/dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)*
 >
 > **Not reusable:** the Pixhawk 6C, PM02, Arduino Nano, and USB-TTL adapter. MRider's
 > controller is a single Teensy 4.1
@@ -47,8 +51,8 @@ for where the money went and what was deferred rather than deleted.
 > parts remain useful for other projects; this is a deliberate architectural departure, not
 > a write-off.
 >
-> With a used vehicle, lab-reused Sabertooth and encoder, and printed mounts, the realistic
-> floor is **~$620 all-in**.
+> With a used vehicle, a lab-reused driver and encoder, and printed mounts, the realistic
+> floor is **~$600 all-in**.
 
 ## 1.2 Order long-lead items first
 
@@ -77,7 +81,7 @@ at the hardware store the week you need it. **Vendors and prices are in
 
 | Item | BOM # |
 |------|-------|
-| Sabertooth 2x32 | 3 |
+| Motor driver (**Cytron MDDS30**) | 3 |
 | Drive encoder + 3.15→5 mm shaft adapter | 6 |
 | Relay MUX hardware (2× DPDT + sockets + flyback diodes + drive transistors) | 7 |
 | E-stop switch (latching mushroom, traction-rated) | 8 |
@@ -112,7 +116,7 @@ not a quote.
 | # | Item | Where | Price | Status |
 |---|------|-------|------:|--------|
 | 1 | Vehicle | [Coupang](https://www.coupang.com/vp/products/9597329401?itemId=28670205397&vendorItemId=95592760206) | ₩229,000 | recorded earlier |
-| 3 | **Sabertooth 2x32** | [Coupang](https://www.coupang.com/vp/products/8926855294?itemId=26092961552&vendorItemId=93333777957) | **₩215,300** | verified — est. arrival **10/8** |
+| 3 | ~~**Sabertooth 2x32**~~ | [Coupang](https://www.coupang.com/vp/products/8926855294?itemId=26092961552&vendorItemId=93333777957) | ~~**₩215,300**~~ | **CANCELLED.** A **Cytron MDDS30** was bought instead on 2026-09-29 at ₩143,440 — [order log #3](../order-log.md#L3), [dbw.md §4.1](../design/dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29) |
 | 3 | ↳ alternative | [one-stop.co.kr](https://one-stop.co.kr/goods/view?no=11156) | ₩250,000 VAT incl. | verified — ships soon |
 | 3 | ↳ alternative | [Dimension Engineering](https://www.dimensionengineering.com/products/sabertooth2x32) | $124.99 ≈ ₩185,000 landed | verified — ~2 weeks, USPS |
 | 9 | Pololu RC servo MUX #2806 | [DeviceMart 1179242](https://www.devicemart.co.kr/goods/view?no=1179242) | **₩31,680** VAT incl. | verified — ships ~1 week |
@@ -121,7 +125,7 @@ not a quote.
 | 10 | FlySky FS-i6 + FS-iA6B | [팰콘샵 100004832](https://www.falconshop.co.kr/shop/goods/goods_view.php?goodsno=100004832) | ₩139,160 VAT incl. | **verified in hand 2026-10-01** — iA6B with i-BUS port, ×3. Read the receiver warning below before buying elsewhere: the title said iA6 |
 
 **Everything in Tier 1 that was thought to need importing is available domestically.** The
-Sabertooth is on Coupang and at one-stop; the Pololu MUX is at DeviceMart. The "no Korean source"
+motor driver is on Coupang and at one-stop; the Pololu MUX is at DeviceMart. The "no Korean source"
 reading in the first pass of this section was wrong, and came from searching badly — DeviceMart and
 Eleparts render prices in JavaScript and return nothing to an automated search, which is a limit of
 the search, not a fact about the market.
@@ -211,7 +215,7 @@ ordering.**
 > listings make easy to miss is that their ratings are **AC** ratings: a switch sold as "10 A 250 V"
 > may be rated for a small fraction of that at **12 V DC**, because DC has no zero crossing to
 > extinguish the arc. Drive stall current here is
-> [unmeasured](../design/vehicle.md#31-drive-motor-stall-current-vs-sabertooth-rating-critical) and
+> [unmeasured](../design/vehicle.md#31-drive-motor-stall-current-vs-the-drivers-rating-critical) and
 > both rear motors share one channel.
 >
 > Use the pattern the BOM already permits: the **mushroom button switches a contactor coil**, and a
@@ -237,6 +241,11 @@ Most are commodity and will come from DeviceMart, Eleparts or Coupang; they are 
 gap is visible rather than assumed closed. **#4, #5 and #13 are deliberately absent** — they are the
 [measure-first parts](#13-two-parts-you-must-not-order-blind).
 
+<!-- historical: the Sabertooth sourcing pass of 2026-09-15. The board was CANCELLED
+     on 2026-09-29 and a Cytron MDDS30 bought instead - see dbw.md 4.1. These blocks
+     are kept because the reasoning is the reusable part: a listing title is not an
+     order, and the duty-threshold and lead-time arithmetic apply to whatever is
+     imported next. -->
 > [!NOTE]
 > **The one-stop.co.kr listing: the title is stale, the product is a 2x32**
 >
@@ -258,6 +267,13 @@ gap is visible rather than assumed closed. **#4, #5 and #13 are deliberately abs
 > rather than by the page you read, a 2x25 could arrive. One email before paying settles it — ask
 > them to confirm 32 A/64 A and the 6–30 V range on the unit they will actually ship.
 
+<!-- /historical -->
+
+<!-- historical: the Sabertooth sourcing pass of 2026-09-15. The board was CANCELLED
+     on 2026-09-29 and a Cytron MDDS30 bought instead - see dbw.md 4.1. These blocks
+     are kept because the reasoning is the reusable part: a listing title is not an
+     order, and the duty-threshold and lead-time arithmetic apply to whatever is
+     imported next. -->
 > [!TIP]
 > **Domestic at ₩250,000 versus importing at ~₩185,000 — both are defensible**
 >
@@ -285,6 +301,8 @@ gap is visible rather than assumed closed. **#4, #5 and #13 are deliberately abs
 > shipping now is worth its ₩35,000 premium over Coupang. Check the Coupang listing's seller and
 > dispatch estimate before committing; a long estimate there usually means it ships from overseas
 > anyway, in which case the domestic advantage is only the return path.
+
+<!-- /historical -->
 
 > [!WARNING]
 > **Order the Pololu MUX first, not last**
@@ -1546,7 +1564,8 @@ floating gate can partially enhance.
 >   one title — *"24V 100A 12V … SPDT 80A"* — and the title is not the order. This project has
 >   already been bitten twice by trusting a listing title over its specification table: the
 >   Sabertooth 2x25/2x32 SKU and the FS-iA6/iA6B bundle. **Read the option you select, not the
->   headline.**
+>   headline.** *The Sabertooth was cancelled over exactly that ambiguity and a Cytron MDDS30
+>   bought instead — [dbw.md §4.1](../design/dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29).*
 > - **Do not expect the listing to tell you the contact rating.** See the box below: on the part
 >   actually evaluated, neither the title nor the description was trustworthy. Design so it does
 >   not matter.
@@ -2293,7 +2312,7 @@ rather than invisible bias
 | ---------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Vehicle                | Yes, within class   | Must be **12 V, single-seat, dual rear motors, parent-remote class** ([ADR D-R](../design/vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08) reversed the original 24 V two-seater call), with an accessible steering column. Run the [vehicle.md §3 verification checklist](../design/vehicle.md) on whatever you buy.                                                                                                                                                                                                                                                                                         |
 | Teensy 4.1             | Not recommended     | A Teensy 4.0 fits the peripheral budget, but 4.1 is $8 more for headroom.**Do not drop to an ESG32/AVR-class part** — the 600 MHz Cortex-M7's timing determinism and 4 hardware quadrature decoders are load-bearing ([dbw.md §9](../design/dbw.md#9-teensy-41-firmware-platform-and-version-pinning)).                                                                                                                                                                                                                                                                                                                     |
-| Sabertooth 2x32        | Only within class   | **Do not substitute a bare H-bridge.** It is disqualified on inputs before current even matters: a BTS7960 takes PWM + DIR, so it cannot sit downstream of the [servo-pulse RC MUX](../design/dbw.md#112-hardware-rc-signal-mux-the-d3-condition), and it has no signal-loss timeout to back [failsafe rows 6 and 8](../design/safety.md#2-failsafe-matrix). A smaller *Sabertooth* is a defensible saving; a bare bridge is not. Drive-motor stall current is **unmeasured** — [measure it](../design/vehicle.md#31-drive-motor-stall-current-vs-sabertooth-rating-critical) against 32 A/channel and log the result. |
+| **Cytron MDDS30**      | Only within class   | **Do not substitute a bare H-bridge.** It is disqualified on inputs before current even matters: a BTS7960 takes PWM + DIR, so it cannot sit downstream of the [servo-pulse RC MUX](../design/dbw.md#112-hardware-rc-signal-mux-the-d3-condition), and it has no signal-loss timeout to back [failsafe rows 6 and 8](../design/safety.md#2-failsafe-matrix). A smaller *Sabertooth* is a defensible saving; a bare bridge is not. Drive-motor stall current is **unmeasured** — [measure it](../design/vehicle.md#31-drive-motor-stall-current-vs-the-drivers-rating-critical) against 32 A/channel and log the result. |
 | Drive encoder          | Yes                 | Any quadrature/Hall encoder.**Record the actual PPR — do not assume 52.** The source project conflicts with itself (52 PPR in `code.ino:27` vs 16 PPR in its own BOM, finding F7). The roll-out calibration in step 6 bypasses PPR anyway.                                                                                                                                                                                                                                                                                                                                                                                |
 | Camera                 | Yes for semester 1  | A $30 rolling-shutter USB camera is fine for SLAM and teleop.**Behavior cloning (phase 2) needs a global shutter** — rolling shutter smears during turns and corrupts steering labels. Budget +$150 then; do not train on rolling-shutter data and attribute the result to the platform.                                                                                                                                                                                                                                                                                                                                    |
 | LiDAR                  | Yes                 | `rplidar_ros` is in apt for Humble. Swapping to YDLidar or another vendor means swapping the ROS 2 driver ([software.md §2](../design/software.md#2-ros-2-stack-reused-adapted-new)).                                                                                                                                                                                                                                                                                                                                                                                                                                            |
@@ -2412,7 +2431,7 @@ you need all of them before step 3:
   the two halves in hand before soldering. This matters for the XT60 specifically **because it is a
   connector MRider adds** — the vehicle's own terminals are insulated and its connectors keyed, so
   this is the one place in the traction path where a live contact could be left exposed.
-- Ring/spade terminals for Sabertooth B+/B− and M1/M2 terminals
+- Ring/spade terminals for the driver's B+/B− and its Left/Right motor terminals
 - Inline blade-fuse holders, one per rail (values from the
   [architecture.md power tree](../design/architecture.md#5-power-tree-and-safetyauthority-chain))
 - Silicone-insulated stranded wire, gauge sized for stall current, not nominal
@@ -2508,7 +2527,7 @@ you need all of them before step 3:
   encoder, Teensy ↔ drive encoder
 - Servo-style 3-wire leads: Teensy → signal MUX master inputs (×2), RC receiver → MUX slave
   inputs (×2), MUX outputs → driver RC1/RC2 (×2)
-- Servo-style 3-wire leads for the RC receiver → signal MUX → Sabertooth
+- Servo-style 3-wire leads for the RC receiver → signal MUX → driver `RC1`/`RC2`
 - USB cable, Teensy → laptop (this carries **both** command and feedback — use a good one; a
   marginal cable is now a vehicle-safety issue, see
   [failsafe row 2](../design/safety.md#2-failsafe-matrix))
@@ -2550,7 +2569,7 @@ stamped with date and operator per
 - [ ] Column torque measured, gearmotor ordered against it with ≥2× margin
 - [ ] **Candidate sensor-shaft travel measured; angle-sensor technology confirmed against the ≤ 340° rule**
 - [ ] **Hardware RC signal MUX in hand** — the safety chain cannot be built without it
-- [ ] Paralleled drive-motor stall current checked against the Sabertooth 32 A/channel rating
+- [ ] Paralleled drive-motor stall current checked against the **MDDS30 30 A/channel continuous** rating
 - [ ] Drive-encoder PPR measured on the part actually fitted (not assumed)
 - [ ] Receiving table complete; totals reconciled
 

@@ -3,7 +3,7 @@
 **Learning objectives:**
 
 - Understand closed-loop position control and why the steering loop lives on the MCU.
-- Follow the pinned datapath: `DbwCommand` → micro-ROS → Teensy loop → Sabertooth M1.
+- Follow the pinned datapath: `DbwCommand` → micro-ROS → Teensy loop → the MDDS30's Left output.
 - Read an absolute angle sensor and convert sensor counts to steering radians.
 - Explain why the sensor is mounted **load-side** and what that excludes from the measurement.
 
@@ -56,7 +56,7 @@ it, repeat fast. Disturbances — tire scrub, a slope, a bump — are rejected a
 because they show up as error.
 
 ```
-setpoint (rad) ──▶( Σ )──▶ [ PID ] ──▶ effort ──▶ [ Sabertooth ] ──▶ [ motor ] ──▶ column
+setpoint (rad) ──▶( Σ )──▶ [ PID ] ──▶ effort ──▶ [  MDDS30  ] ──▶ [ motor ] ──▶ column
                     ▲ −                                                              │
                     └────────────── measured angle ◀── [ absolute sensor ] ◀─────────┘
 ```
@@ -65,12 +65,12 @@ The Teensy runs this loop at **≥ 200 Hz**. Each iteration: read the most recen
 the subscription, read the filtered angle, compute error, output a signed effort.
 
 > [!NOTE]
-> **The Sabertooth never hears about angles**
+> **The motor driver never hears about angles**
 >
 > The Teensy commands a **signed effort** — drive left, drive right, stop — which is the
 > *output* of the position loop. Angle regulation lives entirely in the Teensy. This keeps
-> the Sabertooth a dumb, fast power stage, exactly its role in mrover
-> ([dbw.md §2.3](../design/dbw.md#23-why-the-sabertooth-receives-an-effort-command)).
+> the driver a dumb, fast power stage, exactly its role in mrover
+> ([dbw.md §2.3](../design/dbw.md#23-why-the-motor-driver-receives-an-effort-command)).
 
 ### Why the loop lives on the MCU — ADR E
 
@@ -234,7 +234,7 @@ The full chain must then check out: `MANUAL_CONTROL.roll = +1000` → +22.5° co
 response, and measure settling time and steady-state error.
 
 **You need:** the bench steering rig (gearmotor + column + absolute sensor + Teensy +
-Sabertooth), a bench supply **with a current limit**, and a laptop running the micro-ROS agent
+MDDS30), a bench supply **with a current limit**, and a laptop running the micro-ROS agent
 so you can publish setpoints as `DbwCommand` messages.
 
 > [!CAUTION]
@@ -331,7 +331,7 @@ Do not assume ≥ 200 Hz because the code says so. Toggle a spare pin each itera
 it, or count iterations per second and report it in `DbwStatus`.
 
 Then measure the rate that actually matters: **how often an effort command reaches the
-Sabertooth.** Scope the **servo-pulse line** into the signal MUX and measure the frame rate —
+MDDS30.** Scope the **servo-pulse line** into the signal MUX and measure the frame rate —
 not a serial line; there is no serial link on this side. A fast loop feeding a slow output is a
 slow system.
 

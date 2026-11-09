@@ -36,7 +36,7 @@ Three different controllers can drive MRider's motors, and **at most one may rea
 any instant**:
 
 1. The **stock parent-remote** / factory ECU — the vehicle as shipped
-2. **DBW autonomy** — laptop → Teensy → Sabertooth
+2. **DBW autonomy** — laptop → Teensy → MDDS30
 3. An **RC transmitter** — the live human override inside DBW mode, in **two layers**
 
 If two of them can command the motors simultaneously, you do not have a vehicle, you have a
@@ -49,7 +49,7 @@ The core mechanism is a **DPDT relay MUX**: two relays, one per motor circuit, s
 STOCK or DBW.
 
 - **Coil de-energized → STOCK** (normally-closed contacts route the factory controller)
-- **Coil energized → DBW** (normally-open contacts route the Sabertooth)
+- **Coil energized → DBW** (normally-open contacts route the MDDS30)
 
 **Default is de-energized.** Therefore *any* loss of logic power, *any* E-stop, and *any*
 deliberate abort drops the coil and reverts to the factory-safe vehicle.
@@ -63,7 +63,7 @@ deliberate abort drops the coil and reverts to the factory-safe vehicle.
 > DBW.
 >
 > Note the precise meaning of "parent-remote fallback": it is **reversibility**, not live
-> dual authority. The parent remote and the Sabertooth are never simultaneously wired to the
+> dual authority. The parent remote and the MDDS30 are never simultaneously wired to the
 > motors.
 
 ### The priority ladder
@@ -72,7 +72,7 @@ deliberate abort drops the coil and reverts to the factory-safe vehicle.
 |---|---|---|---|
 | 1 (highest) | **Hardware E-stop** | Cuts traction power + drops the MUX coil | **Yes** |
 | 2 | **Relay MUX position** | De-energized = STOCK; overrides DBW entirely | **Yes** |
-| 3 | **Hardware RC signal MUX** | Selects RC effort directly into the Sabertooth | **Yes** |
+| 3 | **Hardware RC signal MUX** | Selects RC effort directly into the MDDS30 | **Yes** |
 | 4 | **RC via serial** | Teensy switches to `MANUAL_RC`, loop still closed | No |
 | 5 (lowest) | **Laptop autonomy** | Only drives when 1–4 all permit | No |
 
@@ -93,7 +93,7 @@ does not:
 - **Layer A — RC serial into the Teensy.** Normal manual mode. The sticks command an *angle*, with
   the position loop still closed behind them. Better than raw effort — when it works.
 - **Layer B — a hardware RC signal MUX.** A dedicated RC channel drives a multiplexer that
-  selects Teensy output *or* the receiver's output into the Sabertooth. This is **wiring**. It
+  selects Teensy output *or* the receiver's output into the MDDS30. This is **wiring**. It
   works with the firmware hung, crashed, or never flashed.
 
 > [!TIP]
@@ -139,7 +139,7 @@ laptop separately sees stale status and halts Nav2.
 > working with the other will do the wrong thing. This is why you exercise the matrix on a
 > bench rather than reading it, and why changing a failsafe means retraining the humans.
 
-**Row 5 — E-stop.** Traction power cut, MUX coil dropped, Sabertooth unpowered on the motor
+**Row 5 — E-stop.** Traction power cut, MUX coil dropped, MDDS30 unpowered on the motor
 rail. The steering motor loses power and the **column freewheels**.
 
 ### Why freewheel is the right answer
@@ -302,7 +302,7 @@ Verify the priority order holds, from the bottom up:
 | Test | Expected | Observed |
 |---|---|---|
 | Joystick commands, then take the RC sticks (Layer A) | RC wins, **both axes**, ≤ 200 ms; sticks command an *angle* | *(record)* |
-| **Halt the Teensy, then flip the MUX channel (Layer B)** | Transmitter drives the Sabertooth directly, with the controller dead | *(record)* |
+| **Halt the Teensy, then flip the MUX channel (Layer B)** | Transmitter drives the MDDS30 directly, with the controller dead | *(record)* |
 | Compare the feel of Layer A vs Layer B | B is raw **effort**, open-loop — noticeably different | *(record)* |
 | RC commands, then de-energize the MUX | Reverts to STOCK mid-command | *(record)* |
 | Anything commands, then E-stop | Traction cut + STOCK, **works with the laptop off** | *(record)* |

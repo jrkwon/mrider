@@ -322,7 +322,7 @@ so their extrinsics are fixed once ([calibration.md](calibration.md)).
   and LiDAR wobble), and torque-check after the first drive. Vibration is also why
   global-shutter imagery (§1) matters for phase-2 behavior cloning.
 - **E-stop & control box:** E-stop mushroom head reachable from outside the
-  vehicle ([safety.md](safety.md)); control enclosure (Teensy, Sabertooth, relay
+  vehicle ([safety.md](safety.md)); control enclosure (Teensy, MDDS30, relay
   MUX, RC signal MUX, logic battery) low and central for weight distribution.
 
 A mermaid mount/frame diagram and the full TF tree live in

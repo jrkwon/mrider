@@ -10,7 +10,7 @@ and stock. They are for budgeting, not quotes. Verify at purchase.
 
 **Revised 2026-08-07** following [D3](adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07)
 (single Teensy replaces Pixhawk + Nano) and a re-scoping of the sensor package to
-semester-1 needs. **Estimated total fell from ~$1,570 to ~$930** — see §Change record.
+semester-1 needs. **Estimated total fell from ~$1,570 to ~$910** — see §Change record.
 Totals were re-added and corrected on **2026-08-10**, and a USB gamepad (#15) added.
 
 The **laptop is not a purchased line item** — it is lab-supplied/reused
@@ -36,7 +36,7 @@ Tier 2 has not been bought yet.
 |---|------|--------------|-----------|-----------------|---------:|---------------|
 | 1 | **Vehicle (chassis)** | **12 V single-seat** ride-on, dual motors, parent remote | [vehicle.md ADR D-R](vehicle.md#adr-d-r-reversal-to-the-12-v-single-seater-2026-08-08) | **No** — class changed | 165 | Land Rover Defender, 98×56×47 cm, 10 kg, ₩229,000. **ADR D was reversed**; see the note below |
 | 2 | **Teensy 4.1** | 600 MHz Cortex-M7, 4× hardware QDC, 8× serial | [dbw.md §9](dbw.md#9-teensy-41-firmware-platform-and-version-pinning) | New | 32 | Replaces Pixhawk 6C + PM02 + Nano + USB-TTL |
-| 3 | **Sabertooth 2x32** | Dimension Eng. 2×32 A dual motor driver | [dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters) | Yes | 125 | **Do not substitute a bare H-bridge** — see the note below |
+| 3 | **Cytron MDDS30** | SmartDriveDuo-30, dual channel, **30 A continuous / 80 A peak** per channel, R/C servo-pulse input | [dbw.md §4](dbw.md#4-adr-motor-driver-control-mode-independent-rc-teensy-as-both-masters), part changed in [§4.1](dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29) | Yes | 105 | *Replaced the Sabertooth 2x32 ($125 estimated) on 2026-09-29.* **₩143,440 incl. VAT actually paid**, four units — [order log #3](../order-log.md#L3). **Do not substitute a bare H-bridge** — see the note below |
 | 4 | **Steering gearmotor — spare of the STOCK part** | *Re-scoped 2026-10-20.* The vehicle arrives with a stock steering gearmotor; this line is now a **spare of that part**, not a different motor | [dbw.md §2.2.2](dbw.md#222-if-the-duty-test-fails-the-ladder-cheapest-first) | Contingent | 7 | **Buying a different gearmotor was never executable** — the stock gearbox is sealed and the wiper fallback is [withdrawn](dbw.md#24-wiper-motor-fallback). If the duty test fails, R1/R2 (firmware) come first |
 | 5 | **Absolute steering angle sensor** | AS5600 breakout + diametric magnet; pot as fallback | [dbw.md §6](dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer) | New | 20 | **Budget for either** — technology decided by the bench travel measurement |
 | 6 | **Drive encoder + adapter + bracket** | **Quadrature A/B, 3.3 V logic** encoder · shaft adapter · **mounting bracket** · fasteners | [dbw.md §8](dbw.md#8-adr-c-drive-distance-encoding) | Yes | 18 | mrover shaft-adapter method. **Verify PPR on the part fitted** (F7). The Teensy is **not 5 V tolerant**, and the bracket was previously missing from this BOM — see [§1.2.3](../build/01-bom-sourcing.md#6-drive-encoder-what-to-actually-buy) |
@@ -49,7 +49,7 @@ Tier 2 has not been bought yet.
 | 13 | **Steering shaft coupler / adapter** | Column coupler, set screws, bracket, magnet mount | [dbw.md](dbw.md) · [calibration.md](calibration.md) | New | 15 | Couples gearmotor + angle sensor. Magnet mount needs concentricity — see [dbw.md §6](dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer) |
 | 14 | **Mounts / 3D prints** | Sensor mast + camera/LiDAR mounts + enclosures | [sensors.md §5](sensors.md) | Partial | 30 | Print filament/hardware; mrover STLs need reworking for the new controller |
 | 15 | **USB gamepad (teleop)** | Xbox-layout USB/2.4 GHz pad — Logitech F710 class | [build/07](../build/07-manual-drive.md) · `mitt_control/launch/teleop.launch.py` | New | 40 | **Not the same thing as the RC set (#10)** — see the note below |
-| | | | | **Tier 1** | **$678** | |
+| | | | | **Tier 1** | **$658** | |
 
 > [!WARNING]
 > **The gamepad (#15) and the RC transmitter (#10) are different parts, doing different jobs**
@@ -85,9 +85,12 @@ Tier 2 has not been bought yet.
 > comes down to ~0.65 m, the seat must be replaced with an equipment plate, and finding F1
 > (B-MROVER validated on the 24 V two-seater class) no longer transfers.
 >
-> The Sabertooth below is now oversized for this drivetrain. **Keep it anyway** — its
-> current limiting and R/C signal-loss timeout are load-bearing in the failsafe matrix, and
-> headroom is not a defect.
+> The driver below is still comfortably oversized for this drivetrain. **Keep it anyway** —
+> its R/C signal-loss timeout is load-bearing in the failsafe matrix, and headroom is not a
+> defect. *Note one word that changed with the part: the Sabertooth's **settable current
+> limit** was also called load-bearing here, and the MDDS30 has no such setting — only
+> unnumbered protection and thermal derating ([§4.1](dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)). The timeout survives the swap;
+> the current limit did not.*
 
 > [!NOTE]
 > **The RC link is i-BUS, not SBUS — corrected 2026-09-15**
@@ -109,11 +112,11 @@ Tier 2 has not been bought yet.
 > spare channel to drive the MUX. Either protocol satisfies it. The docs now say so.
 
 > [!WARNING]
-> **Do not substitute a cheap H-bridge for the Sabertooth**
+> **Do not substitute a cheap H-bridge for the MDDS30**
 >
 > A BTS7960-class module is ~$14 and looks like a $110 saving. It is the wrong part, and
 > notably **not primarily because of current rating** — the drive-motor stall current is
-> still [unmeasured](vehicle.md#31-drive-motor-stall-current-vs-sabertooth-rating-critical).
+> still [unmeasured](vehicle.md#31-drive-motor-stall-current-vs-the-drivers-rating-critical).
 > Three reasons that hold regardless of how that measurement lands:
 >
 > 1. **Wrong input type, which is disqualifying on its own.** It takes PWM + DIR logic. The
@@ -122,12 +125,16 @@ Tier 2 has not been bought yet.
 >    of it — and that MUX is the condition D3 was adopted under.
 > 2. **No signal-loss timeout.** [Failsafe rows 6 and 8](safety.md#2-failsafe-matrix) and
 >    [FMEA row 9](safety.md#7-fmea-lightweight) require traction to stop when the Teensy
->    stops emitting, with no software involved. The Sabertooth does this; a bare bridge
->    does not.
+>    stops emitting, with no software involved. The MDDS30 does this — `SW6=0`, stop after
+>    **100 ms** — and a bare bridge does not. *`SW6=1` disables it, so it is a switch to set
+>    rather than a property to assume.*
 > 3. **No meaningful current limiting or thermal protection**, and its characteristic
 >    failure is a shorted MOSFET — which on a vehicle means **uncontrolled full throttle**.
+>    *The MDDS30's limiting is unnumbered and not user-settable, which is weaker than this
+>    comparison once implied — but it has protection and a published thermal derating curve,
+>    and the BTS7960 module has neither ([§4.1](dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)).*
 >
-> Keep the Sabertooth.
+> Keep the MDDS30.
 
 ## Tier 2 — Perception
 
@@ -153,10 +160,23 @@ Tier 2 has not been bought yet.
 
 ## Totals
 
+> [!NOTE]
+> **Totals corrected 2026-11-09 — #3 is a different, cheaper board**
+>
+> The Sabertooth 2x32 was **never fitted**. A **Cytron MDDS30** was bought instead on
+> 2026-09-29 at **₩143,440 incl. VAT**, which is **$105** at this document's stated rate of
+> 1 USD = 1,362 KRW, against the Sabertooth's **$125** estimate. Every figure below is
+> **$20 lower** than it was: Tier 1 $678 → **$658**, both tiers $846 → **$826**.
+>
+> *These remain pre-purchase estimates in USD.* Purchasing is complete and the authoritative
+> money document is the [purchase request](../purchase-request-2026-fall.md), in KRW, reconciled
+> against the [order log](../order-log.md) by `check_docs.sh`. Where the two disagree, the
+> order log is what was spent.
+
 | | Sum of line items | Contingency (~10%) | **Estimated total** |
 |------|------------------:|-------------------:|--------------------:|
-| **Tier 1 + Tier 2** | **$846** | ~$85 | **~$930** |
-| *Tier 1 alone (weeks 1–9)* | *$678* | *~$68* | *~$745* |
+| **Tier 1 + Tier 2** | **$826** | ~$83 | **~$910** |
+| *Tier 1 alone (weeks 1–9)* | *$658* | *~$66* | *~$725* |
 
 > [!CAUTION]
 > **Totals corrected 2026-08-10 — the previous figures were arithmetically stale**
@@ -229,20 +249,23 @@ decision that replaced it. **Do not order a 24 V two-seater from it.**
 | Lever | Saving | Cost |
 |---|---:|---|
 | Buy the vehicle used (marketplace) | −$100 to −$150 | Condition risk; inspect steering column before buying |
-| Lab already has an mrover rig — reuse Sabertooth (#3), drive encoder (#6), 3D prints (#14) | −$173 | None, if the parts exist |
+| Lab already has an mrover rig — reuse the motor driver (#3), drive encoder (#6), 3D prints (#14) | −$153 | None, if the parts exist. **Spent for #3**: three MDDS30s were bought on 2026-09-29 |
 | 3D-print couplers and mounts instead of buying | −$30 | Print time |
 | Defer Tier 2 entirely to next semester | −$168 | **Loses the SLAM map deliverable** — the semester's visible outcome |
 
-**Realistic floor** with a used vehicle, lab-reused Sabertooth and encoder, and printed
-mounts: **~$620 all-in.**
+**Realistic floor** with a used vehicle, a lab-reused driver and encoder, and printed
+mounts: **~$600 all-in.** *This section is pre-purchase planning and is kept for anyone
+replicating the build; MRider's own purchasing is complete — see the [order log](../order-log.md).*
 
 ---
 
 ## Reuse notes (lab already has an mrover build)
 
-Typically already owned and subtractable: **Sabertooth 2x32** (#3), **drive encoder + shaft
-adapter** (#6), **3D-printed enclosures** (#14, `config/3D_design/v3/` — though the Pixhawk
-and Sabertooth cases need rework for the new controller), and the laptop.
+Typically already owned and subtractable: a **dual-channel R/C motor driver** (#3 — an
+mrover rig has a Sabertooth 2x32, which also accepts servo pulses and would serve), **drive
+encoder + shaft adapter** (#6), **3D-printed enclosures** (#14, `config/3D_design/v3/` —
+though the Pixhawk and motor-driver cases need rework for the new controller, and the MDDS30's
+102 × 97 × 42 mm footprint is not the Sabertooth's), and the laptop.
 
 **No longer reusable under D3:** the Pixhawk 6C, PM02, Arduino Nano, and USB-TTL adapter from
 an existing mrover rig are not used by MRider. If the lab has them, they remain useful for

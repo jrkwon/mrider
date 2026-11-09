@@ -41,10 +41,11 @@ tables across five pages.
 WHAT IT DELIBERATELY DOES NOT CHECK
 -----------------------------------
 Whether a reference VALUE is right. Check 16 does that for the vehicle
-dimensions and check 15 for the carrier; the drive stall current is openly
-disputed in two cells on purpose - 32 A is the Sabertooth that was never
-fitted and the MDDS30 is 30 A - and a checker that demanded one number would
-have to pick a side this script has no business picking.
+dimensions and check 15 for the carrier. The drive stall current was openly
+disputed in two cells here for one day - 32 A was the Sabertooth that was
+never fitted, against the MDDS30's 30 A - and that was settled on 2026-11-09
+by migrating the documents to the board that exists. Check 20 keeps it
+settled; this script only checks the shape of a sheet, not its numbers.
 """
 import re
 import sys

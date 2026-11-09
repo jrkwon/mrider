@@ -49,7 +49,7 @@ what each owns is most of the architecture:
 |---|---|---|
 | **Laptop** (ROS 2 Humble) | Perception, SLAM, Nav2, the learned policy — everything that needs a GPU or a filesystem | Runs on its own battery, so traction sag cannot reset it |
 | **Teensy 4.1** (micro-ROS) | The steering position loop at ≥ 200 Hz, throttle shaping, encoder reading, RC serial decode, and the safety supervisor | A dedicated MCU has deterministic, direct access to the sensors and the motor driver |
-| **Sabertooth 2x32** | Raw H-bridge power to the motors | A dumb, fast power stage — deliberately not smart |
+| **Cytron MDDS30** | Raw H-bridge power to the motors | A dumb, fast power stage — deliberately not smart |
 
 > [!NOTE]
 > **It used to be four computers. That is the interesting part.**
@@ -85,11 +85,11 @@ laptop:  Nav2 / policy / teleop
    → mitt_hardware  →  /mitt/dbw/command   (DbwCommand: steering_angle rad, speed m/s)
    → micro-ROS over USB
    → Teensy 4.1: closes the position loop at >= 200 Hz against the measured angle
-   → servo PWM → RC signal MUX → Sabertooth (R/C mode) → M1 → steering gearmotor
+   → servo pulse → RC signal MUX → MDDS30 (R/C mode) → Left → steering gearmotor
 ```
 
 Throttle rides the **same** message: `DbwCommand.speed` → Teensy shaping (ramp, cap, direction
-interlock) → a second servo-PWM line → the same MUX → Sabertooth M2 → the paralleled rear drive
+interlock) → a second servo-PWM line → the same MUX → MDDS30 Right → the paralleled rear drive
 motors.
 
 **The payoff of a single pinned path** is not architectural tidiness — it is that every
@@ -144,7 +144,7 @@ just comes out subtly wrong.
 |---|---|---|
 | Command stream (laptop → Teensy) | ≥ 50 Hz | Staleness > 500 ms → `ESTOP`: throttle 0, steering centered |
 | Steering position loop (Teensy) | ≥ 200 Hz | Sluggish, hunting steering |
-| Actuation frame (Teensy → Sabertooth) | **measure & pin** | **Caps closed-loop performance regardless of loop rate** — see below |
+| Actuation frame (Teensy → MDDS30) | **measure & pin** | **Caps closed-loop performance regardless of loop rate** — see below |
 | Status feedback (Teensy → laptop) | ≥ 50 Hz | `/mitt/dbw/status` stale; EKF coasts on IMU; Nav2 halts |
 | IMU | ≥ 100 Hz | EKF degrades; Nav2 slows or stops |
 
@@ -300,7 +300,7 @@ human could check it.
 
 1. **Hook** — a stock kids' ride-on, and the question: what has to change for software to drive it?
 2. **Drive-by-wire in three requirements** — actuator, sensor, authority
-3. **Two computers and a power stage** — laptop / Teensy / Sabertooth, and what each owns
+3. **Two computers and a power stage** — laptop / Teensy / MDDS30, and what each owns
 4. **It used to be four** — why that was reasonable, and why counting interfaces killed it
 5. **The command path** — one diagram, traced left to right
 6. **The feedback path** — same link, same clock, and the tradeoff that buys

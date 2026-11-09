@@ -126,7 +126,7 @@ Every record sheet in these pages has the same two columns, and they mean differ
 
 **A reference is not an expected answer.** Where it is a vehicle #1 measurement it is one
 sample, and your vehicle may legitimately differ — the three were not built to a tolerance.
-Where it is a **limit** (`< 32 A`, `≤ 340°`) a disagreement is a fault; where it is a
+Where it is a **limit** (`< 30 A`, `≤ 340°`) a disagreement is a fault; where it is a
 *(nominal)* or *(target)* a disagreement is a question. The *why that reference* column says
 which, so you never have to guess whether a mismatch matters.
 

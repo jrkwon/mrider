@@ -46,7 +46,7 @@ Submit by **Friday 10/16**:
 
 ### E — Electrical & Firmware
 
-**Owns:** the Teensy 4.1, micro-ROS, the Sabertooth motor driver, the relay MUX, the RC signal MUX,
+**Owns:** the Teensy 4.1, micro-ROS, the MDDS30 motor driver, the relay MUX, the RC signal MUX,
 and the emergency stop.
 
 You write the code that turns a ROS 2 message into motion, and — more importantly — the code that

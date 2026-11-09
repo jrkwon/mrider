@@ -322,7 +322,7 @@ Three notes worth re-reading at the moment of ordering, when a cheaper option is
 >
 > | | Requirement | Why it is not negotiable |
 > |---|---|---|
-> | 1 | **Accepts R/C servo pulses** | The [Pololu #2806 MUX](design/dbw.md#112-hardware-rc-signal-mux-the-d3-condition) multiplexes *servo pulses only*. [ADR §4](design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters) was **reverted** from packetized serial for exactly this reason |
+> | 1 | **Accepts R/C servo pulses** | The [Pololu #2806 MUX](design/dbw.md#112-hardware-rc-signal-mux-the-d3-condition) multiplexes *servo pulses only*. [ADR §4](design/dbw.md#4-adr-motor-driver-control-mode-independent-rc-teensy-as-both-masters) was **reverted** from packetized serial for exactly this reason |
 > | 2 | **Stops the motors when the pulses stop** | [Failsafe rows 6 and 8](design/safety.md#2-failsafe-matrix), [FMEA row 9](design/safety.md#7-fmea-lightweight) — severity 5. Traction must die with **no software involved** |
 > | 3 | **Two independently controlled channels** | M1 steering, M2 paralleled drive |
 > | 4 | 12 V, adequate current, limiting + thermal | The paralleled stall current is still unmeasured |
@@ -870,7 +870,7 @@ reproducible rather than folklore.
 > [signal MUX wiring](design/dbw.md#112-hardware-rc-signal-mux-the-d3-condition), and the
 > `ros2_control` stack are all untouched, because the interface is **servo pulses** either way.
 >
-> That is not luck. [ADR §4](design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)
+> That is not luck. [ADR §4](design/dbw.md#4-adr-motor-driver-control-mode-independent-rc-teensy-as-both-masters)
 > was reverted from packetized serial to R/C PWM so the hardware MUX could sit in the path — a
 > decision that read as a constraint at the time. It is what makes the driver a **swappable box**
 > today, under supply pressure, four days before a build. A serial-protocol design would have

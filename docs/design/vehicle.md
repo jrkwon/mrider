@@ -94,14 +94,20 @@ Links (representative, July 2026):
 
 These measurements gate the [DBW](dbw.md) and [safety](safety.md) design. Do
 them **before** cutting into wiring; several determine whether the stock motors
-can be driven by the Sabertooth at all.
+can be driven by the motor driver at all.
 
-### 3.1 Drive-motor stall current vs Sabertooth rating (critical)
+### 3.1 Drive-motor stall current vs the driver's rating (critical)
 
-The two rear motors are wired **in parallel onto one Sabertooth 2x32 channel**
-([ADR C](dbw.md), throttle path). The Sabertooth 2x32 is rated **32 A continuous
-per channel (~64 A peak per channel for a few seconds)**. The paralleled pair
-must stay within that.
+The two rear motors are wired **in parallel onto one driver channel**
+([ADR C](dbw.md), throttle path). The driver fitted is a **Cytron MDDS30**, rated
+**30 A continuous and 80 A peak per channel**, thermally derated — 80 A below 50 °C,
+50 A to 70 °C, 40 A to 100 °C, and **30 A above 100 °C**. The paralleled pair must stay
+within that.
+
+*The figure in this section was **32 A continuous / ~64 A peak** until 2026-11-09, which is the
+Sabertooth 2x32 — a board that was specified from a listing and **never fitted**. The continuous
+limit is therefore 2 A lower than every gate assumed. See
+[dbw.md §4.1](dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29).*
 
 **Resolved on the delivered vehicle, 2026-09-30: `DING LI RS 390-12V RPM 18000`**, read off the
 motor can during teardown.
@@ -111,10 +117,10 @@ motors in this size range run from RS-380/390 up to RS-550/775, that their stall
 close to an order of magnitude, and that **the range straddles the driver's ceiling**. That posture
 was right, and it is now discharged by a label rather than by a lookup.
 
-**The answer lands on the safe side.** RS-390 is the small end of that range, against a
-per-channel rating of **30 A continuous / 80 A peak** on the board now being procured — see the
-[Order Log](../order-log.md) for which board that is and whether it has arrived. A large-motor
-car was the case that would have breached the ceiling, and this is not one.
+**The answer lands on the safe side.** RS-390 is the small end of that range, against the
+MDDS30's **30 A continuous / 80 A peak** per channel. Four boards were received and confirmed
+genuine on 2026-10-08 — [order log #3](../order-log.md#L3). A large-motor car was the case that
+would have breached the ceiling, and this is not one.
 
 > [!IMPORTANT]
 > **This does not discharge the measurement. Take it anyway.**
@@ -139,15 +145,21 @@ car was the case that would have breached the ceiling, and this is not one.
   24 A stall; ~1.5 Ω implies roughly 8 A. If the clamp-meter peak and this
   estimate disagree by more than about 2×, distrust both and repeat — a
   clamp meter can easily miss a <1 s peak.
-- **Acceptance:** paralleled continuous draw under load ≤ 32 A; transient/stall
-  of the pair should not sit above ~64 A. If the pair can stall near/over 64 A,
-  mitigations (per-motor current limit in Sabertooth config, gentler
-  accel/torque limits, or driving **one** motor per Sabertooth channel and
-  sacrificing the steering channel split) must be chosen **before** wiring — see
+- **Acceptance:** paralleled continuous draw under load **≤ 30 A**; transient/stall
+  of the pair should not sit above **80 A**, and the derating means 80 A is only
+  available below 50 °C — a stalled pair heats the board, so treat the 30 A figure as
+  the one that governs a repeated test.
+- **If the pair can stall near or over that**, the mitigations are **not** what this
+  document used to list. *"Per-motor current limit in the driver config"* was a
+  Sabertooth assumption: **the MDDS30 has no user-settable current limit** — its manual
+  lists *"current limit protection"* with no number ([dbw.md §4.1](dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)). What is left is
+  gentler accel/torque limits in firmware, a fuse on the branch, or driving **one** motor
+  per channel and sacrificing the steering channel split. Choose **before** wiring — see
   [dbw.md](dbw.md) throttle path and [safety.md](safety.md) power budget.
-- **Consequence if it fails:** paralleled stall above the Sabertooth ceiling
-  forces either current-limited (weaker) traction or a **second motor driver** —
-  the latter because the documented mitigation consumes the steering channel.
+- **Consequence if it fails:** paralleled stall above the driver's ceiling
+  forces either weaker traction imposed in firmware or a **second motor driver** —
+  the latter because the remaining hardware mitigation consumes the steering channel.
+  *A spare MDDS30 was bought, so the second-driver route is stocked rather than hypothetical.*
   Flag to [bom.md](bom.md) and record in the [Order Log](../order-log.md).
 
 > [!WARNING]
@@ -161,17 +173,17 @@ car was the case that would have breached the ceiling, and this is not one.
 
 ### 3.2 OEM motor voltage configuration (critical)
 
-"24 V" ride-ons are built two ways, and it changes how the Sabertooth B+ and
+"24 V" ride-ons are built two ways, and it changes how the driver's B+ and
 motor leads are tapped:
 
-- **(a) Native 24 V motors** — each motor sees the full 24 V pack. Sabertooth
-  M-outputs drive them directly at 24 V.
+- **(a) Native 24 V motors** — each motor sees the full 24 V pack. The driver's
+  motor outputs drive them directly at 24 V.
 - **(b) 12 V motors in series/paired across a 24 V pack** — common on
   "2×12 V" builds. Here a single motor must **not** see 24 V.
 - **Procedure:** read the motor can label (e.g., `RS-550 12V` vs `24V`); with a
   meter, measure the voltage across one motor's terminals at full throttle in
   OEM mode. **Acceptance:** confirm whether each drive motor terminal sees 12 V
-  or 24 V, and wire the Sabertooth output to match (never apply 24 V across a
+  or 24 V, and wire the driver output to match (never apply 24 V across a
   12 V motor). This determines the [power budget](safety.md) rail assignment.
 
 ### 3.3 Steering column geometry
@@ -275,7 +287,7 @@ against the build.
 | Steering torque **falls** — less tyre scrub on a lighter, narrower car. Gearmotor sizing gets easier, and the [§2.2 torque procedure](dbw.md#22-torque-measurement-procedure-before-sizing-the-gearmotor) should come in well under the 24 V case. | ✓ |
 | Wheelbase ~63 cm gives **R_min ≈ 1.52 m** instead of ~1.7 m — a tighter turning circle, which is better in indoor corridors within the same ±22.5° limit. | ✓ |
 | 12 V at ≤ walking speed is **inherently less dangerous** than 24 V for a student-operated platform. | ✓ |
-| Sabertooth 2x32 headroom is **unknown until the drive motors are measured** ([§3.1](#31-drive-motor-stall-current-vs-sabertooth-rating-critical)) — a 12 V car is *likely* to draw less than the 24 V case, but "likely" is not a number and the plausible range straddles the 32 A/channel limit. Retained regardless of how it lands: its current limiting and R/C signal-loss timeout are load-bearing in the [failsafe matrix](safety.md#2-failsafe-matrix). | – |
+| Driver headroom is **unknown until the drive motors are measured** ([§3.1](#31-drive-motor-stall-current-vs-the-drivers-rating-critical)) — a 12 V car is *likely* to draw less than the 24 V case, but "likely" is not a number and the plausible range straddles the ~~32 A/channel~~ **30 A/channel** limit *(the board named here was never fitted — [dbw.md §4.1](dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29))*. Retained regardless of how it lands: its current limiting and R/C signal-loss timeout are load-bearing in the [failsafe matrix](safety.md#2-failsafe-matrix). | – |
 
 > [!NOTE]
 > **Corrected 2026-08-11 — this document used to assert the motor class twice, differently**
@@ -320,8 +332,9 @@ simulation rather than discovered on the floor.
       This one may reopen a stated requirement in [overview.md](overview.md).
 
 **Consequences.**
-- Paralleled dual-motor draw must be verified against the 32 A/channel Sabertooth
-  ceiling (§3.1) — the one place the bigger vehicle can bite back.
+- Paralleled dual-motor draw must be verified against the ~~32 A/channel Sabertooth~~
+  **30 A/channel MDDS30** ceiling (§3.1) — the one place the bigger vehicle can bite back.
+  *([dbw.md §4.1](dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29) — the Sabertooth was never fitted.)*
 - Motor voltage configuration (§3.2) must be confirmed before wiring.
 - Higher base cost flows into the [BOM](bom.md) (both tiers use this line item).
 - The wide deck / UTV bed simplifies the [sensor mast](sensors.md) and control-box

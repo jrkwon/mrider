@@ -48,7 +48,7 @@ chassis_mass: 8.0        # kg  TODO weigh (10 kg total minus wheels)
 wheel_mass: 0.5          # kg  TODO weigh
 
 # Equipment plate replacing the removed seat: laptop ~2 kg + LiDAR/camera/mast
-# + Teensy/Sabertooth/relay MUX/logic battery ~3-4 kg (vehicle.md C1).
+# + Teensy/MDDS30/relay MUX/logic battery ~3-4 kg (vehicle.md C1).
 # THIS IS 60% OF THE VEHICLE'S OWN MASS, carried high. Modelled as a real link
 # so the sim reports the tip-over margin honestly rather than hiding it.
 payload_mass: 6.0        # kg  TODO weigh as built

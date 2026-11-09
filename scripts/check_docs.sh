@@ -44,6 +44,11 @@
 #                                ("the traction pack"), exactly as
 #                                architecture.md already does; the number lives
 #                                in vehicle.md, bom.md and the order log.
+#  20. motor driver         - a live page naming the Sabertooth 2x32, which was
+#                                specified from a listing and never fitted, or
+#                                claiming its 32 A rating against the MDDS30's
+#                                30 A. Both names were live for six weeks and
+#                                the gate was permissive by 2 A the whole time.
 #  19. record sheets         - a build page asking for a measurement with no
 #                                reference beside the blank, so a reader cannot
 #                                tell whether their number is wrong, merely
@@ -445,6 +450,19 @@ printf "%s19. record sheets carry a reference, or say why not%s\n" "$B" "$N"
 # shape is what spread to fifteen tables across five pages by default.
 if ! python3 scripts/check_record_sheets.py; then
     fail "a record sheet is neither a reference sheet nor a declared worksheet"
+fi
+printf "\n"
+
+printf "%s20. the motor driver is the one that was bought%s\n" "$B" "$N"
+# A Sabertooth 2x32 was specified from a listing in July 2026 and NEVER FITTED;
+# a Cytron MDDS30 was bought on 2026-09-29. For six weeks both names were live,
+# and the numbers are not interchangeable: 32 A vs 30 A continuous made every
+# acceptance gate PERMISSIVE BY 2 A against the board actually on the vehicle,
+# and the no-fuse argument on the motor branches rested on a settable current
+# limit the MDDS30 does not have. History keeps the old name; live pages may
+# not, unless they say in the same block what replaced it.
+if ! python3 scripts/check_motor_driver.py; then
+    fail "a live page names the Sabertooth, or claims its rating"
 fi
 printf "\n"
 

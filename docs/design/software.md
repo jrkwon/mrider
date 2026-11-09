@@ -533,7 +533,7 @@ own pinned toolchain and its measured bring-up numbers (§8).
   ([`dbw.md §3`](dbw.md#3-adr-e-steering-control-loop-location-the-key-dbw-decision)).
 - **Actuation frame rate caps below what the loop needs** → accept it and restate the loop
   figure as a sampling rate, per option 2 of the
-  [§4 warning](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters).
+  [§4 warning](dbw.md#4-adr-motor-driver-control-mode-independent-rc-teensy-as-both-masters).
   Packetized serial is *not* an available escape — it cannot coexist with the RC signal MUX.
 
 ---

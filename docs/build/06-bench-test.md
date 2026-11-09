@@ -49,9 +49,9 @@ specific way this vehicle can fail; each has a defined behavior; each is testabl
 | 1 | **Command loss** | Kill the publisher (staleness > 500 ms) | Teensy → `ESTOP`: throttle → 0 | **Centered**, then motor de-energized | | ☐ |
 | 2 | **USB link loss** | Unplug `/dev/mitt_dbw` | Teensy → `ESTOP` autonomously; laptop halts Nav2 | Centered, then de-energized | | ☐ |
 | 3 | **RC loss** | Power off the transmitter | Teensy → `ESTOP`: throttle → 0 | Centered, then de-energized | | ☐ |
-| 4 | **Battery sag / brownout** | Force a stall while watching the logic rail; or bench-drop the logic rail | Logic rail below threshold → MUX coil drops → **revert to STOCK**; Sabertooth LVC also stops motors | steering motor de-energizes with the coil → **freewheel** | | ☐ |
+| 4 | **Battery sag / brownout** | Force a stall while watching the logic rail; or bench-drop the logic rail | Logic rail below threshold → MUX coil drops → **revert to STOCK**. *The driver's own low-voltage cutoff was listed here as a second layer; on the MDDS30 that is the `SW7:SW8` battery monitor, whose default `00` is **LiPo** — which nothing on this vehicle is, and the traction pack's chemistry is recorded nowhere ([dbw.md §4.1](../design/dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)). Do not count on it until those switches are set deliberately.* | steering motor de-energizes with the coil → **freewheel** | | ☐ |
 | 5 | **E-stop pressed** | Press it — **also repeat with the laptop powered off** | Traction power cut; MUX coil dropped → STOCK | steering motor loses power → **freewheel** | | ☐ |
-| 6 | **Sabertooth signal loss** | Halt the Teensy (hold reset) while a motor is commanded | **R/C signal-loss timeout** stops both motors | steering motor stops | | ☐ |
+| 6 | **Driver signal loss** | Halt the Teensy (hold reset) while a motor is commanded | **R/C signal-loss timeout** stops both motors — on the MDDS30 that is `SW6=0`, after **100 ms** | steering motor stops | | ☐ |
 | 7 | **Steering at limit / jam** | Command beyond the mechanical stop | Teensy clamps effort **toward center only**, sets stall bit | holds at limit, no further drive into the stop | | ☐ |
 | 8 | **Teensy firmware hang** | Hold the Teensy in reset | Motors stop (row 6); watchdog resets outputs to neutral | freewheel or held per §6.3 | | ☐ |
 | 9 | **Angle sensor fault** | Unplug the sensor / short I²C | Teensy → `ESTOP`, encoder-fault bit set | de-energized — **must not** drive to a garbage target | | ☐ |
@@ -74,7 +74,7 @@ specific way this vehicle can fail; each has a defined behavior; each is testabl
 >
 > A single MCU holds the loop, throttle, override, and arming. The claim that this is
 > acceptable rests on layers *independent* of that MCU. **Test them by actually halting the
-> Teensy**, not by reasoning about it. If row 6 fails — the Sabertooth latches its last
+> Teensy**, not by reasoning about it. If row 6 fails — the driver latches its last
 > command instead of timing out — stop and diagnose before going further. In R/C mode this
 > timeout is inherent to the driver, so a failure here means the wiring or the mode switches
 > are wrong, not that a setting needs tuning.
@@ -87,7 +87,7 @@ Both layers, tested separately. Layer B is the **condition D3 was adopted on**
 | Layer | Test | Expected | Observed | Pass |
 |---|---|---|---|---|
 | **A — RC serial** | Take the sticks in `AUTONOMOUS` | Mode → `MANUAL_RC` within **≤ 200 ms**; sticks command an **angle**, loop still closed | | ☐ |
-| **B — hardware MUX** | **Hold the Teensy in reset**, flip the MUX channel | Transmitter drives the Sabertooth **directly**; steering responds with the Teensy dead | | ☐ |
+| **B — hardware MUX** | **Hold the Teensy in reset**, flip the MUX channel | Transmitter drives the MDDS30 **directly**; steering responds with the Teensy dead | | ☐ |
 | B — feel | Compare A and B by hand | B commands raw **effort**, open-loop — a different feel. Record it | | ☐ |
 
 **Record:** Layer B behavior in the validation report, including the effort-vs-angle
@@ -145,7 +145,7 @@ steps 1–2 (step 3 happens in [step 7](07-manual-drive.md) on the ground):
 | Logic rail during steering stall | V | — *(not measured on #1)* | | |
 | Logic rail sag vs. rest | V | **negligible** *(target)* | | A sag means the two-rail split is not isolating |
 | Steering stall current | A | **< 5 A** *(limit)* | | Micro-Fit 3.0 is about 5 A a circuit, and this motor stalls at its end-stops as a matter of course — [02-mechanical §2.2](02-mechanical.md#22-teardown) |
-| Drive stall current (paralleled) | A | **< 32 A** *(limit — disputed)* | | Every gate says 32 A, which is the **Sabertooth 2x32**. The board actually fitted is the **MDDS30**: 30 A continuous, 80 A peak, temperature-derated ([order log #3](../order-log.md#L3)). The lower number is the real one — open, see [03 §3.2](03-electrical.md#32-per-rail-fuse-and-gauge-table) |
+| Drive stall current (paralleled) | A | **< 30 A** *(continuous)* | | MDDS30 rating: 30 A continuous, 80 A peak, derated to 30 A above 100 °C. *Read 32 A until 2026-11-09 — the Sabertooth 2x32, never fitted ([dbw.md §4.1](../design/dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29))* |
 | Measured sensor-shaft travel, lock-to-lock | ° | **≤ 340°** *(limit)* | | Past 340° the AS5600 wraps and the angle is ambiguous |
 | Drive-encoder PPR (measured, not inherited) | — | **36 counts/rev** *(computed)* | | 18 magnets → 9 electrical cycles → ×4 decoding |
 
@@ -375,7 +375,7 @@ re-flashed firmware.
 - [ ] Default = STOCK on every power-up and every fault
 - [ ] Steering mechanical limits measured against the ±22.5° target
 - [ ] No logic-rail brownout under steering stall
-- [ ] Drive stall current confirmed < 32 A/channel
+- [ ] Drive stall current confirmed **< 30 A/channel continuous**
 - [ ] Steering sweep verifies within ±1° and returns to 0° at center
 - [ ] Odometry verifies within ~2% over a fresh 20 m straight line
 - [ ] Camera reprojection error < ~0.3 px

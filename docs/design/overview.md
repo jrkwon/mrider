@@ -73,7 +73,7 @@ The following choices are decided and drive all design documents. Each is record
 ADR in the linked document below.
 
 - **DBW architecture — single Teensy 4.1 + micro-ROS.** One MCU owns all actuation and
-  low-level sensing, speaking native ROS 2 over USB to the laptop, commanding a Sabertooth
+  low-level sensing, speaking native ROS 2 over USB to the laptop, commanding a Cytron MDDS30
   2x32 in independent R/C (PWM) mode through a hardware RC signal MUX. Replaces the Pixhawk 6C
   + Arduino Nano pair.
   → [dbw.md](dbw.md), [architecture.md](architecture.md),

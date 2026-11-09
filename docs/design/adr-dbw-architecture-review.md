@@ -287,7 +287,7 @@ This is the strongest argument for D3, and it is larger than it first appears. M
 | PX4 version pinning, QGC parameter archaeology, the custom-PX4-fork decision ([§9](dbw.md#9-teensy-41-firmware-platform-and-version-pinning)) | No PX4 |
 | Findings **F5** (XRCE-vs-MAVLink) and **F7** (52 vs 16 PPR) | Transport ambiguity and inherited constants both vanish |
 
-**A rejected option appears to become available again — but does not.** [dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)
+**A rejected option appears to become available again — but does not.** [dbw.md §4](dbw.md#4-adr-motor-driver-control-mode-independent-rc-teensy-as-both-masters)
 rejected the Sabertooth's packetized serial mode *solely* because two independent masters (Nano
 for steering, PX4 for throttle) cannot share one bus. With a single controller there is one
 master, so the rejection's premise is gone and packetized serial would give exact, high-rate
@@ -444,7 +444,7 @@ one of:**
    accepted range on hardware), or
 2. drive the Sabertooth channel by analog or serial instead of R/C PWM for the steering channel
    — noting that this reopens the single-master reasoning in
-   [dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters),
+   [dbw.md §4](dbw.md#4-adr-motor-driver-control-mode-independent-rc-teensy-as-both-masters),
    or
 3. accept ~50 Hz actuation and **restate the ≥100 Hz figure as a sampling/estimation rate
    rather than an actuation rate.**
@@ -459,7 +459,7 @@ it at [bring-up Stage 1](safety.md#6-bring-up-protocol-staged-wheels-off-first).
 > R/C frame-rate ceiling outright. That was adopted and then **retracted** (§4.3) — packetized
 > serial cannot coexist with the hardware RC signal MUX that D3's adoption is conditional on.
 >
-> **Options 1 and 3 remain.** [dbw.md §4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)
+> **Options 1 and 3 remain.** [dbw.md §4](dbw.md#4-adr-motor-driver-control-mode-independent-rc-teensy-as-both-masters)
 > now carries the decision, and [§12](dbw.md#12-numeric-interface-contract) records the rate as
 > *measure and pin at Stage 1* rather than asserting a number — which is the honest state, and
 > the one thing this section insisted on from the start.
@@ -479,7 +479,7 @@ hardware.
 | F3 | `carlikebot_system.cpp` is the upstream demo stub — `read()` echoes commands, `write()` only logs | `carlikebot_system.cpp:27,280,304` | `discrepancy` — amends ADR E option E2 and the [software.md §2](software.md#2-ros-2-stack-reused-adapted-new) REUSE row |
 | F4 | Steering auto-ranging expands `min`/`max` **at runtime** and rescales all past values; defaults are asymmetric (`-600`, `180`), so boot centre is arbitrary | `mavlink_bridge.py:47-50`, `:243-250` | `confirmed` — strengthens [ADR B](dbw.md#5-adr-b-steering-angle-encoding) beyond what it claims |
 | F5 | The command path is **MAVLink emitted by a laptop-side node**, not XRCE-to-PX4: the bridge subscribes `/fmu/in/manual_control_setpoint` and calls `mav.manual_control_send()` | `mavlink_bridge.py:79-82`, `:105-126` | `verify` — see §7.1 |
-| F6 | **M1/M2 are inverted relative to B-MROVER.** mrover: M1 = throttle, M2 = steering. MRider: M1 = steering, M2 = throttle | `vehicle_setup.md:51-52` vs [dbw.md §2.1](dbw.md#21-actuator), [§4](dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters), [§11.3](dbw.md#115-3-tap-connector-spec-minimally-invasive) | `verify` — see §7.2 |
+| F6 | **M1/M2 are inverted relative to B-MROVER.** mrover: M1 = throttle, M2 = steering. MRider: M1 = steering, M2 = throttle | `vehicle_setup.md:51-52` vs [dbw.md §2.1](dbw.md#21-actuator), [§4](dbw.md#4-adr-motor-driver-control-mode-independent-rc-teensy-as-both-masters), [§11.3](dbw.md#115-3-tap-connector-spec-minimally-invasive) | `verify` — see §7.2 |
 | F7 | PPR conflict **inside the source project**: firmware pins 52 PPR, the B-MROVER BOM lists a 16 PPR encoder motor | `code/code.ino:27` vs `Note/overview.md` BOM row 2 | `verify` — see §7.3 |
 | F8 | B-MROVER Nano emits human-readable prints, not a protocol; it is a passive reader | `code/code.ino:82-89` | `confirmed` — the `F,...` frame is new work |
 | F9 | No closed-loop motion-controller hardware was ever considered | `dbw.md` ADR E lists only E1/E2/E3 | `discrepancy` — resolved by §3.5 |

@@ -71,8 +71,8 @@ reuses.
 | Compute | Onboard laptop (own battery) running ROS 2 Humble — SLAM, Nav2, and an end-to-end NN pipeline |
 | Safety | Hardware E-stop, relay MUX (default = stock), hardware RC signal MUX, RC serial override — **three of the four work with the firmware dead** — plus failsafe matrix + FMEA |
 
-Estimated cost: **~$745 Tier 1 / ~$930 both tiers** once ~10% contingency is included
-(line items sum to $678 / $846) — see the [Bill of Materials](design/bom.md).
+Estimated cost: **~$725 Tier 1 / ~$910 both tiers** once ~10% contingency is included
+(line items sum to $658 / $826) — see the [Bill of Materials](design/bom.md).
 
 ## Where to go
 

@@ -24,14 +24,14 @@ MRider is a **research and education platform**: rigorous enough for autonomous-
 | Subsystem | Design |
 |---|---|
 | Chassis | **12 V single-seater** ride-on (Land Rover Defender class, 98 × 56 × 47 cm, ~10 kg), parent-remote, reversible conversion — [ADR D-R](docs/design/vehicle.md) |
-| DBW | **Single Teensy 4.1 running micro-ROS** + Sabertooth 2x32 in independent R/C PWM mode — [ADR D3](docs/design/adr-dbw-architecture-review.md) |
+| DBW | **Single Teensy 4.1 running micro-ROS** + Cytron MDDS30 in independent R/C mode — [ADR D3](docs/design/adr-dbw-architecture-review.md) |
 | Steering | **Load-side absolute angle sensor** on the kingpin axis, ≥200 Hz position loop **on the Teensy**; ±22.5° travel, R_min 1.52 m — [ADR B / ADR E](docs/design/dbw.md) |
 | Odometry | One quadrature encoder on one drive-motor shaft — **PPR must be measured, never inherited** (finding F7) — roll-out calibrated, fused with the IMU in an EKF — [ADR C](docs/design/dbw.md) |
 | Sensors | Front camera + 2D LiDAR (minimum); BNO085-class IMU; GNSS/RTK as a growth path. **No rear sensing** — see the reverse constraint in [software.md §4.5](docs/design/software.md) |
 | Compute | Onboard laptop (own battery) running ROS 2 Humble — SLAM, Nav2, and an end-to-end NN pipeline |
 | Safety | Hardware E-stop, relay MUX (default = stock), hardware RC signal MUX, SBUS override — **three of the four work with the firmware dead** — plus failsafe matrix + FMEA |
 
-Estimated cost: **~$745 Tier 1 / ~$930 both tiers**, contingency included (see [BOM](docs/design/bom.md); line items sum to $678 / $846).
+Estimated cost: **~$725 Tier 1 / ~$910 both tiers**, contingency included (see [BOM](docs/design/bom.md); line items sum to $658 / $826).
 
 ## Documentation
 

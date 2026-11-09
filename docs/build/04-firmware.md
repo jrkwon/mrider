@@ -183,7 +183,7 @@ pio pkg list                     # platform + framework versions
 ## 4.3 Stage 0 — Teensy alone, no motor wired
 
 Corresponds to [safety.md Stage 0](../design/safety.md#6-bring-up-protocol-staged-wheels-off-first).
-**Nothing is connected to the Sabertooth yet.**
+**Nothing is connected to the motor driver yet.**
 
 Wire only: absolute angle sensor (I²C), drive encoder, **E-stop sense**, USB to laptop.
 
@@ -301,7 +301,7 @@ again, which is what this check measures.
 > **If the timeout cannot be established, stop**
 >
 > Revert to independent R/C (PWM) mode and accept the ~50 Hz actuation ceiling
-> ([dbw.md §4](../design/dbw.md#4-adr-sabertooth-control-mode-independent-rc-pwm-teensy-as-both-masters)).
+> ([dbw.md §4](../design/dbw.md#4-adr-motor-driver-control-mode-independent-rc-teensy-as-both-masters)).
 > [Failsafe row 6](../design/safety.md#2-failsafe-matrix) and FMEA row 9 both depend on this
 > behavior — it is one of the layers that makes a single-MCU architecture defensible.
 
@@ -376,7 +376,7 @@ Bind the RC set, wire the receiver's i-BUS output to a Teensy hardware serial po
 **Test it with the Teensy deliberately halted.** Hold the Teensy in reset (or unplug it
 entirely), then:
 
-- [ ] Flip the MUX channel and confirm the RC transmitter drives the Sabertooth **directly**
+- [ ] Flip the MUX channel and confirm the RC transmitter drives the MDDS30 **directly**
 - [ ] Confirm steering responds to the sticks with the Teensy dead
 - [ ] Confirm the traction channel behaves as designed in this state
 

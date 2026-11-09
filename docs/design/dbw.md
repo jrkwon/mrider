@@ -20,7 +20,7 @@ Read for two audiences: exact numbers and file citations for researchers; short 
 | Command transport | laptop → Micro-XRCE-DDS → PX4; MAVLink `MANUAL_CONTROL` emitted laptop-side (`mavlink_bridge.py:79-82`, `:105-126`) | laptop → **micro-ROS over USB serial** → Teensy | **REPLACED** (D3) |
 | Steering channel | `MANUAL_CONTROL.roll` → PX4 servo out (`mavlink_bridge.py:123`) | `DbwCommand.steering_angle`, **radians**, read directly by the loop | **REPLACED** |
 | Throttle channel | `MANUAL_CONTROL.throttle` (`mavlink_bridge.py:124`) | `DbwCommand.speed` | **REPLACED** |
-| Sabertooth drive | 2x32, S1←PX4 PWM pin2, S2←PX4 PWM pin7 (`vehicle_setup.md:54-55`) | 2x32, **independent R/C (PWM)**, both lines from the Teensy via the RC signal MUX | **ADAPTED** (§4) |
+| Motor driver | Sabertooth 2x32, S1←PX4 PWM pin2, S2←PX4 PWM pin7 (`vehicle_setup.md:54-55`) | **Cytron MDDS30**, **independent R/C**, both lines from the Teensy via the RC signal MUX on `RC1`/`RC2` | **ADAPTED** (§4, part changed in §4.1) |
 | Steering angle sensing | incremental quadrature encoder (`code.ino:36-39`) + relative auto-ranging (`mavlink_bridge.py:243-252`) | **absolute sensor, load-side** + motor incremental encoder | **REPLACED** (ADR B) |
 | Steering position loop | **none — open-loop effort, human closes the loop by eye** (verified: `joystick_control.py:70,75,100-109`; no PID in repo) | **Teensy-local closed loop ≥ 200 Hz** | **NEW** (ADR E) |
 | Drive distance | encoder on drive shaft (`code.ino:27`), shaft-adapter method (`vehicle_setup.md:70-72`) | same method, wheel-diameter cal | **REUSED** (ADR C) |
@@ -158,9 +158,11 @@ control-design exercise the course wants anyway. **Measure the duty, then design
 
 > Rule of thumb from the ride-on ecosystem: a two-seater on carpet typically needs on the order of a few N·m at the column; a wiper motor (often 10–30 N·m stall) is comfortably oversized, which is why it is the safe fallback.
 
-### 2.3 Why the Sabertooth receives an effort command
+### 2.3 Why the motor driver receives an effort command
 
-The Sabertooth outputs a **bidirectional motor drive** (PWM-controlled H-bridge). The Teensy does not command "go to angle X" to the Sabertooth; it commands a **signed effort** that is the *output* of the Teensy's position loop. Angle regulation lives entirely in the Teensy (ADR E). This keeps the Sabertooth a dumb, fast power stage — exactly its role in mrover.
+The driver outputs a **bidirectional motor drive** (PWM-controlled H-bridge). The Teensy does not command "go to angle X" to it; it commands a **signed effort** that is the *output* of the Teensy's position loop. Angle regulation lives entirely in the Teensy (ADR E). This keeps the driver a dumb, fast power stage — exactly its role in mrover.
+
+*This section is deliberately board-neutral: it was true of the Sabertooth 2x32 and is true of the Cytron MDDS30 that replaced it, because what it describes is the division of labour and not the part.*
 
 ### 2.4 Wiper-motor fallback
 
@@ -228,21 +230,23 @@ laptop  /mitt/dbw/command  (DbwCommand, steering_angle in rad)
 
 ---
 
-## 4. ADR (Sabertooth control mode) — independent R/C (PWM), Teensy as both masters
+## 4. ADR (motor-driver control mode) — independent R/C, Teensy as both masters
 
-**Decision.** Configure the Sabertooth 2x32 in **independent R/C (PWM) mode**. The Teensy emits servo-style pulses on two lines; both pass through the [hardware RC signal MUX](#112-hardware-rc-signal-mux-the-d3-condition) before reaching the Sabertooth.
+**Decision.** Configure the motor driver in **independent R/C mode**. The Teensy emits servo-style pulses on two lines; both pass through the [hardware RC signal MUX](#112-hardware-rc-signal-mux-the-d3-condition) before reaching the driver.
 
-| Sabertooth input | Normal source | Override source | Motor output | Function |
+| Driver input | Normal source | Override source | Motor output | Function |
 |---|---|---|---|---|
-| S1 | Teensy PWM (via MUX) | RC receiver (via MUX) | M1 | steering gearmotor |
-| S2 | Teensy PWM (via MUX) | RC receiver (via MUX) | M2 | drive motors (paralleled) |
+| `RC1` | Teensy servo pulse (via MUX) | RC receiver (via MUX) | Left | steering gearmotor |
+| `RC2` | Teensy servo pulse (via MUX) | RC receiver (via MUX) | Right | drive motors (paralleled) |
+
+*Terminal and output names are the **MDDS30's**. `S1`/`S2` and `M1`/`M2` are Sabertooth naming and the board fitted is not labelled that way — see [§4.1](#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29). Which output is which matters: `SW3:SW4` can silently redefine both.*
 
 > [!CAUTION]
 > **This ADR was briefly decided the other way. The reversal is the instructive part.**
 >
 > D3 removes the two-master constraint that originally ruled out **packetized serial** (Nano owned steering, PX4 owned throttle, and two masters cannot share an addressed bus). With one controller that objection dissolves, so packetized serial was adopted — it gives exact, high-rate commands and closes the actuation-rate problem in §12.
 >
-> **It was reverted when the override hardware was specified.** Every available RC signal multiplexer — [Pololu 2806](https://www.pololu.com/product/2806), Acroname RxMux, ServoCity — multiplexes **servo pulses**. None can select between a *serial packet stream* and RC PWM, and the Sabertooth's input mode is fixed by DIP switches, so it is in one mode or the other.
+> **It was reverted when the override hardware was specified.** Every available RC signal multiplexer — [Pololu 2806](https://www.pololu.com/product/2806), Acroname RxMux, ServoCity — multiplexes **servo pulses**. None can select between a *serial packet stream* and RC PWM, and the driver's input mode is fixed by DIP switches, so it is in one mode or the other.
 >
 > **Packetized serial and the hardware RC MUX are mutually exclusive.** The MUX is the condition on which D3 was adopted ([§11.2](#112-hardware-rc-signal-mux-the-d3-condition)); packetized serial is an optimisation. The safety layer wins.
 >
@@ -256,7 +260,7 @@ laptop  /mitt/dbw/command  (DbwCommand, steering_angle in rad)
 
 **Consequences.**
 
-- **The driver's R/C signal-loss timeout comes back for free** — motors stop when pulses stop. This backs [failsafe matrix row 6](safety.md#2-failsafe-matrix) and is one of the layers independent of Teensy firmware. Under packetized serial it would have been a configured behaviour requiring verification; here it is inherent to the mode. **Inherent to the mode is not the same as unconditional:** some boards gate the stop behind a DIP switch that can also disable it, so confirm it is enabled on the board fitted and then verify the behaviour at Stage 1. Never infer it from the mode alone.
+- **The driver's R/C signal-loss timeout is available in this mode** — motors stop when pulses stop. This backs [failsafe matrix row 6](safety.md#2-failsafe-matrix) and is one of the layers independent of Teensy firmware. Under packetized serial it would have been a configured behaviour requiring verification. **In this mode it is a DIP switch, not a property of the mode**, and the caution that used to sit here — "some boards gate the stop behind a switch that can also disable it" — turned out to describe the board fitted: on the MDDS30 `SW6=0` stops the motor after **100 ms** of lost signal and **`SW6=1` disables the timeout entirely**, leaving the motor at its last commanded speed. Set it, confirm it board by board, and verify the behaviour at Stage 1. [§4.1](#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)
 - Two Teensy PWM outputs are consumed instead of one serial port. The Teensy has 35 PWM-capable pins, so this is free.
 - Signal grounds between Teensy, RC receiver, signal MUX, and the motor driver must be star-tied at the motor driver ([architecture.md](architecture.md) power tree).
 - **The actuation frame-rate ceiling returns as an open question** — see §12 and the warning below. This is the real cost of the reversal, and it is *not* resolved by assertion.
@@ -264,14 +268,45 @@ laptop  /mitt/dbw/command  (DbwCommand, steering_angle in rad)
 > [!WARNING]
 > **Open: pin the actuation frame rate at bring-up**
 >
-> A standard servo frame is ~20 ms (**~50 Hz**), and with the stock Arduino `Servo` library that is what the Sabertooth would receive — so *actuation bandwidth*, not loop rate, would set the closed-loop ceiling. The Sabertooth 2x32 datasheet does **not** state a maximum accepted R/C input rate.
+> A standard servo frame is ~20 ms (**~50 Hz**), and with the stock Arduino `Servo` library that is what the driver would receive — so *actuation bandwidth*, not loop rate, would set the closed-loop ceiling. **No maximum accepted R/C input rate is recorded for the MDDS30 in this repository**, and the manual read on 2026-11-05 ([order log #3](../order-log.md#L3)) did not come back with one. The question is unchanged by the part swap; only the datasheet to re-read is different.
 >
 > **Measure it at [Stage 1](safety.md#6-bring-up-protocol-staged-wheels-off-first)** and pin one of:
 >
-> 1. Emit pulses faster than 50 Hz and verify the Sabertooth tracks them — best outcome; record the highest rate that works.
+> 1. Emit pulses faster than 50 Hz and verify the driver tracks them — best outcome; record the highest rate that works.
 > 2. Accept ~50 Hz actuation and **restate the ≥200 Hz figure in §12 as a sampling/estimation rate, not an actuation rate.** Honest, and probably adequate at ≤ walking speed against a ≤1° / 400 ms target.
 >
 > Do not leave it unstated — that omission is exactly what capped the superseded design's performance invisibly.
+
+### 4.1 Part substitution — Cytron MDDS30 replaces the Sabertooth 2x32 (2026-09-29)
+
+**Status:** Accepted. **The decision in §4 is unchanged** — independent R/C mode, Teensy as both masters, both lines through the signal MUX. Only the part changed. §4's reasoning is preserved intact because none of it turned on the brand.
+
+**Context.** The Sabertooth 2x32 was specified from a listing, and the sourcing never closed: [`scripts/order_status.py`](https://github.com/jrkwon/mrider/blob/main/scripts/order_status.py) exists because that listing carried a **2x25 SKU on a 2x32 description**, so arrival could not be taken for acquisition. A **Cytron SmartDriveDuo-30 (MDDS30)** was ordered instead on **2026-09-29**, four units (three fitted, one spare), and confirmed genuine on receipt **2026-10-08** — [order log #3](../order-log.md#L3). Its manual (rev 1.11) was read in full on **2026-11-05**.
+
+**What the swap is allowed to change, and what it is not.** The Sabertooth 2x32 was **never fitted to any vehicle**. So wherever a number in these documents came from its datasheet, it describes hardware that does not exist in this project, and the MDDS30's number replaces it rather than disagreeing with it.
+
+| | Sabertooth 2x32 *(never fitted)* | **Cytron MDDS30** *(fitted)* |
+|---|---|---|
+| Per-channel rating | 32 A continuous | **30 A continuous, 80 A peak**, thermally derated: 80 A below 50 °C, 50 A to 70 °C, 40 A to 100 °C, **30 A above** |
+| User-settable current limit | assumed, and the fuse table rested on it | **none.** The manual lists *"current limit protection"* as a feature **with no number** |
+| R/C input terminals | `S1` / `S2` | **`RC1` / `RC2`** |
+| Motor outputs | `M1` / `M2` | **Left / Right** — Left is the steering gearmotor, Right the traction pair |
+| Signal-loss stop | believed inherent to R/C mode | **`SW6`**: `0` stops after 100 ms, `1` **disables it** |
+| Max accepted R/C rate | not stated | not recorded here either — §4's open question stands |
+
+**Consequences.**
+
+| | Direction |
+|---|---|
+| **Every 32 A acceptance figure was for the wrong board, and permissive by 2 A.** The real continuous limit is lower. Gates and record sheets now read **30 A continuous / 80 A peak**. | ✗ a real tightening |
+| **The no-fuse argument on the motor branches collapses.** [03-electrical §3.2](../build/03-electrical.md#32-per-rail-fuse-and-gauge-table) justified no fuse there on *"the driver's current limit, set to 20 A"* — a setting this board does not have, on branches that are AWG 14. **Open**, and tracked in that section. | ✗ unresolved safety item |
+| **All-switches-off is not a safe default.** `SW3:SW4=00` is **MIXED**, which makes a throttle command drive the steering motor and a steering command drive the wheels. The boards ship with every switch off. | ✗ a new assembly hazard |
+| **Power-on order now matters.** With `SW6=0` the centre point is calibrated at power-up and the manual requires the transmitter on first, so whatever pulse sits on `RC1`/`RC2` at power-up becomes "stop": receiver on, Teensy emitting 1.5 ms, MUX settled, **then** the driver. Power it first and neutral can come out as a creep. | ✗ a new procedure |
+| The 100 ms timeout is now a **known number** backing failsafe row 6, instead of an inherited belief. | ✓ |
+| `SW3:SW4=11` independent is the manual's own recommendation *"if controlled using Microcontroller"*, so the §4 decision is confirmed by the new part rather than merely compatible with it. | ✓ |
+| The board is **cheaper and locally stocked** (₩143,440 incl. VAT, 디바이스마트), which is what let four be bought — three fitted, one spare, for thirteen students. | ✓ |
+
+**Still open after this substitution.** `SW7:SW8` is the battery monitor and `00` is LiPo, which nothing on this vehicle is: `10` for SLA, `11` to disable. **No document in this repository records the traction pack's chemistry**, so that label has to be read before the switches are set.
 
 ---
 
@@ -317,11 +352,11 @@ Panel 2 is the part that is easy to get wrong in the shop. The magnet is **bonde
 
 ## 7. Throttle path
 
-The stock vehicle has **two rear drive motors**, electrically **paralleled onto the motor driver's channel 2 (M2 output)**. Throttle command originates as `DbwCommand.speed` and is emitted by the Teensy as a servo pulse on S2, through the same signal MUX as steering.
+The stock vehicle has **two rear drive motors**, electrically **paralleled onto the motor driver's channel 2 (M2 output)**. Throttle command originates as `DbwCommand.speed` and is emitted by the Teensy as a servo pulse on `RC2`, through the same signal MUX as steering.
 
 The Teensy applies **ramp limiting, a speed cap, and a direction interlock** (no reversal above a threshold speed) before commanding the driver. These were previously PX4's responsibility and are now explicit project firmware — see [safety.md](safety.md).
 
-Paralleling is acceptable because the two motors are mechanically coupled through the ground and share a load; the consequence for **odometry** (only one shaft is instrumented) is handled in ADR C. Verify the **paralleled stall current against the driver's 32 A/channel rating** in [vehicle.md](vehicle.md); if the pair can exceed 32 A stalled, current-limit in the driver config or select lower-draw motors.
+Paralleling is acceptable because the two motors are mechanically coupled through the ground and share a load; the consequence for **odometry** (only one shaft is instrumented) is handled in ADR C. Verify the **paralleled stall current against the driver's 30 A continuous rating** in [vehicle.md](vehicle.md). If the pair can exceed it stalled, the remedy is **not** a driver setting — the MDDS30 has no user-settable current limit ([§4.1](#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)) — so it is lower-draw motors, a fuse on the branch, or a firmware duty ceiling that the stock remote does not share.
 
 ---
 
@@ -634,7 +669,7 @@ The pinned, testable contract for the DBW interface.
 
 - **Bench gate:** measured lock-to-lock travel of each candidate sensor shaft → confirms magnetic vs. pot (§6). **Before ordering.**
 - Torque measurement on the actual chassis → gearmotor spec and wiper-motor fallback decision (§2.2).
-- Paralleled drive-motor stall current vs. the driver's 32 A/channel → [vehicle.md](vehicle.md).
+- Paralleled drive-motor stall current vs. the driver's **30 A continuous** → [vehicle.md](vehicle.md), and the no-fuse argument that rests on a limit this board does not have ([§4.1](#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)).
 - **Actuation frame rate** measured and pinned at Stage 1 → the §4 warning. The driver's R/C signal-loss timeout is inherent in this mode, but confirm it stops the motors ([failsafe row 6](safety.md#2-failsafe-matrix)).
 - **FAILMODE jumper direction** on the RC signal MUX decided and recorded → §11.2.
 - ~~`micro_ros_arduino` Humble availability and USB-serial transport acceptance~~ → **closed 2026-08-08**, see §9.
