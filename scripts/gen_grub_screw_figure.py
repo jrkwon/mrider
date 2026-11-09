@@ -209,8 +209,8 @@ def build(d):
                  % d["SET_SCREW_L"], 11.5, "bold", DRED))
     o.append(txt(68, 770, "The span above is to a CREST. A valley is deeper by the lobe "
                           "depth,", 11, "normal", DRED))
-    o.append(txt(68, 786, "which has never been measured. Caliper two opposite valleys "
-                          "and record it.", 11, "normal", DRED))
+    o.append(txt(68, 786, "which was unmeasured as of 2026-11-09. Caliper two opposite "
+                          "valleys and record it.", 11, "normal", DRED))
 
     # ---- C: the numbers ----------------------------------------------------
     o.append(rect(632, 300, W - 656, 516, "#f0fdf4", "#22c55e", 2, 8))

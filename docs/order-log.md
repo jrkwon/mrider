@@ -540,7 +540,7 @@ Measure one vehicle, then spot-check the other two. A large disagreement is itse
 > Occasional slow steering is not a locked-rotor condition. This number sets the **M1-branch fuse
 > and wire gauge** — still blank in [03-electrical §3.2](build/03-electrical.md) — and the
 > **driver current limit** that [FMEA row 6](design/safety.md#7-fmea-lightweight) relies on for a
-> severity-4 row. It is recorded nowhere else in this project.
+> severity-4 row. It is recorded nowhere else in this project *(true as of 2026-11-09)*.
 
 > [!WARNING]
 > **The remaining risk is duty cycle, not torque — and Stage 1 is what tests it**

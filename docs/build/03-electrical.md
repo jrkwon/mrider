@@ -1599,8 +1599,8 @@ Only after §3.6 and §3.7 pass.
 
 | Measurement | Units | Reference | Yours | Why that reference |
 |---|---|---|---|---|
-| Traction rail, at rest | V | **12 nominal, ≈ 12.8 charged** | | `Aroma 6-FM-4.5` VRLA. **Up to 15.0 V while charging** — see [vehicle.md §3.1.1](../design/vehicle.md#311-the-traction-pack-from-its-own-label) |
-| Traction rail, under drive-motor stall | V | — *(not measured on #1)* | | Sag here is the pack's internal resistance, and is expected |
+| Traction rail, at rest | V | **the pack's nominal, higher when charged** | | `Aroma 6-FM-4.5` VRLA. It is **not** at its nominal while charging — the figures are in [vehicle.md §3.1.1](../design/vehicle.md#311-the-traction-pack-from-its-own-label), stated once so a chassis change cannot leave this page behind |
+| Traction rail, under drive-motor stall | V | **above the driver's input floor** *(limit)* | | Sag is the pack's internal resistance and is expected. The floor, and the C-rate that makes this worth measuring, are in [vehicle.md §3.1.1](../design/vehicle.md#311-the-traction-pack-from-its-own-label) — go below it and the driver drops out mid-drive |
 | Logic rail, at rest | V | **12** *(nominal)* | | Its own LiFePO4 pack, not tapped from traction — §3.1 |
 | Logic rail, during traction stall | V | ≈ at rest | | This is the whole point of the two-rail split |
 | Logic-rail sag under stall | V | **negligible** *(target)* | | A sag means the isolation is inadequate; add hold-up capacitance before continuing |

@@ -44,6 +44,11 @@
 #                                ("the traction pack"), exactly as
 #                                architecture.md already does; the number lives
 #                                in vehicle.md, bom.md and the order log.
+#  21. dated absence claims - "nothing records X", with no date. It stops a
+#                                reader looking, and it goes stale in silence:
+#                                one such sentence was four days wrong on
+#                                2026-11-09 and had already been copied into a
+#                                second document.
 #  20. motor driver         - a live page naming the Sabertooth 2x32, which was
 #                                specified from a listing and never fitted, or
 #                                claiming its 32 A rating against the MDDS30's
@@ -463,6 +468,20 @@ printf "%s20. the motor driver is the one that was bought%s\n" "$B" "$N"
 # not, unless they say in the same block what replaced it.
 if ! python3 scripts/check_motor_driver.py; then
     fail "a live page names the Sabertooth, or claims its rating"
+fi
+printf "\n"
+
+printf "%s21. claims that something is unrecorded carry a date%s\n" "$B" "$N"
+# Found twice on 2026-11-09: "No document in this repository records the
+# traction pack's chemistry", false since 2026-11-05 when the label was read
+# into 03-electrical's switch table - and still sitting in the prose FOUR ROWS
+# BELOW that table, from where it was copied into a design document.
+#
+# An absence claim is the one kind that tells a reader to stop looking, and the
+# one kind that goes stale with nothing happening. A date does not make it
+# true; it makes it checkable by the reader, which is the next best thing.
+if ! python3 scripts/check_absence_claims.py; then
+    fail "an absence claim with no date"
 fi
 printf "\n"
 

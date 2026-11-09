@@ -182,8 +182,8 @@ explanations, and state how you would test each one. Some directions worth consi
 
 ## Part 5 — Break it on purpose
 
-Everything above assumed `wheelbase = 0.63 m`. That number has never been measured — the file it
-lives in says so in capital letters.
+Everything above assumed `wheelbase = 0.63 m`. That number has never been measured *(true as of
+2026-11-09)* — the file it lives in says so in capital letters.
 
 Edit `config/mitt_dimensions.yaml`:
 

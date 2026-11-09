@@ -194,9 +194,18 @@ rules — cite this section rather than restating it.
   sags hard, so the **pack's own internal resistance may be the real current limiter** — which
   is a measurement, not an assumption, and is the open question in
   [03-electrical §3.2](../build/03-electrical.md#32-per-rail-fuse-and-gauge-table).
-- **The rail is not 12 V while charging.** It reaches **15.0 V** on a cycle charge. Anything
-  tapped off the traction rail has to tolerate that, and a resting full pack sits near 12.8 V,
-  not 12.0 V.
+- **The rail is not 12 V.** It reaches **15.0 V** on a cycle charge and a resting full pack sits
+  near 12.8 V. *Nothing in the current design minds:* the only two things on the traction rail
+  are the stock ECU — the vehicle's own, which normally sits across its own pack while it charges
+  — and the driver's `B+`, and the **MDDS30 takes 7–35 V**. The relay MUX switches motor leads
+  rather than either controller's supply, the E-stop contactor's coil runs off the **logic**
+  battery, and the logic rail is its own pack and is never tapped from traction
+  ([03-electrical §3.1](../build/03-electrical.md#31-the-two-rails)).
+- **The risk is the other end of that range.** The driver's floor is **7 V**, and a 4.5 Ah VRLA
+  asked for 30 A is being asked for 6.7 C. If the pack sags under 7 V with the pair stalled, the
+  driver drops out mid-drive. That is what the *traction rail under stall* row of
+  [03-electrical's rail sheet](../build/03-electrical.md#38-first-power-on-of-the-traction-rail)
+  is for, and it is the measurement this label makes worth taking.
 - **"Do not charge in a sealed container."** A VRLA vents under charge. The pack stays in the
   chassis's own bay, in air — do not relocate it into either printed box, and keep it liftable
   ([02-mechanical](../build/02-mechanical.md) row `D13`).
