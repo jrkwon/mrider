@@ -43,8 +43,10 @@ the third battery, both regulators, every relay coil and the contactor are gone.
 **Fuse first, then the switch, then the driver.** The fuse sits as close to the pack as the
 harness allows, so that a fault anywhere downstream of it — including in the switch — is fused.
 Fuse value, wire gauge and the reasoning behind both are
-[§3.2](../build/03-electrical.md#32-per-rail-fuse-and-gauge-table) and are unchanged; the caution
-there about the motor branches having no fuse of their own applies here exactly as it does there.
+[§3.2](../build/03-electrical.md#32-per-rail-fuse-and-gauge-table) and are unchanged. **So is its
+warning about the steering branch:** the steering tap is AWG 20 behind this 25 A fuse, and wants
+an inline fuse of its own. With no relay in Light, that fuse goes in the lead from the driver's
+Left output to the steering-tap half.
 
 **The switch** is specified in [ADR L](../design/adr-light.md#the-disconnect-switch): DC-rated for
 at least the fuse's current, no coil, and mounted where a hand reaches it from outside the body
@@ -105,9 +107,15 @@ pulse* rather than whatever the lead picks up beside a motor. **Whether that is 
 question, not a fact** — what the MDDS30 reads on an undriven input is not recorded in this
 repository as of 2026-11-10 — and test T3 in [bring-up](bring-up.md) is what settles it.
 
+**Signal and ground only. Nothing goes to the centre pin of the driver's RC header.** That pin is
+the driver's own 5 V coming out
+([§3.5.1](../build/03-electrical.md#351-hardware-rc-signal-mux-wire-this-it-is-not-optional));
+tying it to the Teensy's 5 V would join the laptop's USB supply to a regulator on the traction
+pack.
+
 **Pins.** The [pin table](../build/04-firmware.md#the-pin-assignment-the-one-table-that-must-be-frozen-before-an-iron-is-hot)
 is still the only place a pin number is decided. Three of its rows have nothing to connect to in
-Light: *E-stop sense*, *Relay gate* and *i-BUS RX*. Leave them unassigned rather than reusing
+Light: *E-stop sense*, *Relay gate* and *i-BUS RX*. Leave those pins unconnected rather than reusing
 them, so a board built for Light can still become a full one.
 
 **DIP switches** are the driver's and do not change with the variant:
