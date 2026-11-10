@@ -10,6 +10,13 @@
   📖 <strong>Documentation site: <a href="https://jrkwon.github.io/mrider/">jrkwon.github.io/mrider</a></strong>
 </p>
 
+> [!WARNING]
+> **You are on the `light` branch — a reference variant, not the project's main line.**
+> It describes MRider without the E-stop circuit, RC override, relay MUX and logic battery.
+> Start at [docs/light/index.md](docs/light/index.md) and read
+> [ADR L](docs/design/adr-light.md) first. The published site and the Fall 2026 course are both
+> `main`.
+
 **MRider** converts a kids ride-on, remote-controllable electric vehicle into a self-driving-ready car with a full **Drive-By-Wire (DBW)** system. The vehicle's nickname is **MITT** (Michigan Intelligent Transportation Tech), inspired by KITT from *Knight Rider*.
 
 MRider is a **research and education platform**: rigorous enough for autonomous-driving research (mapping, navigation, end-to-end learning), documented well enough — [RoboRacer](https://roboracer.ai/)-style — for courses and external replication. It is the fourth generation of a platform line: [AVCS Kit](https://ieeexplore.ieee.org/document/8095696) (2017) → [Ridon Vehicle](https://www.mdpi.com/1996-1073/14/23/8039) (2021) → [OSCAR](https://github.com/bimilab/project-oscar/tree/devel_mrover) (2022) → [B-MROVER](https://github.com/jrkwon/mrover), whose validated ROS 2 stack MRider reuses.

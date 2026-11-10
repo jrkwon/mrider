@@ -6,6 +6,13 @@ hide:
 # MRider — Michigan Rider
 
 > [!WARNING]
+> **This is the `light` branch — a reference variant**
+>
+> MRider without the E-stop circuit, RC override, relay MUX and logic battery. Start at the
+> [Light overview](light/index.md) and read [ADR L](design/adr-light.md) first. The published
+> site and the Fall 2026 course are both `main`.
+
+> [!WARNING]
 > **Architecture updated 2026-08-07**
 >
 > MRider's DBW controller is a **single Teensy 4.1 running micro-ROS**, replacing the

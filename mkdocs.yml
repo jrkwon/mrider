@@ -84,6 +84,10 @@ extra:
 
 nav:
   - Home: index.md
+  - Light Variant (this branch):
+      - Overview: light/index.md
+      - Wiring: light/wiring.md
+      - Bring-up: light/bring-up.md
   - Getting Started: getting-started.md
   - Running the Digital Twin: run-the-twin.md
   - Purchase Request (2026 Fall): purchase-request-2026-fall.md
