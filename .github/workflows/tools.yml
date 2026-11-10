@@ -14,7 +14,7 @@ name: tools
 
 on:
   push:
-    branches: [main]
+    branches: [main, light]
     paths:
       - 'scripts/**'
       - 'cad/**'

@@ -13,6 +13,13 @@
 # Thirteen checks. Each one exists because this repository has already shipped the
 # defect it catches, or is one cohort away from it:
 #
+#  23. light is an overlay    - on the `light` branch only: a file that differs
+#                                from main outside docs/light/, mkdocs.yml and
+#                                two banners. A variant kept as a second copy
+#                                of the documents rots - the E-stop alone is in
+#                                56 files - so light is main plus a thin
+#                                overlay, and this is what holds it to that.
+#                                Inert on main, where docs/light does not exist.
 #  22. photograph manifest   - a published photograph with no written date,
 #                                no stated vehicle, or nothing linking to it.
 #                                A drawing carries its date implicitly because
@@ -508,5 +515,32 @@ if ! python3 scripts/check_photo_manifest.py; then
     fail "a photograph with no manifest row, no date, or nothing linking to it"
 fi
 printf "\n"
+
+printf "%s23. the light variant is an overlay on main, and nothing more%s\n" "$B" "$N"
+# docs/design/adr-light.md states the rule: the light branch differs from main
+# only in docs/light/**, mkdocs.yml, and one banner each in README.md and
+# docs/index.md. Everything else arrives from main by merge and is never edited
+# on light - otherwise every correction to a shared page has to be made twice,
+# and the second one is the one that gets forgotten.
+#
+# Three-dot diff, so this compares against the merge base: commits main has made
+# since the last merge are main's business, not a difference light introduced.
+if [ ! -d docs/light ]; then
+    printf "   %sok%s  (not the light branch - docs/light does not exist here)\n\n" "$G" "$N"
+elif ! BASE_REF="$(git rev-parse --verify -q main || git rev-parse --verify -q origin/main)"; then
+    printf "   skipped - no main ref in this checkout to compare against\n\n"
+else
+    STRAY="$(git diff --name-only "$BASE_REF"...HEAD; git diff --name-only HEAD; git ls-files --others --exclude-standard)"
+    STRAY="$(printf "%s\n" "$STRAY" | sort -u | grep -vE '^(docs/light/|mkdocs\.yml$|README\.md$|docs/index\.md$|$)' || true)"
+    if [ -n "$STRAY" ]; then
+        printf "   files that differ from main outside the overlay:\n" >&2
+        printf "%s\n" "$STRAY" | sed 's/^/     /' >&2
+        printf "   If the change is true of both designs, make it on main and merge.\n" >&2
+        printf "   If it is true of light only, it belongs under docs/light/.\n" >&2
+        fail "the light branch has drifted from main outside its overlay"
+    fi
+    BEHIND="$(git rev-list --count HEAD.."$BASE_REF")"
+    printf "   %sok%s  (overlay only; %s commit(s) on main not yet merged)\n\n" "$G" "$N" "$BEHIND"
+fi
 
 printf "%sDocs are publishable.%s\n" "$G" "$N"

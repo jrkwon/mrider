@@ -600,9 +600,9 @@ The stock parent-remote receiver and the motor driver **cannot both drive the mo
 | **Hardware RC signal MUX** | 3 | **Yes** — signal-path selection, no firmware |
 | RC serial override into the Teensy | 4 | No — closed-loop, normal manual mode |
 | Driver R/C signal-loss timeout | — | **Yes** — motors stop when the Teensy stops emitting pulses (§4, verify at bring-up) |
-| Teensy hardware watchdog | — | Internal; resets outputs to neutral |
+| Teensy hardware watchdog | — | **No** — a hardware timer, but firmware arms it. It is what converts a *hang* into a reset; without it the row above never fires on a hang ([safety.md §2](safety.md#2-failsafe-matrix), corrected 2026-11-10) |
 
-A total Teensy failure still leaves: motors stopped (signal-loss timeout), authority revertible (relay MUX), traction cuttable (E-stop), and steering under human control (RC MUX).
+A total Teensy failure still leaves: authority revertible (relay MUX), traction cuttable (E-stop), and steering under human control (RC MUX). **Motors stopped** belongs on that list only once pulses have actually stopped — after a reset or a power loss, not during a hang, when the pulse timer goes on emitting the last width.
 
 ### 11.4 MUX diagram
 

@@ -96,6 +96,7 @@ nav:
       - Vehicle: design/vehicle.md
       - Drive-by-Wire: design/dbw.md
       - Safety: design/safety.md
+      - Light Variant (ADR L): design/adr-light.md
       - Sensors: design/sensors.md
       - Calibration: design/calibration.md
       - Software: design/software.md

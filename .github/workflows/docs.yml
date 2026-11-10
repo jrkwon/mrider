@@ -2,7 +2,9 @@ name: docs
 
 on:
   push:
-    branches: [main]
+    # `light` is built to prove it builds and is never published: the deploy job
+    # below is gated on main. See docs/design/adr-light.md.
+    branches: [main, light]
   pull_request:
   workflow_dispatch:
 

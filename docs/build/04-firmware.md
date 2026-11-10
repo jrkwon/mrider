@@ -293,9 +293,27 @@ disables it entirely ([§3.4](03-electrical.md#34-wire-the-e-stop-and-mux-first)
 again, which is what this check measures.
 
 ```bash
-# With the motor commanded to a steady effort, halt the Teensy (unplug USB / press reset)
+# With the motor commanded to a steady effort, press the Teensy's reset button
 # and confirm the motor STOPS rather than latching at its last command.
 ```
+
+*Until 2026-11-10 that comment read "unplug USB / press reset". On this build unplugging USB halts
+nothing: the Teensy is powered from the logic rail, so it keeps running, sees its commands go
+stale and emits **neutral** — which is a different mechanism from the one under test.*
+
+**Then test the hang, which the reset does not.** A reset stops the pulses. A hang does not: the
+pulse timer runs on without the loop, and the driver goes on receiving the last width
+([safety.md §2](../design/safety.md#2-failsafe-matrix)). So:
+
+```bash
+# Build a variant that, on a serial command, enters `while (true) {}` inside the control loop.
+# Command a steady effort, send it, and time the motor stopping.
+#   - Stops within the watchdog period + 100 ms  -> the watchdog is armed and fed from the loop.
+#   - Keeps running                               -> it is not armed, or an interrupt is feeding it.
+```
+
+Record the watchdog period you chose beside the result. **A hang test that was never run is the
+same as no watchdog**, and this is the only automatic recovery the single-MCU design has.
 
 > [!CAUTION]
 > **If the timeout cannot be established, stop**

@@ -64,10 +64,35 @@ Behavior on each loss scenario. "Traction" = drive motors; "steering" = the Teen
 | 5 | **E-stop pressed** (operator or bump) | hardwired contactor | **traction power cut**; MUX coil dropped → STOCK | steering motor loses power → **freewheel** (non-self-centering column); acceptable at ≤ walking speed (§4) | manual reset of latch; re-arm sequence |
 | 6 | **Actuation signal loss** (Teensy stops emitting pulses) | **driver R/C signal-loss timeout** | affected channels **stop their motors** | steering motor stops | pulses resume → motors re-enabled |
 | 7 | **Steering at mechanical limit / linkage jam** | Teensy: stall detected (encoder velocity ≈ 0 under effort) | **clamps effort toward center only**, sets stall bit in `DbwStatus.faults` | holds at limit, no further drive into the stop | command away from limit |
-| 8 | **Teensy firmware hang** | driver R/C signal-loss timeout (row 6); operator observation | **Motors stop** (row 6). Hardware watchdog resets the Teensy to neutral outputs | freewheel or held per §4 | watchdog reset; if repeated, abort session |
+| 8 | **Teensy firmware hang** | **hardware watchdog**, fed only by a completed control-loop iteration; operator observation | **Nothing, until the watchdog fires** — the pulse timers keep emitting the last width (see the note below). The watchdog resets the Teensy, pulses stop, and row 6 stops the motors while it reboots to neutral outputs | freewheel or held per §4 | watchdog reset; if repeated, abort session |
 | 9 | **Absolute angle sensor fault** (I²C NAK, out-of-range, magnet lost) | Teensy: plausibility + range check each loop | Enter `ESTOP`; set encoder-fault bit. **Never run the loop on a bad angle** | de-energized (do not drive to a garbage target) | diagnose sensor; re-zero per [calibration.md](calibration.md) |
 
 Rows 1–5 are the required set; 6–9 are additional. Every row is testable on the bench (§6).
+
+> [!WARNING]
+> **A hung firmware does not stop emitting pulses — corrected 2026-11-10**
+>
+> Row 8 used to give its detection as *"driver R/C signal-loss timeout (row 6)"* and its behaviour
+> as *"Motors stop (row 6)"*, and FMEA row 9 listed that timeout first among its layers. **Row 6
+> does not cover a hang.** A servo pulse train on a Teensy is produced by a hardware timer, not by
+> the main loop, so a loop that has stopped leaves the timer running and the driver keeps
+> receiving the **last commanded width** — a valid signal, at whatever effort was last asked for.
+> The driver's timeout sees nothing wrong.
+>
+> Row 6 fires when pulses actually stop: a reset, a power loss, a pulled signal lead. **What turns
+> a hang into one of those is the hardware watchdog, and nothing else.** So the watchdog is not
+> the afterthought this table made it:
+>
+> - it must be **enabled at boot**, before any output is driven;
+> - it must be fed **only from the control loop, after an iteration that read the sensor and wrote
+>   the outputs** — a watchdog fed from a timer interrupt survives exactly the hang it exists for;
+> - and it is tested by **hanging the firmware on purpose** with a motor commanded
+>   ([04-firmware §4.4](../build/04-firmware.md#44-stage-1-steering-motor-on-the-bench-current-limited)).
+>   Pressing reset tests row 6. It does not test this.
+>
+> *The watchdog is a hardware timer that firmware arms. It therefore does not belong in the
+> "independent of Teensy firmware" column of §1.3: it survives a hang, but not a firmware that
+> never armed it. The three hardware layers above it are unchanged by this correction.*
 
 > [!WARNING]
 > **Row 2 is a genuine regression from the superseded design — accept it knowingly**
@@ -188,7 +213,7 @@ Severity S: 1 = negligible, 5 = hazardous. Detection D: 1 = obvious/monitored, 5
 | 6 | Steering gearmotor stall (jam/limit) | overcurrent, heat, drivetrain stress | 4 | driver current limit; stall detect (encoder velocity ≈ 0 under effort) → clamp effort toward center | stall bit + current limit (2) |
 | 7 | Drive motors overcurrent exceeds **30 A/ch continuous** | driver thermal/limit trip; loss of drive | 3 | verify paralleled stall current vs. **30 A** ([vehicle.md §3.1](vehicle.md#31-drive-motor-stall-current-vs-the-drivers-rating-critical)); the driver's own current-limit protection, which on the MDDS30 is **unnumbered and not user-settable** — so this row's mitigation is weaker than it read while it said 32 A and *"driver current limiting"* ([dbw.md §4.1](dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)) | thermal/overcurrent (2) |
 | 8 | MUX relay welds closed in DBW mode | cannot revert to STOCK; DBW stuck live | 5 | E-stop still cuts *traction power* independently of the MUX; contact check each bring-up; adequately rated contactor | E-stop remains authoritative (3) |
-| 9 | **Teensy firmware hang** — loses loop, throttle, arming, RC serial override at once | vehicle unresponsive to software | **5** | **This is D3's principal risk.** Four independent layers: the driver's R/C signal-loss timeout stops motors; hardware RC signal MUX gives steering back; relay MUX reverts to STOCK; E-stop cuts traction. Hardware watchdog resets to neutral | signal-loss timeout + operator (2) |
+| 9 | **Teensy firmware hang** — loses loop, throttle, arming, RC serial override at once | vehicle unresponsive to software | **5** | **This is D3's principal risk.** Three layers that need no firmware: hardware RC signal MUX gives steering back; relay MUX reverts to STOCK; E-stop cuts traction. **Automatic** recovery is the hardware watchdog alone — it resets the Teensy, and only then does the driver's signal-loss timeout stop the motors ([§2 note](#2-failsafe-matrix)) | watchdog + operator (2) |
 | 10 | Hardware RC signal MUX fails or is mis-wired | Layer B override unavailable — D3's condition unmet | **5** | **Demonstrated at Stage 2 with the Teensy deliberately halted**, not assumed; E-stop and relay MUX remain as layers 1–2 | Stage 2 test (2) |
 | 11 | Laptop autonomy commands unsafe steer/throttle | vehicle drives wrong | 4 | RC serial override (Layer A); RC MUX (Layer B); ≤ walking speed; operator alongside; E-stop | operator observation (2) |
 

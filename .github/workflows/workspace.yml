@@ -16,7 +16,7 @@ name: workspace
 
 on:
   push:
-    branches: [main]
+    branches: [main, light]
     paths:
       - 'ros2_ws/**'
       - 'firmware/**'
