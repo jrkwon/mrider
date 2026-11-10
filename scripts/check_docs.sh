@@ -10,9 +10,14 @@
 # The name is now narrower than the job - checks 5 and 7 are not documentation -
 # but it is what everyone types, so it stays.
 #
-# Thirteen checks. Each one exists because this repository has already shipped the
+# Each check exists because this repository has already shipped the
 # defect it catches, or is one cohort away from it:
 #
+#  24. wiring, said twice    - a harness that runs a +/- PAIR through a fuse
+#                                or a contact, and a Teensy pin the board
+#                                figure uses that the pin table does not
+#                                name. Both shipped; see
+#                                check_wiring_consistency.py.
 #  23. light is an overlay    - on the `light` branch only: a file that differs
 #                                from main outside docs/light/, mkdocs.yml and
 #                                two banners. A variant kept as a second copy
@@ -542,5 +547,10 @@ else
     BEHIND="$(git rev-list --count HEAD.."$BASE_REF")"
     printf "   %sok%s  (overlay only; %s commit(s) on main not yet merged)\n\n" "$G" "$N" "$BEHIND"
 fi
+
+printf "%s24. a wiring claim made in two places says the same thing in both%s\n" "$B" "$N"
+python3 scripts/check_wiring_consistency.py \
+    || fail "a harness or the pin table disagrees with its other copy"
+printf "\n"
 
 printf "%sDocs are publishable.%s\n" "$G" "$N"

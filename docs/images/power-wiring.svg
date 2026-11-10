@@ -131,8 +131,8 @@
   <text x="44" y="507" font-size="12.5" fill="#7f1d1d">a few centimetres of lead. <tspan font-weight="bold">Panel holder, labelled, location recorded</tspan> — a fuse nobody can find is a fuse nobody checks, and a blown</text>
   <text x="44" y="526" font-size="12.5" fill="#7f1d1d">one then reads as a dead controller.</text>
 
-  <text x="44" y="556" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">No fuse on the motor branches, deliberately.</tspan> The driver's 20 A current limit <tspan font-weight="bold">clamps and recovers</tspan>; a fuse in the same place</text>
-  <text x="44" y="575" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">blows and stays blown.</tspan> A steering stall mid-lab would end in a field repair instead of a warm motor.</text>
+  <text x="44" y="556" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">One motor branch IS fused: steering.</tspan> Its tap is AWG 20 behind the 25 A fuse, and the MDDS30 has no</text>
+  <text x="44" y="575" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">settable current limit.</tspan> Inline fuse between the driver's Left output and the relay. Corrected 2026-11-10.</text>
 
   <text x="44" y="605" font-size="12.5" fill="#7f1d1d"><tspan font-weight="bold">The steering motor is on the traction rail on purpose</tspan> — so an E-stop de-energises it and the column freewheels. On the logic rail it</text>
   <text x="44" y="624" font-size="12.5" fill="#7f1d1d">would brown out the Teensy on a stall, and leave a live actuator after an emergency stop. <tspan font-weight="bold">Do not "improve" this.</tspan></text>
@@ -159,7 +159,7 @@
 
   <rect x="346" y="764" width="180" height="48" rx="5" fill="#ffffff" stroke="#b45309" stroke-width="2.2"/>
   <text x="436" y="784" font-size="12" font-weight="bold" fill="#92400e" text-anchor="middle">UBEC B → 5 V</text>
-  <text x="436" y="802" font-size="11" fill="#78350f" text-anchor="middle">receiver · signal MUX · driver logic</text>
+  <text x="436" y="802" font-size="11" fill="#78350f" text-anchor="middle">receiver · signal MUX</text>
 
   <rect x="346" y="824" width="180" height="48" rx="5" fill="#f3e8ff" stroke="#7e22ce" stroke-width="2.4"/>
   <text x="436" y="844" font-size="12" font-weight="bold" fill="#581c87" text-anchor="middle">12 V DIRECT</text>
@@ -174,7 +174,7 @@
   <rect x="572" y="704" width="196" height="48" rx="5" fill="#f1f5f9" stroke="#0f172a" stroke-width="2"/>
   <text x="670" y="732" font-size="12.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Teensy 4.1 → 3V3 → sensors</text>
   <rect x="572" y="764" width="196" height="48" rx="5" fill="#f0fdf4" stroke="#15803d" stroke-width="2"/>
-  <text x="670" y="792" font-size="12.5" font-weight="bold" fill="#14532d" text-anchor="middle">FS-iA6B · Pololu MUX · MDDS30</text>
+  <text x="670" y="792" font-size="12.5" font-weight="bold" fill="#14532d" text-anchor="middle">FS-iA6B · Pololu MUX</text>
 
   <rect x="618" y="818" width="150" height="30" rx="4" fill="#f3e8ff" stroke="#7e22ce" stroke-width="2"/>
   <text x="693" y="838" font-size="11" font-weight="bold" fill="#581c87" text-anchor="middle">E-stop coil — #8a 85/86</text>

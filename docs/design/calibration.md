@@ -40,7 +40,7 @@ The pot is near-linear over the small ±22.5° span, so a two-point fit is adequ
 
 ### 1.3 Setpoint normalization check
 
-Confirm the full command chain: `MANUAL_CONTROL.roll = +1000` should command `+22.5°` and produce a measured `+22.5°` at the wheels; `−1000 → −22.5°`; `0 → 0°` (1500 µs servo pulse). Log the commanded-vs-measured curve; it should be linear through the origin. Any offset means re-check `c0`.
+Confirm the full command chain: `DbwCommand.steering_angle = +0.3927` rad should command `+22.5°` and produce a measured `+22.5°` at the wheels; `−0.3927 → −22.5°`; `0 → 0°`. Log the commanded-vs-measured curve; it should be linear through the origin. Any offset means re-check `c0`.
 
 ### 1.4 Verification
 

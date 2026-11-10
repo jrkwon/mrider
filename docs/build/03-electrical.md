@@ -50,8 +50,7 @@ Chassis traction pack
                     │                         └─▶ Teensy 3.3 V pin ─┬─▶ AS5600 (I²C)
                     │                                               └─▶ 2 × Hall latch + pull-ups
                     ├─▶ UBEC B ─▶ 5 V ─┬─▶ RC receiver
-                    │                  ├─▶ hardware RC signal MUX
-                    │                  └─▶ motor driver signal logic
+                    │                  └─▶ hardware RC signal MUX
                     └─▶ 12 V direct ───┬─▶ relay MUX coils
                                        └─▶ E-stop contactor coil
 
@@ -71,12 +70,14 @@ Laptop ──▶ its own internal battery (NOT wired to traction in v1)
 > counted rather than assumed.
 >
 > **2. The two UBECs are split by AUTHORITY LAYER, not by current.** **UBEC A carries the Teensy
-> alone. UBEC B carries the receiver, the signal MUX and the driver's signal logic.** The reason is
+> alone. UBEC B carries the receiver and the signal MUX.** *(Until 2026-11-10 this list ended
+> "and the driver's signal logic". It does not — see the warning in
+> [§3.5.1](#351-hardware-rc-signal-mux-wire-this-it-is-not-optional).)* The reason is
 > the whole justification for [D3](../design/dbw.md#112-hardware-rc-signal-mux-the-d3-condition):
 > the hardware override exists to survive the Teensy. **Put both on one regulator and a single UBEC
 > failure takes out the override and the thing it overrides at the same time.** Split this way, a
-> UBEC A failure leaves the receiver, the MUX and the driver alive — flip `SEL` to slave and drive
-> it off the field by hand.
+> UBEC A failure leaves the receiver and the MUX alive, and the driver is on the traction pack
+> regardless — flip `SEL` to slave and drive it off the field by hand.
 >
 > **3. The relay MUX is in the MOTOR LEADS, not in the driver's `B+`.** *Corrected 2026-10-28.*
 > This diagram, the §3.2 gauge table and the §3.2 branch sketch all used to read
@@ -98,8 +99,8 @@ Laptop ──▶ its own internal battery (NOT wired to traction in v1)
 
 | Rail | Feeds | Dies when |
 |---|---|---|
-| **Traction / motor** | Driver B+, M1 (steering gearmotor), M2 (drive motors) | E-stop pressed, MUX drops, pack disconnected |
-| **Isolated logic** | Teensy, angle sensor, RC receiver, signal MUX, motor driver signal logic, MUX coil driver | Logic battery disconnected only |
+| **Traction / motor** | Driver B+ — **which is also the driver's own logic supply** — M1 (steering gearmotor), M2 (drive motors) | E-stop pressed, MUX drops, pack disconnected |
+| **Isolated logic** | Teensy, angle sensor, RC receiver, signal MUX, MUX coil driver | Logic battery disconnected only |
 
 > [!CAUTION]
 > **The logic rail is now a separate battery, not a tap off the pack**
@@ -137,8 +138,9 @@ forks. It does not say **which terminal**, **which gauge**, or **which half of e
 MRider has to buy**, and those are what the bench actually needs.
 
 ![Traction supply harness drawn connector by connector, top to bottom: the pack's own .250
-receptacle mating MRider's male tab, then 14 AWG red and black to the 25 A ATO fuse, the XT60,
-the E-stop contactor and the JOTB barrier block, which forks to MRider's .250 receptacle
+receptacle mating MRider's male tab, then the red 14 AWG lead alone through the 25 A ATO fuse,
+the XT60 and the E-stop contactor to the JOTB barrier block, while the black lead runs from the
+pack to the XT60 to the barrier block and passes through neither, and the block forks to MRider's .250 receptacle
 receiving the stock lead back out to the ECU and to the motor driver's B plus and B minus. Every
 wire carries its gauge, colour and length; every connector its type, pin numbering and
 whether it is the vehicle's part or one MRider buys](../images/traction-supply.svg)
@@ -146,6 +148,20 @@ whether it is the vehicle's part or one MRider buys](../images/traction-supply.s
 **Generated from [`harness/traction-supply.yml`](https://github.com/jrkwon/mrider/blob/main/harness/traction-supply.yml)**
 by [`scripts/gen_harness.sh`](https://github.com/jrkwon/mrider/blob/main/scripts/gen_harness.sh).
 *Edit the YAML, never the SVG.*
+
+> [!WARNING]
+> **Until 2026-11-10 this figure drew a short circuit**
+>
+> Every cable in it was a red/black pair, and both conductors landed on the fuse and on the
+> contactor — pack `+` on `in`, pack `−` on `out`. **Wired as drawn, that is the pack shorted
+> through its own fuse.** The prose and the block figure above were right throughout: a fuse and a
+> contact are series parts, with the two ends of **one** conductor on their two terminals.
+>
+> **Only `+` passes through the fuse and the contactor. `−` goes pack → XT60 → barrier block and
+> is never switched.** If a harness was built from the old figure, the fuse will have blown the
+> first time the pack was plugged in. Check it against this one before replacing the fuse, and
+> look at the pack-side lead, its two crimps and the pack's own terminals for discolouration —
+> a 25 A fuse takes long enough to clear that a marginal crimp will have got hot first.
 
 > [!NOTE]
 > **The parts list under it is generated too, and that is the reason this figure is machine-drawn**
@@ -196,12 +212,13 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 | Rail / branch | What protects it | Wire | Fuse? |
 |---|---|---|:---:|
 | **Traction pack → 25 A fuse → E-stop contactor → *everything*** | **25 A blade fuse, at the pack** | AWG 14 | **yes — 1** |
-| Driver Right output → **MUX** → paralleled drive motors | ~~the driver's current limit, set to **20 A**~~ — **no such setting on the MDDS30**, see the warning below | AWG 14 | **unresolved** |
-| Driver Left output → **MUX** → steering gearmotor | same, and the same gap | AWG 14 | **unresolved** |
+| Driver Right output → **MUX** → paralleled drive motors | ~~the driver's current limit, set to **20 A**~~ — **no such setting on the MDDS30**, see the warning below | AWG 14, **tap included** — the `.250` terminals take 16–14 | **unresolved** |
+| Driver Left output → **MUX** → steering gearmotor | same, and the same gap — **and worse at the tap, see below** | AWG 14 to the relay; **AWG 20 at the tap** | **unresolved** |
 | **Logic pack → UBEC inputs + MUX coils** | **5 A blade fuse, at the pack** | AWG 18 | **yes — 1** |
 | UBEC → Teensy, sensor, RC RX, signal MUX | the UBEC's own 3 A limit | AWG 20 | no |
 
-**Two fuses per vehicle, one at each battery.** Not one per row.
+**Two fuses per vehicle, one at each battery — and, since 2026-11-10, a third in the steering
+branch**, for the reason the box below gives as its own exception. Not one per row.
 
 > [!WARNING]
 > **"The driver's current limit, set to 20 A" was a Sabertooth assumption. The board fitted
@@ -229,16 +246,22 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 > nothing had been measured yet. With the gauges settled, most of those rows do not want one.
 >
 > **A branch needs its own fuse only when its wire is thinner than what the upstream fuse
-> protects.** The traction side is 2.5 mm² end to end, so the 25 A fuse at the pack protects all of
-> it; a second fuse downstream would guard nothing the first does not.
+> protects.** Where the traction side is 2.5 mm² (AWG 14), the 25 A fuse at the pack protects it
+> and a second fuse downstream would guard nothing the first does not.
 >
-> **And on the motor branches a fuse would be actively worse.** The driver's current limit is
-> already the mitigation [FMEA row 6](../design/safety.md#7-fmea-lightweight) relies on, and it
-> **clamps and recovers**. A fuse in the same place **blows and stays blown** — a steering stall
-> during a lab would end with dead steering and a field repair, where the current limit ends with
-> the motor sitting there warm.
+> **That rule has one exception on this vehicle, and until 2026-11-10 this box denied it.** It
+> said the traction side was 2.5 mm² *end to end*. It is not: the steering tap is AWG 20, because
+> the stock plug's terminals take nothing thicker. By the rule above that branch needs its own
+> fuse — see the warning at the end of this section.
 >
-> Fuses earn their place at the **batteries**, against the fault a current limit cannot see: a short
+> ~~**And on the motor branches a fuse would be actively worse.** The driver's current limit …
+> clamps and recovers.~~ *Withdrawn 2026-11-10. The argument compared a fuse with a current limit,
+> and the board that was fitted has no settable limit to compare it with
+> ([dbw.md §4.1](../design/dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)).
+> What remains true in it: a blown fuse in a motor lead is a field repair. That is the price of
+> the steering fuse, and it is cheaper than the wire.*
+>
+> Fuses earn their place at the **batteries** against a short
 > anywhere in the harness **MRider adds**.
 >
 > That is the realistic scenario, and it is duller than it sounds. The vehicle's own terminals are
@@ -246,7 +269,7 @@ Fuse for the **stall** current, not the nominal draw, and size wire for the fuse
 > several metres of new wiring routed by **thirteen students** through a chassis they are drilling,
 > bolting and re-opening across a semester — pinched under a panel, chafed on a bracket edge, or
 > landed on the wrong terminal. A pack of this chemistry will push hundreds of amps into any of
-> those, and the driver's current limit sits downstream and never sees it.
+> those, and nothing downstream of the pack ever sees it.
 
 > [!CAUTION]
 > **Verify paralleled drive-motor stall current against the MDDS30's 30 A/channel continuous**
@@ -312,7 +335,7 @@ not change, so **matching the conductor area of the stock harness is correct by 
 the manufacturer sized it for these motors, this pack, and this duty, and had it certified.
 
 > [!NOTE]
-> **Do not measure the stock harness. Use 1.5 mm² and move on.**
+> **Do not measure the stock harness. Use AWG 14 and move on.**
 >
 > An earlier revision of this page had you strip the insulation, count strands, measure strand
 > diameter, and compute the area — because the 2026 harness marking
@@ -348,8 +371,37 @@ pack ──▶ power tap ──▶ 25 A fuse ──▶ E-stop contactor ──�
 
 The stock ECU is capped at 20 A and sits behind a 10 A device; the motor driver will deliver **30 A
 continuous** into a stalled pair if you let it. So this branch can carry more than the stock harness
-ever did — which is an argument for setting the **driver's current limit** deliberately and fusing
-this branch, not for a thicker wire than 1.5 mm².
+ever did — which is why this branch is fused at 25 A and wired in AWG 14, and why the missing
+current limit matters. *Corrected 2026-11-10: this sentence used to ask for the **driver's current
+limit** to be set, and for nothing thicker than 1.5 mm². The MDDS30 has no settable limit
+([dbw.md §4.1](../design/dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)),
+and the box above had already replaced 1.5 mm² on ampacity.*
+
+> [!WARNING]
+> **The steering tap is AWG 20 behind a 25 A fuse, and nothing on this page protects it**
+>
+> *Recorded 2026-11-10.* The gauge table above says AWG 14 for the steering branch. **At the tap
+> it cannot be:** the stock steering plug is a Micro-Fit-class 2-pin whose crimp barrel takes
+> 20–24 AWG, and [`harness/authority-taps.yml`](https://github.com/jrkwon/mrider/blob/main/harness/authority-taps.yml)
+> draws it that way. *(The same file drew the **drive** tap at 16 AWG until 2026-11-10. That one
+> was a drawing error with no such excuse — its `.250` terminals take 16–14 AWG — and 16 AWG is
+> the gauge the box above rules out behind this fuse. The harness file now says 14.)*
+>
+> **That is the fault the wire-gauge box above corrected for 1.5 mm², left standing on a thinner
+> wire.** Stock, this run sat behind the ECU and a 10 A device. Under DBW it sits behind a 25 A
+> fuse and a driver channel with no current limit, feeding a motor whose **stall current has not
+> been measured** (verification gate V1). A jammed linkage held against a wrong loop is exactly
+> the case that finds out.
+>
+> **Unresolved, and not closable from a desk.** Until V1 has a number, put an **inline fuse in
+> the lead from the driver's Left output to the relay's `87` contact** — the DBW side of the
+> relay, so the stock path is untouched — sized to the tap's wire rather than to
+> the motor — **start at 5 A**, raised only when a measured stall current says the motor needs more
+> and the wire can carry it. The firmware's stall detection ([failsafe row 7](../design/safety.md#2-failsafe-matrix))
+> is a second layer here, not the first: it is the thing being debugged when this matters.
+>
+> *No holder for it was bought: the [BOM](01-bom-sourcing.md) counts two per vehicle, as of
+> 2026-11-10. An 18–20 AWG inline blade holder, the same part as the logic fuse's.*
 
 Use **keyed** connectors — not generic bullets. During bring-up you will unplug and re-plug
 these many times, and a reversed steering tap means the position loop runs away from its
@@ -735,6 +787,25 @@ there and from the board's own manual, not from another board's table.
 > a steady but wrong pulse at power-up → `SW6 = 0` adopts it as the centre and **every later
 > command is offset by that error**.*
 >
+> **Releasing the E-stop is one of those power-ups, and it is the one nobody sequences.** *Added
+> 2026-11-10.* The driver's `B+` is downstream of the contactor, so twist-releasing the button
+> boots the driver, and it calibrates on whatever the signal MUX is passing **at that instant**:
+>
+> | MUX on | What is on `RC1`/`RC2` | Whose job |
+> |---|---|---|
+> | **MASTER** | whatever the Teensy emits. A position loop left running against a dead motor emits its proportional term, which is not 1.5 ms unless the wheels happen to be centred | **firmware** — [§4, *The E-stop sense input*](04-firmware.md): while E-stop sense is low, and for a hold-off after it returns, both lines are **exactly 1.5 ms** |
+> | **SLAVE** | the transmitter's sticks | **the operator** — sticks centred and hands off **before** the button is released. Firmware is not in this path |
+>
+> **The E-stop is the only driver power-up the firmware can see.** Three others reach the driver
+> with the loop possibly running, and the sense line — which watches the coil supply, not `B+` —
+> reports none of them:
+>
+> | | Rule |
+> |---|---|
+> | **XT60 re-mated** | **Press the E-stop first, every time.** Then the release is the guarded path above |
+> | **25 A fuse replaced** | The same |
+> | **Traction sag resets the driver** while everything else stays up | **Open as of 2026-11-10.** Nothing detects it. A sense divider on `B+` downstream of the contactor, in place of or beside the coil tap, would cover all three rows; it is not designed or fitted. Until it is, a driver that creeps or sits offset after a hard stall is this, and the fix is E-stop down, sticks centred, release |
+>
 > *Write the order into the bring-up checklist before the first powered test, and give the Teensy
 > firmware a startup state that emits neutral before anything else
 > ([§4](04-firmware.md#the-pin-assignment-the-one-table-that-must-be-frozen-before-an-iron-is-hot)).*
@@ -750,8 +821,8 @@ there and from the board's own manual, not from another board's table.
 | RC receiver **RC serial (i-BUS)** | Teensy hardware serial RX | Layer A override (closed-loop). **The Teensy 4.1 is NOT 5 V tolerant — meter the i-BUS idle level before it touches a serial pin.** The receiver runs on 5 V; if its signal swings to 5 V it needs a divider or a level shifter. One wire, one meter, one minute, and the alternative is a dead pin on a board that is soldered in |
 | RC receiver **MUX channel** | Hardware RC signal MUX select | Layer B override — see below |
 | RC receiver PWM out ×2 | RC signal MUX **slave** inputs | Emergency path |
-| Signal MUX outputs ×2 | Motor driver **S1** and **S2** | Whichever source the MUX selects |
-| **E-stop sense** — divider off the coil supply | Teensy digital input | **Not a safety function; it is what makes the *resume* deliberate.** High = authority chain energised. Tap the node the button's NC contacts feed, through a divider to ≈2.3–3.0 V. See the caution below |
+| Signal MUX outputs ×2 | Motor driver **`RC1`** and **`RC2`** | Whichever source the MUX selects. **Signal and ground only — the centre `+5` wire is not connected** ([§3.5.1](#351-hardware-rc-signal-mux-wire-this-it-is-not-optional)) |
+| **E-stop sense** — divider off the coil supply | Teensy digital input | **It does not stop anything — the contactor does that with the Teensy dead.** It is what makes the *resume* safe: the firmware holds both pulse lines at neutral while it is low, because the driver calibrates its centre when power returns (caution above). *Called "not a safety function" until 2026-11-10; a sense line stuck high now reproduces the mis-calibration, so it is one.* High = authority chain energised. Tap the node the button's NC contacts feed, through a divider to ≈2.3–3.0 V. See the caution below |
 | Teensy **USB** | Laptop | micro-ROS — carries **command *and* feedback** |
 
 > [!CAUTION]
@@ -1157,9 +1228,9 @@ does](../images/signal-board-perfboard-layout.svg)
 > female servo sockets.* The order along a servo connector is **signal · +5 · ground**.
 >
 > **The middle pad is deliberately unconnected, and the reason is the whole point of having two
-> UBECs.** This board runs on **UBEC A**; the receiver, the MUX and the driver's signal logic run
+> UBECs.** This board runs on **UBEC A**; the receiver and the MUX run
 > on **UBEC B**. *Tying the header's +5 to this board would join the two rails and undo the
-> authority split* — the one that lets a UBEC A failure leave the receiver, the MUX and the driver
+> authority split* — the one that lets a UBEC A failure leave the receiver and the MUX
 > alive. **Signal and ground land here; +5 does not.**
 >
 > **The two PWM headers go to the MUX's MASTER inputs** — pin 2 steering, pin 3 drive — and the
@@ -1430,6 +1501,42 @@ The **Teensy's two PWM outputs go to the MASTER inputs**, and the **MUX's two ou
 driver's `RC1` and `RC2`**. The MUX and the receiver both sit on **UBEC B**, and **all three grounds —
 receiver, MUX, driver — reference the same star**: a servo pulse is a voltage *against ground*, and
 two grounds means the driver reads a different number than the one that was sent.
+
+> [!WARNING]
+> **The two leads from the MUX to the driver carry signal and ground only — pull the red wire**
+>
+> *Added 2026-11-10.* This page used to list *"motor driver signal logic"* as a load on UBEC B.
+> **On the evidence below, the MDDS30 is not a load on the logic rail at all:** its logic runs
+> from `B+`, and the centre pin of each of its two RC positions is **the board's own 5 V coming
+> out**, not a place to feed one in.
+>
+> **A stock 3-wire servo lead between the MUX's `OUT` and that header joins the two.** On the
+> Pololu MUX the centre pins of `SEL`, the master inputs and the outputs are all one rail, `VM`,
+> which here is UBEC B. So the red wire ties **a regulator on the logic battery to a regulator on
+> the traction pack**, output to output — the same fault the cut `VUSB` pads and the empty middle
+> pads on the signal board exist to prevent, in the one place nothing was preventing it. It also
+> bridges the two rails this design keeps apart.
+>
+> **Lift the centre contact out of the housing at one end of each lead, and tape it back.** Signal
+> and ground go through; `+5` does not. *Then meter it rather than trust this page: driver
+> powered, leads unplugged, centre pin to ground. About 5 V there is the board's supply coming
+> out, and confirms the paragraph above. Nothing there means the inference was wrong, and the
+> driver would not have responded to pulses either — which the bench shows at once.*
+>
+> *What this rests on.* Pololu's documentation states the `VM` rail. Cytron's manual does **not**
+> describe the `5V` pin in words, as of the Rev 1.11 text read on 2026-11-10: the evidence is its
+> RC sample-connection drawing, where a receiver hangs off that header by one 3-wire lead and the
+> only supply in the picture is the 7–35 V pack. **That is an inference from a drawing, not a
+> statement in a datasheet.** No current rating for the pin is given there, so none is given here.
+>
+> **Two things follow, and both were stated the other way round:**
+>
+> - **The driver's logic dies with the traction rail.** Pressing the E-stop does not just remove
+>   motor power; it switches the driver off, and releasing it is a **power-up** — see the caution
+>   under the `SW6` table.
+> - **A traction sag deep enough to reset the driver** is a driver reset, whatever the logic rail
+>   is doing. The isolation protects the Teensy, the receiver and the MUX. It never protected the
+>   driver.
 
 > [!CAUTION]
 > **The E-stop does not connect to the signal MUX, and that is deliberate**

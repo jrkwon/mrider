@@ -1663,7 +1663,7 @@ floating gate can partially enhance.
 >
 > | | |
 > |---|---|
-> | **Drive-channel current limit** | **20 A** |
+> | **Drive-channel current limit** | ~~**20 A**~~ — **not available.** The MDDS30 has no settable limit ([dbw.md §4.1](../design/dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)); struck 2026-11-10. The fuse row below is the only constraint left in this table |
 > | Main traction fuse | **25 A** |
 > | Worst case the contacts break | even the pessimistic 40 A NO reading gives 20–24 A inductive |
 >
@@ -1926,7 +1926,7 @@ by the separate battery. Galvanic isolation downstream of it buys nothing here.
 > | | |
 > |---|---:|
 > | 4× MUX relay coils (150 mA each) | **600 mA** |
-> | Teensy, angle sensor, RC receiver, signal MUX, driver logic — 240 mA at 5 V through an 85 % buck | 118 mA |
+> | Teensy, angle sensor, RC receiver, signal MUX — 240 mA at 5 V through an 85 % buck. *The 240 mA was budgeted with "driver logic" in it; the driver powers itself from `B+`, so this row is high, not low (2026-11-10)* | 118 mA |
 > | **Total at 12 V** | **≈ 720 mA, 8.6 W** |
 >
 > The relay coils are **84 %** of it, and they are irreducible: a latching relay would cut the

@@ -132,8 +132,9 @@ flowchart LR
   frame is ~50 Hz, which would cap closed-loop performance regardless of loop rate — the defect
   the superseded design carried unstated. **Measure it at Stage 1 and pin it**
   ([`dbw.md §4`](dbw.md#4-adr-motor-driver-control-mode-independent-rc-teensy-as-both-masters)).
-- The driver's **R/C signal-loss timeout is inherent in this mode** — motors stop when
-  pulses stop, with no configuration. One more layer independent of Teensy firmware.
+- The driver's **R/C signal-loss timeout** stops the motors when pulses stop — **with `SW6 = 0`**.
+  *This line said "inherent in this mode, with no configuration" until 2026-11-10; `SW6 = 1`
+  disables it.* One more layer independent of Teensy firmware.
 
 ---
 
