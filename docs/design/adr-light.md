@@ -98,6 +98,24 @@ stop), and a live return to the parent remote.
   is open here too.
 - **Three stops need nothing from the firmware:** the fuse, the switch, the USB cable.
 
+### Three hazards the simplification creates or keeps
+
+Found while writing the branch's pages, and recorded here because this is where the risk is
+argued. The procedures are on the branch.
+
+- **A mis-plug survives the removal of the relay MUX.** The power and drive taps are the same
+  blade family ([FMEA row 12](safety.md#7-fmea-lightweight)). With no relay the pack can no longer
+  land on the stock ECU — but the drive-tap half still fits the pack, and then the driver powers
+  up through its own output stage's body diodes, **upstream of the fuse and the switch.** Same
+  mitigation: pigtails cut too short to reach the wrong connector.
+- **Re-closing the switch is a power-up for the driver**, which takes whatever pulse it sees as
+  *stop*. The firmware cannot see the switch — Light has no sense line — so it may be mid-effort
+  when that happens. **Reset the Teensy before closing the switch again.** The full design does
+  not have this problem in this form: its E-stop is sensed.
+- **With no transmitter there is nothing to arm with**, so the firmware leaves `ESTOP` only after
+  500 ms of fresh commands at zero speed. Without that rule a laptop reconnecting mid-command
+  starts the vehicle.
+
 ### What it is not for
 
 Anything heavier or faster than this chassis. Any run with the operator out of reach. Slopes,
