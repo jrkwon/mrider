@@ -109,13 +109,13 @@ cables:
     colors: [BN, BU]
   W_D_IN:
     wirecount: 2
-    gauge: 16 AWG
+    gauge: 14 AWG
     length: 0.6
     colors: [WH, GY]
     notes: Two NETS, not four wires - the stock plug does the paralleling.
   W_D_OUT:
     wirecount: 2
-    gauge: 16 AWG
+    gauge: 14 AWG
     length: 0.6
     colors: [WH, GY]
 

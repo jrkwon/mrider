@@ -111,7 +111,9 @@ argued. The procedures are on the branch.
 - **Re-closing the switch is a power-up for the driver**, which takes whatever pulse it sees as
   *stop*. The firmware cannot see the switch — Light has no sense line — so it may be mid-effort
   when that happens. **Reset the Teensy before closing the switch again.** The full design does
-  not have this problem in this form: its E-stop is sensed.
+  not have this problem in this form: its E-stop is sensed. *It had it in another: until
+  2026-11-10 its firmware kept the steering loop's proportional term alive while the E-stop was
+  down. Writing this bullet did not prompt a check of `main`; an outside review did.*
 - **With no transmitter there is nothing to arm with**, so the firmware leaves `ESTOP` only after
   500 ms of fresh commands at zero speed. Without that rule a laptop reconnecting mid-command
   starts the vehicle.
@@ -128,9 +130,12 @@ it is for.
 - **What the MDDS30 reads on an undriven `RC1`/`RC2`.** With the Teensy unpowered its outputs
   float. The branch specifies a pull-down on each line and a test that pulls the USB cable with a
   motor commanded; until that test is run, "USB out stops the vehicle" is an expectation.
-- **Whether the driver's signal header needs an external 5 V.** The full design feeds *"motor
-  driver signal logic"* from a UBEC; this repository does not record, as of 2026-11-10, whether
-  that is a requirement of the board or a convenience. Read it off the manual before wiring.
+- ~~**Whether the driver's signal header needs an external 5 V.**~~ **Answered the same day, by inference: it
+  does not, and should not be given one.** The manual's own RC drawing powers a receiver from
+  that header with nothing but the pack attached, so the centre pin is the board's supply coming out
+  ([03-electrical §3.5.1](../build/03-electrical.md#351-hardware-rc-signal-mux-wire-this-it-is-not-optional)).
+  Light connects signal and ground to that header and nothing else. The full design's "motor
+  driver signal logic on UBEC B" was an error, corrected with this.
 - **A Teensy whose `VUSB`–`VIN` pads were already cut** for the full build cannot be USB-powered
   until they are bridged again. Feeding `VIN` from a regulator on the traction pack instead is
   **not** an acceptable shortcut — it couples the controller to traction sag, which is the fault

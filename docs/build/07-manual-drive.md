@@ -217,11 +217,11 @@ The point of this whole architecture, verified with the vehicle moving. Priority
 
 Also verify under motion:
 
-- [ ] **Command loss:** kill the shim while moving → throttle → 0, steering holds
+- [ ] **Command loss:** kill the shim while moving → throttle → 0, steering **centres, then de-energises** ([failsafe row 1](../design/safety.md#2-failsafe-matrix))
 - [ ] **RC loss:** power off the transmitter while moving → Teensy enters `ESTOP`
 - [ ] **USB loss:** unplug the Teensy while moving → **the vehicle stops** (`ESTOP`: throttle
-      zeroed, steering centered). Note this is the *opposite* of the older design, where steering kept
-      tracking**, autonomy safe-stops
+      zeroed, steering centered). Autonomy safe-stops. Note this is the *opposite* of the older design, where
+      steering kept tracking
 
 > [!CAUTION]
 > **Verify RC-loss deliberately, with space**

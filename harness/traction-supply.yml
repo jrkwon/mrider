@@ -19,6 +19,15 @@
 #
 #   pack presents a RECEPTACLE  -> MRider's pack-facing half is a MALE TAB
 #   stock lead is a MALE TAB    -> MRider's ECU-facing half is a RECEPTACLE
+#
+# ONLY THE + CONDUCTOR PASSES THROUGH THE FUSE AND THE CONTACTOR
+# ---------------------------------------------------------------
+# Corrected 2026-11-10. Until then every cable here was a red/black pair and
+# both conductors landed on F1 and K0 -- pack + on `in`, pack - on `out` --
+# which, wired as drawn, is the pack shorted through its own fuse. A fuse and
+# a contact are SERIES parts with two ends of the SAME conductor. The - lead
+# goes pack -> XT60 -> barrier block and is never switched; the XT60 is the
+# only place both conductors break together.
 
 connectors:
   PACK:
@@ -88,26 +97,40 @@ connectors:
 
 cables:
   W_IN:
-    wirecount: 2
+    wirecount: 1
     gauge: 14 AWG
     length: 0.3
-    colors: [RD, BK]
-    notes: MRider's own wire. The bought terminals crimp onto THIS.
+    colors: [RD]
+    notes: Pack + to the fuse. MRider's own wire - the bought tab crimps onto THIS.
   W_F:
-    wirecount: 2
+    wirecount: 1
     gauge: 14 AWG
     length: 0.2
-    colors: [RD, BK]
+    colors: [RD]
+    notes: Fused +.
+  W_NEG:
+    wirecount: 1
+    gauge: 14 AWG
+    length: 0.5
+    colors: [BK]
+    notes: Pack - straight to the XT60. Through nothing.
   W_X:
-    wirecount: 2
+    wirecount: 1
     gauge: 14 AWG
     length: 0.3
-    colors: [RD, BK]
+    colors: [RD]
   W_K:
-    wirecount: 2
+    wirecount: 1
     gauge: 14 AWG
     length: 0.3
-    colors: [RD, BK]
+    colors: [RD]
+    notes: Switched +. Dead when the E-stop is pressed.
+  W_G:
+    wirecount: 1
+    gauge: 14 AWG
+    length: 0.6
+    colors: [BK]
+    notes: Never switched. Bypasses the contactor.
   W_ECU:
     wirecount: 2
     gauge: 14 AWG
@@ -124,18 +147,26 @@ connections:
   - - PACK: [1, 2]
     - ==>: [1-2]
     - J_PACK: [1, 2]
-  - - J_PACK: [1, 2]
-    - W_IN: [1, 2]
-    - F1: [1, 2]
-  - - F1: [2, 1]
-    - W_F: [1, 2]
-    - XT60: [1, 2]
-  - - XT60: [1, 2]
-    - W_X: [1, 2]
-    - K0: [1, 2]
-  - - K0: [2, 1]
-    - W_K: [1, 2]
-    - TEE: [1, 2]
+  # + : pack -> fuse -> XT60 -> contactor -> barrier block
+  - - J_PACK: [1]
+    - W_IN: [1]
+    - F1: [1]
+  - - F1: [2]
+    - W_F: [1]
+    - XT60: [1]
+  - - XT60: [1]
+    - W_X: [1]
+    - K0: [1]
+  - - K0: [2]
+    - W_K: [1]
+    - TEE: [1]
+  # - : pack -> XT60 -> barrier block, through neither the fuse nor the contactor
+  - - J_PACK: [2]
+    - W_NEG: [1]
+    - XT60: [2]
+  - - XT60: [2]
+    - W_G: [1]
+    - TEE: [2]
   - - TEE: [1, 2]
     - W_ECU: [1, 2]
     - J_ECU: [1, 2]

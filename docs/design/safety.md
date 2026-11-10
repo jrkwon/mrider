@@ -60,14 +60,39 @@ Behavior on each loss scenario. "Traction" = drive motors; "steering" = the Teen
 | 1 | **Command loss** (laptop stops publishing `DbwCommand`, or rate < 50 Hz) | Teensy supervisor: setpoint staleness **> 500 ms** | Enter `ESTOP`: **throttle → 0** | **Steering centered**, then motor de-energized | resume when stream returns; operator re-arms via RC |
 | 2 | **USB link loss** (micro-ROS session drops) | Teensy: no session / no setpoint. Laptop: `/mitt/dbw/status` stale > 250 ms | Teensy enters `ESTOP` autonomously; laptop halts Nav2 | **Centered, then de-energized** | reconnect; agent re-establishes session |
 | 3 | **RC loss** (TX off or out of range) | Teensy: RC frame timeout; MUX channel goes to failsafe value | Enter `ESTOP`: **throttle → 0** | Centered, then de-energized | TX re-links; explicit re-arm |
-| 4 | **Battery sag / brownout** (pack droops under stall) | logic-rail undervoltage monitor | logic rail dips below threshold → **MUX coil drops → revert to STOCK**; the driver's low-voltage cutoff also stops motors | steering motor de-energizes with the coil → **freewheel** (§4) | recharge/settle; isolation (§5) should prevent the dip |
-| 5 | **E-stop pressed** (operator or bump) | hardwired contactor | **traction power cut**; MUX coil dropped → STOCK | steering motor loses power → **freewheel** (non-self-centering column); acceptable at ≤ walking speed (§4) | manual reset of latch; re-arm sequence |
+| 4 | **Battery sag / brownout** (pack droops under stall) | logic-rail undervoltage monitor | logic rail dips below threshold → **MUX coil drops → revert to STOCK**. *The driver has no low-voltage cutoff: its battery monitor blinks an LED and keeps the motors powered ([dbw.md §4.1](dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)). This cell said otherwise until 2026-11-10* | steering motor de-energizes with the coil → **freewheel** (§4) | recharge/settle; isolation (§5) should prevent the dip |
+| 5 | **E-stop pressed** (operator or bump) | hardwired contactor | **traction power cut**; MUX coil dropped → STOCK | steering motor loses power → **freewheel** (non-self-centering column); acceptable at ≤ walking speed (§4) | **transmitter sticks centred, then** manual reset of latch — releasing it powers the driver up, and the driver takes what it sees as *stop* (note below); then the re-arm sequence |
 | 6 | **Actuation signal loss** (Teensy stops emitting pulses) | **driver R/C signal-loss timeout** | affected channels **stop their motors** | steering motor stops | pulses resume → motors re-enabled |
 | 7 | **Steering at mechanical limit / linkage jam** | Teensy: stall detected (encoder velocity ≈ 0 under effort) | **clamps effort toward center only**, sets stall bit in `DbwStatus.faults` | holds at limit, no further drive into the stop | command away from limit |
 | 8 | **Teensy firmware hang** | **hardware watchdog**, fed only by a completed control-loop iteration; operator observation | **Nothing, until the watchdog fires** — the pulse timers keep emitting the last width (see the note below). The watchdog resets the Teensy, pulses stop, and row 6 stops the motors while it reboots to neutral outputs | freewheel or held per §4 | watchdog reset; if repeated, abort session |
 | 9 | **Absolute angle sensor fault** (I²C NAK, out-of-range, magnet lost) | Teensy: plausibility + range check each loop | Enter `ESTOP`; set encoder-fault bit. **Never run the loop on a bad angle** | de-energized (do not drive to a garbage target) | diagnose sensor; re-zero per [calibration.md](calibration.md) |
 
 Rows 1–5 are the required set; 6–9 are additional. Every row is testable on the bench (§6).
+
+> [!WARNING]
+> **Releasing the E-stop is a power-up for the motor driver — added 2026-11-10**
+>
+> The driver's supply is downstream of the contactor, and its logic runs from that supply, not
+> from the logic rail. So row 5's recovery is not "power returns to a waiting driver": the driver
+> **boots**, and in its `SW6 = 0` setting it calibrates its centre on the pulse present at that
+> moment.
+>
+> **Two things must therefore be true before the latch is released**, one per source the signal
+> MUX can be passing:
+>
+> - **Firmware:** while E-stop sense is low, and for a hold-off after, both pulse lines are
+>   exactly neutral. Not "steering centred" — the loop cannot centre a motor with no supply, and
+>   its proportional term is a non-neutral pulse ([build step 4](../build/04-firmware.md)).
+> - **Operator:** transmitter sticks centred, hands off. If the MUX is on SLAVE, the sticks *are*
+>   the pulse.
+>
+> It is verified, not assumed, in [bench test §6.2](../build/06-bench-test.md), row 5a.
+>
+> **Two things this does not cover, both open as of 2026-11-10.** A driver that resets on a
+> traction sag re-calibrates with nothing watching ([FMEA row 4a](#7-fmea-lightweight)). And with
+> the E-stop down the signal MUX goes on driving 5 V pulses into an unpowered driver; whether
+> that partly powers its logic through the input pins, so that the release is not a clean
+> power-up, has not been measured.
 
 > [!WARNING]
 > **A hung firmware does not stop emitting pulses — corrected 2026-11-10**
@@ -121,7 +146,7 @@ Consequences of the traction-only design:
 
 ### 4.1 Rail assignment (pinned)
 
-**The steering gearmotor is powered from the motor rail (traction rail via the MUX), NOT the isolated logic rail.** Its drive current flows through driver M1, fed from the traction battery through the power tap and MUX ([dbw.md §11.5](dbw.md#115-3-tap-connector-spec-minimally-invasive)). The Teensy, absolute sensor, RC receiver, signal MUX, and the motor driver's *logic* are on the **isolated logic rail** (§5).
+**The steering gearmotor is powered from the motor rail (traction rail via the MUX), NOT the isolated logic rail.** Its drive current flows through driver M1, fed from the traction battery through the power tap and MUX ([dbw.md §11.5](dbw.md#115-3-tap-connector-spec-minimally-invasive)). The Teensy, absolute sensor, RC receiver and signal MUX are on the **isolated logic rail** (§5). **The motor driver's logic is not** — it runs from the driver's own `B+`, on the traction rail. *This sentence listed it on the logic rail until 2026-11-10; see [03-electrical §3.5.1](../build/03-electrical.md#351-hardware-rc-signal-mux-wire-this-it-is-not-optional).*
 
 Rationale: the steering motor is a power actuator drawing amps; it belongs on the motor rail with its power stage, and it must lose power together with traction on E-stop so the MUX can cleanly hand authority back to STOCK. Putting the steering motor on the logic rail would (a) risk browning out the Teensy — which now holds the *entire* safety supervisor — when the steering motor stalls, and (b) leave steering live after an E-stop cut traction, an inconsistent and more dangerous state. **Under D3 point (a) is more important than it was**, because there is no second controller to survive the brownout.
 
@@ -148,7 +173,7 @@ Because the steering motor is on the traction/motor rail, **cutting that rail (E
 
 ## 5. Power-rail isolation and brownout protection
 
-- **Two rails:** (1) **traction/motor rail** — pack → power tap → driver B+ and M1/M2 (drive + steering motors); (2) **isolated logic rail** — a separate battery and DC-DC feeding the Teensy, absolute sensor, RC receiver, hardware signal MUX, motor-driver signal logic, and the MUX coil driver.
+- **Two rails:** (1) **traction/motor rail** — pack → power tap → driver B+ and M1/M2 (drive + steering motors); (2) **isolated logic rail** — a separate battery and DC-DC feeding the Teensy, absolute sensor, RC receiver, hardware signal MUX, and the MUX coil driver. *Not the motor driver's logic, which this list included until 2026-11-10: the MDDS30 powers itself from `B+`, so a traction sag deep enough to reset it resets it whatever this rail is doing.*
 - **The isolated logic rail is not optional and not a retrofit.** The superseded design got logic isolation from the Pixhawk power module; that part is deleted, so the rail must be built explicitly. The Teensy holds the whole safety supervisor — a reset mid-drive is a loss of every firmware-layer protection at once.
 - **The laptop runs on its own internal battery** (no traction→19 V conversion in v1), so laptop compute is immune to traction sag.
 - **The laptop is not the logic rail, and cannot be.** It is already an isolated source and the Teensy is already connected to it by USB, so the question of why a third battery exists is a fair one. Two answers:
@@ -167,7 +192,7 @@ No stage begins until the previous stage passes. **Bench before vehicle; wheels-
 
 **Stage 0 — bench, no motors.** Teensy firmware alone: verify absolute-sensor read, counts→degrees, plausibility/range checking, and micro-ROS session establishment. Confirm `/mitt/dbw/status` at ≥ 50 Hz with `ros2 topic hz`. **Log USB session stability over ≥ 30 min** (failsafe row 2). No motor wired.
 
-**Stage 1 — bench, steering motor only, off the vehicle.** Wire the motor driver in R/C mode (Teensy PWM → signal MUX → S1) and M1 → steering motor on a current-limited bench supply. Verify: closed-loop position tracking at ≥ 200 Hz, no runaway, limit-clamp behavior, stall detection, and freewheel on power cut (§4.4 steps 1–2). **Verify the R/C signal-loss timeout stops the motor when the Teensy stops emitting pulses** (failsafe row 6). **Measure the actuation frame rate and pin it** — see the [§4 warning](dbw.md#4-adr-motor-driver-control-mode-independent-rc-teensy-as-both-masters).
+**Stage 1 — bench, steering motor only, off the vehicle.** Wire the motor driver in R/C mode (Teensy PWM → signal MUX → `RC1`) and M1 → steering motor on a current-limited bench supply. Verify: closed-loop position tracking at ≥ 200 Hz, no runaway, limit-clamp behavior, stall detection, and freewheel on power cut (§4.4 steps 1–2). **Verify the R/C signal-loss timeout stops the motor when the Teensy stops emitting pulses** (failsafe row 6). **Measure the actuation frame rate and pin it** — see the [§4 warning](dbw.md#4-adr-motor-driver-control-mode-independent-rc-teensy-as-both-masters).
 
 > [!NOTE]
 > **E4 decision point**
@@ -209,8 +234,9 @@ Severity S: 1 = negligible, 5 = hazardous. Detection D: 1 = obvious/monitored, 5
 | 2 | **Magnet wrap** — sensed shaft rotates past one turn | angle folds back; loop drives the wrong way, *silently* | **5** | **load-side mounting (±22.5°) makes wrap mechanically impossible**; travel measured at the §6 bench gate before ordering; pot fallback if no ≤340° shaft exists | continuity check at calibration (3) |
 | 3 | Command setpoint stale (laptop hang, USB drop) | steering has no valid target | 3 | staleness > 500 ms → `ESTOP`, center, de-energize (row 1/2) | staleness watchdog (1) |
 | 4 | Traction battery sag under stall | **logic reset → loss of the entire safety supervisor** | **5** | isolated logic rail + hold-up cap (§5); undervoltage monitor → MUX drop to STOCK; E-stop and RC MUX remain independent | logic-rail UV monitor (2) |
+| 4a | Traction sag resets **the motor driver** while the logic rail holds *(added 2026-11-10)* | driver reboots and calibrates its centre on a live pulse → creep or offset on every later command, or a refusal to run | 4 | **none automatic** — the E-stop sense watches the coil supply, not `B+`. Operator: E-stop down, sticks centred, release | **none (5)** — open, see [03-electrical §3.5](../build/03-electrical.md#35-signal-wiring) |
 | 5 | Motor-driver signal ground loop / PWM noise | erratic or corrupted motor command | 3 | common-ground star at the motor driver, RC receiver and signal MUX; R/C signal-loss timeout stops motors on invalid pulses | pulse validity + timeout (2) |
-| 6 | Steering gearmotor stall (jam/limit) | overcurrent, heat, drivetrain stress | 4 | driver current limit; stall detect (encoder velocity ≈ 0 under effort) → clamp effort toward center | stall bit + current limit (2) |
+| 6 | Steering gearmotor stall (jam/limit) | overcurrent, heat, drivetrain stress — **and the AWG 20 steering tap, behind a 25 A fuse** | 4 | stall detect (absolute-sensor velocity ≈ 0 under effort) → clamp effort toward center; **inline fuse in the steering branch** ([03-electrical §3.2](../build/03-electrical.md#32-per-rail-fuse-and-gauge-table)). ~~driver current limit~~ — *the MDDS30 has none that can be set; withdrawn 2026-11-10* | stall bit only (3) |
 | 7 | Drive motors overcurrent exceeds **30 A/ch continuous** | driver thermal/limit trip; loss of drive | 3 | verify paralleled stall current vs. **30 A** ([vehicle.md §3.1](vehicle.md#31-drive-motor-stall-current-vs-the-drivers-rating-critical)); the driver's own current-limit protection, which on the MDDS30 is **unnumbered and not user-settable** — so this row's mitigation is weaker than it read while it said 32 A and *"driver current limiting"* ([dbw.md §4.1](dbw.md#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)) | thermal/overcurrent (2) |
 | 8 | MUX relay welds closed in DBW mode | cannot revert to STOCK; DBW stuck live | 5 | E-stop still cuts *traction power* independently of the MUX; contact check each bring-up; adequately rated contactor | E-stop remains authoritative (3) |
 | 9 | **Teensy firmware hang** — loses loop, throttle, arming, RC serial override at once | vehicle unresponsive to software | **5** | **This is D3's principal risk.** Three layers that need no firmware: hardware RC signal MUX gives steering back; relay MUX reverts to STOCK; E-stop cuts traction. **Automatic** recovery is the hardware watchdog alone — it resets the Teensy, and only then does the driver's signal-loss timeout stop the motors ([§2 note](#2-failsafe-matrix)) | watchdog + operator (2) |

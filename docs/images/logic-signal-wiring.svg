@@ -58,7 +58,7 @@
   <!-- UBEC B -->
   <rect x="44" y="346" width="236" height="52" rx="5" fill="#ffffff" stroke="#b45309" stroke-width="2"/>
   <text x="54" y="366" font-size="12" font-weight="bold" fill="#92400e">UBEC B → 5 V</text>
-  <text x="54" y="384" font-size="10.5" fill="#78350f">receiver · Pololu MUX · driver logic</text>
+  <text x="54" y="384" font-size="10.5" fill="#78350f">receiver · Pololu MUX</text>
   <path d="M120,334 L120,346" stroke="#b45309" stroke-width="2.6"/>
 
   <rect x="44" y="412" width="236" height="56" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
@@ -128,8 +128,8 @@
   <!-- ============ DRIVER ============ -->
   <rect x="884" y="268" width="240" height="130" rx="8" fill="#ede9fe" stroke="#6d28d9" stroke-width="2.4"/>
   <text x="900" y="292" font-size="13.5" font-weight="bold" fill="#4c1d95">Cytron MDDS30</text>
-  <text x="900" y="312" font-size="11" fill="#5b21b6">S1 ◀── MUX out 1 → M1 steering</text>
-  <text x="900" y="330" font-size="11" fill="#5b21b6">S2 ◀── MUX out 2 → M2 drive ×2</text>
+  <text x="900" y="312" font-size="11" fill="#5b21b6">RC1 ◀── MUX out 1 → steering</text>
+  <text x="900" y="330" font-size="11" fill="#5b21b6">RC2 ◀── MUX out 2 → drive ×2</text>
   <text x="900" y="350" font-size="11" fill="#5b21b6">independent R/C (PWM) mode</text>
   <text x="900" y="372" font-size="11" font-weight="bold" fill="#4c1d95">★ STAR GROUND lives here</text>
   <text x="900" y="388" font-size="10.5" fill="#5b21b6">Teensy · receiver · MUX · driver, one point</text>
@@ -175,7 +175,7 @@
   <text x="44" y="868" font-size="12" fill="#334155"><tspan font-weight="bold" fill="#b91c1c">④</tspan> <tspan font-weight="bold">The Teensy 4.1 is not 5 V tolerant.</tspan> i-BUS from a 5 V-powered receiver has to be level-checked before it touches a serial pin. One wire, one meter, one minute.</text>
   <text x="44" y="890" font-size="12" fill="#334155"><tspan font-weight="bold" fill="#b91c1c">⑤</tspan> §3.4 says <tspan font-style="italic">"two DPDT relays"</tspan>; what was bought is <tspan font-weight="bold">four 5-pin SPDT per vehicle</tspan>. Same function, different count — and the count is what someone wires.</text>
   <text x="44" y="912" font-size="12" fill="#334155"><tspan font-weight="bold" fill="#15803d">⑥ DECIDED</tspan> — the E-stop contactor coil runs off the <tspan font-weight="bold">LOGIC battery</tspan>. On the traction pack it would <tspan font-weight="bold">chatter during a stall brownout</tspan> — sag drops the coil, which cuts traction, which restores the sag. Cost: no logic battery ⇒ the car is dead, not a stock toy.</text>
-  <text x="44" y="934" font-size="12" fill="#334155"><tspan font-weight="bold" fill="#15803d">⑦ DECIDED</tspan> — <tspan font-weight="bold">UBEC A carries the Teensy alone; UBEC B carries the receiver, the MUX and the driver logic.</tspan> Split by authority layer: a UBEC A failure must not take out the override that exists to survive the Teensy.</text>
+  <text x="44" y="934" font-size="12" fill="#334155"><tspan font-weight="bold" fill="#15803d">⑦ DECIDED</tspan> — <tspan font-weight="bold">UBEC A carries the Teensy alone; UBEC B carries the receiver and the MUX. The driver powers its own logic from B+.</tspan> Split by authority layer: a UBEC A failure must not take out the override that exists to survive the Teensy.</text>
   <text x="44" y="956" font-size="12" fill="#334155"><tspan font-weight="bold" fill="#1d4ed8">⑧ ADDED 2026-10-28</tspan> — <tspan font-weight="bold">the E-stop sense wire.</tspan> dbw §10.3 has always had E-stop as a transition in, and &#8220;E-stop released + RC arm&#8221;</text>
   <text x="58" y="973" font-size="12" fill="#334155">as the only way out, with no wire ever specified. Both coils run through the NC contacts, so resetting the button re-energises both at once while</text>
   <text x="58" y="990" font-size="12" fill="#334155">the Teensy — which never noticed — is still commanding. <tspan font-weight="bold">Hardware owns stopping; firmware owns not restarting by accident.</tspan></text>

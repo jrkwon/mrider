@@ -499,7 +499,7 @@ Diagnostic/config traffic (PID gains, zeroing) uses ROS 2 **parameters and servi
 
 Invariants:
 
-- Any transition into `ESTOP` zeroes throttle and centers steering immediately.
+- Any transition into `ESTOP` zeroes throttle and centers steering immediately — **except while the hardware E-stop sense is low, in any state and whatever caused `ESTOP`**, when there is no motor power to centre with: both pulse lines go to exactly neutral and stay there until a hold-off after power returns, because the driver calibrates its centre on them when it boots ([safety.md §2](safety.md#2-failsafe-matrix), added 2026-11-10).
 - `AUTONOMOUS` requires a live `DbwCommand` stream; staleness > 500 ms drops to `ESTOP`.
 - RC override is honored from any state within 200 ms.
 - **These invariants are firmware, and firmware can hang.** They are the *inner* layer only; §11 provides the independent outer layers.
@@ -638,7 +638,7 @@ Following mrover's connector-tap approach (`vehicle_setup.md:5-23`), three inlin
 |---|---|---|---|
 | **Throttle tap** | stock throttle motor leads | NC→stock ECU, NO→driver M2 | paralleled rear motors (§7) |
 | **Steering tap** | stock steering motor leads | NC→stock ECU, NO→driver M1 | MRider adds the gearmotor if the column had none. **Note the M1/M2 inversion vs. mrover — §2.1.** |
-| **Power tap** | main battery pack | feeds driver B+ and the isolated logic rail | fused; brownout isolation per [safety.md](safety.md) |
+| **Power tap** | main battery pack | feeds driver B+ **and the stock ECU, through the contactor**. *Not the logic rail, which this cell named until 2026-11-10: that is a separate battery* | fused; brownout isolation per [safety.md](safety.md) |
 
 All three are keyed inline connectors so the stock wiring is restorable without cutting. Unplug the three taps and the vehicle is factory-stock.
 
@@ -674,7 +674,7 @@ The pinned, testable contract for the DBW interface.
 - **Bench gate:** measured lock-to-lock travel of each candidate sensor shaft → confirms magnetic vs. pot (§6). **Before ordering.**
 - Torque measurement on the actual chassis → gearmotor spec and wiper-motor fallback decision (§2.2).
 - Paralleled drive-motor stall current vs. the driver's **30 A continuous** → [vehicle.md](vehicle.md), and the no-fuse argument that rests on a limit this board does not have ([§4.1](#41-part-substitution-cytron-mdds30-replaces-the-sabertooth-2x32-2026-09-29)).
-- **Actuation frame rate** measured and pinned at Stage 1 → the §4 warning. The driver's R/C signal-loss timeout is inherent in this mode, but confirm it stops the motors ([failsafe row 6](safety.md#2-failsafe-matrix)).
+- **Actuation frame rate** measured and pinned at Stage 1 → the §4 warning. The driver's R/C signal-loss timeout is **a DIP switch, not a property of the mode** — `SW6 = 0` enables it, `SW6 = 1` disables it and the motor runs on at its last speed — so confirm it stops the motors ([failsafe row 6](safety.md#2-failsafe-matrix)).
 - **FAILMODE jumper direction** on the RC signal MUX decided and recorded → §11.2.
 - ~~`micro_ros_arduino` Humble availability and USB-serial transport acceptance~~ → **closed 2026-08-08**, see §9.
 - ~~Hardware RC signal MUX part selection~~ → **closed 2026-08-08**: Pololu 4-Channel RC Servo Multiplexer #2806 ([bom.md](bom.md)). Wiring and FAILMODE jumper direction still to be set → §11.2.

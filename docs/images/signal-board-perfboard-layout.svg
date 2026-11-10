@@ -1173,8 +1173,8 @@
 <text x="620" y="1321" font-size="12" fill="#b45309"><tspan font-weight="bold">The 4.7 k sit on SDA and SCL</tspan>, parallel to the AS5600</text>
 <text x="620" y="1339" font-size="12" fill="#b45309">  breakout's own pair.</text>
 <text x="620" y="1357" font-size="12" fill="#b45309"><tspan font-weight="bold">Both PWM headers go to the MUX's MASTER inputs</tspan>, and</text>
-<text x="620" y="1375" font-size="12" fill="#b45309">  the MUX's two outputs drive the motor driver's S1 and</text>
-<text x="620" y="1393" font-size="12" fill="#b45309">  S2. Pin 2 is steering, pin 3 is drive.</text>
+<text x="620" y="1375" font-size="12" fill="#b45309">  the MUX's two outputs drive the motor driver's RC1 and</text>
+<text x="620" y="1393" font-size="12" fill="#b45309">  RC2. Pin 2 is steering, pin 3 is drive.</text>
 <text x="620" y="1411" font-size="12" fill="#b45309"><tspan font-weight="bold">The servo headers' middle pad is left open.</tspan> That pad</text>
 <text x="620" y="1429" font-size="12" fill="#b45309">  is the connector's +5. This board runs on <tspan font-weight="bold">UBEC A</tspan></text>
 <text x="620" y="1447" font-size="12" fill="#b45309">  and the MUX and receiver on <tspan font-weight="bold">UBEC B</tspan> &#8212; joining them</text>

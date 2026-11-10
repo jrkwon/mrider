@@ -218,7 +218,7 @@
 <polygon fill="none" stroke="black" points="1898,-404 1898,-427 1963,-427 1963,-404 1898,-404"/>
 <text text-anchor="start" x="1923" y="-411.8" font-family="arial" font-size="14.00">2x</text>
 <polygon fill="none" stroke="black" points="1963,-404 1963,-427 2065,-427 2065,-404 1963,-404"/>
-<text text-anchor="start" x="1988" y="-411.8" font-family="arial" font-size="14.00">16 AWG</text>
+<text text-anchor="start" x="1988" y="-411.8" font-family="arial" font-size="14.00">14 AWG</text>
 <polygon fill="none" stroke="black" points="2065,-404 2065,-427 2149,-427 2149,-404 2065,-404"/>
 <text text-anchor="start" x="2089.5" y="-411.8" font-family="arial" font-size="14.00">0.6 m</text>
 <text text-anchor="start" x="1939" y="-390.8" font-family="arial" font-size="14.00"> </text>
@@ -365,7 +365,7 @@
 <polygon fill="none" stroke="black" points="1197,-899.5 1197,-922.5 1305,-922.5 1305,-899.5 1197,-899.5"/>
 <text text-anchor="start" x="1243.5" y="-907.3" font-family="arial" font-size="14.00">2x</text>
 <polygon fill="none" stroke="black" points="1305,-899.5 1305,-922.5 1450,-922.5 1450,-899.5 1305,-899.5"/>
-<text text-anchor="start" x="1351.5" y="-907.3" font-family="arial" font-size="14.00">16 AWG</text>
+<text text-anchor="start" x="1351.5" y="-907.3" font-family="arial" font-size="14.00">14 AWG</text>
 <polygon fill="none" stroke="black" points="1450,-899.5 1450,-922.5 1578,-922.5 1578,-899.5 1450,-899.5"/>
 <text text-anchor="start" x="1496.5" y="-907.3" font-family="arial" font-size="14.00">0.6 m</text>
 <text text-anchor="start" x="1257" y="-886.3" font-family="arial" font-size="14.00"> </text>

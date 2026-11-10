@@ -51,9 +51,10 @@ specific way this vehicle can fail; each has a defined behavior; each is testabl
 | 3 | **RC loss** | Power off the transmitter | Teensy → `ESTOP`: throttle → 0 | Centered, then de-energized | | ☐ |
 | 4 | **Battery sag / brownout** | Force a stall while watching the logic rail; or bench-drop the logic rail | Logic rail below threshold → MUX coil drops → **revert to STOCK**. *The driver's own low-voltage cutoff was listed here as a second layer. It is not one: the MDDS30's `SW7:SW8` monitor — set to `10`, SLA, for this [`Aroma 6-FM-4.5` pack](../design/vehicle.md#311-the-traction-pack-from-its-own-label) — **blinks the error LED and maintains motor power**. The manual: *"the power to the motor will be maintained and will not be cut out."* It warns; it does not cut.* | steering motor de-energizes with the coil → **freewheel** | | ☐ |
 | 5 | **E-stop pressed** | Press it — **also repeat with the laptop powered off** | Traction power cut; MUX coil dropped → STOCK | steering motor loses power → **freewheel** | | ☐ |
+| 5a | **E-stop released mid-turn** *(added 2026-11-10)* | Command the steering well off centre, press the E-stop **while it is turned**, wait 5 s, release | **Nothing moves on release.** Scope or logic-probe `RC1` and `RC2` while the button is down: **both 1.5 ms**. After re-arming, with the wheels held still at their setpoint and zero speed commanded, neither motor LED on the driver is lit — no creep, no error LED | does not jump on release; tracks normally after re-arm | | ☐ |
 | 6 | **Driver signal loss** | Halt the Teensy (hold reset) while a motor is commanded | **R/C signal-loss timeout** stops both motors — on the MDDS30 that is `SW6=0`, after **100 ms** | steering motor stops | | ☐ |
 | 7 | **Steering at limit / jam** | Command beyond the mechanical stop | Teensy clamps effort **toward center only**, sets stall bit | holds at limit, no further drive into the stop | | ☐ |
-| 8 | **Teensy firmware hang** | Hold the Teensy in reset | Motors stop (row 6); watchdog resets outputs to neutral | freewheel or held per §6.3 | | ☐ |
+| 8 | **Teensy firmware hang** | **Not the reset button — that is row 6.** Flash the build with the deliberate-hang command ([§4.4](04-firmware.md#44-stage-1-steering-motor-on-the-bench-current-limited)), command a motor, trigger the hang | **Motor keeps running until the watchdog fires**, then stops (row 6) while the Teensy reboots to neutral. Record the time from hang to stop | freewheel or held per §6.3 | | ☐ |
 | 9 | **Angle sensor fault** | Unplug the sensor / short I²C | Teensy → `ESTOP`, encoder-fault bit set | de-energized — **must not** drive to a garbage target | | ☐ |
 
 > [!CAUTION]
@@ -75,9 +76,21 @@ specific way this vehicle can fail; each has a defined behavior; each is testabl
 > A single MCU holds the loop, throttle, override, and arming. The claim that this is
 > acceptable rests on layers *independent* of that MCU. **Test them by actually halting the
 > Teensy**, not by reasoning about it. If row 6 fails — the driver latches its last
-> command instead of timing out — stop and diagnose before going further. In R/C mode this
-> timeout is inherent to the driver, so a failure here means the wiring or the mode switches
-> are wrong, not that a setting needs tuning.
+> command instead of timing out — stop and diagnose before going further. The timeout is
+> **`SW6 = 0`**: with `SW6 = 1` the driver is designed to latch its last command, so a failure
+> here means check that switch first, then the wiring.
+>
+> **Row 8 is not row 6 done twice.** Holding reset stops the pulses, which is row 6. A hang does
+> **not** stop them — the timers keep emitting the last width — and only the watchdog turns a
+> hang into row 6 ([safety.md §2](../design/safety.md#2-failsafe-matrix)). *This table induced
+> both the same way until 2026-11-10, so the watchdog was never exercised.*
+>
+> **Row 5a is the one that looks like nothing.** A pass is a vehicle that does not move. Run it
+> a second time with the signal MUX on SLAVE and the steering stick held over, to see what the
+> failure looks like — wheels off — and why the sticks are centred before the latch is released.
+> **That run leaves the driver mis-calibrated on purpose: press the E-stop, centre the sticks and
+> release it again before going on to row 6.** *5a is not a row of safety.md §2; it tests the
+> recovery column of row 5.*
 
 ### 6.2.1 Override layer verification
 
@@ -195,8 +208,8 @@ sample, and the acceptance criterion below governs the fit, not any single row.*
 `config/calibration/steering.yaml`
 
 **Setpoint normalization check** ([calibration.md §1.3](../design/calibration.md#13-setpoint-normalization-check)):
-`MANUAL_CONTROL.roll = +1000` must produce a **measured** +22.5° at the wheels; `−1000` →
-−22.5°; `0` → 0° (1500 µs servo pulse). Log the commanded-vs-measured curve — it should be
+`DbwCommand.steering_angle = +0.3927` rad must produce a **measured** +22.5° at the wheels;
+`−0.3927` → −22.5°; `0` → 0°. Log the commanded-vs-measured curve — it should be
 linear through the origin. **Any offset means re-check `c0`.**
 
 **Verification:** command a sweep 0 → +22.5 → −22.5 → 0. Measured road-wheel angle must match
@@ -370,7 +383,7 @@ re-flashed firmware.
 
 ## 6.11 Gate to step 7
 
-- [ ] All seven failsafe-matrix rows verified wheels-off
+- [ ] Every row of the §6.2 failsafe table verified wheels-off, 5a included
 - [ ] Freewheel-on-E-stop confirmed (or hold-behavior re-analyzed for a wiper-motor build)
 - [ ] Default = STOCK on every power-up and every fault
 - [ ] Steering mechanical limits measured against the ±22.5° target

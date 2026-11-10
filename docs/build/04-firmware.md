@@ -113,9 +113,15 @@ use the **same numbers**. *If they differed, the bench would prove nothing about
 | Steering **SDA** (AS5600) | **18** | **fixed by hardware** | `Wire` on a Teensy 4.1. Not a choice |
 | Steering **SCL** | **19** | **fixed by hardware** | Same |
 | **E-stop sense** in | **20** | chosen | Plain digital in, fed by the relay board's divider. **Taking it forecloses Serial5, whose TX is pin 20** |
-| **Relay gate** out | *not assigned* | — | Any digital out. Goes to a terminal, not a header |
-| **i-BUS** RX | *not assigned* | — | **Must be a hardware serial RX, and it cannot be Serial1** — see below |
-| **PWM** out to the signal MUX | *not assigned* | — | Must be a PWM-capable pin |
+| **Relay gate** out | **21** | chosen | Any digital out. Goes to a terminal, not a header |
+| **i-BUS** RX | **15** | chosen | Serial3 RX. **Must be a hardware serial RX, and it cannot be Serial1** — see below |
+| **PWM** out to the signal MUX — **steering** | **2** | chosen | PWM-capable. To the MUX's master input for the channel that reaches `RC1` |
+| **PWM** out to the signal MUX — **drive** | **3** | chosen | PWM-capable. Master input for the channel that reaches `RC2` |
+
+*The last four rows read "not assigned" until 2026-11-10, while the signal-board figure in
+[§3.5.4](03-electrical.md#354-transferring-to-perfboard-three-boards-become-one) had already
+placed them on these pins. The figure was not wrong; this table, which it names as its source,
+had not caught up. Check 24 in `scripts/check_docs.sh` now compares the two.*
 
 > [!WARNING]
 > **Taking pins 0 and 1 for the encoder forecloses Serial1, and i-BUS needs a hardware serial port**
@@ -197,13 +203,25 @@ Wire only: absolute angle sensor (I²C), drive encoder, **E-stop sense**, USB to
 > **Read it as a plain digital input — high means the authority chain is energised.** Wiring and the
 > divider are in [§3.5](03-electrical.md#351-hardware-rc-signal-mux-wire-this-it-is-not-optional).
 >
-> **Three behaviours, and the second is the one that matters:**
+> **Four behaviours, and the second is the one that matters:**
 >
-> 1. **Low → enter `ESTOP`.** Zero throttle, centre steering, as the invariants already require.
-> 2. **Low → freeze the steering integrator and zero it on entry.** The loop has been commanding a
->    wheel that cannot move; **without this the accumulated term slams the steering the moment the
->    contactor re-closes.**
-> 3. **High again → stay in `ESTOP` until an RC arm.** Releasing the button must not be a *go*
+> 1. **Low → enter `ESTOP`.** *Level, not edge: the rules below apply whenever the line is low,
+>    including when `ESTOP` was already entered for some other reason.*
+> 2. **Low → stop running the position loop and emit exactly 1.5 ms on both lines.** *Corrected
+>    2026-11-10. This used to say "centre steering" and "freeze the integrator", which leaves the
+>    proportional term alive:* the motor is unpowered, the wheels stay where they were, and the
+>    loop goes on emitting `Kp · error` for as long as the button is down. **Releasing the button
+>    powers the driver up, and with `SW6 = 0` the driver takes the pulse it sees at that moment as
+>    "stop"** ([§3.5](03-electrical.md#35-signal-wiring)). Press the E-stop mid-turn and every
+>    command afterwards is offset by that turn — or the driver refuses to start, error LED two
+>    blinks. The manual describes both; which one a given off-centre pulse produces has not been
+>    observed on this board as of 2026-11-10, and neither is acceptable. *"Centre steering" on entry to `ESTOP` is right for every other cause, where the
+>    motor still has power. Here there is nothing to centre with.*
+> 3. **High again → keep emitting 1.5 ms for a hold-off, and zero the loop state before it runs
+>    again.** The driver needs time to boot and calibrate. **Start at 1 s and shorten it only
+>    against a measurement** — the manual gives no boot time, and this repository has not timed
+>    one as of 2026-11-10. **An arm request during the hold-off is ignored, not queued.**
+> 4. **High again → stay in `ESTOP` until an RC arm.** Releasing the button must not be a *go*
 >    command. The hardware has already restored traction and authority; **the question "should we
 >    drive again?" is policy, and policy is firmware.**
 >
@@ -418,7 +436,7 @@ different control feel and you should not discover that during an incident.
 - [ ] Toolchain versions pinned and written down (§4.2)
 - [ ] Measured steering numbers meet the [numeric contract](../design/dbw.md#12-numeric-interface-contract)
 - [ ] No motor has yet been driven with the vehicle on the ground — that is step 7, after the
-      relay MUX and E-stop are installed in step 5
+      failsafe matrix has been run wheels-off in [step 6](06-bench-test.md)
 
 ---
 

@@ -223,7 +223,7 @@ Two constants do the whole job
 Then `θ = k · (counts − c0)`. Take 3–5 intermediate points to confirm linearity (residual
 < ~0.5°); if the sensor is nonlinear over the working range, store a lookup table instead.
 
-The full chain must then check out: `MANUAL_CONTROL.roll = +1000` → +22.5° commanded → +22.5°
+The full chain must then check out: `DbwCommand.steering_angle = +0.3927` rad → +22.5° commanded → +22.5°
 **measured at the road wheels**. Any offset means re-check `c0`.
 
 ---
