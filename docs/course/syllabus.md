@@ -91,7 +91,7 @@ W0               ROS fundamentals — lecture only, no lab              9/07
 W1 ─────── W3    Foundations — individual, identical labs        9/14 – 9/28
      W4    ○     NO MEETING (개천절) — self-study packet + Lab 4       10/05
 W5               Description to motion + Lab 5                        10/12
-W6 ─────── W10   Subsystem tracks — four teams in parallel      10/19 – 11/16
+W6 ─────── W10   Subsystem tracks — three teams in parallel     10/19 – 11/16
      W6    ↓     Teams announced; charters written                    10/19
      W8    ★     MID-SEMESTER PRESENTATION                            11/02
 W11 ────── W13   Merge ladder — subsystems combine, pairwise    11/23 – 12/07
@@ -105,8 +105,9 @@ course expects, and so a late registrant has one page to start from.
 **Weeks 1–5 are individual.** Everyone does the same five labs and is graded on their own work. This
 is deliberate: in a team project, foundational gaps hide. They will not hide here.
 
-**Weeks 6–15 are team-based.** Four teams of six, each owning a real subsystem, merging into one
-working vehicle. See [Teams & Tracks](teams.md).
+**Weeks 6–15 are team-based.** Three teams, each building its own vehicle. Every team carries all
+four subsystem tracks, which merge into that team's working vehicle. See
+[Teams & Tracks](teams.md).
 
 ### A typical 3-hour session
 
@@ -115,9 +116,9 @@ working vehicle. See [Teams & Tracks](teams.md).
 | 0:00 – 0:50 | Lecture |
 | 0:50 – 1:00 | Break |
 | 1:00 – 2:30 | Lab (W1–W5) or team work (W6–W15) |
-| 2:30 – 3:00 | Standup — each team reports progress, blockers, and what it needs from another team |
+| 2:30 – 3:00 | Standup — each team reports progress, blockers, and what one track needs from another |
 
-The final 30 minutes are not filler. From Week 6 on, that is where cross-team integration actually
+The final 30 minutes are not filler. From Week 6 on, that is where integration between tracks actually
 gets negotiated, and it is where the participation grade is observed.
 
 ---
@@ -172,7 +173,7 @@ Reading keys: **B** = *ROS 2: Zero to Robot* · **M** = [MRider learn module](..
 | Component | Weight | What it measures |
 |---|---:|---|
 | **Individual labs** (Labs 1–5) | **30%** | Your own ROS 2 competence, before teams can hide it |
-| **Mid-semester presentation** (W8) | **15%** | Your team's subsystem, demonstrated live |
+| **Mid-semester presentation** (W8) | **15%** | Your team's subsystems, demonstrated live |
 | **Team deliverable** (W15) | **25%** | The subsystem you shipped, and its evidence |
 | **Final demo & presentation** (W15) | **20%** | The integrated vehicle, and how you explain it |
 | **Participation & documentation** | **10%** | Standups, git history, and what you wrote down |
@@ -237,7 +238,7 @@ Learn to read it. You will need it after this course ends.
 ## See also
 
 - [Environment Setup](environment.md) — **do this before September 7**
-- [Teams & Tracks](teams.md) — the four subsystem teams and the merge ladder
+- [Teams & Tracks](teams.md) — the three teams, the four tracks and the merge ladder
 - [Grading & Rubrics](grading.md) — how every component is assessed
 - [Submitting Labs](submission.md) — how the five individual labs are handed in
 - [Running the Digital Twin](../run-the-twin.md) — the four-terminal bring-up procedure

@@ -1,7 +1,11 @@
 # Teams & Tracks
 
-From Week 6, the class splits into **four teams of six**, each owning one subsystem of MRider. Over
-Weeks 11–14 those subsystems merge, one pair at a time, into a working vehicle.
+From Week 6, the class splits into **three teams, and each team builds its own vehicle**: team *N*
+builds vehicle *N*. A vehicle is four subsystems, called **tracks** here, and every team carries all
+four. Over Weeks 11–14 a team's four tracks merge, one pair at a time, into its working vehicle.
+
+Thirteen students in three teams is four or five to a team, so **a track inside a team is one or two
+people**, not a group.
 
 > [!TIP]
 > **Every track's deliverable is something that does not exist yet**
@@ -21,13 +25,13 @@ Weeks 11–14 those subsystems merge, one pair at a time, into a working vehicle
 | **10/19 (W6)** | Teams announced; charter workshop in class |
 | **10/26 (W7)** | Team charters due |
 
-Assignment is **by the instructor**, from your ranked preferences plus observed Lab 1–4 work. You
-will usually get your first or second choice.
+Assignment — your team, and your track inside it — is **by the instructor**, from your ranked
+preferences plus observed Lab 1–4 work. You will usually get your first or second choice of track.
 
 It is not self-selection, and the reason is worth stating plainly: left to themselves, the strongest
-programmers concentrate on the Software track and the Chassis track ends up under-resourced. Chassis
-owns the measurements that **every other track is blocked on**. That cannot be the team that got
-whoever was left over.
+programmers concentrate on the Software track and the Chassis track ends up under-resourced, and the
+same happens between teams. Chassis owns the measurements that **every other track is blocked on**.
+That cannot go to whoever was left over, and no team can be the one without it.
 
 ### Preference form
 
@@ -43,6 +47,9 @@ Submit by **Friday 10/16**:
 ---
 
 ## The four tracks
+
+Every team has all four. The tables below say what each track owns **on your team's vehicle**; the
+person or pair holding a track answers for it to the rest of the team.
 
 ### E — Electrical & Firmware
 
@@ -148,7 +155,7 @@ everyone else assumed was fine. Highest leverage track in the course, and the le
 > Without it, the twin is a demo. With it, the twin is a test rig. Merge 3 exists to prove it.
 
 **Good fit if** you want the deepest ROS 2 work. Most code, most C++, and the track most dependent on
-other teams delivering on time.
+the other tracks delivering on time.
 
 **Read first:** [software.md §2–4](../design/software.md) ·
 [architecture.md](../design/architecture.md) · [M4](../learn/m4-perception.md) ·
@@ -158,8 +165,9 @@ other teams delivering on time.
 
 ## The merge ladder
 
-Subsystems do not merge all at once at the end. They merge in pairs, and **each merge is a live
-demonstration of a specific claim** — not a meeting, not a status update.
+Subsystems do not merge all at once at the end. Inside each team they merge in pairs, and **each
+merge is a live demonstration of a specific claim** on that team's vehicle — not a meeting, not a
+status update. All three teams merge on the same dates.
 
 | Week | Date | Merge | The claim it proves |
 |---|---|---|---|
@@ -172,7 +180,7 @@ demonstration of a specific claim** — not a meeting, not a status update.
 > [!CAUTION]
 > **A merge date cannot slip**
 >
-> A merge that does not happen on its date blocks three other teams. Merge 1 is in Week 11 and full
+> A merge that does not happen on its date blocks the other three tracks of your own team. Merge 1 is in Week 11 and full
 > integration is Week 14, which leaves exactly **one week** before the demo — and Week 14 is already
 > carrying validation against the acceptance gates.
 >
@@ -186,16 +194,16 @@ demonstration of a specific claim** — not a meeting, not a status update.
 
 ## Team charters
 
-Due **Week 7 (10/26)**. One page, committed to the repository at
-`docs/course/charters/<track>.md`. It contains:
+Due **Week 7 (10/26)**. One page per team, committed to the repository at
+`docs/course/charters/vehicle<n>.md`. It contains:
 
-1. **Who owns what.** Every deliverable in your track table, with a name against it. Not "the team
-   will" — a person.
+1. **Who owns what.** Every deliverable in all four track tables, with a name against it. Not "the
+   team will" — a person.
 2. **Your definition of done.** For each deliverable, the observable evidence that it works. "The
    encoder is mounted" is not evidence. "The encoder reports monotonic counts through a full
    steering sweep, logged, plotted, committed" is.
-3. **What you need from other tracks, and by when.** This is the dependency contract. Software needs
-   measured geometry from Chassis; put a date on it.
+3. **What each track needs from the others, and by when.** This is the dependency contract, and it
+   is inside your own team. Software needs measured geometry from Chassis; put a date on it.
 4. **Your risks.** Two or three things that could stop you, and what you would do instead.
 
 The charter is a working document. Update it when reality changes — that is not failure, it is the
