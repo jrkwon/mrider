@@ -106,7 +106,7 @@ No amount of controller tuning fixes a path the vehicle cannot drive.
 | Role | Plugin | Key parameter |
 |---|---|---|
 | Global planner | `nav2_smac_planner/SmacPlannerHybrid` | `motion_model_for_search: REEDS_SHEPP`, `minimum_turning_radius: 1.6` |
-| Local controller | `RegulatedPurePursuitController` | `min_turning_radius: 1.6`, `allow_reversing: true` |
+| Local controller | `RegulatedPurePursuitController` | `allow_reversing: true`. It has **no** turning-radius parameter of its own — it follows the path it is given |
 
 SmacPlannerHybrid searches in **(x, y, heading)** rather than (x, y), with Reeds-Shepp curves
 bounded by the turning radius. It cannot produce a path the car cannot drive, because
@@ -146,11 +146,13 @@ hardware reason, and it is the best example in this course of the simulator earn
 > **unproven and must not be enabled by inheriting this configuration unchanged.**
 
 > [!WARNING]
-> **Both radius parameters are derived from unmeasured numbers**
+> **The planner's radius is a derived placeholder until your team measures it**
 >
-> `minimum_turning_radius` (planner) and `min_turning_radius` (controller) both come from
-> `0.63 / tan(22.5°) = 1.52 m`. **Neither the wheelbase nor the steering limit has been
-> measured.** When they are, both parameters must be re-derived together.
+> `minimum_turning_radius` on the planner comes from `0.63 / tan(22.5°) = 1.52 m`. **Neither the
+> wheelbase nor the steering limit has been measured**, and the radius itself is a thing you
+> measure directly, at both locks
+> ([calibration.md §1.5](../design/calibration.md#15-minimum-turning-radius-measured-not-derived)).
+> The controller has no radius parameter to keep in step.
 
 Regulated Pure Pursuit is curvature-aware: it picks a lookahead point on the path and computes
 the steering that arcs toward it, regulating speed by curvature. That maps naturally onto a
@@ -182,6 +184,7 @@ Do the arithmetic first; it tells you what is even possible in your test space.
 | Wheelbase (from M5 / build step 2) | *(measure)* m |
 | Steering limit | ±22.5° |
 | **Minimum turning radius** `R_min = wheelbase / tan(22.5°)` | *(compute)* m |
+| **Minimum turning radius, measured** at both locks ([calibration.md §1.5](../design/calibration.md#15-minimum-turning-radius-measured-not-derived)) | *(measure)* m — this one goes into Nav2 |
 | Minimum turning **diameter** | *(compute)* m |
 | Your test area's smallest dimension | *(measure)* m |
 | Can the vehicle turn around in it? | *(answer honestly)* |
@@ -235,9 +238,9 @@ ros2 topic echo /mitt/dbw/status     # what is actually being achieved?
 
 **ADR-SW2 is closed, so this is verification rather than a decision.** Regulated Pure Pursuit
 is already the controller, and DWB was never run. If steering beyond ±22.5° is still being
-commanded, a number is wrong somewhere, not the choice of controller: compare the configured
-turning radius, and the wheelbase and steering limit given to `ackermann_steering_controller`,
-against what you measured. Then re-run goals 1–5.
+commanded, a number is wrong somewhere, not the choice of controller: compare the planner's
+`minimum_turning_radius`, and the wheelbase given to `ackermann_steering_controller`, against
+what you measured. Then re-run goals 1–5.
 
 Record which number was wrong **and how you found it** — or, if none was, the table above as
 it stands. That, with evidence, is the deliverable.

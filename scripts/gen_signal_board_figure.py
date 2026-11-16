@@ -93,6 +93,10 @@ USED = [
     ("E-stop",    "20",  T_TOP, "#b45309"),
     ("gate out",  "21",  T_TOP, "#b45309"),
     ("i-BUS RX",  "15",  T_TOP, "#be123c"),
+    # The IMU, on the Teensy's SECOND I2C bus (Wire1) so that it never shares
+    # wires with the steering sensor. Decided 2026-11-16, sensors.md 3.
+    ("SDA1",      "17",  T_TOP, "#0369a1"),
+    ("SCL1",      "16",  T_TOP, "#0369a1"),
 ]
 
 # ------------------------------------------------------------------ the layout
@@ -143,6 +147,11 @@ TERMINALS = [
     ("STRP",  19, 2,  "3.3 V", "GND",   "#dc2626"),
     ("DRVS",  7,  26, "A",     "B",     "#1d4ed8"),
     ("DRVP",  12, 26, "3.3 V", "GND",   "#dc2626"),
+    # IMU. Added 2026-11-16 in the two corners that were free, so that nothing
+    # already soldered has to move. That is why its power and its signals are
+    # at opposite ends of the bottom edge rather than side by side.
+    ("IMUP",  3,  26, "3.3 V", "GND",   "#dc2626"),
+    ("IMUS",  26, 26, "SDA1",  "SCL1",  "#0369a1"),
 ]
 
 # Servo-style 3-pin headers. The middle pad is the connector's +5 and is left
@@ -183,6 +192,10 @@ JUMPERS = [
     ((19, 28), (19, 21),         "#334155", False),    # its ground
     ((22, 28), (7, 17),          "#7c3aed", True),     # PWM 2 -> pin 3
     ((24, 28), (24, 21),         "#334155", False),    # its ground
+    ((3, 26),  (6, 24),          "#dc2626", False),    # IMU 3.3 V <- the lower bus
+    ((3, 28),  (6, 21),          "#334155", True),     # its GND, behind that bus
+    ((26, 26), pin("17", T_TOP), "#0369a1", True),     # SDA1 -> pin 17
+    ((26, 28), pin("16", T_TOP), "#0369a1", True),     # SCL1 -> pin 16
 ]
 
 
@@ -333,7 +346,7 @@ e(f'<text x="24" y="58" font-size="12.5" fill="#475569">'
   f"{BOLD}{COLS-2*BORDER} &#215; {ROWS-2*BORDER} after the one-hole margin{EB} "
   f"(the 80 mm side is the same 29 as the GA6).</text>")
 e('<text x="24" y="77" font-size="12.5" fill="#475569">'
-  "A socketed Teensy 4.1, two pull-up pairs, two filter caps, six terminals and "
+  "A socketed Teensy 4.1, two pull-up pairs, two filter caps, eight terminals and "
   "three servo headers. " + BOLD +
   "The pin order drawn here is unverified &#8212; check it against the board." + EB +
   "</text>")

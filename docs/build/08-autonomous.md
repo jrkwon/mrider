@@ -58,9 +58,9 @@ slam_toolbox is reused essentially as-is: `solver_plugin: CeresSolver`, `mode: m
 **Drive the map manually.** Use joystick teleop from step 7 — you are not navigating yet.
 
 ```bash
-ros2 launch mrider bringup.launch.py
-ros2 launch slam_toolbox online_async_launch.py \
-  params_file:=$(ros2 pkg prefix mrover)/share/mrover/config/slam/mapper_params_online_async.yaml
+MITT_VEHICLE=<n> source ros2_ws/setup_env.sh            # every terminal
+ros2 launch mitt_bringup real.launch.py vehicle:=<n>
+ros2 launch mitt_navigation slam.launch.py use_sim_time:=false
 
 rviz2   # add Map, LaserScan, TF displays
 ```
@@ -165,12 +165,12 @@ at the EKF odometry output.
 ```yaml title="config/data_collection/mrider.yaml"
 vehicle_control_topic: /mitt/dbw/status      # was /rover
 base_pose_topic:       /odometry/filtered
-camera_image_topic:    /camera/color/image_raw
+camera_image_topic:    /camera/image_raw
 steering_angle_max:    22.5
 ```
 
 ```bash
-ros2 launch mrider bringup.launch.py
+ros2 launch mitt_bringup real.launch.py vehicle:=<n>
 ros2 run data_collection data_collection_main --ros-args --params-file config/data_collection/mrider.yaml
 # then drive the course manually, well, repeatedly
 ```

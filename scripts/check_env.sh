@@ -295,10 +295,14 @@ case "${GZ_IP:-unset}" in
         "gz-transport ignores ROS_LOCALHOST_ONLY and will discover other students' simulators. source ros2_ws/setup_env.sh" ;;
 esac
 
-# Informational only. The course no longer assigns per-student domain numbers -
+# Informational only. The twin assigns no per-student domain numbers -
 # localhost-only makes that unnecessary - but the variable still partitions, and
 # a leftover export in ~/.bashrc is a real way to make your own tools go blind.
-if [ -n "${ROS_DOMAIN_ID:-}" ]; then
+# A real-vehicle shell (MITT_VEHICLE=N, domain 10 + N) sets it on purpose and
+# is not warned about.
+if [ -n "${MITT_VEHICLE:-}" ] && [ "${ROS_DOMAIN_ID:-}" = "$((10 + MITT_VEHICLE))" ] 2>/dev/null; then
+    ok "ROS_DOMAIN_ID=${ROS_DOMAIN_ID} (real vehicle ${MITT_VEHICLE})"
+elif [ -n "${ROS_DOMAIN_ID:-}" ]; then
     warn "ROS_DOMAIN_ID=${ROS_DOMAIN_ID} is set" \
         "Harmless if every terminal agrees. If some do not, they will silently see nothing - see Lab 1 Part 5."
 fi

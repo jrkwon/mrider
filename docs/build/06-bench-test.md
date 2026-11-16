@@ -269,7 +269,7 @@ inner corners, 25 mm squares) mounted rigidly flat
 ```bash
 ros2 run camera_calibration cameracalibrator \
   --size 8x6 --square 0.025 \
-  --ros-args -r image:=/camera/color/image_raw -r camera:=/camera
+  --ros-args -r image:=/camera/image_raw -r camera:=/camera
 ```
 
 Move the board across the **full** field of view and depth range — near/far, all corners,
@@ -332,7 +332,7 @@ must land on the corresponding structure.
 ## 6.9 IMU and time sync
 
 **IMU** ([calibration.md §5](../design/calibration.md#5-imu-calibration)) — a standalone
-BNO085-class module on the laptop, calibrated in-repo. There is no ground-station tool.
+BNO085-class module on the Teensy's second I²C bus, calibrated in-repo. There is no ground-station tool.
 
 1. Drive the vendor calibration sequence (slow figure-8 for the magnetometer, rest for the
    gyro, static orientations for the accel) until the **calibration-status byte** reads fully

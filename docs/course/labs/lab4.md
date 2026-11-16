@@ -68,8 +68,9 @@ point that far.
 > **Where this number actually shows up**
 >
 > Open `ros2_ws/src/mitt_navigation/config/nav2_params.yaml` and search for `1.6`. You will find it
-> **twice** — as `minimum_turning_radius` on the planner and `min_turning_radius` on the controller.
-> Both are R_min with a small safety margin.
+> as `minimum_turning_radius` on the planner: R_min with a small safety margin. *Until 2026-11-16
+> it was there twice; the second, `min_turning_radius` on the controller, was a key Nav2's RPP
+> never read, and it has been removed.*
 >
 > It is also why `xy_goal_tolerance` is 0.6 m rather than the more usual 0.25 m. A vehicle with a
 > 1.52 m turning circle physically cannot make fine positional corrections near a goal; ask it to

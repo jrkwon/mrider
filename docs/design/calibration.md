@@ -48,6 +48,36 @@ Command a sweep (0 → +22.5 → −22.5 → 0) and confirm the measured road-wh
 
 ---
 
+### 1.5 Minimum turning radius (measured, not derived)
+
+Nav2 plans every path against one number, `minimum_turning_radius`
+([software.md §4.3](software.md#43-nav2-configslamnav2_paramsyaml)). The design value, 1.52 m, is
+`wheelbase / tan(22.5°)` with an estimated wheelbase and an unverified steering limit. **Each team
+measures the radius on its own vehicle**, because the formula assumes both locks reach the design
+angle and the linkage has no slack, and neither has been shown.
+
+What is measured is the radius of the path of **`base_link`** — the centre of the rear axle —
+since that is the point the planner moves.
+
+1. Wheels on the ground, an open floor at least 4 m × 4 m, walking pace, operator alongside.
+2. Command **full left lock** (`DbwCommand.steering_angle = +0.3927` rad) and hold it.
+3. Drive one full circle. Mark the floor under the **outer rear wheel's** contact patch at four
+   points a quarter-turn apart (chalk or tape).
+4. Measure the two diameters across opposite marks; average them → `D_outer`.
+5. `R = D_outer / 2 − rear track / 2`.
+6. Repeat at **full right lock**. The two will differ; a linkage is rarely symmetric.
+7. Record **the larger** of the two as `min_turning_radius` in
+   `mitt_description/config/mitt_dimensions.yaml`, delete its `TODO`, and set
+   `minimum_turning_radius` in `nav2_params.yaml` to that value plus margin (the design uses
+   about 5 %). `python3 scripts/check_vehicle_dims.py` fails if the planner's value is below it.
+
+**Verification:** compare the result with `wheelbase / tan(steer limit)` from your own measured
+wheelbase and lock angle. Agreement within a few centimetres says the three measurements are
+consistent. A measured radius well **above** the formula means the wheels are not reaching the
+angle the sensor reports — re-check §1.2 before trusting either number.
+
+---
+
 ## 2. Drive distance: encoder ticks→meters
 
 The drive encoder's **PPR is a measured value, not an inherited one** — record it here from the part
@@ -127,9 +157,10 @@ For each sensor, measure the translation (x, y, z in meters) and orientation (ro
 
 ## 5. IMU calibration
 
-The IMU is a **standalone BNO085-class module connected directly to the laptop**
-([sensors.md §3](sensors.md#3-imu)), publishing `sensor_msgs/Imu` on `/imu/data` into
-`robot_localization`.
+The IMU is a **standalone BNO085-class module on the Teensy's second I²C bus**
+([sensors.md §3](sensors.md#3-imu)); the firmware publishes `sensor_msgs/Imu` on `/imu/data`
+into `robot_localization`. The calibration-status byte in step 1 is therefore read by the
+firmware, which has to expose it — a serial print at the bench is enough.
 
 > [!NOTE]
 > **Revised 2026-08-07**
@@ -180,8 +211,8 @@ data.
 
 **Approach (pinned):**
 
-1. **Single authoritative clock = the laptop.** All ROS 2 sensor drivers (camera, LiDAR, IMU)
-   stamp with the laptop clock on arrival. Since every sensor is connected to the laptop
+1. **Single authoritative clock = the laptop.** The ROS 2 sensor drivers on it (camera, LiDAR)
+   stamp with the laptop clock on arrival; the IMU is stamped by the Teensy under item 2. Since every other sensor is connected to the laptop
    ([overview.md](overview.md): "a laptop will be an on-board computer to which most sensors
    are connected"), their timestamps are already laptop-referenced.
 2. **Teensy:** use **micro-ROS session time sync** so `DbwStatus.stamp` is laptop-referenced.

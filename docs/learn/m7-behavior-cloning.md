@@ -58,7 +58,7 @@ Nearly verbatim from B-MROVER
 ([software.md §5](../design/software.md#5-data-collection-end-to-end-nn-pipeline)):
 
 ```
-/camera/color/image_raw  ─┐
+/camera/image_raw  ─┐
 /mitt/dbw/status (label) ─┼─▶ data_collection_main.py ─▶ e2e_data
 EKF odometry             ─┘                                 │
                                                             ▼
@@ -148,12 +148,12 @@ inference; measure lap completion.
 ```yaml title="config/data_collection/mrider.yaml"
 vehicle_control_topic: /mitt/dbw/status      # NOT /rover
 base_pose_topic:       /odometry/filtered
-camera_image_topic:    /camera/color/image_raw
+camera_image_topic:    /camera/image_raw
 steering_angle_max:    22.5
 ```
 
 ```bash
-ros2 launch mrider bringup.launch.py
+ros2 launch mitt_bringup real.launch.py vehicle:=<n>   # after MITT_VEHICLE=<n> source ros2_ws/setup_env.sh
 ros2 run data_collection data_collection_main \
   --ros-args --params-file config/data_collection/mrider.yaml
 ```

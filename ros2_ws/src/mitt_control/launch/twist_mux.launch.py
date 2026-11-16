@@ -17,7 +17,10 @@ Command arbitration for the MITT twin.
 
     ros2 launch mitt_control twist_mux.launch.py
 
-Included by mitt_bringup/sim.launch.py, so it is always running.
+Included by mitt_bringup/sim.launch.py and real.launch.py, so it is always
+running. `use_sim_time` defaults to true for the twin; real.launch.py passes
+false - with it left true on a vehicle there is no /clock, the node's time
+never advances, and the mux's 0.5 s input timeouts never expire.
 
 WHY IT LIVES HERE AND NOT IN teleop.launch.py. twist_mux is the ONLY path
 from any software command source to the ackermann_steering_controller: it
@@ -31,7 +34,9 @@ Arbitration remains the same: joystick outranks navigation.
 """
 
 from launch import LaunchDescription
-from launch.substitutions import PathJoinSubstitution
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
@@ -40,12 +45,16 @@ def generate_launch_description():
     ctrl_pkg = FindPackageShare("mitt_control")
 
     return LaunchDescription([
+        DeclareLaunchArgument("use_sim_time", default_value="true"),
         Node(
             package="twist_mux",
             executable="twist_mux",
             name="twist_mux",
             parameters=[
                 PathJoinSubstitution([ctrl_pkg, "config", "twist_mux.yaml"]),
+                # After the file, so it overrides the `use_sim_time: true` there.
+                {"use_sim_time": ParameterValue(
+                    LaunchConfiguration("use_sim_time"), value_type=bool)},
             ],
             remappings=[
                 ("/cmd_vel_out",

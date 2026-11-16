@@ -847,9 +847,10 @@ Values that must come from the part in your hand, not the datasheet or the sourc
 >
 > Two of these propagate further than they look. Wheelbase and steer limit set
 > `R_min = wheelbase / tan(steer_limit)` — currently **1.52 m** — which is used in
-> `nav2_params.yaml` **twice** (`minimum_turning_radius` on the planner and
-> `min_turning_radius` on the controller). Re-derive both when you measure, or Nav2 will be
-> planning for a vehicle you do not have.
+> `nav2_params.yaml` as `minimum_turning_radius` on the planner. Measure the radius itself
+> ([calibration.md §1.5](design/calibration.md#15-minimum-turning-radius-measured-not-derived))
+> and update it, or Nav2 will be planning for a vehicle you do not have. *This note said "twice"
+> until 2026-11-16; the second key, on the controller, was one Nav2 never read.*
 
 ---
 

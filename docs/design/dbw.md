@@ -477,6 +477,7 @@ Diagnostic/config traffic (PID gains, zeroing) uses ROS 2 **parameters and servi
 4. **Motor output**: servo-style PWM on two lines into the RC signal MUX, then to the driver RC1/RC2 inputs, at the §12 frame rate.
 5. **Throttle shaping**: ramp limit, speed cap, direction interlock.
 6. **RC decode**: i-BUS on a hardware serial port — mode switch and closed-loop manual override.
+6a. **IMU**: BNO085 on `Wire1`, published as `sensor_msgs/Imu` on `/imu/data` at ≥ 100 Hz. Lowest priority of anything here: a read that would delay block 3 is skipped ([sensors.md §3](sensors.md#3-imu)).
 7. **Safety supervisor**: setpoint-staleness watchdog, mechanical-limit clamp (effort toward center only), stall detection, hardware watchdog timer resetting outputs to neutral.
 
 ### 10.3 Safety state machine

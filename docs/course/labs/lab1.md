@@ -261,10 +261,11 @@ Write down, in your own words:
 > **Exactly what you just saw: 2 topics, 0 nodes, exit 0, empty stderr.** A different variable, a
 > different mechanism, and an output you cannot tell apart from the one before it.
 >
-> `ROS_DOMAIN_ID` partitions which ROS processes can see each other. This course does not rely on it
+> `ROS_DOMAIN_ID` partitions which ROS processes can see each other. The twin does not rely on it
 > — `ROS_LOCALHOST_ONLY=1` is the stronger guarantee, and cannot be defeated by two people picking
 > the same number — but it is how you separate robots the moment ROS runs on more than one machine,
-> which is most real deployments.
+> which is most real deployments. The three real vehicles do use it, one domain each
+> ([software.md §3.4](../../design/software.md#34-ros-domain-one-per-vehicle)).
 >
 > The lesson is not either variable. It is that **two unrelated mistakes produced byte-identical
 > output**, so the output cannot tell you which one you made. Silence is the one symptom that says

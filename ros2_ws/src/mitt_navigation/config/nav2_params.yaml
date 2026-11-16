@@ -131,9 +131,14 @@ controller_server:
       use_velocity_scaled_lookahead_dist: true
       lookahead_time: 1.5
 
-      # THE constraint that decides this controller. 1.52 m computed above,
-      # with margin. Update whenever wheelbase or steer limit is measured.
-      min_turning_radius: 1.6
+      # NO turning-radius key here, and that is deliberate. Until 2026-11-16
+      # this block carried a `min_turning_radius` of 1.6 under a comment calling
+      # it "THE constraint that decides this controller". Nav2 1.1.20's RPP
+      # declares no such parameter - the name does not occur in the installed
+      # library - and an undeclared key in a params file is ignored in silence.
+      # What keeps RPP inside the turning circle is the PATH it is handed:
+      # SmacPlannerHybrid below plans with `minimum_turning_radius`, and RPP
+      # follows it. The vehicle's measured radius goes there, and only there.
 
       use_regulated_linear_velocity_scaling: true
       regulated_linear_scaling_min_radius: 2.0
@@ -264,9 +269,11 @@ planner_server:
       # the switch that actually grants the vehicle a reverse manoeuvre.
       motion_model_for_search: "REEDS_SHEPP"
 
-      # Must stay >= the physical 1.52 m (0.63 / tan(22.5 deg)), with margin,
-      # and in sync with FollowPath's min_turning_radius above. Re-derive both
-      # when wheelbase or steer limit is finally MEASURED.
+      # Must stay >= the vehicle's turning radius, with margin. That radius is
+      # MEASURED by each team on its own vehicle (docs/design/calibration.md
+      # 1.5) and recorded as `min_turning_radius` in mitt_dimensions.yaml; until
+      # then that entry holds the derived 0.63 / tan(22.5 deg) = 1.52 m.
+      # scripts/check_vehicle_dims.py fails if this value drops below it.
       minimum_turning_radius: 1.6
 
       angle_quantization_bins: 72     # 5 deg

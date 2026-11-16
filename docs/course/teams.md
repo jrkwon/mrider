@@ -57,6 +57,7 @@ guarantees a human can always take the vehicle back.
 | `firmware/` — the Teensy DBW controller | **Does not exist.** No firmware in this repository at all |
 | `DbwCommand` / `DbwStatus` actually flowing over micro-ROS | The message types are defined and built, but **nothing publishes or subscribes to them** |
 | The failsafe matrix, demonstrated wheels-off | Specified in [safety.md](../design/safety.md), never executed |
+| The IMU published from the Teensy — `/imu/data`, ≥ 100 Hz | **Does not exist.** Added 2026-11-16, when the IMU moved onto the Teensy's second I²C bus ([sensors.md §3](../design/sensors.md#3-imu)) |
 | [Build step 4](../build/04-firmware.md) validated | Draft, never run on hardware |
 
 **Acceptance gates you close:** `/mitt/dbw/status` sustains ≥ 50 Hz · zero USB dropouts over 30
