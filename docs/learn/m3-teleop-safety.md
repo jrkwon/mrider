@@ -142,6 +142,20 @@ laptop separately sees stale status and halts Nav2.
 **Row 5 — E-stop.** Traction power cut, MUX coil dropped, MDDS30 unpowered on the motor
 rail. The steering motor loses power and the **column freewheels**.
 
+> [!WARNING]
+> **Releasing the E-stop is not the reverse of pressing it**
+>
+> The MDDS30's own logic runs from the traction supply, downstream of the contactor. So when
+> the latch is released the driver does not resume — it **boots**, and it takes whatever pulse
+> it sees at that moment as *stop*. A pulse that is off-centre then becomes an offset on every
+> later command.
+>
+> Two things must therefore be true before release: the firmware is holding both lines at
+> exactly neutral, and the **transmitter sticks are centred, hands off** — with the signal MUX
+> on the receiver, the sticks *are* the pulse
+> ([safety.md §2](../design/safety.md#2-failsafe-matrix)). Recovery from a stop is part of the
+> stop's design, and it is the part people rehearse least.
+
 ### Why freewheel is the right answer
 
 The steering column on these vehicles is **non-self-centering** — no spring return. So which
@@ -181,8 +195,8 @@ powered *after* an emergency stop. Rejected.
 ### FMEA — the failures nobody watches
 
 A failsafe matrix covers *link losses*. An [FMEA](../design/safety.md#7-fmea-lightweight)
-covers *component failures*, rated by severity (S) and detectability (D). MRider's has ten
-rows; the two that matter most are the ones rated hardest to see:
+covers *component failures*, rated by severity (S) and detectability (D). MRider's has twelve
+rows; two of the severity-5 ones are worth reading closely:
 
 **Row 8 — MUX relay welds closed in DBW mode.** Severity 5. You cannot revert to STOCK; DBW is
 stuck live. Mitigation: **the E-stop cuts traction power independently of the MUX**, so it
@@ -190,14 +204,34 @@ remains authoritative even then. This is precisely why the E-stop is in the powe
 not merely commanding the coil.
 
 **Row 9 — Teensy firmware hang.** Severity **5**, and the single most important row in the
-document, because one MCU now holds the loop, throttle, override, and arming. Four independent
-mitigations: the driver's R/C signal-loss timeout stops the motors, the hardware RC signal MUX hands
-steering back, the relay MUX reverts to STOCK, and the E-stop cuts traction. A hardware
-watchdog resets the Teensy to neutral output, with the layers above as
-outer layers.
+document, because one MCU now holds the loop, throttle, override, and arming. Three layers
+need no firmware at all: the hardware RC signal MUX hands steering back, the relay MUX reverts
+to STOCK, and the E-stop cuts traction. All three need a **person** to act.
 
-The pattern: **each mitigation is independent of the component that failed.** A watchdog
-implemented inside the hung firmware is not a mitigation.
+The only *automatic* recovery is a **hardware watchdog**, and the reason is worth knowing.
+
+> [!WARNING]
+> **A hung firmware does not stop sending pulses**
+>
+> It is natural to expect the driver's signal-loss timeout to catch a hang. It does not. The
+> servo pulse train is produced by a hardware timer, not by the main loop — so when the loop
+> stops, the timer carries on, and the driver keeps receiving the **last commanded width**: a
+> perfectly valid signal, at whatever effort was last asked for.
+>
+> The timeout fires only when pulses actually stop — a reset, a power loss, a pulled lead. What
+> turns a hang into one of those is the watchdog, which resets the Teensy; *then* the pulses
+> stop and the timeout stops the motors. So the watchdog must be armed at boot and fed **only
+> from a completed control-loop iteration** — a watchdog fed from a timer interrupt survives
+> exactly the hang it exists for.
+>
+> This design's own safety document had this wrong until 2026-11-10, and the bench test
+> induced a "hang" by holding the reset button — which stops the pulses and so tests a
+> different row. **Holding reset is not a hang.**
+
+The pattern: **each of the three hardware layers is independent of the component that
+failed.** The watchdog is not quite in that class, and the design says so: it is independent
+of the main *loop*, not of the *firmware*. It survives a hang; it does not survive a firmware
+that never armed it.
 
 ### Staged bring-up
 
@@ -208,7 +242,7 @@ before vehicle; wheels-off before wheels-on; walking pace before anything faster
 | Stage | What is connected | What you prove |
 |---|---|---|
 | 0 | Teensy alone, **no motor** | Sensor reads, **no wrap across full travel**, 30 min of USB stability |
-| 1 | + steering motor, bench supply | Closed-loop tracking, limits, stall, freewheel, **driver R/C signal-loss timeout** |
+| 1 | + steering motor, bench supply | Closed-loop tracking, limits, stall, freewheel, **driver R/C signal-loss timeout**, and the **watchdog under a deliberate hang** |
 | 2 | + drive motor, RC bound | Both channels from one master; **both override layers, Layer B with the Teensy halted** |
 | 3 | + relay MUX and E-stop | Every failsafe row; default = STOCK on every fault |
 | 4 | Full vehicle, wheels on stands | Repeat matrix; no brownout under steering stall |
@@ -226,7 +260,8 @@ failsafes on the bench and confirm each specified behavior.
 > [!CAUTION]
 > **Wheels off the ground for this entire lab**
 >
-> Every test here is a Stage 3 test. The vehicle stays on stands. One student keeps a hand
+> Every test here is a Stage 3 test, except row 8, which repeats Stage 1's deliberate-hang
+> test on the assembled vehicle. The vehicle stays on stands. One student keeps a hand
 > on the E-stop for the whole session and does nothing else.
 
 ### Part 1 — Predict before you test
@@ -241,9 +276,9 @@ Then test. The gap between prediction and observation is the actual learning.
 | 3 | RC transmitter powered off | | | |
 | 4 | Logic-rail brownout | | | |
 | 5 | E-stop pressed — **also with the laptop off** | | | |
-| 6 | Teensy halted while a motor is commanded | | | |
+| 6 | Teensy **held in reset** while a motor is commanded (pulses stop) | | | |
 | 7 | Steering commanded past its limit | | | |
-| 8 | Teensy held in reset (firmware hang) | | | |
+| 8 | Firmware **hang** with a motor commanded — the deliberate-hang build, not the reset button | | | |
 | 9 | Angle sensor unplugged | | | |
 
 ### Part 2 — Manual control
@@ -271,13 +306,20 @@ Work all nine rows. Suggested inductions:
 # Row 3 — RC loss
 #   power off the transmitter; watch mode and faults
 
-# Rows 6 and 8 — halt the Teensy
+# Row 6 — pulses stop
 #   hold the reset button while a motor is commanded.
 #   The driver's R/C signal-loss timeout should stop it -- holding reset
 #   stops the pulse train, which is exactly what that timeout watches for.
 #   If the motor LATCHES
 #   at its last command instead, stop the lab and report it -- that is a
 #   failed precondition of the architecture, not a tuning issue.
+
+# Row 8 — firmware hang. NOT the reset button: that was row 6.
+#   flash the build with the deliberate-hang command (build step 4, section 4.4),
+#   command a motor, trigger the hang. Predict first: does the motor stop at once?
+#   It should KEEP RUNNING until the hardware watchdog resets the Teensy,
+#   and only then stop. Time that gap. If it never stops, the watchdog is
+#   not armed or is being fed from the wrong place -- press the E-stop.
 
 # Row 9 — sensor fault
 #   unplug the angle sensor; the loop must refuse to run on a bad angle
@@ -294,6 +336,8 @@ For rows 4, 5 and 7, use the bench supply, the E-stop, and a commanded over-trav
    traction dead · MUX shows STOCK · steering motor de-energized · **column turns freely by
    hand** with light force.
 3. Measure the hand-steer force at the rim with a spring scale: *(measure)* N.
+4. **Before releasing the E-stop: transmitter sticks centred, hands off.** Releasing it boots
+   the motor driver, which reads the pulse present at that instant as *stop* (see the lecture).
 
 ### Part 5 — Authority ladder
 
@@ -302,7 +346,7 @@ Verify the priority order holds, from the bottom up:
 | Test | Expected | Observed |
 |---|---|---|
 | Joystick commands, then take the RC sticks (Layer A) | RC wins, **both axes**, ≤ 200 ms; sticks command an *angle* | *(record)* |
-| **Halt the Teensy, then flip the MUX channel (Layer B)** | Transmitter drives the MDDS30 directly, with the controller dead | *(record)* |
+| **Hold the Teensy in reset, then flip the MUX channel (Layer B)** | Transmitter drives the MDDS30 directly, with the controller dead | *(record)* |
 | Compare the feel of Layer A vs Layer B | B is raw **effort**, open-loop — noticeably different | *(record)* |
 | RC commands, then de-energize the MUX | Reverts to STOCK mid-command | *(record)* |
 | Anything commands, then E-stop | Traction cut + STOCK, **works with the laptop off** | *(record)* |
@@ -335,6 +379,10 @@ Verify the priority order holds, from the bottom up:
 - [ ] Autonomy is the lowest authority in the ladder. Argue for that, then against it.
 - [ ] One MCU holds the loop, throttle, override, and arming. List every mitigation that still
       works when its firmware hangs — then say which one you actually tested.
+- [ ] Holding the reset button and hanging the firmware both "kill the controller". Why does
+      the driver's signal-loss timeout catch one and not the other?
+- [ ] The E-stop was pressed mid-turn. What must be true before it is released, and what goes
+      wrong if it is not?
 - [ ] Pulling the USB cable used to leave steering tracking; now it stops the vehicle. Argue
       which is safer, then say what you would do about operators trained on the other one.
 - [ ] Layer B override commands effort, not angle. Name a situation where that difference
@@ -350,11 +398,11 @@ Verify the priority order holds, from the bottom up:
 4. **The priority ladder** — and why autonomy sits at the bottom
 5. **Two override layers** — RC serial for control, hardware MUX for survival
 6. **Converting a software guarantee into a physical one** — what must be executing for this to work?
-7. **Reading a failsafe matrix** — rows 1, 2, 5 in detail
+7. **Reading a failsafe matrix** — rows 1, 2, 5 in detail; why releasing the E-stop is a power-up
 8. **Row 2 reversed** — the same cable pull, opposite behaviour, under two reasonable designs
 9. **Rail assignment decides freewheel vs. hold** — and the conditions that make freewheel OK
 10. **Safety claims are conditional** — change the speed cap, break the argument
-11. **FMEA** — rows 8, 9 and 10, and independence of mitigations
+11. **FMEA** — rows 8, 9 and 10; a hang is not a reset; independence of mitigations
 12. **Staged bring-up** — six stages, no skipping
 13. **Lab brief** — predict, then break it on purpose. Kill the controller deliberately.
 14. **Looking ahead** — M4: the vehicle is safe to drive; now let it see

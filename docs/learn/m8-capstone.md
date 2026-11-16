@@ -168,7 +168,7 @@ changed, whether it worked. Include failures you **did not** fix, and say why.
 **The day before**
 
 - [ ] Full dry run, end to end, on the actual course
-- [ ] Batteries charged: vehicle pack, laptop, **RC transmitter**
+- [ ] Batteries charged: vehicle pack, **logic battery**, laptop, **RC transmitter**
 - [ ] Reproduction package committed and pushed
 - [ ] Slides done
 - [ ] Someone else has run your package from the README alone
@@ -177,7 +177,7 @@ changed, whether it worked. Include failures you **did not** fix, and say why.
 
 - [ ] Course laid out and measured
 - [ ] Clear area confirmed ≥ coast-down distance; spectators behind a marked line
-- [ ] E-stop tested — press it, confirm traction cut and STOCK revert, reset it
+- [ ] E-stop tested — press it, confirm traction cut and STOCK revert; **sticks centred, hands off**, then reset it
 - [ ] RC override tested — take the sticks under command, confirm preemption on both axes
 - [ ] Map loaded / weights loaded; localization converged
 - [ ] All telemetry rates checked against the [timing contract](../design/architecture.md#6-timing-heartbeat-contract)

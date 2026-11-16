@@ -182,7 +182,7 @@ rig, or a recorded rosbag.
 ```bash
 source /opt/ros/humble/setup.bash
 cd ~/mrider_ws && source install/setup.bash
-export ROS_DOMAIN_ID=10     # must match agent_config.xml, or you will see nothing
+export ROS_DOMAIN_ID=10     # the same value in every terminal, or you will see nothing
 
 ros2 launch mrider bringup.launch.py
 # no vehicle? replay instead:
@@ -192,10 +192,15 @@ ros2 launch mrider bringup.launch.py
 > [!NOTE]
 > **On the MITT course stack, source `ros2_ws/setup_env.sh` instead**
 >
-> It sets the middleware and the loopback isolation for you. The domain number above still applies
-> where a micro-ROS `agent_config.xml` pins one — the two are independent, and localhost-only does
-> not interfere with the agent, because the agent reaches the Teensy over **USB serial**, not the
-> network.
+> It sets the middleware and the loopback isolation for you. Localhost-only does not interfere
+> with the agent, because the agent reaches the Teensy over **USB serial**, not the network.
+>
+> *This page used to say the domain must match `agent_config.xml`. That file configured the
+> Micro-XRCE-DDS agent of the PX4 design, which D3 retired
+> ([software.md §2](../design/software.md)); nothing reads it now. What the laptop's domain has
+> to match instead is the one the **Teensy firmware** asks for — a micro-ROS client names its
+> own domain, and the agent's shell does not set it. As of 2026-11-16 no page in this repository
+> pins that number.*
 
 ### Steps
 
@@ -306,7 +311,7 @@ human could check it.
 6. **The feedback path** — same link, same clock, and the tradeoff that buys
 7. **ROS 2 vocabulary** — node, topic, message, TF
 8. **`base_link` and REP-105** — where the origin is and why it matters
-9. **The timing contract** — four rates, and what breaks when each is missed
+9. **The timing contract** — five rates, and what breaks when each is missed
 10. **Lab brief** — publish, subscribe, visualize, trace
 11. **Looking ahead** — M2 opens up the one box we treated as magic today: the position loop
 
