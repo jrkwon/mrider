@@ -213,7 +213,7 @@ point. An unchanged charter in Week 14 means nobody was reading it.
 
 ## Peer evaluation
 
-Runs twice: **Week 8** and **Week 14**. Confidential; only I see individual responses.
+Runs twice: **Week 8** and **Week 15**. Confidential; only I see individual responses.
 
 For each teammate including yourself, on a 1–5 scale:
 
@@ -231,8 +231,8 @@ Consistent, evidenced under-contribution can reduce it further.
 > [!NOTE]
 > **If your team has a problem**
 >
-> Tell me at Week 8, not Week 14. At Week 8 there are seven weeks left and it is fixable. At Week
-> 14 there is nothing I can do but adjust grades, which helps nobody build anything.
+> Tell me at Week 8, not Week 15. At Week 8 there are seven weeks left and it is fixable. At Week
+> 15 there is nothing I can do but adjust grades, which helps nobody build anything.
 
 ---
 
