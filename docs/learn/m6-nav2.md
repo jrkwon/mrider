@@ -29,7 +29,7 @@ that clip walls; too large and you cannot fit through a doorway you physically f
 
 B-MROVER's value is `0.1397` — which is a *simulation* placeholder, not MRider's chassis
 ([software.md §4.3](../design/software.md#43-nav2-configslamnav2_paramsyaml)). MRider is a
-two-seater ride-on. Using the inherited value would let the planner drive you into a wall with
+single-seat ride-on about a metre long. Using the inherited value would let the planner drive you into a wall with
 complete confidence.
 
 ### The parameters you must change before the first goal
@@ -37,9 +37,12 @@ complete confidence.
 | Parameter | B-MROVER value | What MRider needs | Why |
 |---|---|---|---|
 | `robot_radius` | 0.1397 | Measured from the real chassis | It is a much bigger vehicle |
-| `max_vel_x` | 0.26 | Capped at walking speed | The [safety case](../design/safety.md#43-why-traction-cut-freewheel-steering-is-acceptable) only holds at walking speed |
-| `max_vel_theta` | 1.0 | Derived from the ±22.5° steer limit and wheelbase | You cannot rotate faster than the steering permits |
-| `max_vel_y` | 0.0 | 0.0 — keep it | Non-holonomic; sideways motion is impossible |
+| `max_vel_x` | 0.26 | **Gone with DWB.** The speed is `desired_linear_vel` on the controller, capped at walking speed | The [safety case](../design/safety.md#43-why-traction-cut-freewheel-steering-is-acceptable) only holds at walking speed |
+| `max_vel_theta` | 1.0 | **Gone with DWB.** The constraint is a turning *radius*, derived from the ±22.5° steer limit and the wheelbase | You cannot rotate faster than the steering permits |
+| `max_vel_y` | 0.0 | 0.0 in the velocity smoother — keep it | Non-holonomic; sideways motion is impossible |
+
+`robot_radius` is likewise replaced: the costmaps take a rectangular **`footprint`**, measured
+from `base_link` at the rear axle, because a metre-long car is not a circle.
 
 Also required from M5's measurements: `wheelbase`, track, and wheel radius, which set the
 bicycle-steering controller
@@ -191,13 +194,13 @@ day, and it constrains every goal you set.
 Edit `nav2_params.yaml`:
 
 ```yaml
-robot_radius: <measured, not 0.1397>
-max_vel_x: <walking speed cap>
-max_vel_theta: <derived from R_min and max_vel_x>
-max_vel_y: 0.0
+footprint: <four corners measured from base_link, not a 0.1397 radius>
+desired_linear_vel: <walking speed cap>            # FollowPath
+minimum_turning_radius: <R_min from Part 1, plus margin>   # the planner
 ```
 
-Record what you set and why. `max_vel_theta` in particular should be **derived**, not guessed:
+Record what you set and why. The turning radius in particular should be **derived**, not
+guessed — and so should the yaw rate you expect to see:
 at speed `v` on a circle of radius `R_min`, the yaw rate is `v / R_min`.
 
 ### Part 3 — Progressive goals
@@ -230,25 +233,21 @@ ros2 topic echo /mitt/dbw/status     # what is actually being achieved?
 | Recovery behaviors triggered | *(count)* |
 | `spin` recoveries that accomplished nothing | *(count)* |
 
-**ADR-SW2 is closed, so this is verification rather than a decision.** If cross-track error is persistent or infeasible commands appear
-during turning tests, swap the controller to Regulated Pure Pursuit and re-run goals 1–5.
+**ADR-SW2 is closed, so this is verification rather than a decision.** Regulated Pure Pursuit
+is already the controller, and DWB was never run. If steering beyond ±22.5° is still being
+commanded, a number is wrong somewhere, not the choice of controller: compare the configured
+turning radius, and the wheelbase and steering limit given to `ackermann_steering_controller`,
+against what you measured. Then re-run goals 1–5.
 
-| Metric | DWB | RPP |
-|---|---|---|
-| Goals reached (of 5) | | |
-| Worst cross-track error | | |
-| Infeasible commands | | |
-| Recoveries triggered | | |
-
-Record which controller you retained **and why** — that decision, with evidence, is the
-deliverable.
+Record which number was wrong **and how you found it** — or, if none was, the table above as
+it stands. That, with evidence, is the deliverable.
 
 ### Part 5 — Tune overshoot on turns
 
 Overshoot on a car-like vehicle usually is not a gain problem. Work through these in order:
 
 1. Is the commanded curvature within `R_min`? If not, no tuning fixes it.
-2. Is `max_vel_x` too high for the turn radius? Slow down and re-run.
+2. Is `desired_linear_vel` too high for the turn radius? Slow down and re-run.
 3. Is the lookahead distance (RPP) too long? Long lookahead cuts corners; short lookahead
    oscillates.
 4. Only now, adjust controller gains.
@@ -257,8 +256,8 @@ Overshoot on a car-like vehicle usually is not a gain problem. Work through thes
 
 - `R_min` computed and compared against your test area
 - All five goals attempted with outcomes recorded
-- A quantitative DWB-vs-RPP comparison, if the trigger fired
-- A stated, evidenced controller decision
+- The Part 4 metrics table, filled from a recorded run
+- Every infeasible command traced to a parameter, or a statement that there were none
 - Turn overshoot reduced, with the cause identified rather than tuned around
 
 ### Check yourself
@@ -267,7 +266,7 @@ Overshoot on a car-like vehicle usually is not a gain problem. Work through thes
 - [ ] Why can Nav2's `spin` recovery never work on MRider?
 - [ ] Why were DWB and NavFn rejected on geometry rather than after a trial run?
 - [ ] Why was `allow_reversing: true` inert until the planner was swapped?
-- [ ] `robot_radius` is left at 0.1397 on a two-seater ride-on. Describe the first crash.
+- [ ] `robot_radius` is left at 0.1397 on a metre-long ride-on. Describe the first crash.
 
 ---
 
@@ -276,7 +275,7 @@ Overshoot on a car-like vehicle usually is not a gain problem. Work through thes
 1. **Hook** — a Nav2 tutorial robot spins in place. Ours cannot. Everything follows from that.
 2. **The four pieces** — costmap, global planner, local controller, recoveries
 3. **Inflation and `robot_radius`** — too small vs. too big
-4. **The inherited-placeholder trap** — 0.1397 on a two-seater
+4. **The inherited-placeholder trap** — 0.1397 on a metre-long car
 5. **Non-holonomic** — move along heading, turn only while moving
 6. **`R_min = wheelbase / tan(22.5°)`** — do the arithmetic on screen
 7. **Three consequences** — infeasible paths, no in-place spin, reversing matters

@@ -131,7 +131,7 @@ Map defects are diagnostic — each shape of failure points at a different subsy
 |---|---|---|
 | **Doubled walls** — the same wall appears twice, offset | Drift not corrected; loop never closed, or odometry badly scaled | Odometry calibration; drive a closing loop |
 | **Smeared / thick walls** | Extrinsic yaw error, or scan matching struggling with fast rotation | M4 extrinsics; drive slower |
-| **Map rotates relative to reality** | IMU board rotation (`SENS_BOARD_ROT`) wrong | [calibration.md §5](../design/calibration.md#5-imu-calibration) |
+| **Map rotates relative to reality** | IMU mounting rotation wrong — the IMU→`base_link` static transform in the URDF | [calibration.md §5](../design/calibration.md#5-imu-calibration) |
 | **Pose jumps in open areas** | Featureless stretch — nothing for scan matching to lock onto | Add features; check `max_laser_range` |
 | **`map → odom` grows without bound** | Systematic odometry bias | Re-run roll-out calibration |
 

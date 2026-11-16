@@ -215,7 +215,8 @@ Two constants do the whole job
 ([calibration.md §1](../design/calibration.md#1-steering-zerocenter-and-countsdegrees)):
 
 - **`c0`** — the counts reading when the wheels are physically straight. Found by setting the
-  wheels straight by hand with a straightedge, reading counts, and storing it via `C,ZERO`.
+  wheels straight by hand with a straightedge, reading counts, and storing it via the Teensy's
+  ROS 2 zeroing service, where the earlier firmware took a typed serial command.
   The Teensy persists it in EEPROM, so **center survives reboot** — the whole point of ADR B.
 - **`k`** — degrees per count, from a two-point fit at full left and full right lock:
   `k = (θ_L − θ_R) / (c_L − c_R)`.
@@ -345,7 +346,7 @@ slow system.
 | Test | Expected behavior | Observed |
 |---|---|---|
 | Stop the setpoint publisher mid-hold | Staleness > 500 ms → `ESTOP`; steering centered, then de-energized | *(record)* |
-| Halt the Teensy mid-hold | the driver's **R/C signal-loss timeout** stops the motor | *(record)* |
+| **Hold the Teensy in reset** mid-hold | Pulses stop, so the driver's **R/C signal-loss timeout** stops the motor. *A reset, not a hang — a hung loop keeps emitting the last pulse, and M3 tests that separately* | *(record)* |
 | Unplug the angle sensor mid-hold | Loop refuses to run on a bad angle; fault bit sets | *(record)* |
 | Command past the mechanical stop | Effort clamps **toward center only**; stall bit sets | *(record)* |
 | Block the column by hand under effort | Stall detected (encoder velocity ≈ 0 under effort) | *(record)* |
@@ -353,6 +354,14 @@ slow system.
 
 The last one is the [safety.md §4.4](../design/safety.md#44-test-procedure-freewheel-on-power-loss)
 freewheel test, and M3 explains why that behavior was chosen.
+
+> [!CAUTION]
+> **Stop the setpoint before you restore motor power**
+>
+> The MDDS30's logic runs from the motor supply, so restoring power **boots the driver**, and
+> it takes the pulse present at that moment as *stop*. If the loop is still pushing against an
+> error, that pulse is off-centre and every later command carries the offset. Stop the
+> publisher (or reset the Teensy) so the output is neutral, then switch the supply back on.
 
 ### Expected output
 
