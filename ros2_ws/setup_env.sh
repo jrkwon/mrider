@@ -67,7 +67,7 @@ export GZ_VERSION=harmonic
 # ---------------------------------------------------------------------------
 # 4. NETWORK ISOLATION - and it takes TWO variables, not one.
 #
-# 24 students run this simulator on one classroom network. Each machine must be
+# 13 students run this simulator on one classroom network. Each machine must be
 # an island: your robot must not receive someone else's commands, and your
 # Gazebo must not discover theirs.
 #

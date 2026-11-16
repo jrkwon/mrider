@@ -27,8 +27,8 @@ Mondays, 3 hours · 13 students · taught in English
 
     ---
 
-    The four subsystem teams — Electrical, Chassis, Simulation, Software — what each owns, and how
-    they merge into one vehicle.
+    Three teams, one vehicle each, and the four tracks inside every team — Electrical, Chassis,
+    Simulation, Software — what each owns, and how they merge into a vehicle.
 
 -   :material-check-decagram: **[Grading & Rubrics](grading.md)**
 

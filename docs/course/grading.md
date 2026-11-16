@@ -148,7 +148,7 @@ nowhere else — the per-student files under `dist/` are regenerated on every ru
 
 **Week 8, 11/02.** Each team presents for 12 minutes plus 5 minutes of questions.
 
-This is the first checkpoint where the four tracks have to explain themselves to each other — and
+This is the first checkpoint where the three teams have to explain themselves to each other — and
 that is its real purpose. Present to your classmates, not to me.
 
 ### Rubric (100 points)
