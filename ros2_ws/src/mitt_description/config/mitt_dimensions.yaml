@@ -65,6 +65,15 @@ camera_pitch_deg: -12.0  #     downward tilt to frame the floor 2-8 m ahead
 # Verify against the ACTUAL mechanical lock — this chassis is not that one.
 steer_limit_deg: 22.5    #     TODO verify on the real column
 
+# Minimum turning radius of base_link (the rear-axle centre) at full lock.
+# A MEASURED quantity, not a derived one: wheelbase / tan(steer_limit) assumes
+# both locks reach the design angle and the linkage has no slack, and neither
+# has been shown. Each team measures it on its own vehicle - procedure in
+# docs/design/calibration.md 1.5 - and Nav2's minimum_turning_radius must sit
+# at or above it (scripts/check_vehicle_dims.py). Until measured, this is the
+# derived figure and nothing more.
+min_turning_radius: 1.52 # m   TODO measure (both locks; record the LARGER)
+
 # --- Drivetrain limits (simulation) ----------------------------------------
 # Operating envelope is <= walking speed with an operator alongside
 # (docs/design/safety.md). Not a vehicle capability claim.

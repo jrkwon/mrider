@@ -2,7 +2,7 @@
 <rect width="1180" height="1395" fill="#ffffff"/>
 <text x="24" y="36" font-size="19" font-weight="bold" fill="#0f172a">Signal perfboard &#8212; where everything sits</text>
 <text x="24" y="58" font-size="12.5" fill="#475569">[GA2] 80 &#215; 80 double-sided, 2.54 mm pitch: 29 &#215; 29 holes, <tspan font-weight="bold">27 &#215; 27 after the one-hole margin</tspan> (the 80 mm side is the same 29 as the GA6).</text>
-<text x="24" y="77" font-size="12.5" fill="#475569">A socketed Teensy 4.1, two pull-up pairs, two filter caps, six terminals and three servo headers. <tspan font-weight="bold">The pin order drawn here is unverified &#8212; check it against the board.</tspan></text>
+<text x="24" y="77" font-size="12.5" fill="#475569">A socketed Teensy 4.1, two pull-up pairs, two filter caps, eight terminals and three servo headers. <tspan font-weight="bold">The pin order drawn here is unverified &#8212; check it against the board.</tspan></text>
 <rect x="82" y="124" width="780" height="780" rx="7" fill="#fdf6e3" stroke="#a16207" stroke-width="2.5"/>
 <circle cx="108" cy="150" r="3.1" fill="#ebe3d2"/>
 <circle cx="108" cy="176" r="3.1" fill="#ebe3d2"/>
@@ -894,6 +894,8 @@
 <rect x="561" y="162" width="56" height="80" rx="4" fill="#ffffff" fill-opacity="0.88" stroke="#dc2626" stroke-width="2.2"/>
 <rect x="249" y="786" width="56" height="80" rx="4" fill="#ffffff" fill-opacity="0.88" stroke="#1d4ed8" stroke-width="2.2"/>
 <rect x="379" y="786" width="56" height="80" rx="4" fill="#ffffff" fill-opacity="0.88" stroke="#dc2626" stroke-width="2.2"/>
+<rect x="145" y="786" width="56" height="80" rx="4" fill="#ffffff" fill-opacity="0.88" stroke="#dc2626" stroke-width="2.2"/>
+<rect x="743" y="786" width="56" height="80" rx="4" fill="#ffffff" fill-opacity="0.88" stroke="#0369a1" stroke-width="2.2"/>
 <rect x="667" y="163" width="78" height="26" rx="3" fill="#ffffff" fill-opacity="0.88" stroke="#be123c" stroke-width="2.2"/>
 <rect x="511" y="839" width="78" height="26" rx="3" fill="#ffffff" fill-opacity="0.88" stroke="#7c3aed" stroke-width="2.2"/>
 <rect x="641" y="839" width="78" height="26" rx="3" fill="#ffffff" fill-opacity="0.88" stroke="#7c3aed" stroke-width="2.2"/>
@@ -909,6 +911,9 @@
 <line x1="680" y1="358" x2="446" y2="410" stroke="#be123c" stroke-width="2.6" stroke-dasharray="6 5"/>
 <line x1="524" y1="852" x2="238" y2="566" stroke="#7c3aed" stroke-width="2.6" stroke-dasharray="6 5"/>
 <line x1="654" y1="852" x2="264" y2="566" stroke="#7c3aed" stroke-width="2.6" stroke-dasharray="6 5"/>
+<line x1="160" y1="852" x2="238" y2="670" stroke="#334155" stroke-width="2.6" stroke-dasharray="6 5"/>
+<line x1="758" y1="800" x2="394" y2="410" stroke="#0369a1" stroke-width="2.6" stroke-dasharray="6 5"/>
+<line x1="758" y1="852" x2="420" y2="410" stroke="#0369a1" stroke-width="2.6" stroke-dasharray="6 5"/>
 <line x1="186" y1="618" x2="186" y2="748" stroke="#b91c1c" stroke-width="2.4" stroke-dasharray="5 4"/>
 <rect x="179.0" y="668.0" width="14" height="30" rx="3" fill="#b91c1c" opacity="0.92"/>
 <text x="173.0" y="681.0" font-size="11" font-weight="bold" fill="#b91c1c" text-anchor="end">R3</text>
@@ -941,6 +946,7 @@
 <line x1="732" y1="176" x2="784" y2="176" stroke="#334155" stroke-width="2.6" opacity="0.95"/>
 <line x1="576" y1="852" x2="576" y2="670" stroke="#334155" stroke-width="2.6" opacity="0.95"/>
 <line x1="706" y1="852" x2="706" y2="670" stroke="#334155" stroke-width="2.6" opacity="0.95"/>
+<line x1="160" y1="800" x2="238" y2="748" stroke="#dc2626" stroke-width="2.6" opacity="0.95"/>
 <rect x="147" y="397" width="624" height="182" rx="5" fill="#1e293b" fill-opacity="0.13" stroke="#1e293b" stroke-width="1.8" stroke-dasharray="7 4"/>
 <rect x="151" y="401" width="616" height="18" rx="3" fill="#475569"/>
 <circle cx="160" cy="410" r="4.2" fill="#f8fafc"/>
@@ -1100,6 +1106,16 @@
 <text x="440" y="804" font-size="10" font-weight="bold" fill="#dc2626">3.3 V</text>
 <text x="440" y="856" font-size="10" font-weight="bold" fill="#dc2626">GND</text>
 <text x="407" y="780" font-size="10.5" font-weight="bold" fill="#dc2626" text-anchor="middle">DRVP</text>
+<circle cx="160" cy="800" r="4" fill="#dc2626"/>
+<circle cx="160" cy="852" r="4" fill="#dc2626"/>
+<text x="206" y="804" font-size="10" font-weight="bold" fill="#dc2626">3.3 V</text>
+<text x="206" y="856" font-size="10" font-weight="bold" fill="#dc2626">GND</text>
+<text x="173" y="780" font-size="10.5" font-weight="bold" fill="#dc2626" text-anchor="middle">IMUP</text>
+<circle cx="758" cy="800" r="4" fill="#0369a1"/>
+<circle cx="758" cy="852" r="4" fill="#0369a1"/>
+<text x="804" y="804" font-size="10" font-weight="bold" fill="#0369a1">SDA1</text>
+<text x="804" y="856" font-size="10" font-weight="bold" fill="#0369a1">SCL1</text>
+<text x="771" y="780" font-size="10.5" font-weight="bold" fill="#0369a1" text-anchor="middle">IMUS</text>
 <circle cx="680" cy="176" r="4" fill="#be123c"/>
 <circle cx="706" cy="176" r="4.5" fill="#ffffff" stroke="#be123c" stroke-width="1.8"/>
 <text x="706" y="195" font-size="8" font-weight="bold" fill="#be123c" text-anchor="middle">n/c</text>
@@ -1135,10 +1151,12 @@
 <circle cx="316" cy="410" r="9" fill="none" stroke="#be123c" stroke-width="1.6" opacity="0.75"/>
 <circle cx="342" cy="410" r="9" fill="none" stroke="#be123c" stroke-width="1.6" opacity="0.75"/>
 <circle cx="368" cy="410" r="9" fill="none" stroke="#be123c" stroke-width="1.6" opacity="0.75"/>
+<circle cx="394" cy="410" r="9" fill="none" stroke="#be123c" stroke-width="1.6" opacity="0.75"/>
+<circle cx="420" cy="410" r="9" fill="none" stroke="#be123c" stroke-width="1.6" opacity="0.75"/>
 <circle cx="446" cy="410" r="9" fill="none" stroke="#be123c" stroke-width="1.6" opacity="0.75"/>
 <circle cx="524" cy="410" r="9" fill="none" stroke="#be123c" stroke-width="1.6" opacity="0.75"/>
 <circle cx="524" cy="566" r="9" fill="none" stroke="#be123c" stroke-width="1.6" opacity="0.75"/>
-<text x="108" y="926" font-size="11" font-weight="bold" fill="#be123c">Circled: 15 pads take a second wire. Two is ordinary; three is a joint nobody can inspect.</text>
+<text x="108" y="926" font-size="11" font-weight="bold" fill="#be123c">Circled: 17 pads take a second wire. Two is ordinary; three is a joint nobody can inspect.</text>
 <rect x="24" y="948" width="1132" height="121" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
 <text x="44" y="978" font-size="14" font-weight="bold" fill="#1e3a8a">Read the pin order off the board before you believe any column here</text>
 <text x="44" y="1004" font-size="12.5" fill="#1e40af">Every column in this drawing is computed from the pin order printed along the Teensy. <tspan font-weight="bold">It has not been verified against a board.</tspan></text>

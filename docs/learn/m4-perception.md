@@ -59,11 +59,12 @@ hard-to-debug form of label leakage, and it is why the BOM refuses a cheap webca
 | Stream | Typical rate | Consumer |
 |---|---|---|
 | `/scan` (LiDAR) | scan rate, ~10 Hz class | slam_toolbox, Nav2 costmaps |
-| `/camera/color/image_raw` | camera fps | Data recorder, learned policy |
+| `/camera/image_raw` | camera fps | Data recorder, learned policy |
 | `/imu/data` (IMU) | ≥ 100 Hz | EKF |
 | `/mitt/dbw/status` (encoders) | ≥ 50 Hz | Odometry → EKF |
 
-The IMU is a **standalone BNO085-class module** connected directly to the laptop, and its
+The IMU is a **standalone BNO085-class module** on the Teensy's second I²C bus — the firmware
+publishes it, and there is no laptop-side driver — and its
 calibration is an in-repo procedure with no ground-station tool
 ([calibration.md §5](../design/calibration.md#5-imu-calibration); the part itself is
 [sensors.md §3](../design/sensors.md#3-imu)). GNSS is optional and excluded from the minimum
@@ -141,14 +142,14 @@ RViz.
 ### Part 1 — Bring up the sensors and look at them
 
 ```bash
-ros2 launch mrider bringup.launch.py
+ros2 launch mitt_bringup real.launch.py vehicle:=<n>   # after MITT_VEHICLE=<n> source ros2_ws/setup_env.sh
 
 ros2 topic hz /scan
-ros2 topic hz /camera/color/image_raw
+ros2 topic hz /camera/image_raw
 ros2 topic echo /scan --once | head -40    # note angle_min, angle_max, range_max
 ```
 
-In RViz, add **LaserScan** (`/scan`), **Image** (`/camera/color/image_raw`), and **TF**. Set
+In RViz, add **LaserScan** (`/scan`), **Image** (`/camera/image_raw`), and **TF**. Set
 the fixed frame to `base_link`.
 
 **Answer these from the data, not the datasheet:**
@@ -184,7 +185,7 @@ Record what each sensor missed. This table is the most useful thing you will pro
 
 ```bash
 ros2 bag record -o m4_run \
-  /scan /camera/color/image_raw /mitt/dbw/status /tf /tf_static \
+  /scan /camera/image_raw /mitt/dbw/status /tf /tf_static \
   /imu/data
 ```
 

@@ -145,7 +145,7 @@ just comes out subtly wrong.
 | Command stream (laptop → Teensy) | ≥ 50 Hz | Staleness > 500 ms → `ESTOP`: throttle 0, steering centered |
 | Steering position loop (Teensy) | ≥ 200 Hz | Sluggish, hunting steering |
 | Actuation frame (Teensy → MDDS30) | **measure & pin** | **Caps closed-loop performance regardless of loop rate** — see below |
-| Status feedback (Teensy → laptop) | ≥ 50 Hz | `/mitt/dbw/status` stale; EKF coasts on IMU; Nav2 halts |
+| Status feedback (Teensy → laptop) | ≥ 50 Hz | `/mitt/dbw/status` stale — and the IMU with it, which rides the same link; Nav2 halts |
 | IMU | ≥ 100 Hz | EKF degrades; Nav2 slows or stops |
 
 These come from the [timing contract](../design/architecture.md#6-timing-heartbeat-contract).
@@ -180,27 +180,30 @@ rig, or a recorded rosbag.
 ### Setup
 
 ```bash
-source /opt/ros/humble/setup.bash
-cd ~/mrider_ws && source install/setup.bash
-export ROS_DOMAIN_ID=10     # the same value in every terminal, or you will see nothing
+# On a vehicle: its number, in every terminal. It selects ROS domain 10 + N.
+MITT_VEHICLE=2 source ros2_ws/setup_env.sh
+ros2 launch mitt_bringup real.launch.py vehicle:=2
 
-ros2 launch mrider bringup.launch.py
-# no vehicle? replay instead:
+# No vehicle? The twin, or a recorded bag - no vehicle number, domain 0:
+#   source ros2_ws/setup_env.sh
+#   ros2 launch mitt_bringup sim.launch.py
 #   ros2 bag play <course_bag> --loop
 ```
 
 > [!NOTE]
-> **On the MITT course stack, source `ros2_ws/setup_env.sh` instead**
+> **What `setup_env.sh` sets, and why a vehicle gets its own domain**
 >
 > It sets the middleware and the loopback isolation for you. Localhost-only does not interfere
 > with the agent, because the agent reaches the Teensy over **USB serial**, not the network.
 >
+> With `MITT_VEHICLE=N` it also sets `ROS_DOMAIN_ID` to **10 + N**. Three vehicles share a room,
+> and the Teensy on vehicle N asks for that domain itself — a micro-ROS client names its own, the
+> agent's shell does not set it. Get the number wrong and you see an empty graph with no error;
+> `real.launch.py` refuses to start rather than let that happen
+> ([software.md §3.4](../design/software.md#34-ros-domain-one-per-vehicle)).
+>
 > *This page used to say the domain must match `agent_config.xml`. That file configured the
-> Micro-XRCE-DDS agent of the PX4 design, which D3 retired
-> ([software.md §2](../design/software.md)); nothing reads it now. What the laptop's domain has
-> to match instead is the one the **Teensy firmware** asks for — a micro-ROS client names its
-> own domain, and the agent's shell does not set it. As of 2026-11-16 no page in this repository
-> pins that number.*
+> Micro-XRCE-DDS agent of the PX4 design, which D3 retired; nothing reads it now.*
 
 ### Steps
 

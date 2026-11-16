@@ -74,7 +74,7 @@ All B-MROVER claims below were verified against the local checkout at
 | 5 | **Hardware RC signal MUX** | **The condition of D3's adoption.** An RC channel drives a signal multiplexer selecting Teensy output *or* direct RC input into the motor driver — making override a *wiring* property, independent of Teensy firmware. | New. Replaces PX4's software RC override with a stronger guarantee ([dbw.md §11.2](dbw.md#112-hardware-rc-signal-mux-the-d3-condition)). |
 | 6 | **RC transmitter + receiver** | Two roles: RC serial into the Teensy for normal closed-loop manual override, and a dedicated channel driving the hardware MUX (#5) as the independent fallback. | B-MROVER binds RC to the Pixhawk; here the RX serves both layers directly. |
 | 7 | **Absolute steering-angle sensor** | Boot-absolute road-wheel angle, **mounted load-side** (downstream of the steering gearbox) so backlash appears as measured error, not invisible bias. AS5600-class magnetic, pot fallback — [ADR](dbw.md#6-adr-angle-sensor-technology-magnetic-encoder-vs-potentiometer). | New — fixes B-MROVER's incremental-only steering and its runtime auto-ranging (F4). |
-| 8 | **IMU (BNO085 class)** | 9-DoF with onboard fusion, straight to the laptop, feeding `robot_localization`. | Replaces the Pixhawk's internal IMU. Note the estimator was *already* `robot_localization` (F11), so this is a driver swap, not an estimator change. |
+| 8 | **IMU (BNO085 class)** | 9-DoF with onboard fusion, on the **Teensy's second I²C bus**; the firmware publishes `/imu/data` over micro-ROS into `robot_localization` ([sensors.md §3](sensors.md#3-imu), decided 2026-11-16). | Replaces the Pixhawk's internal IMU. Note the estimator was *already* `robot_localization` (F11), so this is a driver swap, not an estimator change. |
 | 9 | **Motor encoders** | Incremental encoder on the drive-motor shaft for distance/velocity; incremental encoder on the steering motor for velocity/stall. Both on Teensy **hardware quadrature decoders**. | `code/code.ino` method and the shaft-adapter approach. **PPR must be verified on the part fitted** — the source project conflicts with itself (F7). |
 | 10 | **Sensors** | Minimum set: one front camera + one 2D LiDAR. Optional GNSS/RTK (phase 2). Detailed in [`sensors.md`](sensors.md). | B-MROVER camera + YDLidar. |
 | 11 | **Traction battery pack** | Traction source, feeding the motor driver. An **isolated logic rail** supplies the Teensy so motor transients cannot brown it out. Laptop is **not** on this rail in v1. | Same class. |
@@ -157,7 +157,7 @@ flowchart LR
 
     ST --> HW["mitt_hardware<br/>(ros2_control)"]
     ST --> ODO["Odometry / EKF (robot_localization)"]
-    IMU["IMU (BNO085 class)<br/>direct to laptop"] --> ODO
+    IMU["IMU (BNO085 class)<br/>on the Teensy, via micro-ROS"] --> ODO
     ODO --> NAV["SLAM + Nav2"]
 ```
 
@@ -244,8 +244,8 @@ interface contract is pinned in [`dbw.md §12`](dbw.md#12-numeric-interface-cont
 | Command stream (`DbwCommand`) | laptop → Teensy | **≥ 50 Hz** | staleness > 500 ms → `ESTOP` | Teensy supervisor |
 | Steering position loop | Teensy-local | **≥ 200 Hz** | at limit → clamp effort toward center only | Teensy |
 | **Actuation frame (→ driver)** | Teensy → MUX → driver | **measure & pin at Stage 1** | R/C signal-loss timeout → motors stop | motor driver |
-| Status feedback (`DbwStatus`) | Teensy → laptop | **≥ 50 Hz** | driver flags stale; EKF coasts on IMU | ROS 2 driver |
-| IMU | IMU → laptop | **≥ 100 Hz** (EKF input) | EKF degrades; Nav2 slows/stops | robot_localization |
+| Status feedback (`DbwStatus`) | Teensy → laptop | **≥ 50 Hz** | driver flags stale. *The IMU rides the same link, so the EKF loses both inputs together; the Teensy is in `ESTOP` by then* | ROS 2 driver |
+| IMU | IMU → Teensy (I²C) → laptop (micro-ROS) | **≥ 100 Hz** (EKF input) | EKF degrades; Nav2 slows/stops | robot_localization |
 | RC override (RC serial) | RX → Teensy | ~50 Hz | RC-loss → `ESTOP` | Teensy supervisor |
 | RC MUX select | RX → signal MUX | ~50 Hz | **hardware path — independent of firmware** | wiring |
 

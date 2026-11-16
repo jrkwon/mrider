@@ -33,11 +33,18 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 
 
 def generate_launch_description():
+    # true for the twin. On a vehicle pass use_sim_time:=false: there is no
+    # /clock there, and a joystick node waiting on one never times anything out.
+    use_sim_time = ParameterValue(
+        LaunchConfiguration("use_sim_time"), value_type=bool)
+
     return LaunchDescription([
         DeclareLaunchArgument("joy_dev", default_value="0"),
+        DeclareLaunchArgument("use_sim_time", default_value="true"),
 
         Node(
             package="joy",
@@ -47,7 +54,7 @@ def generate_launch_description():
                 "device_id": LaunchConfiguration("joy_dev"),
                 "deadzone": 0.05,
                 "autorepeat_rate": 20.0,
-                "use_sim_time": True,
+                "use_sim_time": use_sim_time,
             }],
             output="screen",
         ),
@@ -57,7 +64,7 @@ def generate_launch_description():
             executable="teleop_node",
             name="teleop_twist_joy_node",
             parameters=[{
-                "use_sim_time": True,
+                "use_sim_time": use_sim_time,
                 # Deadman on button 4 (LB on an Xbox-style pad). Nothing moves
                 # without it held.
                 "require_enable_button": True,

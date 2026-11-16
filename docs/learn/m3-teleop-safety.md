@@ -195,7 +195,7 @@ powered *after* an emergency stop. Rejected.
 ### FMEA — the failures nobody watches
 
 A failsafe matrix covers *link losses*. An [FMEA](../design/safety.md#7-fmea-lightweight)
-covers *component failures*, rated by severity (S) and detectability (D). MRider's has twelve
+covers *component failures*, rated by severity (S) and detectability (D). MRider's has thirteen
 rows; two of the severity-5 ones are worth reading closely:
 
 **Row 8 — MUX relay welds closed in DBW mode.** Severity 5. You cannot revert to STOCK; DBW is

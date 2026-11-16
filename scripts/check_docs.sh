@@ -13,6 +13,9 @@
 # Each check exists because this repository has already shipped the
 # defect it catches, or is one cohort away from it:
 #
+#  25. one domain rule        - vehicle N is in ROS domain 10 + N, stated in
+#                                real.launch.py, setup_env.sh and software.md
+#                                3.4. All three must give the same base.
 #  24. wiring, said twice    - a harness that runs a +/- PAIR through a fuse
 #                                or a contact, and a Teensy pin the board
 #                                figure uses that the pin table does not
@@ -552,5 +555,21 @@ printf "%s24. a wiring claim made in two places says the same thing in both%s\n"
 python3 scripts/check_wiring_consistency.py \
     || fail "a harness or the pin table disagrees with its other copy"
 printf "\n"
+
+printf "%s25. the per-vehicle ROS domain rule is the same in all three places%s\n" "$B" "$N"
+# Vehicle N lives in domain 10 + N (docs/design/software.md 3.4). The launch
+# file, the environment script and the design page each state it, because each
+# is read by someone who will not open the other two. A base that changes in
+# one of them puts a laptop in a domain its vehicle is not in - an empty graph
+# with no error - or, worse, in a neighbouring vehicle's.
+DOM_LAUNCH="$(sed -n 's/^DOMAIN_BASE = \([0-9][0-9]*\)$/\1/p' ros2_ws/src/mitt_bringup/launch/real.launch.py)"
+DOM_ENV="$(sed -n 's/.*ROS_DOMAIN_ID=\$((\([0-9][0-9]*\) + MITT_VEHICLE)).*/\1/p' ros2_ws/setup_env.sh)"
+DOM_DOC="$(sed -n 's/^\*\*Decided .* Vehicle \*N\* uses ROS domain \([0-9][0-9]*\) + \*N\*\.\*\*$/\1/p' docs/design/software.md)"
+if [ -z "$DOM_LAUNCH" ] || [ -z "$DOM_ENV" ] || [ -z "$DOM_DOC" ]; then
+    fail "could not read the domain base from all three places (launch '$DOM_LAUNCH', env '$DOM_ENV', doc '$DOM_DOC')"
+elif [ "$DOM_LAUNCH" != "$DOM_ENV" ] || [ "$DOM_LAUNCH" != "$DOM_DOC" ]; then
+    fail "domain base disagrees: real.launch.py $DOM_LAUNCH, setup_env.sh $DOM_ENV, software.md $DOM_DOC"
+fi
+printf "   %sok%s  (vehicle N -> ROS domain %s + N)\n\n" "$G" "$N" "$DOM_LAUNCH"
 
 printf "%sDocs are publishable.%s\n" "$G" "$N"

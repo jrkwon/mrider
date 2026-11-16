@@ -117,6 +117,8 @@ use the **same numbers**. *If they differed, the bench would prove nothing about
 | **i-BUS** RX | **15** | chosen | Serial3 RX. **Must be a hardware serial RX, and it cannot be Serial1** — see below |
 | **PWM** out to the signal MUX — **steering** | **2** | chosen | PWM-capable. To the MUX's master input for the channel that reaches `RC1` |
 | **PWM** out to the signal MUX — **drive** | **3** | chosen | PWM-capable. Master input for the channel that reaches `RC2` |
+| IMU **SDA1** (BNO085) | **17** | **fixed by hardware** | `Wire1` on a Teensy 4.1 — a **separate bus** from the steering sensor, on purpose ([sensors.md §3](../design/sensors.md#3-imu)). **Taking 16 and 17 forecloses Serial4** |
+| IMU **SCL1** | **16** | **fixed by hardware** | Same |
 
 *The last four rows read "not assigned" until 2026-11-10, while the signal-board figure in
 [§3.5.4](03-electrical.md#354-transferring-to-perfboard-three-boards-become-one) had already
@@ -255,7 +257,24 @@ reading does not shift.
 
 ### Bring up micro-ROS
 
+**Set the ROS domain in the firmware, per vehicle.** Vehicle *N* uses domain **10 + *N*** — 11, 12
+or 13 ([software.md §3.4](../design/software.md#34-ros-domain-one-per-vehicle)). A micro-ROS
+client names its own domain when it initialises (`rcl_init_options_set_domain_id`); the agent's
+shell does not set it. Make the vehicle number a build flag, so the three boards differ in one
+PlatformIO environment line and nothing else:
+
+```ini
+; platformio.ini - one environment per vehicle
+build_flags = -D MITT_VEHICLE=2     ; firmware asks for domain 10 + MITT_VEHICLE
+```
+
+Leave it out and the board comes up in domain 0, the twin's, and a laptop set up for the vehicle
+sees an empty graph with no error.
+
 ```bash
+# Every terminal, with the number on the vehicle:
+MITT_VEHICLE=2 source ros2_ws/setup_env.sh
+
 # Terminal 1 — agent
 ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0 -b 115200
 
@@ -264,6 +283,36 @@ ros2 topic list | grep mitt
 ros2 topic echo /mitt/dbw/status --once
 ros2 topic hz /mitt/dbw/status          # target: >= 50 Hz
 ```
+
+### Bring up the IMU
+
+The BNO085 is on the Teensy, not on the laptop ([sensors.md §3](../design/sensors.md#3-imu),
+decided 2026-11-16): **`Wire1`, SDA1 = pin 17, SCL1 = pin 16**, 3.3 V and GND from the signal
+board's `IMUP` terminal, signals on `IMUS`.
+
+Before any code, with the board unpowered: **measure SDA1 to 3.3 V and SCL1 to 3.3 V.** A few kΩ
+means the breakout carries its own pull-ups, which `Wire1` needs and the signal board does not
+provide. An open circuit means it does not — add 4.7 kΩ from each line to 3.3 V at the breakout.
+Then run the scan sketch against `Wire1`: one address answers, `0x4A` or `0x4B`. `Wire` must still
+show `0x36` and nothing else.
+
+What the firmware has to do, and the one rule it may not break:
+
+| | |
+|---|---|
+| Publish | `sensor_msgs/Imu` on `/imu/data`, `frame_id: imu_link`, **≥ 100 Hz**, orientation + angular velocity + linear acceleration |
+| Stamp | micro-ROS session time — the same clock as `DbwStatus.stamp` |
+| On a fault | **stop publishing.** A stale sample republished looks healthy to the EKF; silence does not |
+| **The rule** | **An IMU read never delays the steering loop.** Bound every `Wire1` transaction in time, and do it outside the loop's deadline. A BNO085 that stops answering must cost the vehicle its heading estimate, not its steering ([FMEA row 13](../design/safety.md#7-fmea-lightweight)) |
+
+```bash
+ros2 topic hz /imu/data              # target: >= 100 Hz
+ros2 topic echo /imu/data --once     # frame_id: imu_link, a unit quaternion
+ros2 topic hz /mitt/dbw/status       # must not have dropped when the IMU came up
+```
+
+**Then pull the IMU's SDA1 lead with the steering loop holding an angle.** `/imu/data` stops; the
+loop rate and the held angle do not move. That is the test of the rule, and it belongs to Stage 1.
 
 ### The 30-minute stability run
 

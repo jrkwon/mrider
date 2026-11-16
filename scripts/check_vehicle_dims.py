@@ -36,11 +36,19 @@ enforced from outside, which also means it runs in CI without a ROS install.
 WHAT IT CHECKS
 --------------
 1. VALUES that are copies: a copy that drifts is the whole hazard.
-2. VALUES that are DERIVED: Nav2's turning radii are not copies of anything,
-   they are >= wheelbase / tan(steer_limit) with margin. Checking them as
-   copies would be wrong; checking the inequality is the real contract, and
-   it is the one that breaks silently when somebody finally measures the
-   wheelbase and updates only the file they were looking at.
+2. A FLOOR: Nav2's planner radius is not a copy of anything, it must be >=
+   the vehicle's turning radius with margin. Checking it as a copy would be
+   wrong; checking the inequality is the real contract, and it is the one
+   that breaks silently when somebody finally measures the vehicle and
+   updates only the file they were looking at.
+
+   The floor is `min_turning_radius` in mitt_dimensions.yaml - a value each
+   team MEASURES (docs/design/calibration.md 1.5). Until 2026-11-16 the floor
+   was computed here as wheelbase / tan(steer_limit) and compared against two
+   Nav2 keys. One of the two, `min_turning_radius` on the RPP controller, is
+   not a parameter Nav2 1.1.20 declares; it was ignored at runtime while this
+   script kept it carefully in step with the planner's. It is gone from
+   nav2_params.yaml, and this script now fails if it comes back.
 """
 import math
 import re
@@ -74,8 +82,12 @@ COPIES = [
     ("wheel_radius", "rear_wheels_radius", CTRL),
 ]
 
-# Nav2's radii are a FLOOR with margin, not a copy.
-DERIVED_RADII = [("min_turning_radius", NAV), ("minimum_turning_radius", NAV)]
+# Nav2's planner radius sits on a FLOOR with margin; it is not a copy.
+PLANNER_RADIUS = "minimum_turning_radius"   # SmacPlannerHybrid
+FLOOR = "min_turning_radius"                # mitt_dimensions.yaml, measured
+# How far the measured radius may sit from wheelbase / tan(steer_limit) before
+# it is worth a line of output. Not an error: the measurement is the truth.
+SURPRISE = 0.15
 
 
 def main():
@@ -99,22 +111,22 @@ def main():
             bad.append(f"{path.name}:{dst} = {other[dst]} but "
                        f"{DIMS.name}:{src} = {d[src]}")
 
-    # R_min = wheelbase / tan(steer_limit). Nav2 must sit at or above it.
-    r_min = d["wheelbase"] / math.tan(math.radians(d["steer_limit_deg"]))
+    # The planner must sit at or above the vehicle's turning radius.
+    derived = d["wheelbase"] / math.tan(math.radians(d["steer_limit_deg"]))
     nav = scalars(NAV)
-    for key, path in DERIVED_RADII:
-        if key not in nav:
-            bad.append(f"{path.name} has no {key}")
-            continue
-        if nav[key] < r_min - 1e-9:
-            bad.append(f"{path.name}:{key} = {nav[key]} is BELOW the physical "
-                       f"{r_min:.2f} m (wheelbase {d['wheelbase']} / "
-                       f"tan {d['steer_limit_deg']}deg) - Nav2 would plan paths "
-                       f"the vehicle cannot drive")
-
-    if len(set(nav.get(k, object()) for k, _ in DERIVED_RADII)) != 1:
-        bad.append("the two Nav2 turning radii disagree with each other; "
-                   "the planner and the controller must share one floor")
+    floor = d.get(FLOOR)
+    if floor is None:
+        bad.append(f"{DIMS.name} has no {FLOOR}")
+    if PLANNER_RADIUS not in nav:
+        bad.append(f"{NAV.name} has no {PLANNER_RADIUS}")
+    elif floor is not None and nav[PLANNER_RADIUS] < floor - 1e-9:
+        bad.append(f"{NAV.name}:{PLANNER_RADIUS} = {nav[PLANNER_RADIUS]} is "
+                   f"BELOW the vehicle's {floor} m ({DIMS.name}:{FLOOR}) - "
+                   f"Nav2 would plan paths the vehicle cannot drive")
+    if FLOOR in nav:
+        bad.append(f"{NAV.name} has a `{FLOOR}` key again. Nav2's RPP declares "
+                   f"no such parameter; it is ignored at runtime and reads as "
+                   f"though it constrains something")
 
     if bad:
         print("vehicle geometry disagrees across packages:", file=sys.stderr)
@@ -122,9 +134,12 @@ def main():
             print("   " + b, file=sys.stderr)
         return 1
 
-    print(f"   ok  (wheelbase {d['wheelbase']} m, steer {d['steer_limit_deg']}deg "
-          f"-> R_min {r_min:.2f} m; Nav2 at "
-          f"{nav['min_turning_radius']} m)")
+    print(f"   ok  (turning radius {floor} m in {DIMS.name}; Nav2 plans at "
+          f"{nav[PLANNER_RADIUS]} m)")
+    if abs(floor - derived) > SURPRISE * derived:
+        print(f"   note: that is {abs(floor - derived) / derived:.0%} away from "
+              f"wheelbase / tan(steer limit) = {derived:.2f} m. If all three "
+              f"were measured, the steering does not reach its nominal lock.")
     return 0
 
 

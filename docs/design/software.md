@@ -113,9 +113,9 @@ Legend: **REUSE** = used essentially as-is; **ADAPT** = kept but reconfigured/re
 |-------|------|-----------|-------|
 | `/mitt/dbw/command` | `mitt_msgs/DbwCommand` | `mitt_hardware` → Teensy (micro-ROS) | `steering_angle` (**rad**), `speed` (m/s). ≥ 50 Hz; staleness > 500 ms → `ESTOP`. |
 | `/mitt/dbw/status` | `mitt_msgs/DbwStatus` | Teensy → stack (micro-ROS) | Measured angle, setpoint, wheel speed, cumulative ticks, mode, fault bitfield. ≥ 50 Hz. |
-| `/imu/data` | `sensor_msgs/Imu` | IMU driver → EKF | BNO085-class, direct to laptop. EKF `imu0`. |
+| `/imu/data` | `sensor_msgs/Imu` | Teensy → EKF (micro-ROS) | BNO085 on the Teensy's second I²C bus; `frame_id: imu_link`, ≥ 100 Hz. No laptop-side driver ([sensors.md §3](sensors.md#3-imu)). EKF `imu0`. |
 | `/scan` | `sensor_msgs/LaserScan` | LiDAR → SLAM | slam_toolbox `scan_topic: /scan`. |
-| `/camera/color/image_raw` | `sensor_msgs/Image` | camera → recorder/NN | Data-collection default (`config/data_collection/rover_template.yaml`). |
+| `/camera/image_raw` | `sensor_msgs/Image` | camera → recorder/NN | The name the twin publishes and `real.launch.py` remaps the camera driver onto. *B-MROVER's recorder defaulted to `/camera/color/image_raw`, a RealSense name; this row carried it until 2026-11-16 although nothing in MRider ever published it.* |
 | `wheel/odometry` | `nav_msgs/Odometry` | odometry node → EKF | Bicycle model from `DbwStatus`. EKF `odom0` (`ekf.yaml`). |
 | `odometry/gps` | `nav_msgs/Odometry` | navsat → map-EKF | EKF `odom1` (global). Phase 2. |
 
@@ -198,6 +198,44 @@ two interfaces. The real vehicle has **no front-wheel encoders**, so what it rep
 a kinematic estimate, `ω = v / wheel_radius`, not a measurement. Nothing in the stack may
 consume them as feedback — same rule as the shared rear encoder (ADR C).
 
+### 3.4 ROS domain: one per vehicle
+
+**Decided 2026-11-16. Vehicle *N* uses ROS domain 10 + *N*.**
+
+| | `ROS_DOMAIN_ID` | Set by |
+|---|---|---|
+| Digital twin, any laptop | 0 (unset) | nothing — `ROS_LOCALHOST_ONLY=1` already makes each machine an island |
+| Vehicle 1 | **11** | firmware build for vehicle 1 · `MITT_VEHICLE=1 source ros2_ws/setup_env.sh` |
+| Vehicle 2 | **12** | firmware build for vehicle 2 · `MITT_VEHICLE=2 source ros2_ws/setup_env.sh` |
+| Vehicle 3 | **13** | firmware build for vehicle 3 · `MITT_VEHICLE=3 source ros2_ws/setup_env.sh` |
+
+**Why a vehicle needs what the twin does not.** Three vehicles are built and driven in one room.
+`ROS_LOCALHOST_ONLY=1` keeps each laptop's traffic on loopback, and while it is set the domain
+number is irrelevant. But it is one exported variable, and the first time a team wants RViz on a
+second laptop somebody will switch it off. On a shared domain that puts three vehicles on one
+graph: `/mitt/dbw/command` from team A's joystick is a valid command to team B's Teensy, and
+nothing anywhere reports an error. A domain per vehicle makes the isolation survive that.
+
+**Why 11–13 and not 1–3 or 0–2.** The digit is the vehicle's number, so the value can be checked
+by looking at the car. None of them is 0, so a laptop left in the twin's default domain cannot
+reach a vehicle either.
+
+**The firmware names the domain, not the agent.** A micro-ROS client asks for its own domain when
+it creates its session; exporting `ROS_DOMAIN_ID` in the agent's terminal does not move it. So
+the number is a **build-time constant of each vehicle's firmware**
+([build step 4](../build/04-firmware.md#bring-up-micro-ros)), and the laptop is what has to match.
+*Stated from the micro-ROS client API, not from a test: no vehicle firmware exists as of
+2026-11-16, so the first Stage 0 bring-up is where this is confirmed.*
+
+**Three places hold the rule, and they are checked against each other** (check 25 in
+`scripts/check_docs.sh`): `DOMAIN_BASE` in `mitt_bringup/launch/real.launch.py`, the `case` in
+`ros2_ws/setup_env.sh`, and this section. `real.launch.py` will not start unless the shell's
+`ROS_DOMAIN_ID` is the one its `vehicle:=` argument implies.
+
+**Not covered.** Two laptops deliberately put in the same vehicle's domain with localhost-only
+off will both command it; that is a choice, not an accident. And the hardware override layers do
+not depend on any of this ([safety.md §1.2](safety.md#12-live-override-inside-dbw-mode-two-layers)).
+
 ---
 
 ## 4. SLAM / Nav2 / EKF configuration plan
@@ -218,8 +256,8 @@ B-MROVER runs a **dual-EKF** setup (verified):
 - Keep the dual-EKF structure and `two_d_mode` (planar ride-on).
 - Retarget `odom0: wheel/odometry` to odometry derived from `/mitt/dbw/status` (bicycle model
   from steer angle + drive ticks) — a new odometry node performs the conversion.
-- Keep `imu0: imu/data`, now sourced from the **BNO085-class IMU driver** directly. Note this
-  is a *driver* swap only: B-MROVER's estimator was already `robot_localization` with PX4
+- Keep `imu0: imu/data`, now published by the **Teensy firmware** from the BNO085 on its second
+  I²C bus ([sensors.md §3](sensors.md#3-imu)). Note this is a *source* swap only: B-MROVER's estimator was already `robot_localization` with PX4
   supplying raw `sensor_combined` (finding F11), so the fusion structure is unchanged.
 - **Correction:** `navsat_transform.magnetic_declination_radians` is set for **Lisbon** in
   B-MROVER (`ekf.yaml`, `# For lat/long of Lisbon, Portugal`). MRider must set the local
@@ -367,9 +405,17 @@ firmware, or forbid autonomous reverse on hardware and accept the manual-recover
 F-N4. **Until that is decided, autonomous reverse on the real car is unproven** and must not
 be enabled by inheriting this config unchanged.
 
-Both parameters (`minimum_turning_radius` here, `min_turning_radius` on `FollowPath`) derive
-from `0.63 / tan(22.5°) = 1.52 m` and must be re-derived together once the wheelbase and
-steering limit are actually **measured** — neither is today.
+`minimum_turning_radius` is the one place the turning circle enters Nav2. Its 1.6 is the derived
+`0.63 / tan(22.5°) = 1.52 m` plus margin, and the real figure is **measured by each team on its
+own vehicle** ([calibration.md §1.5](calibration.md#15-minimum-turning-radius-measured-not-derived)),
+recorded as `min_turning_radius` in `mitt_dimensions.yaml`, and enforced as a floor by
+`scripts/check_vehicle_dims.py`.
+
+*Until 2026-11-16 this paragraph named a second parameter, `min_turning_radius` on `FollowPath`,
+and the config carried it. Nav2 1.1.20's RPP declares no such parameter — the name is absent from
+the installed library — so the key was ignored at runtime. It has been removed. RPP stays inside
+the turning circle because the path it follows was planned inside it, not because of a setting of
+its own.*
 
 ---
 
@@ -423,7 +469,7 @@ plugin.
 ```mermaid
 flowchart LR
     subgraph COLLECT["Data collection"]
-        IMG["/camera/color/image_raw"] --> REC["data_collection_main.py"]
+        IMG["/camera/image_raw"] --> REC["data_collection_main.py"]
         FB["/mitt/dbw/status (absolute steer label)"] --> REC
         ODO["EKF odometry"] --> REC
         REC --> DS["e2e_data (image + steer/throttle)"]
@@ -545,6 +591,7 @@ own pinned toolchain and its measured bring-up numbers (§8).
 | ADR-SW1 | One transport, one clock: typed `DbwCommand`/`DbwStatus` over micro-ROS; retire MAVLink, ASCII framing, and the I²C register map | The split command/feedback arrangement shared neither clock nor transport, which is what made faults unlocalizable. |
 | ADR-SW2 | **CLOSED 2026-08-09.** Nav2: Regulated Pure Pursuit + SmacPlannerHybrid (Reeds-Shepp, reverse enabled). DWB and NavFn both dropped without a trial run. | The ±22.5° limit gives R_min = 1.52 m. DWB's velocity space is mostly unreachable at that radius, and NavFn returns paths the car cannot drive. Both were rejected on geometry, not on measurement. See §4.4–4.5. |
 | ADR-SW3 | `mitt_hardware` is **NEW**, not reused | B-MROVER's `carlikebot_system.cpp` is an unmodified demo stub with no hardware I/O (F3). Only the interface *shape* was reusable. |
+| ADR-SW5 | **One ROS domain per vehicle: 10 + vehicle number** (§3.4, 2026-11-16). The twin stays on 0 behind `ROS_LOCALHOST_ONLY` | Three vehicles share a room; isolation must not rest on one environment variable nobody ever unsets. |
 | ADR-SW4 | Same `ros2_control` stack in sim and on hardware; only the plugin swaps (`gz_ros2_control` ↔ `mitt_hardware`) | Makes the twin a real development vehicle and gives sim-to-real parity by construction rather than by discipline. |
 | — | Reuse EKF/SLAM/Nav2/NN configs, re-parameterize for real chassis | These carry most of MRider's autonomy and are transport-agnostic, so D3 does not touch them. |
 | — | Pin the full toolchain (§6.3); three named fallbacks (§6.4) | Reproducibility now rests on MRider's own pinning, not upstream provenance. |

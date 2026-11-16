@@ -114,8 +114,9 @@ else:
 SAME = {
     "drive A": r"encoder \*\*A\*\*", "drive B": r"encoder \*\*B\*\*",
     "PWM steer": r"PWM.*steering", "PWM drive": r"PWM.*drive",
-    "SCL": r"SCL", "SDA": r"SDA", "E-stop": r"E-stop sense",
+    "SCL": r"Steering \*\*SCL", "SDA": r"Steering \*\*SDA", "E-stop": r"E-stop sense",
     "gate out": r"Relay gate", "i-BUS RX": r"i-BUS",
+    "SDA1": r"IMU \*\*SDA1", "SCL1": r"IMU \*\*SCL1",
 }
 
 fw = (ROOT / "docs" / "build" / "04-firmware.md").read_text()

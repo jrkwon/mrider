@@ -172,8 +172,52 @@ extrinsics are tier-independent.
 
 ## 3. IMU
 
-**Decision:** a **standalone BNO085-class 9-DoF IMU** with onboard sensor fusion,
-connected directly to the laptop and publishing `sensor_msgs/Imu` on `/imu/data`.
+**Decision:** a **standalone BNO085-class 9-DoF IMU** with onboard sensor fusion, **wired to the
+Teensy over I²C**. The firmware publishes `sensor_msgs/Imu` on `/imu/data` over micro-ROS.
+
+> [!IMPORTANT]
+> **Decided 2026-11-16 — the IMU connects to the Teensy, not to the laptop**
+>
+> This section said *"connected directly to the laptop"* from 2026-08-07, and never said how. The
+> part bought ([order log row 18](../order-log.md#L18)) is an **I²C breakout**, and a laptop has no
+> I²C pins: the sentence described a connection nobody could make. Writing the vehicle's launch
+> file is what exposed it — there was no driver to start.
+>
+> | | |
+> |---|---|
+> | **Bus** | The Teensy 4.1's **second** I²C bus, `Wire1` — **SDA1 = pin 17, SCL1 = pin 16** |
+> | **Not** | `Wire` (pins 18/19), which carries the steering angle sensor and nothing else |
+> | **Supply** | 3.3 V and GND from the Teensy's own 3V3 pin, like every other sensor on the signal board |
+> | **Published** | `sensor_msgs/Imu` on `/imu/data`, `frame_id: imu_link`, ≥ 100 Hz, stamped with micro-ROS session time |
+> | **Laptop side** | **No driver.** It arrives through the micro-ROS agent with `/mitt/dbw/status` |
+>
+> **Why its own bus.** The steering loop reads the AS5600 at ≥ 200 Hz, and that reading is the one
+> thing the loop cannot run without ([FMEA row 1](safety.md#7-fmea-lightweight)). A second device
+> on those two wires can hold them low, and then the angle is unreadable for a reason that has
+> nothing to do with steering. The Teensy has three I²C buses; using a second one costs two pins
+> and removes the coupling. *The bench order already asserts that `0x36` is the only address that
+> answers on `Wire`* ([03-electrical §3.5.3](../build/03-electrical.md#353-build-the-circuit-twice-and-not-for-the-reason-it-sounds-like));
+> that stays true.
+>
+> **What it gains.** One USB device fewer on the laptop, no driver package to choose and pin, and
+> the IMU and the wheel odometry stamped by **one** clock on **one** link.
+>
+> **What it costs, stated plainly.**
+>
+> - **The IMU now dies with the Teensy link.** A USB dropout used to leave the EKF coasting on
+>   the IMU; now both inputs go at once. The vehicle is in `ESTOP` in that case anyway
+>   ([failsafe row 2](safety.md#2-failsafe-matrix)), so nothing is driving on a blind estimate —
+>   but the estimate does not survive the dropout.
+> - **It is firmware that does not exist yet**, added to Track E's list, on the MCU that also
+>   holds the safety supervisor. The rule that keeps that acceptable is in
+>   [build step 4](../build/04-firmware.md#bring-up-the-imu): an IMU read may never delay the
+>   steering loop, and is covered by [FMEA row 13](safety.md#7-fmea-lightweight).
+> - **The IMU has to sit within an I²C cable of the Teensy** — a few tens of centimetres. It can
+>   no longer be placed wherever the vibration is lowest and reached by a USB lead.
+>
+> **Open as of 2026-11-16.** Whether the breakout in hand carries its own pull-ups on SDA/SCL
+> (the signal board has no positions for a second pair), its I²C address, and its supply current
+> against the Teensy's 3.3 V budget. All three are a meter and a datasheet, at the bench.
 
 > [!NOTE]
 > **Revised 2026-08-07 — this ADR was reversed by D3**
@@ -194,10 +238,10 @@ fuses with this IMU in `robot_localization`'s EKF to bound the paralleled-motor 
 single-encoder odometry error noted in [ADR C](dbw.md#8-adr-c-drive-distance-encoding).
 
 **Rationale.** Onboard fusion (BNO085 class) provides a stable quaternion and calibrated
-rates without project code, at ~$28. It connects straight to the laptop, so it sits in the
-**laptop's clock domain** — which is simpler than the previous arrangement, where PX4 boot-time
-microseconds had to be offset-estimated against the laptop clock
-([calibration.md §6](calibration.md)).
+rates without fusion code of our own, at ~$28. The Teensy stamps each sample with micro-ROS
+session time, so it sits in the **same clock domain as the wheel odometry** — simpler than the
+PX4 arrangement, where boot-time microseconds had to be offset-estimated against the laptop
+clock ([calibration.md §6](calibration.md)).
 
 **Consequence.** Mounting orientation and vibration isolation are now MRider's responsibility
 rather than inherited from a flight-controller design — see §5. Calibration moves from
@@ -341,7 +385,7 @@ real constraints.
 | Criterion | Target | Why |
 |-----------|--------|-----|
 | **GPU (NN inference)** | Discrete NVIDIA GPU (e.g., RTX 3050/4050+), CUDA-capable | Real-time behavior-cloning inference and on-vehicle Keras/TensorRT; CUDA is the path of least resistance for the reused `neural_net/` stack. |
-| **USB ports** | ≥ 4× USB-A/USB-C (USB3): camera + LiDAR + Teensy + IMU, plus spare | Camera (USB3), LiDAR (USB-serial), **Teensy (micro-ROS — carries command *and* feedback)**, IMU. Give the Teensy a **direct port, not a hub**: this link carries the steering setpoint, and a dropout stops the vehicle ([failsafe row 2](safety.md#2-failsafe-matrix)). |
+| **USB ports** | ≥ 3× USB-A/USB-C (USB3): camera + LiDAR + Teensy, plus spare | Camera (USB3), LiDAR (USB-serial), **Teensy (micro-ROS — carries command, feedback *and* the IMU)**. *The IMU took a fourth port until 2026-11-16; it is on the Teensy now (§3).* Give the Teensy a **direct port, not a hub**: this link carries the steering setpoint, and a dropout stops the vehicle ([failsafe row 2](safety.md#2-failsafe-matrix)). |
 | **Battery runtime** | ≥ ~2 h under sensor + light-inference load | Full data-collection/mapping session without tapping the traction pack; drives the [power budget](safety.md) assumption that logic and traction rails are isolated. |
 | **RAM / storage** | ≥ 16 GB RAM, ≥ 512 GB NVMe | ROS 2 + rosbag logging of camera/LiDAR is storage-hungry; SLAM and training want RAM. |
 | **OS** | Ubuntu 22.04 (ROS 2 Humble) | Matches the mrover/OSCAR reused stack ([software.md](software.md)). |

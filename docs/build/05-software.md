@@ -190,6 +190,7 @@ the design exists to prevent.
 | Steering range | Measured mechanical lock | Verify against ±22.5° |
 | Drive encoder PPR | **Measured on the part fitted** | Do **not** inherit 52 — the source project conflicts with itself (F7) |
 | `robot_radius`, velocity limits | Real chassis | Nav2 params |
+| **Minimum turning radius** | **Measured at both locks** ([calibration.md §1.5](../design/calibration.md#15-minimum-turning-radius-measured-not-derived)) | `min_turning_radius` in `mitt_dimensions.yaml`, then `minimum_turning_radius` in Nav2 |
 
 ## 5.9 EKF and TF
 
@@ -199,27 +200,38 @@ Three corrections carried over from the design verification
 1. SLAM `base_frame: base_footprint` vs EKF `base_link` — reconcile to one convention.
 2. `navsat_transform` magnetic declination is set for **Lisbon** in B-MROVER — set the local
    value.
-3. Nav2's DWB controller is diff-drive-oriented; RPP is pre-registered as the Ackermann swap.
+3. Nav2's DWB controller is diff-drive-oriented. *Closed 2026-08-09: RPP and SmacPlannerHybrid run instead, and DWB was never run ([ADR-SW2](../design/software.md#adr-sw2-nav2-local-controller-for-ackermann)).*
 
-EKF inputs: `odom0: wheel/odometry` from the new odometry node, `imu0: /imu/data` from the
-**BNO085-class IMU driver** — a driver swap only, since the estimator was always
+EKF inputs: `odom0: wheel/odometry` from the new odometry node, `imu0: /imu/data`, which the
+**Teensy firmware** publishes from the BNO085 on its second I²C bus — there is no IMU driver to
+install on the laptop ([sensors.md §3](../design/sensors.md#3-imu)). The estimator was always
 `robot_localization` (finding F11).
 
 ## 5.10 Bring-up smoke test
 
 ```bash
-# Terminal 1 — micro-ROS agent
-ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/mitt_dbw -b 115200
+# EVERY terminal — the number on the vehicle selects its ROS domain (10 + N)
+MITT_VEHICLE=2 source ros2_ws/setup_env.sh
 
-# Terminal 2 — vehicle bring-up
-ros2 launch mitt_bringup real.launch.py
+# Terminal 1 — vehicle bring-up: agent, ros2_control, twist_mux, LiDAR, camera
+ros2 launch mitt_bringup real.launch.py vehicle:=2
 
-# Terminal 3 — verify
+# Terminal 2 — verify
 ros2 topic hz /mitt/dbw/status          # target >= 50 Hz
 ros2 topic echo /mitt/dbw/status --once # mode, faults, measured angle
 ros2 control list_controllers           # ackermann + joint_state_broadcaster: active
 ros2 run tf2_tools view_frames          # map -> odom -> base_link -> sensors
 ```
+
+`real.launch.py` checks before it starts anything, and refuses with the reason: the shell is in
+the vehicle's domain ([software.md §3.4](../design/software.md#34-ros-domain-one-per-vehicle)),
+`mitt_hardware` is installed, and `/dev/mitt_dbw`, `/dev/mitt_lidar` and the camera exist. Pass
+`agent:=false` to run the agent in its own terminal and watch its log.
+
+*Written 2026-11-16 and not yet run on a vehicle: `mitt_hardware` did not exist then, so what has
+been exercised is the launch file's refusals and its node list, not a bring-up. It starts no IMU
+driver because there is none to start: the IMU is on the Teensy and `/imu/data` arrives through the
+agent.*
 
 Then run the **identical** stack in simulation and confirm only the plugin differs:
 
