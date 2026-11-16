@@ -1,12 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 1056" width="1240" height="1056"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 1078" width="1240" height="1078"
      font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
   <title>Logic and signal wiring — Teensy, receiver, signal MUX, relay MUX and E-stop</title>
   <desc>A wiring map of the logic side of MRider. The logic battery feeds two UBECs and a direct
   12 volt tap; the UBECs feed the Teensy and the receiver and the signal multiplexer; the Teensy's
-  own 3.3 volt pin feeds the AS5600 and the two Hall latches with their pull-ups. The Teensy and
+  own 3.3 volt pin feeds the AS5600, the two Hall latches with their pull-ups, and the BNO085 IMU,
+  which sits on the Teensy's second I2C bus, apart from the AS5600. The Teensy and
   the receiver both feed the Pololu signal multiplexer, whose two outputs drive the motor driver's
   RC1 and RC2. The E-stop's two normally-closed contacts break the traction contactor coil and the
-  relay MUX coil separately. A panel at the foot lists seven corrections to the build page.</desc>
+  relay MUX coil separately. A panel at the foot lists nine corrections and additions to the build page.</desc>
 
   <defs>
     <marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3.2" orient="auto">
@@ -23,7 +24,7 @@
     </marker>
   </defs>
 
-  <rect width="1240" height="1056" fill="#ffffff"/>
+  <rect width="1240" height="1078" fill="#ffffff"/>
 
   <text x="24" y="34" font-size="19" font-weight="bold" fill="#0f172a">
     The logic side — power, signal, and who is allowed to drive
@@ -63,7 +64,7 @@
 
   <rect x="44" y="412" width="236" height="56" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
   <text x="54" y="432" font-size="12" font-weight="bold" fill="#1e3a8a">3.3 V — from the TEENSY's own pin</text>
-  <text x="54" y="450" font-size="10.5" fill="#1d4ed8">AS5600 · both Hall latches · their pull-ups</text>
+  <text x="54" y="450" font-size="10.5" fill="#1d4ed8">AS5600 · Hall latches · pull-ups · the IMU</text>
   <text x="54" y="463" font-size="10" font-style="italic" fill="#1d4ed8">there is no 3.3 V UBEC, and none is needed</text>
 
   <rect x="44" y="482" width="236" height="48" rx="5" fill="#dcfce7" stroke="#15803d" stroke-width="1.8"/>
@@ -74,12 +75,13 @@
   <rect x="330" y="116" width="250" height="196" rx="8" fill="#f1f5f9" stroke="#0f172a" stroke-width="2.6"/>
   <text x="346" y="140" font-size="14" font-weight="bold" fill="#0f172a">Teensy 4.1</text>
   <text x="346" y="158" font-size="10.5" fill="#b91c1c" font-weight="bold">NOT 5 V tolerant · VUSB–VIN pad CUT</text>
-  <text x="346" y="182" font-size="11" fill="#334155">PWM ×2 ──────────▶</text>
-  <text x="346" y="202" font-size="11" fill="#334155">Serial RX ◀── i-BUS</text>
-  <text x="346" y="222" font-size="11" fill="#334155">QDC ◀── Hall A/B</text>
-  <text x="346" y="242" font-size="11" fill="#334155">I²C ◀── AS5600 (0x36)</text>
-  <text x="346" y="262" font-size="11" fill="#334155">3.3 V out ──▶ sensors</text>
-  <text x="346" y="290" font-size="11" font-weight="bold" fill="#1d4ed8">USB ──▶ laptop (micro-ROS)</text>
+  <text x="346" y="180" font-size="11" fill="#334155">PWM ×2 ──────────▶</text>
+  <text x="346" y="198" font-size="11" fill="#334155">Serial RX ◀── i-BUS</text>
+  <text x="346" y="216" font-size="11" fill="#334155">QDC ◀── Hall A/B</text>
+  <text x="346" y="234" font-size="11" fill="#334155">I²C Wire ◀── AS5600 (0x36)</text>
+  <text x="346" y="252" font-size="11" fill="#334155">I²C Wire1 ◀── BNO085 IMU</text>
+  <text x="346" y="270" font-size="11" fill="#334155">3.3 V out ──▶ sensors</text>
+  <text x="346" y="293" font-size="11" font-weight="bold" fill="#1d4ed8">USB ──▶ laptop (micro-ROS)</text>
   <path d="M280,308 L330,308" stroke="#b45309" stroke-width="2.6" marker-end="url(#a)"/>
 
   <!-- sensors -->
@@ -103,6 +105,14 @@
   <text x="344" y="578" font-size="10.5" fill="#1d4ed8">10 k / 2.7 k divider off the COIL supply</text>
   <text x="344" y="594" font-size="10.5" font-weight="bold" fill="#b91c1c">every failure reads &#8220;stopped&#8221; ⑧</text>
   <path d="M455,542 L455,530" stroke="#1d4ed8" stroke-width="2.4" marker-end="url(#ab)"/>
+
+  <!-- IMU: added 2026-11-16. Its own bus, so its own line to the Teensy rather
+       than a place in the stack above. -->
+  <rect x="330" y="614" width="250" height="68" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2.2"/>
+  <text x="344" y="634" font-size="12" font-weight="bold" fill="#1e3a8a">BNO085 IMU — on the Teensy</text>
+  <text x="344" y="651" font-size="10.5" fill="#1d4ed8">I²C Wire1 · SDA1 17 · SCL1 16 · 3.3 V</text>
+  <text x="344" y="669" font-size="10.5" font-weight="bold" fill="#b91c1c">its OWN bus — not the AS5600's ⑨</text>
+  <path d="M330,648 L314,648 L314,326 L370,326 L370,312" fill="none" stroke="#1d4ed8" stroke-width="2.4" marker-end="url(#ab)"/>
 
   <!-- ============ RECEIVER + MUX ============ -->
   <rect x="616" y="116" width="226" height="118" rx="8" fill="#f0fdf4" stroke="#15803d" stroke-width="2.4"/>
@@ -166,7 +176,7 @@
   <text x="650" y="704" font-size="10.5" fill="#166534">De-energise-to-safe, and it is free: it falls out of where the coils are fed from.</text>
 
   <!-- ============ FINDINGS ============ -->
-  <rect x="24" y="750" width="1192" height="282" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.8"/>
+  <rect x="24" y="750" width="1192" height="304" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.8"/>
   <text x="44" y="776" font-size="14" font-weight="bold" fill="#0f172a">What this map corrects — §3.5 has drifted since it was written</text>
 
   <text x="44" y="802" font-size="12" fill="#334155"><tspan font-weight="bold" fill="#b91c1c">①</tspan> The Hall latches are <tspan font-weight="bold">open-drain</tspan>. They need <tspan font-weight="bold">3.3 V pull-ups</tspan>, which §3.5 never mentions — without them the quadrature decoder sees nothing.</text>
@@ -179,5 +189,6 @@
   <text x="44" y="956" font-size="12" fill="#334155"><tspan font-weight="bold" fill="#1d4ed8">⑧ ADDED 2026-10-28</tspan> — <tspan font-weight="bold">the E-stop sense wire.</tspan> dbw §10.3 has always had E-stop as a transition in, and &#8220;E-stop released + RC arm&#8221;</text>
   <text x="58" y="973" font-size="12" fill="#334155">as the only way out, with no wire ever specified. Both coils run through the NC contacts, so resetting the button re-energises both at once while</text>
   <text x="58" y="990" font-size="12" fill="#334155">the Teensy — which never noticed — is still commanding. <tspan font-weight="bold">Hardware owns stopping; firmware owns not restarting by accident.</tspan></text>
-  <text x="44" y="1016" font-size="12" font-weight="bold" fill="#15803d">None of these is expensive to fix now. All of them are expensive to find at Stage 2 with thirteen students waiting.</text>
+  <text x="44" y="1012" font-size="12" fill="#334155"><tspan font-weight="bold" fill="#1d4ed8">⑨ ADDED 2026-11-16</tspan> — <tspan font-weight="bold">the IMU is on the Teensy, not the laptop</tspan>: second I²C bus, pins 17/16. Its own bus, so a hung IMU cannot take the steering angle with it.</text>
+  <text x="44" y="1038" font-size="12" font-weight="bold" fill="#15803d">None of these is expensive to fix now. All of them are expensive to find at Stage 2 with thirteen students waiting.</text>
 </svg>

@@ -61,12 +61,12 @@ Laptop ──▶ its own internal battery (NOT wired to traction in v1)
 > [!IMPORTANT]
 > **Three things that diagram fixes, all of which this page used to get wrong**
 >
-> ![The logic side of MRider: the logic battery feeding two UBECs and a direct 12 V tap, the Teensy's own 3.3 V pin feeding the AS5600 and the Hall latches, the Teensy and receiver both feeding the Pololu signal MUX into the motor driver, and the E-stop's two NC contacts breaking the contactor coil and the relay MUX coil separately](../images/logic-signal-wiring.svg)
+> ![The logic side of MRider: the logic battery feeding two UBECs and a direct 12 V tap, the Teensy's own 3.3 V pin feeding the AS5600, the Hall latches and the BNO085 IMU, the IMU on a second I2C bus with its own line to the Teensy, the Teensy and receiver both feeding the Pololu signal MUX into the motor driver, and the E-stop's two NC contacts breaking the contactor coil and the relay MUX coil separately](../images/logic-signal-wiring.svg)
 >
 > **1. There is no 3.3 V rail.** This page used to say the angle sensor takes *"3.3 V from the logic
 > rail"* — but **the logic rail is 5 V.** The 3.3 V comes from the **Teensy's own regulator**, which
 > is correct and also a budget: everything on it shares the Teensy's 3.3 V pin, so the AS5600, both
-> Hall latches and their pull-ups all draw from one source. None of them is hungry, but it has to be
+> Hall latches, their pull-ups and (since 2026-11-16) the IMU all draw from one source. None of them is hungry, but it has to be
 > counted rather than assumed.
 >
 > **2. The two UBECs are split by AUTHORITY LAYER, not by current.** **UBEC A carries the Teensy
