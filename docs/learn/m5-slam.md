@@ -172,7 +172,7 @@ point.
 ```bash
 ros2 bag record -o m5_loop \
   /mitt/dbw/status /wheel/odometry /odometry/filtered \
-  /fmu/out/sensor_combined /scan /tf /tf_static
+  /imu/data /scan /tf /tf_static
 ```
 
 Plot both `wheel/odometry` and `odometry/filtered` in the xy-plane.
