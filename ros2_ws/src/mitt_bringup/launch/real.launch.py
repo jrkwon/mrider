@@ -68,10 +68,15 @@ missing launch argument.
 """
 
 import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import vehicle_config  # noqa: E402  (same directory; see its docstring)
 
 from ament_index_python.packages import (
     PackageNotFoundError,
     get_package_prefix,
+    get_package_share_directory,
 )
 from launch import LaunchDescription
 from launch.actions import (
@@ -200,6 +205,21 @@ def _bringup(context, *_args, **_kwargs):
         if not os.path.exists(dev):
             problems.append(f"{dev} does not exist - {hint}")
 
+    # -- This vehicle's measured geometry ------------------------------------
+    # config/vehicles/vehicle<N>.yaml over the estimates: in the URDF through
+    # `xacro vehicle:=N`, and in the controller's own copy of the geometry
+    # through a generated parameter file (vehicle_config.py).
+    controllers_file = None
+    if vehicle in [str(v) for v in VEHICLES]:
+        try:
+            controllers_file = vehicle_config.controllers_for(
+                vehicle,
+                get_package_share_directory("mitt_description"),
+                os.path.join(get_package_share_directory("mitt_control"),
+                             "config", "mitt_controllers.yaml"))
+        except (ValueError, PackageNotFoundError) as e:
+            problems.append(str(e))
+
     if problems:
         return _refuse(problems)
 
@@ -214,6 +234,7 @@ def _bringup(context, *_args, **_kwargs):
             "xacro ",
             PathJoinSubstitution([desc_pkg, "urdf", "mitt.urdf.xacro"]),
             " sim:=false",
+            " vehicle:=", vehicle,
         ]),
         value_type=str,
     )
@@ -242,13 +263,15 @@ def _bringup(context, *_args, **_kwargs):
 
     # -- ros2_control: a controller_manager of our own -----------------------
     # In the twin this lives inside Gazebo. Here it is a process, loading
-    # mitt_hardware/MittSystem from the URDF and THE SAME mitt_controllers.yaml.
+    # mitt_hardware/MittSystem from the URDF and THE SAME mitt_controllers.yaml
+    # - or, once this vehicle has measured geometry, a generated copy of it
+    # that differs in those five numbers and nothing else.
     actions.append(Node(
         package="controller_manager",
         executable="ros2_control_node",
         parameters=[
             {"robot_description": robot_description, "use_sim_time": False},
-            PathJoinSubstitution([ctrl_pkg, "config", "mitt_controllers.yaml"]),
+            controllers_file,
         ],
         output="screen",
     ))

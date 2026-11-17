@@ -179,4 +179,10 @@ jobs:
           xacro "$(ros2 pkg prefix mitt_description)/share/mitt_description/urdf/mitt.urdf.xacro" \
             > /tmp/mitt.urdf
           grep -q 'name="base_link"' /tmp/mitt.urdf
+          # ... and for each vehicle, whose measured overlay is laid over it.
+          for v in 1 2 3; do
+            xacro "$(ros2 pkg prefix mitt_description)/share/mitt_description/urdf/mitt.urdf.xacro" \
+              vehicle:=$v > /tmp/mitt_v$v.urdf
+            grep -q 'name="base_link"' /tmp/mitt_v$v.urdf
+          done
           echo "expanded URDF: $(wc -l < /tmp/mitt.urdf) lines"

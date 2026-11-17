@@ -832,7 +832,7 @@ Values that must come from the part in your hand, not the datasheet or the sourc
 |---|---|---|
 | **Drive encoder PPR** (measured) | | The source project contradicts itself — 52 PPR in firmware vs 16 PPR in its own BOM (finding F7). **Do not inherit either.** The [roll-out calibration](design/calibration.md#2-drive-distance-encoder-ticksmeters) is authoritative and bypasses PPR entirely |
 | Wheel diameter, loaded (m) | | Ticks→metres |
-| Wheelbase (m) | | Replaces the **estimated** 0.63 in `mitt_dimensions.yaml` |
+| Wheelbase (m) | | Replaces the **estimated** 0.63 for that vehicle — written in `config/vehicles/vehicle<N>.yaml`, not in `mitt_dimensions.yaml` |
 | Track width (m) | | Replaces the estimated 0.46 |
 | Vehicle mass, bare (kg) | | Replaces the estimated 8.0 |
 | Steering limit, mechanical (°) | | Replaces the assumed ±22.5 — **and changes the Nav2 turning radius** |
@@ -842,8 +842,8 @@ Values that must come from the part in your hand, not the datasheet or the sourc
 >
 > `mitt_description/config/mitt_dimensions.yaml` is populated with values derived from the
 > vendor's 98×56×47 cm listing, each marked `TODO measure`. The URDF has no geometric
-> literals, so updating that file updates the model, the controller config, and the body
-> mesh scale together.
+> literals, so a vehicle's measured value — written in its overlay, `config/vehicles/vehicle<N>.yaml`,
+> since 2026-11-17 — reaches the model, the controller config, and the body mesh scale together.
 >
 > Two of these propagate further than they look. Wheelbase and steer limit set
 > `R_min = wheelbase / tan(steer_limit)` — currently **1.52 m** — which is used in

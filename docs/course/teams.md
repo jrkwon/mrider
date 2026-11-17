@@ -87,7 +87,7 @@ And — this is the part that matters most — **the numbers.**
 
 | Deliverable | Today |
 |---|---|
-| A **measured** `mitt_dimensions.yaml` | Every value in it is `TODO measure`. The file's own header says: *"NOTHING IN THIS FILE HAS BEEN MEASURED"* |
+| A **measured** `config/vehicles/vehicle<n>.yaml` — your vehicle's numbers, laid over the estimates | **Empty.** Every value the stack runs on is still an estimate from `mitt_dimensions.yaml`, whose own header says: *"NOTHING IN THIS FILE HAS BEEN MEASURED"* |
 | Verification gates V1, V2, V3 | Steering-motor stall current, sensor shaft travel, shaft diameter — all blocking. *(V1's torque question closed 2026-10-01: the vehicle's rated 25 kg occupant load already demonstrates the margin.)* |
 | [Build step 2](../build/02-mechanical.md) validated | Draft, never run |
 | Calibration constants recorded | [calibration.md](../design/calibration.md) specifies the procedure |
@@ -189,6 +189,95 @@ status update. All three teams merge on the same dates.
 >
 > If your track is going to miss a merge, say so **at the Week 10 standup**, not on the day.
 > Announcing a slip early is professional. Discovering it at the merge is not.
+
+---
+
+## Where your work lives
+
+Three teams write the same deliverables. `firmware/` is one path, `mitt_hardware` is one package,
+and three teams cannot each fill it on the same `main`. So the repository is split along the line
+that is actually there: **numbers that differ per vehicle** go to `main` now, and **code** stays in
+your team's fork until the semester ends.
+
+*Decided 2026-11-17.*
+
+### 1. One fork per team — all your code goes there
+
+Your team works in **one fork** of [`jrkwon/mrider`](https://github.com/jrkwon/mrider), at the same
+paths this repository uses: `firmware/`, `ros2_ws/src/mitt_hardware/`, `ros2_ws/src/mitt_bench/`,
+your charter. Every member commits there, under their own name. **Your fork's history is what is
+graded** — both the deliverables and the individual commit record.
+
+Keep the fork current. `main` keeps moving, and a fork that falls behind stops building against the
+interfaces below:
+
+```bash
+git remote add upstream https://github.com/jrkwon/mrider.git   # once
+git fetch upstream
+git merge upstream/main                                        # every week, and before every merge demo
+```
+
+### 2. Interfaces change on `main`, never in a fork
+
+Three implementations stay interchangeable only while they agree on what crosses between them. These
+are **frozen in your fork**:
+
+| Interface | Where it is defined |
+|---|---|
+| Message types — `mitt_msgs` | `ros2_ws/src/mitt_msgs/` |
+| Topic names, rates, frames | [software.md §3.1](../design/software.md#31-topic-interface-contract), [§3.3](../design/software.md#33-tf-tree) |
+| Teensy pin assignments | [build step 4](../build/04-firmware.md) |
+| ROS domain, vehicle *N* → 10 + *N* | [software.md §3.4](../design/software.md#34-ros-domain-one-per-vehicle) |
+| Key names in `mitt_dimensions.yaml` | `ros2_ws/src/mitt_description/config/` |
+| Arguments of `sim.launch.py` and `real.launch.py` | `ros2_ws/src/mitt_bringup/launch/` |
+
+If one of them is wrong or missing something — and some will be; none of this has met hardware —
+**open a pull request against `main`** that changes the interface and says why. When it is merged,
+all three teams pull it. Changing it only in your fork means your vehicle works and nobody else's
+code runs on it.
+
+### 3. Your vehicle's numbers go to `main` as you measure them
+
+`mitt_dimensions.yaml` stays what it is: the estimates every vehicle starts from. What your team
+has **measured** goes in an overlay,
+
+```
+ros2_ws/src/mitt_description/config/vehicles/vehicle<n>.yaml
+```
+
+where a key replaces the estimate for your vehicle only, and a key you have not written is still an
+estimate. Measured values only — no `TODO` lives in that file.
+
+This is the **one file of yours that lands on `main` during the semester.** Open a pull request
+from your fork that touches that file and nothing else, with how each value was measured in a
+comment beside it. `python3 scripts/check_vehicle_dims.py` must pass.
+
+It is used by naming the vehicle:
+
+```bash
+ros2 launch mitt_bringup sim.launch.py vehicle:=<n>     # the twin of YOUR vehicle
+ros2 launch mitt_bringup real.launch.py vehicle:=<n>    # the vehicle itself
+```
+
+Both hand the URDF and the controller your measured geometry — checked in the twin on 2026-11-17;
+`real.launch.py` cannot run until `mitt_hardware` exists. `vehicle:=0`, the twin's default, is
+the estimates.
+
+### 4. After the final demo, one implementation of each deliverable is merged
+
+`main` ends the semester with one `firmware/`, one `mitt_hardware`, one `mitt_bench`. For each
+deliverable the implementation with the strongest acceptance-gate evidence is merged from its
+team's fork, **with its commit history**, so the record of who built it stays.
+
+Which one is merged is not a grade. Your grade comes from your own fork and your own vehicle.
+
+> [!NOTE]
+> **Why the interfaces are worth the trouble**
+>
+> If all three teams hold the same pin table, the same messages and the same domain rule, then one
+> team's firmware runs on another team's vehicle. That is the strongest reproducibility test this
+> course has — *could another team rebuild this from what you wrote down* — and it only exists
+> because nobody changed an interface privately.
 
 ---
 

@@ -159,6 +159,22 @@ and set once in [`calibration.md`](calibration.md).
 > value that is consistent across three independent files — the **±22.5° steering range** — is
 > adopted as the design target.
 
+**Three vehicles, one set of estimates, three overlays** *(decided 2026-11-17)*. Three teams build
+three vehicles and no two will measure the same wheelbase. `mitt_description/config/
+mitt_dimensions.yaml` stays the estimates. What team *N* has measured is
+`config/vehicles/vehicle<N>.yaml`: a key there replaces the estimate for vehicle *N* only, and a key
+absent from it is still an estimate — so the overlay shows at a glance what has been measured.
+
+| Consumer | How it gets vehicle *N*'s values |
+|---|---|
+| URDF | `xacro … vehicle:=N` merges the overlay (`urdf/mitt_dimensions.xacro`) |
+| `ackermann_steering_controller` | `mitt_controllers.yaml` holds its own copy of five numbers; the launch files generate a copy of that file with the vehicle's values (`mitt_bringup/launch/vehicle_config.py`) |
+| Both launch files | `sim.launch.py vehicle:=N` is the twin of vehicle *N*; `real.launch.py vehicle:=N` is the vehicle. `vehicle:=0`, the twin's default, is the estimates |
+| Nav2 | **Not per vehicle.** `nav2_params.yaml` is one file; its footprint and planner radius are still the estimates, and the planner radius must clear all three vehicles |
+
+Verified 2026-11-17 in the twin with a test overlay: the controller reported the overlay's
+wheelbase and wheel radius, and both controllers activated. No vehicle has measured values yet.
+
 ### 3.3 TF tree
 
 MRider follows REP-105: `map` → `odom` → `base_link` → sensor frames. The `map`→`odom`
@@ -408,8 +424,8 @@ be enabled by inheriting this config unchanged.
 `minimum_turning_radius` is the one place the turning circle enters Nav2. Its 1.6 is the derived
 `0.63 / tan(22.5°) = 1.52 m` plus margin, and the real figure is **measured by each team on its
 own vehicle** ([calibration.md §1.5](calibration.md#15-minimum-turning-radius-measured-not-derived)),
-recorded as `min_turning_radius` in `mitt_dimensions.yaml`, and enforced as a floor by
-`scripts/check_vehicle_dims.py`.
+recorded as `min_turning_radius` in that vehicle's overlay (`config/vehicles/vehicle<N>.yaml`,
+§3.2), and enforced as a floor — against every vehicle — by `scripts/check_vehicle_dims.py`.
 
 *Until 2026-11-16 this paragraph named a second parameter, `min_turning_radius` on `FollowPath`,
 and the config carried it. Nav2 1.1.20's RPP declares no such parameter — the name is absent from

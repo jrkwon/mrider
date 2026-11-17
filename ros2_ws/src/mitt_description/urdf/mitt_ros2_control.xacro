@@ -93,7 +93,7 @@
       <gazebo>
         <plugin filename="gz_ros2_control-system"
                 name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-          <parameters>$(find mitt_control)/config/mitt_controllers.yaml</parameters>
+          <parameters>$(arg controllers)</parameters>
         </plugin>
       </gazebo>
     </xacro:if>

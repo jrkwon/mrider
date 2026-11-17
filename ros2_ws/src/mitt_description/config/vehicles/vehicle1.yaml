@@ -1,0 +1,23 @@
+# Vehicle 1 - MEASURED values only.
+#
+# This file is an OVERLAY on ../mitt_dimensions.yaml, which holds the estimates
+# every vehicle starts from. A key written here replaces the estimate for
+# vehicle 1 and for nothing else; a key not written here is still an estimate.
+# So this file answers one question at a glance: what has team 1 measured?
+#
+#   - Use the key names of ../mitt_dimensions.yaml exactly. A name that file
+#     does not have is refused by scripts/check_vehicle_dims.py and by both
+#     launch files. A bare `xacro ... vehicle:=N` does not check it.
+#   - Write a value only after measuring it, with how in a comment. No TODO
+#     lives here: an unmeasured value simply is not in this file.
+#   - This is the ONE file of your team's that lands on main during the
+#     semester. Open a pull request from your fork that touches this file
+#     and nothing else (docs/course/teams.md, "Where your work lives").
+#
+# Used by:   ros2 launch mitt_bringup real.launch.py vehicle:=1
+#            ros2 launch mitt_bringup sim.launch.py  vehicle:=1   (the twin of vehicle 1)
+#
+# Example, once measured (calibration.md 1):
+#
+#   wheelbase: 0.641          # m  axle centre to axle centre, tape, 2026-11-20
+#   min_turning_radius: 1.58  # m  calibration.md 1.5, the LARGER of both locks

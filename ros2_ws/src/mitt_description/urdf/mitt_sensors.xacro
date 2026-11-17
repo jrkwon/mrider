@@ -15,7 +15,7 @@
 -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:property name="ds" value="${xacro.load_yaml('$(find mitt_description)/config/mitt_dimensions.yaml')}"/>
+  <xacro:property name="ds" value="${dims}"/>  <!-- urdf/mitt_dimensions.xacro -->
   <xacro:property name="mast_h"      value="${ds['mast_height']}"/>
   <xacro:property name="cam_pitch"   value="${radians(ds['camera_pitch_deg'])}"/>
   <xacro:property name="wb"          value="${ds['wheelbase']}"/>
