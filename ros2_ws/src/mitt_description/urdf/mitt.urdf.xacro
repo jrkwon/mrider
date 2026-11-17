@@ -7,13 +7,25 @@
     check_urdf /tmp/mitt.urdf
 
   All geometry derives from mitt_description/config/mitt_dimensions.yaml.
-  Nothing in that file has been measured yet - see its header.
+  Nothing in that file has been measured yet - see its header. A vehicle's
+  measured values live in config/vehicles/vehicle<N>.yaml and are laid over
+  it with vehicle:=N (urdf/mitt_dimensions.xacro).
 -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mitt">
 
   <!-- true  = Gazebo simulation (gz_ros2_control)
        false = real vehicle    (mitt_hardware, Track B) -->
   <xacro:arg name="sim" default="true"/>
+
+  <!-- 0 = the estimates. 1|2|3 = that vehicle's measured values over them. -->
+  <xacro:arg name="vehicle" default="0"/>
+
+  <!-- The controller parameters the Gazebo plugin loads. The launch files pass
+       a copy whose geometry follows vehicle:=N; the default is the file as
+       committed, which matches vehicle:=0. -->
+  <xacro:arg name="controllers" default="$(find mitt_control)/config/mitt_controllers.yaml"/>
+
+  <xacro:include filename="$(find mitt_description)/urdf/mitt_dimensions.xacro"/>
 
   <xacro:include filename="$(find mitt_description)/urdf/mitt_base.xacro"/>
   <xacro:include filename="$(find mitt_description)/urdf/mitt_sensors.xacro"/>

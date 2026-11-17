@@ -70,6 +70,10 @@ SLAM's `map → odom`.
     ros2 launch mitt_bringup sim.launch.py
     ```
 
+    This is the twin on the **estimated** geometry. Add `vehicle:=1`, `2` or `3` for the twin of
+    that vehicle — its measured values laid over the estimates
+    ([software.md §3.2](design/software.md#32-ackermann-kinematic-parameters)).
+
     **Wait ~80 s.** Ready when the log shows:
 
     ```

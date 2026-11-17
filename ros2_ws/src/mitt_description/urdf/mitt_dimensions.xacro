@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--
+  The dimensions every other xacro file reads, as the one property `dims`.
+
+    vehicle:=0      config/mitt_dimensions.yaml as it stands: the estimates.
+    vehicle:=1|2|3  the same file, with config/vehicles/vehicle<N>.yaml laid
+                    over it: that vehicle's measured values replace the
+                    estimates, key by key.
+
+  The overlay may be empty (nothing measured yet), which load_yaml returns as
+  None. Key names are NOT checked here; scripts/check_vehicle_dims.py and the
+  launch files refuse an overlay key the base file does not have.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="dims_base"
+    value="${xacro.load_yaml('$(find mitt_description)/config/mitt_dimensions.yaml')}"/>
+
+  <xacro:if value="${'$(arg vehicle)' == '0'}">
+    <xacro:property name="dims_over" value="${dict()}"/>
+  </xacro:if>
+  <xacro:unless value="${'$(arg vehicle)' == '0'}">
+    <xacro:property name="dims_over"
+      value="${xacro.load_yaml('$(find mitt_description)/config/vehicles/vehicle$(arg vehicle).yaml') or dict()}"/>
+  </xacro:unless>
+
+  <xacro:property name="dims" value="${dict(dims_base, **dims_over)}"/>
+
+</robot>

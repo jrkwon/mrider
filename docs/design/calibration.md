@@ -66,10 +66,12 @@ since that is the point the planner moves.
 4. Measure the two diameters across opposite marks; average them → `D_outer`.
 5. `R = D_outer / 2 − rear track / 2`.
 6. Repeat at **full right lock**. The two will differ; a linkage is rarely symmetric.
-7. Record **the larger** of the two as `min_turning_radius` in
-   `mitt_description/config/mitt_dimensions.yaml`, delete its `TODO`, and set
-   `minimum_turning_radius` in `nav2_params.yaml` to that value plus margin (the design uses
-   about 5 %). `python3 scripts/check_vehicle_dims.py` fails if the planner's value is below it.
+7. Record **the larger** of the two as `min_turning_radius` in your vehicle's overlay,
+   `mitt_description/config/vehicles/vehicle<n>.yaml` (the estimate in `mitt_dimensions.yaml`
+   stays as it is), and make sure `minimum_turning_radius` in `nav2_params.yaml` is at least that
+   value plus margin (the design uses about 5 %). `nav2_params.yaml` is one file for three
+   vehicles, so it follows the widest-turning one. `python3 scripts/check_vehicle_dims.py` fails
+   if the planner's value is below any vehicle's.
 
 **Verification:** compare the result with `wheelbase / tan(steer limit)` from your own measured
 wheelbase and lock angle. Agreement within a few centimetres says the three measurements are

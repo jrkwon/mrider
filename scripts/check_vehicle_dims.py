@@ -42,14 +42,26 @@ WHAT IT CHECKS
    that breaks silently when somebody finally measures the vehicle and
    updates only the file they were looking at.
 
-   The floor is `min_turning_radius` in mitt_dimensions.yaml - a value each
-   team MEASURES (docs/design/calibration.md 1.5). Until 2026-11-16 the floor
+   The floor is `min_turning_radius` - a value each team MEASURES
+   (docs/design/calibration.md 1.5) and records in its vehicle's overlay
+   (item 3); mitt_dimensions.yaml keeps the derived figure. Until 2026-11-16 the floor
    was computed here as wheelbase / tan(steer_limit) and compared against two
    Nav2 keys. One of the two, `min_turning_radius` on the RPP controller, is
    not a parameter Nav2 1.1.20 declares; it was ignored at runtime while this
    script kept it carefully in step with the planner's. It is gone from
    nav2_params.yaml, and this script now fails if it comes back.
+3. EACH VEHICLE'S OVERLAY (since 2026-11-17). Three teams build three
+   vehicles. mitt_dimensions.yaml stays the estimates; what team N measured
+   is config/vehicles/vehicle<N>.yaml, laid over it by `xacro vehicle:=N` and
+   by mitt_bringup/launch/vehicle_config.py. Checked here: every key is one
+   the base file has (a misspelt key would be ignored and the estimate used in
+   silence), no line still says TODO (an overlay holds measured values only),
+   and the planner's radius is at or above EVERY vehicle's - nav2_params.yaml
+   is one file, so it has to be drivable by the widest-turning of the three.
+   The copies in mitt_controllers.yaml are compared against the ESTIMATES
+   only; for a vehicle they are generated at launch, not committed.
 """
+import importlib.util
 import math
 import re
 import sys
@@ -59,6 +71,17 @@ REPO = Path(__file__).resolve().parent.parent
 DIMS = REPO / "ros2_ws/src/mitt_description/config/mitt_dimensions.yaml"
 CTRL = REPO / "ros2_ws/src/mitt_control/config/mitt_controllers.yaml"
 NAV = REPO / "ros2_ws/src/mitt_navigation/config/nav2_params.yaml"
+VEHICLE_DIR = DIMS.parent / "vehicles"
+VEHICLE_CONFIG = REPO / "ros2_ws/src/mitt_bringup/launch/vehicle_config.py"
+
+
+def _vehicle_config():
+    """The launch-time module, loaded by path: its list of which dimension
+    feeds which controller key is the one this script uses too."""
+    spec = importlib.util.spec_from_file_location("vehicle_config", VEHICLE_CONFIG)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
 
 
 def scalars(path):
@@ -73,14 +96,29 @@ def scalars(path):
     return out
 
 
-# (name in mitt_dimensions, name in the other file, which file)
-COPIES = [
-    ("wheelbase", "wheelbase", CTRL),
-    ("track_width", "front_wheel_track", CTRL),
-    ("track_width", "rear_wheel_track", CTRL),
-    ("wheel_radius", "front_wheels_radius", CTRL),
-    ("wheel_radius", "rear_wheels_radius", CTRL),
-]
+def overlay(path, base):
+    """One vehicle's measured values, and what is wrong with the file."""
+    bad = []
+    seen = set()
+    for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        body = line.split("#", 1)[0].strip()
+        if not body:
+            continue
+        m = re.match(r"^([A-Za-z_][A-Za-z0-9_]*)\s*:\s*(-?\d+(?:\.\d+)?)$", body)
+        if not m:
+            bad.append(f"{path.name}:{n} is not `key: number` - {body!r}")
+        elif m.group(1) not in base:
+            bad.append(f"{path.name}:{n} `{m.group(1)}` is not a key of {DIMS.name}")
+        elif m.group(1) in seen:
+            # This script reads the first copy and yaml reads the last.
+            bad.append(f"{path.name}:{n} `{m.group(1)}` is written twice")
+        elif "TODO" in line:
+            bad.append(f"{path.name}:{n} `{m.group(1)}` still says TODO - an "
+                       f"overlay holds measured values only; delete the line "
+                       f"until it is measured")
+        if m:
+            seen.add(m.group(1))
+    return ({} if bad else scalars(path)), bad
 
 # Nav2's planner radius sits on a FLOOR with margin; it is not a copy.
 PLANNER_RADIUS = "minimum_turning_radius"   # SmacPlannerHybrid
@@ -91,15 +129,17 @@ SURPRISE = 0.15
 
 
 def main():
-    for f in (DIMS, CTRL, NAV):
+    for f in (DIMS, CTRL, NAV, VEHICLE_CONFIG):
         if not f.exists():
             print(f"   missing: {f.relative_to(REPO)}", file=sys.stderr)
             return 1
 
     d = scalars(DIMS)
     bad = []
+    vc = _vehicle_config()
 
-    for src, dst, path in COPIES:
+    for src, dst in vc.GEOMETRY:
+        path = CTRL
         other = scalars(path)
         if src not in d:
             bad.append(f"{DIMS.name} has no {src}")
@@ -128,6 +168,23 @@ def main():
                    f"no such parameter; it is ignored at runtime and reads as "
                    f"though it constrains something")
 
+    # Each vehicle: its overlay is well formed, and Nav2 can drive it.
+    measured = {}
+    for v in vc.VEHICLES:
+        path = VEHICLE_DIR / f"vehicle{v}.yaml"
+        if not path.exists():
+            bad.append(f"{path.relative_to(REPO)} is missing")
+            continue
+        over, problems = overlay(path, d)
+        bad += problems
+        measured[v] = sorted(over)
+        vfloor = over.get(FLOOR)
+        if (vfloor is not None and PLANNER_RADIUS in nav
+                and nav[PLANNER_RADIUS] < vfloor - 1e-9):
+            bad.append(f"{NAV.name}:{PLANNER_RADIUS} = {nav[PLANNER_RADIUS]} is "
+                       f"BELOW vehicle {v}'s measured {vfloor} m "
+                       f"({path.name}:{FLOOR})")
+
     if bad:
         print("vehicle geometry disagrees across packages:", file=sys.stderr)
         for b in bad:
@@ -136,6 +193,9 @@ def main():
 
     print(f"   ok  (turning radius {floor} m in {DIMS.name}; Nav2 plans at "
           f"{nav[PLANNER_RADIUS]} m)")
+    for v, keys in measured.items():
+        print(f"       vehicle {v}: " + (f"{len(keys)} measured - {', '.join(keys)}"
+                                         if keys else "nothing measured yet"))
     if abs(floor - derived) > SURPRISE * derived:
         print(f"   note: that is {abs(floor - derived) / derived:.0%} away from "
               f"wheelbase / tan(steer limit) = {derived:.2f} m. If all three "

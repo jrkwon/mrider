@@ -271,9 +271,11 @@ planner_server:
 
       # Must stay >= the vehicle's turning radius, with margin. That radius is
       # MEASURED by each team on its own vehicle (docs/design/calibration.md
-      # 1.5) and recorded as `min_turning_radius` in mitt_dimensions.yaml; until
-      # then that entry holds the derived 0.63 / tan(22.5 deg) = 1.52 m.
-      # scripts/check_vehicle_dims.py fails if this value drops below it.
+      # 1.5) and recorded as `min_turning_radius` in that vehicle's overlay,
+      # mitt_description/config/vehicles/vehicle<N>.yaml; mitt_dimensions.yaml
+      # holds the derived 0.63 / tan(22.5 deg) = 1.52 m. This is ONE file for
+      # three vehicles: scripts/check_vehicle_dims.py fails if this value drops
+      # below ANY of them.
       minimum_turning_radius: 1.6
 
       angle_quantization_bins: 72     # 5 deg

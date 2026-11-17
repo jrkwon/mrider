@@ -190,7 +190,7 @@ the design exists to prevent.
 | Steering range | Measured mechanical lock | Verify against ±22.5° |
 | Drive encoder PPR | **Measured on the part fitted** | Do **not** inherit 52 — the source project conflicts with itself (F7) |
 | `robot_radius`, velocity limits | Real chassis | Nav2 params |
-| **Minimum turning radius** | **Measured at both locks** ([calibration.md §1.5](../design/calibration.md#15-minimum-turning-radius-measured-not-derived)) | `min_turning_radius` in `mitt_dimensions.yaml`, then `minimum_turning_radius` in Nav2 |
+| **Minimum turning radius** | **Measured at both locks** ([calibration.md §1.5](../design/calibration.md#15-minimum-turning-radius-measured-not-derived)) | `min_turning_radius` in `config/vehicles/vehicle<n>.yaml`, then `minimum_turning_radius` in Nav2 |
 
 ## 5.9 EKF and TF
 

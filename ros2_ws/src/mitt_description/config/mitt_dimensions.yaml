@@ -7,8 +7,11 @@
 #  dimensions for the Land Rover Defender ride-on (98 x 56 x 47 cm, 10 kg,
 #  12 V, single seat — daehotoys product_no=1058).
 #
-#  Replace each one after teardown, then delete its TODO. The URDF reads
-#  only from here, so measured values drop in without touching geometry.
+#  THESE ESTIMATES STAY. Three teams build three vehicles, so a measured
+#  value does not replace a line here: it goes in that vehicle's overlay,
+#  vehicles/vehicle<N>.yaml, which is laid over this file by
+#  `xacro vehicle:=N` and by both launch files (docs/design/software.md 3.2).
+#  The key names in this file are an interface - an overlay may only use them.
 #  See docs/design/software.md 3.2 — B-MROVER's own URDF numbers are
 #  simulation artifacts (chassis_mass=300 kg on a ride-on car), which is
 #  exactly the trap this file exists to avoid repeating.
@@ -69,9 +72,10 @@ steer_limit_deg: 22.5    #     TODO verify on the real column
 # A MEASURED quantity, not a derived one: wheelbase / tan(steer_limit) assumes
 # both locks reach the design angle and the linkage has no slack, and neither
 # has been shown. Each team measures it on its own vehicle - procedure in
-# docs/design/calibration.md 1.5 - and Nav2's minimum_turning_radius must sit
-# at or above it (scripts/check_vehicle_dims.py). Until measured, this is the
-# derived figure and nothing more.
+# docs/design/calibration.md 1.5 - and records it in vehicles/vehicle<N>.yaml.
+# Nav2's minimum_turning_radius must sit at or above every vehicle's
+# (scripts/check_vehicle_dims.py). The value here is the derived figure and
+# nothing more.
 min_turning_radius: 1.52 # m   TODO measure (both locks; record the LARGER)
 
 # --- Drivetrain limits (simulation) ----------------------------------------

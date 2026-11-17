@@ -19,7 +19,7 @@
   <xacro:include filename="$(find mitt_description)/urdf/inertial_macros.xacro"/>
 
   <!-- ==== Load the single source of truth ================================= -->
-  <xacro:property name="d" value="${xacro.load_yaml('$(find mitt_description)/config/mitt_dimensions.yaml')}"/>
+  <xacro:property name="d" value="${dims}"/>  <!-- urdf/mitt_dimensions.xacro -->
 
   <xacro:property name="wheelbase"      value="${d['wheelbase']}"/>
   <xacro:property name="track"          value="${d['track_width']}"/>
