@@ -214,7 +214,7 @@ process does anyone find out?
 > rate limit, and command latency all match measured hardware **within 10%**. You just produced a
 > 19% error and watched the consequences.
 >
-> This is also why the Chassis track's very first deliverable is a **measured** `mitt_dimensions.yaml`
+> This is also why the Chassis track's very first deliverable is a **measured** `vehicle<n>.yaml`
 > — and why Merge 2 in Week 12 exists to prove the twin runs on measured numbers rather than
 > plausible ones.
 >
