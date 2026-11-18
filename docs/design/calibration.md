@@ -68,10 +68,11 @@ since that is the point the planner moves.
 6. Repeat at **full right lock**. The two will differ; a linkage is rarely symmetric.
 7. Record **the larger** of the two as `min_turning_radius` in your vehicle's overlay,
    `mitt_description/config/vehicles/vehicle<n>.yaml` (the estimate in `mitt_dimensions.yaml`
-   stays as it is), and make sure `minimum_turning_radius` in `nav2_params.yaml` is at least that
-   value plus margin (the design uses about 5 %). `nav2_params.yaml` is one file for three
-   vehicles, so it follows the widest-turning one. `python3 scripts/check_vehicle_dims.py` fails
-   if the planner's value is below any vehicle's.
+   stays as it is). Do not edit `nav2_params.yaml`: `nav2.launch.py vehicle:=<n>` plans at 5 %
+   above the value you recorded, through a generated copy of that file
+   ([software.md §3.2](software.md#32-ackermann-kinematic-parameters)).
+   `python3 scripts/check_vehicle_dims.py` prints the radius Nav2 will use for your vehicle.
+   Until this value is in your overlay, `nav2.launch.py` will not start on the real vehicle.
 
 **Verification:** compare the result with `wheelbase / tan(steer limit)` from your own measured
 wheelbase and lock angle. Agreement within a few centimetres says the three measurements are

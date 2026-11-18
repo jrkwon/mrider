@@ -113,6 +113,9 @@ SLAM's `map → odom`.
     ros2 launch mitt_navigation nav2.launch.py
     ```
 
+    Running the twin of a vehicle? Give Nav2 the same `vehicle:=<n>` you gave `sim.launch.py`, so
+    it plans with that vehicle's footprint and turning radius.
+
     **Wait ~45 s.** Ready when the log shows `Managed nodes are active`.
 
 === "4. RViz"

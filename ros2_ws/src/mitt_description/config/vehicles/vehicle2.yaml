@@ -16,6 +16,7 @@
 #
 # Used by:   ros2 launch mitt_bringup real.launch.py vehicle:=2
 #            ros2 launch mitt_bringup sim.launch.py  vehicle:=2   (the twin of vehicle 2)
+#            ros2 launch mitt_navigation nav2.launch.py vehicle:=2   (footprint, turning radius)
 #
 # Example, once measured (calibration.md 1):
 #

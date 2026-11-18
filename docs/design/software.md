@@ -168,12 +168,16 @@ absent from it is still an estimate — so the overlay shows at a glance what ha
 | Consumer | How it gets vehicle *N*'s values |
 |---|---|
 | URDF | `xacro … vehicle:=N` merges the overlay (`urdf/mitt_dimensions.xacro`) |
-| `ackermann_steering_controller` | `mitt_controllers.yaml` holds its own copy of five numbers; the launch files generate a copy of that file with the vehicle's values (`mitt_bringup/launch/vehicle_config.py`) |
+| `ackermann_steering_controller` | `mitt_controllers.yaml` holds its own copy of five numbers; the launch files generate a copy of that file with the vehicle's values (`mitt_description/config/vehicle_config.py`) |
 | Both launch files | `sim.launch.py vehicle:=N` is the twin of vehicle *N*; `real.launch.py vehicle:=N` is the vehicle. `vehicle:=0`, the twin's default, is the estimates |
-| Nav2 | **Not per vehicle.** `nav2_params.yaml` is one file; its footprint and planner radius are still the estimates, and the planner radius must clear all three vehicles |
+| Nav2 | `nav2.launch.py vehicle:=N` generates a copy of `nav2_params.yaml` with two things replaced: the costmap **footprint** (the outline of that vehicle's body box and wheels, edges rounded outward to a centimetre) and the planner's **`minimum_turning_radius`** (5 % above that vehicle's measured `min_turning_radius`). The committed file stays the estimates. With `use_sim_time:=false` it refuses to start unless `vehicle:=` is 1, 2 or 3, the shell is in that vehicle's ROS domain (§3.4), and that vehicle's `min_turning_radius` has been measured |
 
 Verified 2026-11-17 in the twin with a test overlay: the controller reported the overlay's
-wheelbase and wheel radius, and both controllers activated. No vehicle has measured values yet.
+wheelbase and wheel radius, and both controllers activated. Verified 2026-11-18, again with a test
+overlay and without the twin running: the generated Nav2 file differed from the committed one in
+the two footprints and the planner radius and nowhere else, `planner_server` and both costmaps
+reported the generated values, and each of the three real-vehicle refusals fired. Nav2 has not
+planned a path on it. No vehicle has measured values yet.
 
 ### 3.3 TF tree
 
@@ -425,7 +429,8 @@ be enabled by inheriting this config unchanged.
 `0.63 / tan(22.5°) = 1.52 m` plus margin, and the real figure is **measured by each team on its
 own vehicle** ([calibration.md §1.5](calibration.md#15-minimum-turning-radius-measured-not-derived)),
 recorded as `min_turning_radius` in that vehicle's overlay (`config/vehicles/vehicle<N>.yaml`,
-§3.2), and enforced as a floor — against every vehicle — by `scripts/check_vehicle_dims.py`.
+§3.2). `nav2.launch.py vehicle:=N` then plans at 5 % above that vehicle's own figure; the 1.6 in
+the committed file is checked against the estimate only (`scripts/check_vehicle_dims.py`).
 
 *Until 2026-11-16 this paragraph named a second parameter, `min_turning_radius` on `FollowPath`,
 and the config carried it. Nav2 1.1.20's RPP declares no such parameter — the name is absent from
