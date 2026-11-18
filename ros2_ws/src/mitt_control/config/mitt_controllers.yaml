@@ -74,11 +74,11 @@ ackermann_steering_controller:
 
     # --- Geometry: keep in sync with mitt_dimensions.yaml ------------------
     # NONE of these are measured. See that file's header.
-    wheelbase: 0.63                 # TODO measure
-    front_wheel_track: 0.46         # TODO measure
-    rear_wheel_track: 0.46          # TODO measure
-    front_wheels_radius: 0.09       # TODO measure
-    rear_wheels_radius: 0.09        # TODO measure
+    wheelbase: 0.63                 # estimate
+    front_wheel_track: 0.46         # estimate
+    rear_wheel_track: 0.46          # estimate
+    front_wheels_radius: 0.09       # estimate
+    rear_wheels_radius: 0.09        # estimate
 
     base_frame_id: base_link
     odom_frame_id: odom

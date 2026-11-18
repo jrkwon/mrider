@@ -841,7 +841,7 @@ Values that must come from the part in your hand, not the datasheet or the sourc
 > **Every dimension in the twin is currently an estimate**
 >
 > `mitt_description/config/mitt_dimensions.yaml` is populated with values derived from the
-> vendor's 98×56×47 cm listing, each marked `TODO measure`. The URDF has no geometric
+> vendor's 98×56×47 cm listing, each marked `estimate`. The URDF has no geometric
 > literals, so a vehicle's measured value — written in its overlay, `config/vehicles/vehicle<N>.yaml`,
 > since 2026-11-17 — reaches the model, the controller config, and the body mesh scale together.
 >
