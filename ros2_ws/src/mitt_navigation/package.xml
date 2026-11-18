@@ -14,6 +14,9 @@
        build cannot leave a launch file pointing at a package that is
        not there - the failure arrives at runtime otherwise. -->
   <exec_depend>mitt_localization</exec_depend>
+  <!-- nav2.launch.py imports config/vehicle_config.py from this package to
+       give Nav2 the footprint and turning radius of vehicle N. -->
+  <exec_depend>mitt_description</exec_depend>
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
   <export>

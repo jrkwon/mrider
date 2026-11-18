@@ -229,7 +229,7 @@ are **frozen in your fork**:
 | Teensy pin assignments | [build step 4](../build/04-firmware.md) |
 | ROS domain, vehicle *N* → 10 + *N* | [software.md §3.4](../design/software.md#34-ros-domain-one-per-vehicle) |
 | Key names in `mitt_dimensions.yaml` | `ros2_ws/src/mitt_description/config/` |
-| Arguments of `sim.launch.py` and `real.launch.py` | `ros2_ws/src/mitt_bringup/launch/` |
+| Arguments of `sim.launch.py`, `real.launch.py` and `nav2.launch.py` | `ros2_ws/src/mitt_bringup/launch/`, `ros2_ws/src/mitt_navigation/launch/` |
 
 If one of them is wrong or missing something — and some will be; none of this has met hardware —
 **open a pull request against `main`** that changes the interface and says why. When it is merged,

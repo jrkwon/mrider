@@ -53,13 +53,21 @@ WHAT IT CHECKS
 3. EACH VEHICLE'S OVERLAY (since 2026-11-17). Three teams build three
    vehicles. mitt_dimensions.yaml stays the estimates; what team N measured
    is config/vehicles/vehicle<N>.yaml, laid over it by `xacro vehicle:=N` and
-   by mitt_bringup/launch/vehicle_config.py. Checked here: every key is one
-   the base file has (a misspelt key would be ignored and the estimate used in
-   silence), no line still says TODO (an overlay holds measured values only),
-   and the planner's radius is at or above EVERY vehicle's - nav2_params.yaml
-   is one file, so it has to be drivable by the widest-turning of the three.
-   The copies in mitt_controllers.yaml are compared against the ESTIMATES
-   only; for a vehicle they are generated at launch, not committed.
+   by mitt_description/config/vehicle_config.py. Checked here: every key is
+   one the base file has (a misspelt key would be ignored and the estimate
+   used in silence) and no line still says TODO (an overlay holds measured
+   values only). The copies in mitt_controllers.yaml and nav2_params.yaml are
+   compared against the ESTIMATES only; for a vehicle they are generated at
+   launch, not committed.
+4. NAV2'S OWN COPIES (since 2026-11-18). The costmap footprint is the outline
+   of the body and wheels in mitt_dimensions.yaml, stated once per costmap,
+   and had been typed by hand twice. Both lines must equal what
+   vehicle_config.footprint() makes of the estimates, and the planner radius
+   must equal vehicle_config.planner_radius() of the estimate - the rules
+   `nav2.launch.py vehicle:=N` applies to a vehicle's measured values. Until
+   that date the planner radius in the one committed file had to clear all
+   three vehicles; now each vehicle gets its own, so that check is gone and
+   this script prints what each would run on.
 """
 import importlib.util
 import math
@@ -72,7 +80,7 @@ DIMS = REPO / "ros2_ws/src/mitt_description/config/mitt_dimensions.yaml"
 CTRL = REPO / "ros2_ws/src/mitt_control/config/mitt_controllers.yaml"
 NAV = REPO / "ros2_ws/src/mitt_navigation/config/nav2_params.yaml"
 VEHICLE_DIR = DIMS.parent / "vehicles"
-VEHICLE_CONFIG = REPO / "ros2_ws/src/mitt_bringup/launch/vehicle_config.py"
+VEHICLE_CONFIG = DIMS.parent / "vehicle_config.py"
 
 
 def _vehicle_config():
@@ -163,13 +171,34 @@ def main():
         bad.append(f"{NAV.name}:{PLANNER_RADIUS} = {nav[PLANNER_RADIUS]} is "
                    f"BELOW the vehicle's {floor} m ({DIMS.name}:{FLOOR}) - "
                    f"Nav2 would plan paths the vehicle cannot drive")
+    elif floor is not None and abs(nav[PLANNER_RADIUS] - vc.planner_radius(floor)) > 1e-9:
+        bad.append(f"{NAV.name}:{PLANNER_RADIUS} = {nav[PLANNER_RADIUS]} but "
+                   f"the rule gives {vc.planner_radius(floor)} for the "
+                   f"estimate {floor} m ({DIMS.name}:{FLOOR}). That file is "
+                   f"the estimates; a vehicle's value is generated at launch")
     if FLOOR in nav:
         bad.append(f"{NAV.name} has a `{FLOOR}` key again. Nav2's RPP declares "
                    f"no such parameter; it is ignored at runtime and reads as "
                    f"though it constrains something")
 
-    # Each vehicle: its overlay is well formed, and Nav2 can drive it.
+    # The footprint is a copy of the body box, stated once per costmap.
+    want = vc.footprint(d) if all(k in d for k in vc.FOOTPRINT_KEYS) else None
+    stated = re.findall(r'^\s*footprint\s*:\s*"([^"]*)"\s*(?:#.*)?$',
+                        NAV.read_text(encoding="utf-8"), re.M)
+    if want is None:
+        bad.append(f"{DIMS.name} lacks one of: {', '.join(vc.FOOTPRINT_KEYS)}")
+    elif len(stated) != 2:
+        bad.append(f"{NAV.name} states `footprint` {len(stated)} time(s); the "
+                   f"local and the global costmap each need it")
+    else:
+        for got in stated:
+            if got != want:
+                bad.append(f"{NAV.name}:footprint = {got} but the body and "
+                           f"wheels of {DIMS.name} give {want}")
+
+    # Each vehicle: its overlay is well formed, and what Nav2 would run on.
     measured = {}
+    nav_for = {}
     for v in vc.VEHICLES:
         path = VEHICLE_DIR / f"vehicle{v}.yaml"
         if not path.exists():
@@ -178,12 +207,11 @@ def main():
         over, problems = overlay(path, d)
         bad += problems
         measured[v] = sorted(over)
-        vfloor = over.get(FLOOR)
-        if (vfloor is not None and PLANNER_RADIUS in nav
-                and nav[PLANNER_RADIUS] < vfloor - 1e-9):
-            bad.append(f"{NAV.name}:{PLANNER_RADIUS} = {nav[PLANNER_RADIUS]} is "
-                       f"BELOW vehicle {v}'s measured {vfloor} m "
-                       f"({path.name}:{FLOOR})")
+        if not problems and want is not None:
+            try:
+                nav_for[v] = vc.nav2_values(d, over)
+            except ValueError as e:
+                bad.append(f"{path.name}: {e}")
 
     if bad:
         print("vehicle geometry disagrees across packages:", file=sys.stderr)
@@ -196,6 +224,15 @@ def main():
     for v, keys in measured.items():
         print(f"       vehicle {v}: " + (f"{len(keys)} measured - {', '.join(keys)}"
                                          if keys else "nothing measured yet"))
+        own = nav_for.get(v, {})
+        radius = own.get(PLANNER_RADIUS)
+        print("                  Nav2 plans at "
+              + (f"{radius} m, 5% above its measured radius" if radius is not None
+                 else f"{nav[PLANNER_RADIUS]} m, the estimate - and refuses to "
+                      f"start on the real vehicle until {FLOOR} is measured"))
+        print("                  Nav2 footprint "
+              + (own["footprint"] if "footprint" in own
+                 else f"{want}, the estimate"))
     if abs(floor - derived) > SURPRISE * derived:
         print(f"   note: that is {abs(floor - derived) / derived:.0%} away from "
               f"wheelbase / tan(steer limit) = {derived:.2f} m. If all three "

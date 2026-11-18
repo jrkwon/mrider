@@ -78,8 +78,8 @@ steer_limit_deg: 22.5    #     estimate (design target, not the real column)
 # both locks reach the design angle and the linkage has no slack, and neither
 # has been shown. Each team measures it on its own vehicle - procedure in
 # docs/design/calibration.md 1.5 - and records it in vehicles/vehicle<N>.yaml.
-# Nav2's minimum_turning_radius must sit at or above every vehicle's
-# (scripts/check_vehicle_dims.py). The value here is the derived figure and
+# `nav2.launch.py vehicle:=N` plans at 5% above the value in that overlay
+# (config/vehicle_config.py). The value here is the derived figure and
 # nothing more.
 min_turning_radius: 1.52 # m   estimate (measure both locks; record the LARGER)
 

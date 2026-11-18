@@ -20,7 +20,8 @@ Bring up the MITT digital twin: Gazebo + robot + controllers + bridge.
 
 vehicle:=0 (the default) is the estimates in mitt_dimensions.yaml. vehicle:=N
 lays config/vehicles/vehicle<N>.yaml over them - in the URDF and in the
-controller's own copy of the geometry (vehicle_config.py).
+controller's own copy of the geometry (mitt_description/config/
+vehicle_config.py). Nav2 takes the same argument: nav2.launch.py vehicle:=2.
 
 This is Track A of the semester roadmap (docs/design/software.md 8) - the
 software development vehicle. It deliberately cannot test what Track B tests:
@@ -33,10 +34,13 @@ vehicle. Only the ros2_control hardware plugin differs (ADR-SW4).
 import os
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import vehicle_config  # noqa: E402  (same directory; see its docstring)
-
 from ament_index_python.packages import get_package_share_directory
+
+# One module for every launch file that needs a vehicle's numbers; it lives
+# beside the files it reads (see its docstring).
+sys.path.insert(0, os.path.join(
+    get_package_share_directory("mitt_description"), "config"))
+import vehicle_config  # noqa: E402
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,

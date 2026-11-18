@@ -70,14 +70,17 @@ missing launch argument.
 import os
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import vehicle_config  # noqa: E402  (same directory; see its docstring)
-
 from ament_index_python.packages import (
     PackageNotFoundError,
     get_package_prefix,
     get_package_share_directory,
 )
+
+# One module for every launch file that needs a vehicle's numbers; it lives
+# beside the files it reads (see its docstring).
+sys.path.insert(0, os.path.join(
+    get_package_share_directory("mitt_description"), "config"))
+import vehicle_config  # noqa: E402
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
@@ -97,7 +100,7 @@ from launch_ros.substitutions import FindPackageShare
 # Vehicle N lives in ROS domain DOMAIN_BASE + N. Decided 2026-11-16,
 # docs/design/software.md 3.4. The firmware and ros2_ws/setup_env.sh use the
 # same rule; check 25 in scripts/check_docs.sh keeps the copies in step.
-DOMAIN_BASE = 10
+DOMAIN_BASE = vehicle_config.DOMAIN_BASE
 VEHICLES = (1, 2, 3)
 
 
@@ -208,7 +211,9 @@ def _bringup(context, *_args, **_kwargs):
     # -- This vehicle's measured geometry ------------------------------------
     # config/vehicles/vehicle<N>.yaml over the estimates: in the URDF through
     # `xacro vehicle:=N`, and in the controller's own copy of the geometry
-    # through a generated parameter file (vehicle_config.py).
+    # through a generated parameter file (mitt_description/config/
+    # vehicle_config.py). Nav2 is not started here; nav2.launch.py takes the
+    # same vehicle:= and does the same for its footprint and planner radius.
     controllers_file = None
     if vehicle in [str(v) for v in VEHICLES]:
         try:

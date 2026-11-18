@@ -182,6 +182,13 @@ local_costmap:
       # the body extends much further forward (+0.81 m) than back (-0.18 m).
       # A circular approximation would either clip the nose or refuse to fit
       # down the depot aisles.
+      #
+      # These corners are the ESTIMATES: the outline of the body and wheels
+      # in mitt_dimensions.yaml, each edge rounded outward to a centimetre. Do not edit them for a
+      # vehicle. `nav2.launch.py vehicle:=N` runs a generated copy of this
+      # file with the corners of vehicle N's measured body and wheels
+      # (mitt_description/config/vehicle_config.py), in both costmaps;
+      # scripts/check_vehicle_dims.py keeps these two lines equal to the rule.
       footprint: "[[0.81, 0.28], [0.81, -0.28], [-0.18, -0.28], [-0.18, 0.28]]"
       plugins: ["obstacle_layer", "inflation_layer"]
       obstacle_layer:
@@ -273,9 +280,13 @@ planner_server:
       # MEASURED by each team on its own vehicle (docs/design/calibration.md
       # 1.5) and recorded as `min_turning_radius` in that vehicle's overlay,
       # mitt_description/config/vehicles/vehicle<N>.yaml; mitt_dimensions.yaml
-      # holds the derived 0.63 / tan(22.5 deg) = 1.52 m. This is ONE file for
-      # three vehicles: scripts/check_vehicle_dims.py fails if this value drops
-      # below ANY of them.
+      # holds the derived 0.63 / tan(22.5 deg) = 1.52 m. The value below is
+      # for the ESTIMATES: 5% above 1.52 m. Do not edit it for a vehicle.
+      # `nav2.launch.py vehicle:=N` runs a generated copy of this file with
+      # 5% above vehicle N's measured radius instead
+      # (mitt_description/config/vehicle_config.py), and refuses to start on a
+      # real vehicle that has not measured it. check_vehicle_dims.py keeps the
+      # value below equal to the rule applied to the estimate.
       minimum_turning_radius: 1.6
 
       angle_quantization_bins: 72     # 5 deg
