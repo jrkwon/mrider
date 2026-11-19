@@ -22,11 +22,13 @@ Nav2 for the MITT twin, or for one of the three vehicles.
 Run AFTER slam.launch.py - Nav2 needs map->odom to exist.
 
 vehicle:= is the same argument sim.launch.py and real.launch.py take, and
-means the same thing. Two values in config/nav2_params.yaml are a vehicle's
-own: the costmap footprint and the planner's minimum turning radius. With
-vehicle:=N they come from mitt_description/config/vehicles/vehicle<N>.yaml -
-the footprint from that vehicle's body and wheels, the radius 5% above its measured
-turning radius - through a generated copy of the parameter file
+means the same thing. Three values in config/nav2_params.yaml are a vehicle's
+own: the costmap footprint, the inflation radius that has to reach its
+farthest corner, and the planner's minimum turning radius. With vehicle:=N
+they come from mitt_description/config/vehicles/vehicle<N>.yaml - the
+footprint from that vehicle's body and wheels, the inflation radius from that
+footprint, the turning radius 5% above its measured one - through a generated
+copy of the parameter file
 (mitt_description/config/vehicle_config.py). A vehicle that has measured
 none of those values runs on the committed file, which is the estimates.
 

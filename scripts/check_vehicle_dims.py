@@ -68,6 +68,13 @@ WHAT IT CHECKS
    that date the planner radius in the one committed file had to clear all
    three vehicles; now each vehicle gets its own, so that check is gone and
    this script prints what each would run on.
+
+5. THE INFLATION RADIUS (since 2026-11-19). Both costmaps' inflation_radius
+   must equal vehicle_config.inflation_radius() of the estimates: the
+   distance from base_link to the footprint's farthest corner, rounded up to
+   5 cm. It was 0.55 m under a footprint that reaches 0.857 m, and
+   SmacPlannerHybrid does not collision-check a corner that inflation does
+   not reach (docs/design/software.md 4.7).
 """
 import importlib.util
 import math
@@ -195,6 +202,21 @@ def main():
             if got != want:
                 bad.append(f"{NAV.name}:footprint = {got} but the body and "
                            f"wheels of {DIMS.name} give {want}")
+
+    # Inflation must reach the footprint's farthest corner, in both costmaps.
+    inflation = re.findall(r'^\s*inflation_radius\s*:\s*([0-9.]+)\s*(?:#.*)?$',
+                           NAV.read_text(encoding="utf-8"), re.M)
+    if want is not None:
+        need = vc.inflation_radius(d)
+        if len(inflation) != 2:
+            bad.append(f"{NAV.name} states `inflation_radius` {len(inflation)} "
+                       f"time(s); the local and the global costmap each need it")
+        for got in inflation:
+            if abs(float(got) - need) > 1e-9:
+                bad.append(f"{NAV.name}:inflation_radius = {got} but the "
+                           f"footprint of {DIMS.name} needs {need}: the "
+                           f"planner does not check a corner that inflation "
+                           f"does not reach")
 
     # Each vehicle: its overlay is well formed, and what Nav2 would run on.
     measured = {}

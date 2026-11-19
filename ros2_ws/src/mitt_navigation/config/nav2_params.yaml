@@ -214,7 +214,17 @@ local_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 0.55
+        # At or above the footprint's CIRCUMSCRIBED radius: base_link to the
+        # farthest corner, 0.857 m for the estimates. Not a tuning value.
+        # SmacPlannerHybrid skips the footprint collision check where the
+        # cost under base_link is low, and that shortcut is only right if
+        # inflation reaches the farthest corner. This was 0.55 until
+        # 2026-11-19, and the planner returned paths that put a front corner
+        # through a post; RPP refused them and the run stalled
+        # (software.md 4.7). Do not edit it for a vehicle: nav2.launch.py
+        # generates it from that vehicle's footprint, as it does the
+        # footprint, and check_vehicle_dims.py holds this value to the rule.
+        inflation_radius: 0.90
       always_send_full_costmap: true
 
 global_costmap:
@@ -247,7 +257,7 @@ global_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 0.55
+        inflation_radius: 0.90          # see the local costmap's note
       always_send_full_costmap: true
 
 planner_server:

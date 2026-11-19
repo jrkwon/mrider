@@ -120,12 +120,13 @@ Nav2 runs from this repo's own launch file and parameter file, not B-MROVER's. T
 Pure Pursuit. DWB and NavFn were dropped in the twin before any vehicle existed
 ([software.md §4.4–§4.5](../design/software.md#44-nav2-bring-up-in-the-twin-result-2026-08-08)).
 
-**Two values are your vehicle's own, and you do not type either into Nav2.** They come from
+**Three values are your vehicle's own, and you do not type any of them into Nav2.** They come from
 your overlay, `mitt_description/config/vehicles/vehicle<n>.yaml`:
 
 | Nav2 parameter | Comes from | Rule |
 |---|---|---|
 | `footprint` (local and global costmap) | wheelbase, track, wheel and chassis sizes | Outline of body and wheels, each edge rounded outward to 1 cm |
+| `inflation_radius` (local and global costmap) | the footprint above | `base_link` to its farthest corner, rounded up to 5 cm — the planner does not check a corner that inflation does not reach |
 | `minimum_turning_radius` (planner) | `min_turning_radius` | 5% above the measured radius, rounded up to 1 cm |
 
 `nav2.launch.py vehicle:=<n>` writes a copy of `nav2_params.yaml` with those values and runs

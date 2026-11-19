@@ -33,9 +33,11 @@ the two consumers that cannot read that file.
    file). For a vehicle whose measured values differ, controllers_for()
    writes a copy of the controller file with those five numbers replaced.
 
-2. nav2_params.yaml carries the costmap footprint (twice) and the planner's
+2. nav2_params.yaml carries the costmap footprint (twice), the inflation
+   radius that must reach its farthest corner (twice) and the planner's
    minimum turning radius. nav2_for() writes a copy with the outline of that
-   vehicle's body and wheels, and a planner radius above its measured one.
+   vehicle's body and wheels, the inflation radius that outline needs, and a
+   planner radius above its measured one.
 
 3. Nav2 and the robot it drives are started by two commands, each with its
    own vehicle:=. body_mismatch() compares the body in the running
@@ -81,6 +83,13 @@ DOMAIN_BASE = 10
 # box, centred between the axles, and the four wheels. These keys place it.
 FOOTPRINT_KEYS = ('wheelbase', 'chassis_length', 'chassis_width',
                   'track_width', 'wheel_radius', 'wheel_width')
+# The inflation radius of BOTH costmaps must reach the footprint's farthest
+# corner (its circumscribed radius). SmacPlannerHybrid skips the footprint
+# collision check wherever the cost under base_link is below the cost at
+# that distance, and beyond the inflation radius the cost is zero: with a
+# smaller radius an obstacle near a front corner is not checked at all
+# (docs/design/software.md 4.7).
+INFLATION_RADIUS = 'inflation_radius'       # nav2_params.yaml, both costmaps
 TURNING_RADIUS = 'min_turning_radius'       # mitt_dimensions.yaml, measured
 PLANNER_RADIUS = 'minimum_turning_radius'   # nav2_params.yaml, SmacPlannerHybrid
 # The planner plans this much wider than the vehicle turns. 5% is the margin
@@ -136,6 +145,13 @@ def footprint(dims):
     to a centimetre. A bumper or a mast that overhangs is not in the
     dimensions file, and so not in here.
     """
+    front, rear, half = _outline(dims)
+    return (f'[[{front:.2f}, {half:.2f}], [{front:.2f}, {-half:.2f}], '
+            f'[{rear:.2f}, {-half:.2f}], [{rear:.2f}, {half:.2f}]]')
+
+
+def _outline(dims):
+    """(front, rear, half width) of the footprint, in base_link, in metres."""
     for k in FOOTPRINT_KEYS:
         if not (math.isfinite(dims[k]) and dims[k] > 0):
             raise ValueError(f'{k} must be a positive number, got {dims[k]}')
@@ -144,8 +160,19 @@ def footprint(dims):
     rear = -_cm_up(max(length / 2.0 - wb / 2.0, r))
     half = _cm_up(max(dims['chassis_width'] / 2.0,
                       dims['track_width'] / 2.0 + dims['wheel_width'] / 2.0))
-    return (f'[[{front:.2f}, {half:.2f}], [{front:.2f}, {-half:.2f}], '
-            f'[{rear:.2f}, {-half:.2f}], [{rear:.2f}, {half:.2f}]]')
+    return front, rear, half
+
+
+def inflation_radius(dims):
+    """The costmap inflation radius for this body: the distance from
+    base_link to the footprint's farthest corner, rounded UP to 5 cm.
+
+    Never below that distance - see INFLATION_RADIUS above for what the
+    planner stops checking when it is.
+    """
+    front, rear, half = _outline(dims)
+    reach = math.hypot(max(front, -rear), half)
+    return math.ceil(round(reach * 20.0, 6)) / 20.0
 
 
 def planner_radius(turning_radius):
@@ -267,6 +294,7 @@ def nav2_values(base, over):
     values = {}
     if any(k in over for k in FOOTPRINT_KEYS):
         values['footprint'] = footprint({**base, **over})
+        values[INFLATION_RADIUS] = inflation_radius({**base, **over})
     if TURNING_RADIUS in over:
         values[PLANNER_RADIUS] = planner_radius(float(over[TURNING_RADIUS]))
     return values
@@ -290,8 +318,9 @@ def nav2_for(vehicle, desc_share, nav_yaml, real=False):
     values = nav2_values(_estimates(desc_share), over)
     if not values:
         return nav_yaml
-    # The footprint is stated once per costmap: local and global.
-    times = {'footprint': 2, PLANNER_RADIUS: 1}
+    # The footprint and the inflation radius are stated once per costmap:
+    # local and global.
+    times = {'footprint': 2, INFLATION_RADIUS: 2, PLANNER_RADIUS: 1}
     return _generated(
         vehicle, nav_yaml, {k: (v, times[k]) for k, v in values.items()}, 'nav2')
 

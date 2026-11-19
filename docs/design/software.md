@@ -170,7 +170,7 @@ absent from it is still an estimate — so the overlay shows at a glance what ha
 | URDF | `xacro … vehicle:=N` merges the overlay (`urdf/mitt_dimensions.xacro`) |
 | `ackermann_steering_controller` | `mitt_controllers.yaml` holds its own copy of five numbers; the launch files generate a copy of that file with the vehicle's values (`mitt_description/config/vehicle_config.py`) |
 | Both launch files | `sim.launch.py vehicle:=N` is the twin of vehicle *N*; `real.launch.py vehicle:=N` is the vehicle. `vehicle:=0`, the twin's default, is the estimates |
-| Nav2 | `nav2.launch.py vehicle:=N` generates a copy of `nav2_params.yaml` with two things replaced: the costmap **footprint** (the outline of that vehicle's body box and wheels, edges rounded outward to a centimetre) and the planner's **`minimum_turning_radius`** (5 % above that vehicle's measured `min_turning_radius`). The committed file stays the estimates. With `use_sim_time:=false` it refuses to start unless `vehicle:=` is 1, 2 or 3, the shell is in that vehicle's ROS domain (§3.4), and that vehicle's `min_turning_radius` has been measured |
+| Nav2 | `nav2.launch.py vehicle:=N` generates a copy of `nav2_params.yaml` with three things replaced: the costmap **footprint** (the outline of that vehicle's body box and wheels, edges rounded outward to a centimetre), the costmaps' **`inflation_radius`** (the distance from `base_link` to that footprint's farthest corner, rounded up to 5 cm; §4.7) and the planner's **`minimum_turning_radius`** (5 % above that vehicle's measured `min_turning_radius`). The committed file stays the estimates. With `use_sim_time:=false` it refuses to start unless `vehicle:=` is 1, 2 or 3, the shell is in that vehicle's ROS domain (§3.4), and that vehicle's `min_turning_radius` has been measured |
 
 Verified 2026-11-17 in the twin with a test overlay: the controller reported the overlay's
 wheelbase and wheel radius, and both controllers activated. Verified 2026-11-18, again with a test
@@ -475,20 +475,25 @@ the stock Nav2 values.
 **What it shows.**
 
 - **The committed configuration usually frees itself.** The planner plans a reverse segment and
-  RPP follows it (runs 1, 2 and 8, and 5 and 6 where `BackUp` was available and unused). F-N4's
-  "over until a human intervenes" is no longer the rule.
+  RPP follows it (runs 1, 2 and 8, and 5 and 6 where `BackUp` was available and unused).
+  *Corrected the same day by §4.7: it freed itself because the planner did not see the wall it
+  was pressed into. With the inflation radius fixed, the planner refuses a start pose that is in
+  collision, which is the right answer.*
 - **It does not always.** In run 3 the vehicle never moved, and in run 4 `BackUp` freed it from
   that same pose. That pair is the only direct comparison, and the oblique pose of run 3 was not
   reproduced.
 - **`BackUp` is not blind.** In run 4 it refused to reverse towards an obstacle behind the
   vehicle. That is the costmap check §4.5 describes, observed.
 - **Runs 4 and 8 stalled mid-route, not at the wall**, both while reversing near (5, 2.4–3.1),
-  with RPP refusing on every retry. `BackUp` did not clear it. Not diagnosed; a separate problem.
+  with RPP refusing on every retry. `BackUp` did not clear it. Diagnosed in §4.7.
 
 **Decision: `BackUp` stays out.** One direct comparison is thin evidence for a change to what a
 real vehicle does unprompted, the case it fixes is rare and is already covered by the operator
 on the RC sticks ([safety.md §1.2](safety.md)), and `backup_speed: 0.05` has never been tried on
 a real motor. Putting it back needs the plugin in `behavior_server` and the node in both trees.
+§4.7 changes one of the reasons and not the decision: a vehicle pressed into a wall is now
+refused by the planner, but a vehicle stopped 5 cm short of it, which is where Nav2 itself
+stops, drove out in every run.
 
 **Limits.** Eight runs, one world, one map, no fixed seed; runs 6 and 7 differ under the same
 conditions. Why RPP refused in run 3 is not known. The logs and the two modified files are in
@@ -497,6 +502,59 @@ repository.
 
 **Found on the way.** `localization.launch.py` had never loaded a map: `nav2_params.yaml` had no
 `map_server` block for `nav2_bringup` to rewrite `yaml_filename` in. Fixed in `6099516`.
+
+### 4.7 The planner did not see the front corners — RESOLVED 2026-11-19
+
+**Symptom.** The mid-route stall of §4.6: reversing past a 0.2 m post near (5.3, 2.5) in the
+depot map, the vehicle stopped and RPP logged `detected collision ahead!` on every retry until
+the goal failed. Reproduced on the first attempt, at (4.83, 2.34), yaw 70°.
+
+**What was there.** The post was 0.13 m outside the right edge of the footprint, level with the
+LiDAR. The planned path reversed along a minimum-radius arc, and on that arc the front-right
+corner sweeps a circle about 1 cm larger than the post's distance from the turning centre. RPP,
+checking the footprint against the local costmap, was right to refuse. The planner had returned
+a path it should not have.
+
+**Cause.** `inflation_radius` was **0.55 m** in both costmaps, under a footprint whose farthest
+corner is **0.857 m** from `base_link`. `SmacPlannerHybrid` saves time by skipping the footprint
+collision check wherever the cost under `base_link` is below the cost at the circumscribed radius
+(`findCircumscribedCost`, `nav2_smac_planner/utils.hpp`). That shortcut assumes inflation reaches
+the circumscribed radius. Here the cost is zero from 0.55 m outward, so an obstacle between
+0.55 m and 0.857 m from `base_link` was never checked, and that band is exactly where the front
+corners are. The planner's internal values were not printed; the trial below is the evidence.
+
+**Fix.** `inflation_radius: 0.90` in both costmaps: the circumscribed radius rounded up to 5 cm.
+It is now derived, not typed: `vehicle_config.inflation_radius()` computes it from the
+footprint, `nav2.launch.py vehicle:=N` generates it for a vehicle whose measured body differs,
+and `scripts/check_vehicle_dims.py` fails if the committed value is not the rule applied to the
+estimates.
+
+**Trial.** Same twin setup as §4.6. "Stuck pose" runs change only the parameter file, with the
+vehicle not moved in between.
+
+| Test | 0.55 (before) | 0.90 (after) |
+|---|---|---|
+| Stuck beside the post at (4.83, 2.34), goal (4.0, 1.5) | 28 refusals over two goals, failed | reached |
+| Stuck beside the post at (4.56, 1.91), goal (4.0, 1.5) | 28 refusals over two goals, failed | reached, no refusal |
+| Nose 5 cm from the wall, then goal (4.0, 1.5) | stuck in 1 of 3 | reached in 7 of 7; one run logged two refusals on the way |
+| Nose pressed 3–5 cm into the wall | drove out in most runs (§4.6) | refused in 3 of 3: `Starting point in lethal space!` |
+
+The first four of the seven "after" runs changed the global costmap only; the last three, and
+the committed file, change both. The committed file was then run through `nav2.launch.py`
+itself, three more times from the wall: reached in 3 of 3, one run logging four refusals on the
+way. `local_costmap` reported `inflation_radius` 0.9; the same query to `global_costmap`
+answered `Node not found` and was not repeated.
+
+**What changes for a team.** Paths keep further from obstacles, and a gap that was planned
+through at 0.55 may now be refused. A path that is returned is one the controller will follow.
+A vehicle that has been pushed into contact with an obstacle is not planned out of it: that is
+the operator's recovery, as before.
+
+**Limits.** One world, one stretch of one route, no fixed seed. 0.90 is the rule's value, not
+the best of several tried. Logs are in `.omc/artifacts/inflation-trial-2026-11-19/` on the
+instructor's machine, not in this repository. Twice in two days Nav2's lifecycle bring-up hung
+at `configure` with `failed to send response to /controller_server/change_state (timeout)` and
+came up on a relaunch. Not diagnosed, and not connected to this finding by any evidence.
 
 ---
 
