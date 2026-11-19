@@ -40,6 +40,16 @@ the car cannot drive:
   3. that vehicle's overlay has a measured min_turning_radius
      (docs/design/calibration.md 1.5).
 
+A refusal ends `ros2 launch` with exit status 1 and starts no node.
+
+The robot is started by another command (sim.launch.py or real.launch.py)
+with a vehicle:= of its own. Beside Nav2 this file starts a check that reads
+the running /robot_description and compares its body - wheelbase, track,
+wheels, chassis box - with the vehicle given here. If they differ it prints
+a block headed WRONG VEHICLE; if no robot answers in 15 s it says the
+comparison was not made. It warns and does not stop Nav2. Two vehicles that
+have measured nothing are both the estimates and compare equal.
+
 Added 2026-11-18. Checked that day with a test overlay: the generated file
 differed from the committed one in the two footprints and the planner radius
 and nowhere else, planner_server and both costmaps reported the generated
@@ -72,10 +82,10 @@ import vehicle_config  # noqa: E402
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
+    ExecuteProcess,
     IncludeLaunchDescription,
     LogInfo,
     OpaqueFunction,
-    Shutdown,
 )
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
@@ -107,8 +117,11 @@ def _nav2_for_vehicle(context):
             number, get_package_share_directory("mitt_description"), stock,
             real=real)
     except (ValueError, OSError) as e:
-        return [LogInfo(msg=f"\nnav2.launch.py will not start: {e}\n"),
-                Shutdown(reason="vehicle configuration refused")]
+        # Raised, not logged-and-Shutdown: an exception here ends `ros2
+        # launch` with exit status 1 and one error line, before any node is
+        # started. Shutdown ended it with status 0, which a script or a
+        # student's `&&` read as success.
+        raise RuntimeError(f"nav2.launch.py will not start: {e}") from None
 
     nav2 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(
@@ -120,8 +133,20 @@ def _nav2_for_vehicle(context):
             "use_composition": "False",
         }.items(),
     )
+    # Nav2 and the robot are two commands with a vehicle:= each. This
+    # compares the body in the running /robot_description with vehicle
+    # `number` and prints a block of '!' if they differ. It warns and does
+    # not stop Nav2: the comparison needs the robot to be up, and it is a
+    # process beside Nav2, not a gate in front of it.
+    desc_share = get_package_share_directory("mitt_description")
+    check = ExecuteProcess(
+        cmd=[sys.executable,
+             os.path.join(desc_share, "config", "vehicle_config.py"),
+             "running-body", str(number), desc_share],
+        output="screen",
+    )
     return [LogInfo(msg=f"vehicle {number}: Nav2 parameters from {params}"),
-            nav2]
+            nav2, check]
 
 
 def generate_launch_description():
