@@ -37,14 +37,21 @@ the two consumers that cannot read that file.
    minimum turning radius. nav2_for() writes a copy with the outline of that
    vehicle's body and wheels, and a planner radius above its measured one.
 
-Both return the path of the copy; the committed file is never edited. With
+3. Nav2 and the robot it drives are started by two commands, each with its
+   own vehicle:=. body_mismatch() compares the body in the running
+   /robot_description with the vehicle Nav2 was started for, and
+   `python3 vehicle_config.py running-body N` is that comparison as a
+   process, which nav2.launch.py starts beside Nav2.
+
+1 and 2 return the path of the copy; the committed file is never edited. With
 vehicle 0, or an overlay that touches none of the values a file depends on,
 they return the committed file itself. scripts/check_vehicle_dims.py keeps
 the committed copies equal to the estimates, using the rules written here.
 
 Controllers: written 2026-11-17, exercised in the twin with a test overlay.
-Nav2: written 2026-11-18. No vehicle has measured values yet, so no real
-overlay has been through either.
+Nav2: written 2026-11-18. The running-body comparison: written 2026-11-19.
+No vehicle has measured values yet, so no real overlay has been through any
+of the three.
 """
 
 import getpass
@@ -287,3 +294,106 @@ def nav2_for(vehicle, desc_share, nav_yaml, real=False):
     times = {'footprint': 2, PLANNER_RADIUS: 1}
     return _generated(
         vehicle, nav_yaml, {k: (v, times[k]) for k, v in values.items()}, 'nav2')
+
+
+def urdf_body(urdf_xml):
+    """The FOOTPRINT_KEYS of a robot, read back out of its URDF text.
+
+    The inverse of mitt_base.xacro for those six values: the front-left
+    steering joint sits at (wheelbase, track/2, wheel_radius), the chassis
+    collision box is length x width, and a wheel's collision cylinder is
+    wheel_width long. Raises ValueError if the URDF is not shaped like that.
+    """
+    import xml.etree.ElementTree as ET
+
+    try:
+        robot = ET.fromstring(urdf_xml)
+        steer = robot.find("joint[@name='front_left_steer_joint']/origin")
+        x, y, z = (float(v) for v in steer.get('xyz').split())
+        box = robot.find("link[@name='chassis_link']/collision/geometry/box")
+        length, width = (float(v) for v in box.get('size').split()[:2])
+        wheel = robot.find(
+            "link[@name='front_left_wheel_link']/collision/geometry/cylinder")
+        wheel_width = float(wheel.get('length'))
+    except (ET.ParseError, AttributeError, TypeError, ValueError):
+        raise ValueError(
+            'the robot description is not the MITT URDF '
+            '(mitt_description/urdf/mitt_base.xacro)') from None
+    return {'wheelbase': x, 'track_width': 2.0 * abs(y), 'wheel_radius': z,
+            'chassis_length': length, 'chassis_width': width,
+            'wheel_width': wheel_width}
+
+
+def body_mismatch(desc_share, vehicle, urdf_xml):
+    """Where the running robot's body differs from vehicle N's: a list of
+    (key, value in the URDF, value for vehicle N). Empty when they agree.
+
+    Two vehicles that have measured nothing yet are both the estimates, and
+    compare equal: there is nothing to get wrong until an overlay has values.
+    """
+    want = {**_estimates(desc_share), **load_overlay(desc_share, vehicle)}
+    have = urdf_body(urdf_xml)
+    return [(k, have[k], float(want[k])) for k in FOOTPRINT_KEYS
+            if abs(have[k] - float(want[k])) > 1e-6]
+
+
+def _running_body(vehicle, desc_share, wait=15.0):
+    """Compare the running /robot_description with vehicle N. Exit status:
+    0 they agree, 1 they differ, 2 the comparison could not be made."""
+    import time
+
+    import rclpy
+    from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
+    from std_msgs.msg import String
+
+    rclpy.init()
+    node = rclpy.create_node('mitt_running_body_check')
+    got = []
+    # robot_state_publisher latches the description: transient local.
+    qos = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE,
+                     durability=DurabilityPolicy.TRANSIENT_LOCAL)
+    node.create_subscription(
+        String, 'robot_description', lambda m: got.append(m.data), qos)
+    end = time.monotonic() + wait
+    while not got and time.monotonic() < end:
+        rclpy.spin_once(node, timeout_sec=0.2)
+    node.destroy_node()
+    rclpy.shutdown()
+
+    bar = '!' * 72
+    if not got:
+        print(f'\n{bar}\nvehicle check: no /robot_description in {wait:.0f} s, '
+              f'so Nav2 was NOT compared with the robot it drives.\nIs '
+              f'sim.launch.py (or real.launch.py) running, in this ROS domain?'
+              f'\n{bar}\n', flush=True)
+        return 2
+    try:
+        diff = body_mismatch(desc_share, vehicle, got[0])
+    except ValueError as e:
+        print(f'\n{bar}\nvehicle check: {e}\n{bar}\n', flush=True)
+        return 2
+    if not diff:
+        print(f'vehicle check: the running robot has the body of vehicle '
+              f'{parse_vehicle(vehicle)}.', flush=True)
+        return 0
+    same = [str(v) for v in (0,) + VEHICLES
+            if not body_mismatch(desc_share, v, got[0])]
+    lines = '\n'.join(f'  {k}: {a:g} m on the running robot, {b:g} m for '
+                      f'vehicle {parse_vehicle(vehicle)}' for k, a, b in diff)
+    print(f'\n{bar}\nWRONG VEHICLE. Nav2 was started with vehicle:='
+          f'{parse_vehicle(vehicle)}, and the running robot is a different '
+          f'body:\n{lines}\nThe running robot matches vehicle:='
+          f'{" or ".join(same) if same else "(none of 0-3)"}. Nav2 is planning '
+          f'with the footprint and turning radius of another vehicle.\nStop '
+          f'Nav2 and start it with the vehicle:= the robot was started with.'
+          f'\n{bar}\n', flush=True)
+    return 1
+
+
+if __name__ == '__main__':
+    import sys
+
+    if len(sys.argv) != 4 or sys.argv[1] != 'running-body':
+        sys.exit('usage: vehicle_config.py running-body <vehicle> '
+                 '<mitt_description share directory>')
+    sys.exit(_running_body(sys.argv[2], sys.argv[3]))

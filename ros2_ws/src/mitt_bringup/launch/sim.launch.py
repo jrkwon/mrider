@@ -100,13 +100,10 @@ def _vehicle_controllers(context):
         path = vehicle_config.controllers_for(
             vehicle, get_package_share_directory("mitt_description"), stock)
     except ValueError as e:
-        # Fall back to the estimates so the description below can still
-        # expand while the launch shuts down: the reason printed here is then
-        # the only error, not the first of two.
-        return [SetLaunchConfiguration("controllers_file", stock),
-                SetLaunchConfiguration("vehicle", "0"),
-                LogInfo(msg=f"\nsim.launch.py will not start: {e}\n"),
-                Shutdown(reason="vehicle configuration refused")]
+        # Raised, not logged-and-Shutdown: an exception here ends `ros2
+        # launch` with exit status 1 and one error line, before anything is
+        # started. Shutdown ended it with status 0.
+        raise RuntimeError(f"sim.launch.py will not start: {e}") from None
     return [SetLaunchConfiguration("controllers_file", path),
             LogInfo(msg=f"vehicle {vehicle}: controller parameters from {path}")]
 
