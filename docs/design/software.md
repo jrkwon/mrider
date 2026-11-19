@@ -448,6 +448,56 @@ the installed library — so the key was ignored at runtime. It has been removed
 the turning circle because the path it follows was planned inside it, not because of a setting of
 its own.*
 
+### 4.6 Does the vehicle need `BackUp`? — RESULT 2026-11-19
+
+`BackUp` was left out of the behavior trees in August for a reason that §4.5 now records as
+wrong. That does not make it needed. This is the trial that asked.
+
+**Setup.** Twin, headless (`sim.launch.py gz_args:="-r -s"`), estimates (`vehicle:=0`), AMCL on
+the committed `maps/depot.yaml`, Nav2 from `nav2.launch.py`. Repo at `9e5406a` plus the
+`map_server` block that became `6099516`. The vehicle was driven on the joystick input until its
+nose was pressed 3–5 cm into an obstacle, and then given a goal on `/goal_pose`. "With `BackUp`"
+is the same parameter file with `backup` added to `behavior_plugins` and
+`<BackUp backup_dist="0.30" backup_speed="0.05"/>` after `Wait` in the recovery `RoundRobin`,
+the stock Nav2 values.
+
+| # | Config | Pressed into | Goal | Outcome |
+|---|---|---|---|---|
+| 1 | committed | post, 2 cm short | 3.6 m behind | reversed 3.1 m, **succeeded** |
+| 2 | committed | post | beyond the post | reversed, went round, **succeeded** |
+| 3 | committed | wall, at ~59° | (4.0, 1.5) | **never moved**: RPP `detected collision ahead!`, three waits, failed |
+| 4 | with `BackUp` | same pose as 3, vehicle not moved | (4.0, 1.5) | `backup completed`, left the wall, drove 3.4 m, then stalled near (5.0, 3.1) and failed; a second `BackUp` there was refused: `Collision Ahead - Exiting DriveOnHeading` |
+| 5 | with `BackUp` | wall, ~98° | 2 m straight behind | **succeeded**, `BackUp` never called |
+| 6 | with `BackUp` | wall, ~97° | (4.0, 1.5) | **succeeded**, no recovery at all |
+| 7 | with `BackUp` | wall, ~89° | (4.0, 1.5) | six RPP refusals, one `BackUp`, **succeeded** |
+| 8 | committed | wall, ~86° | (4.0, 1.5) | left the wall unaided, then stalled near (4.8, 2.4) and failed |
+
+**What it shows.**
+
+- **The committed configuration usually frees itself.** The planner plans a reverse segment and
+  RPP follows it (runs 1, 2 and 8, and 5 and 6 where `BackUp` was available and unused). F-N4's
+  "over until a human intervenes" is no longer the rule.
+- **It does not always.** In run 3 the vehicle never moved, and in run 4 `BackUp` freed it from
+  that same pose. That pair is the only direct comparison, and the oblique pose of run 3 was not
+  reproduced.
+- **`BackUp` is not blind.** In run 4 it refused to reverse towards an obstacle behind the
+  vehicle. That is the costmap check §4.5 describes, observed.
+- **Runs 4 and 8 stalled mid-route, not at the wall**, both while reversing near (5, 2.4–3.1),
+  with RPP refusing on every retry. `BackUp` did not clear it. Not diagnosed; a separate problem.
+
+**Decision: `BackUp` stays out.** One direct comparison is thin evidence for a change to what a
+real vehicle does unprompted, the case it fixes is rare and is already covered by the operator
+on the RC sticks ([safety.md §1.2](safety.md)), and `backup_speed: 0.05` has never been tried on
+a real motor. Putting it back needs the plugin in `behavior_server` and the node in both trees.
+
+**Limits.** Eight runs, one world, one map, no fixed seed; runs 6 and 7 differ under the same
+conditions. Why RPP refused in run 3 is not known. The logs and the two modified files are in
+`.omc/artifacts/backup-trial-2026-11-19/` on the instructor's machine, which is not in this
+repository.
+
+**Found on the way.** `localization.launch.py` had never loaded a map: `nav2_params.yaml` had no
+`map_server` block for `nav2_bringup` to rewrite `yaml_filename` in. Fixed in `6099516`.
+
 ---
 
 ## 5. Data collection + end-to-end NN pipeline

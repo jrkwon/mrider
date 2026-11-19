@@ -351,8 +351,11 @@ behavior_server:
     #            BackUp checks the local costmap before it moves. It stays out
     #            because the MITT trees were written and tested without it and
     #            nobody has run it on this footprint - not because it would be
-    #            blind. Putting it back is an open option; it needs the plugin
-    #            here and the node in both behavior trees.
+    #            blind. Tried in the twin 2026-11-19 (software.md 4.6): the
+    #            committed configuration usually frees itself, BackUp freed
+    #            it in the one case where it did not, and that was judged
+    #            too thin to change what a real vehicle does. Putting it
+    #            back needs the plugin here and the node in both trees.
     #
     # BackUp's exclusion is NOT because the vehicle cannot reverse. It can, and
     # does: allow_reversing is true and the planner emits Reeds-Shepp paths with
