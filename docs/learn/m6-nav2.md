@@ -129,21 +129,29 @@ arrived 0.40 m from the goal. **Before the swap, that manoeuvre had no solution 
 
 ### Reverse is expensive, not free
 
-`reverse_penalty: 2.5` makes reversing a last resort rather than a normal option. There is a
-hardware reason, and it is the best example in this course of the simulator earning its keep:
+`reverse_penalty: 2.5` makes reversing a last resort rather than a normal option: a way out of
+a dead end, not a shortcut through a turn. It is a tuning value, and 2.5 is the one the run above
+was verified with.
 
 > [!CAUTION]
-> **The vehicle has no rear sensing**
+> **Reverse is unproven on a real vehicle — and it is not blind**
 >
-> The LiDAR faces forward. There is no rear camera and no rear bumper. Autonomous reverse is
-> therefore **blind**, relying entirely on costmap memory of what was seen while driving in.
+> The LiDAR is a 360° unit on top of the mast, above the roofline. It scans behind the vehicle
+> as it scans ahead, so a reverse segment is driven against a live costmap.
 >
-> In simulation that is free. On the real vehicle it is not.
+> What it cannot see is anything **lower than its scan plane**, in any direction, and Nav2 does
+> not use the forward camera. There is no bumper.
 >
-> **The twin surfaced a hardware requirement before the vehicle existed.** Track B must choose
-> one of: add rear sensing, hard-cap reverse distance and speed in firmware, or forbid
-> autonomous reverse on hardware. Until that is decided, autonomous reverse on the real car is
-> **unproven and must not be enabled by inheriting this configuration unchanged.**
+> Autonomous reverse has been driven **in the twin only**. The first reverse goals on a vehicle
+> are your team's test to run, at walking speed, with the operator on the sticks.
+
+> [!NOTE]
+> **This page said the opposite until 2026-11-19**
+>
+> It said the LiDAR faced forward and reverse was blind. The sentence had been copied from the
+> design notes into the parameter file, this page and two weeks of slides, and nobody compared
+> it with the sensor page of the same repo. A claim that is repeated in five places has not been
+> checked five times.
 
 > [!WARNING]
 > **The planner's radius is a derived placeholder until your team measures it**

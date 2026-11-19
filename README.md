@@ -34,7 +34,7 @@ MRider is a **research and education platform**: rigorous enough for autonomous-
 | DBW | **Single Teensy 4.1 running micro-ROS** + Cytron MDDS30 in independent R/C mode — [ADR D3](docs/design/adr-dbw-architecture-review.md) |
 | Steering | **Load-side absolute angle sensor** on the kingpin axis, ≥200 Hz position loop **on the Teensy**; ±22.5° travel, R_min 1.52 m — [ADR B / ADR E](docs/design/dbw.md) |
 | Odometry | One quadrature encoder on one drive-motor shaft — **PPR must be measured, never inherited** (finding F7) — roll-out calibrated, fused with the IMU in an EKF — [ADR C](docs/design/dbw.md) |
-| Sensors | Front camera + 2D LiDAR (minimum); BNO085-class IMU; GNSS/RTK as a growth path. **No rear sensing** — see the reverse constraint in [software.md §4.5](docs/design/software.md) |
+| Sensors | Front camera + 2D LiDAR (minimum); BNO085-class IMU; GNSS/RTK as a growth path. The LiDAR scans 360° from the top of the mast; nothing sees below its scan plane |
 | Compute | Onboard laptop (own battery) running ROS 2 Humble — SLAM, Nav2, and an end-to-end NN pipeline |
 | Safety | Hardware E-stop, relay MUX (default = stock), hardware RC signal MUX, SBUS override — **three of the four work with the firmware dead** — plus failsafe matrix + FMEA |
 

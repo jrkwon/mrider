@@ -155,11 +155,13 @@ It also compares the body of the running robot with `vehicle:=<n>` and prints a 
 >
 > The committed parameters let the planner reverse (`motion_model_for_search: REEDS_SHEPP`,
 > `allow_reversing: true`), and `nav2.launch.py` runs them on a real vehicle unchanged. The
-> vehicle has **no rear sensing**, so a reverse segment is driven on what the costmap
-> remembers. [software.md §4.5](../design/software.md#45-planner-swap-to-smacplannerhybrid-resolved-2026-08-09)
-> leaves the choice open: add rear sensing, cap reverse distance and speed in firmware, or
-> forbid autonomous reverse on hardware. Until your team has decided, send only goals **ahead**
-> of the vehicle, keep the area behind it clear, and keep the operator's thumbs on the sticks.
+> LiDAR scans 360° from the top of the mast, so a reverse segment is driven against a live
+> costmap, but it has been driven **in the twin only**
+> ([software.md §4.5](../design/software.md#45-planner-swap-to-smacplannerhybrid-resolved-2026-08-09)).
+> Before the first reverse goal, check in RViz that `/scan` has returns **behind** the vehicle
+> as built: a cable or a post beside the LiDAR leaves a sector with none. Then treat it as a
+> first run: clear area behind, walking speed, operator's thumbs on the sticks. Nothing on the
+> vehicle sees an obstacle lower than the scan plane, ahead or behind.
 
 Send a goal from RViz's **2D Goal Pose**, starting with a short straight-line goal and only
 then progressing to goals requiring turns. Pick goals with at least 1 m of clearance: the
@@ -169,7 +171,7 @@ footprint reaches about 0.8 m ahead of `base_link`.
 > **What recovery there is**
 >
 > The only recovery behavior is `wait`. `Spin` is absent because the vehicle cannot rotate in
-> place, and `BackUp` because it would reverse blind. A vehicle that noses into an obstacle is
+> place, and `BackUp` because the trees were tested without it. A vehicle that noses into an obstacle is
 > finished until the operator takes the RC sticks
 > ([safety.md §1.2](../design/safety.md)). The goal tolerance is 0.6 m and 0.6 rad, so "reached"
 > means within that, not on the point.
@@ -181,7 +183,8 @@ footprint reaches about 0.8 m ahead of `base_link`.
 | `minimum_turning_radius` Nav2 reports | **1.05 × your measured radius**, rounded up to 1 cm | m | `ros2 param get /planner_server GridBased.minimum_turning_radius`; anything else means the overlay was not used |
 | Straight-line goal, 5 m | reaches it | | The simplest goal there is; a failure here is localization, not planning |
 | Goal requiring a single turn | reaches it | | First goal the turning radius constrains; an undrivable path means the measured radius is too small |
-| Reverse segments in planned paths | **none** *(until your team has decided)* | | **MRider has no rear sensing** — see the caution above |
+| `/scan` returns behind the vehicle | **present over the whole rear half** | | An empty sector is an occlusion: the costmap there is never updated — see the caution above |
+| First reverse segment | driven, operator on the sticks | m | Reverse has been driven in the twin only; yours is the first evidence |
 | Path-tracking error, worst case | — *(your course)* | m | No reference: compare against your own earlier runs |
 | Recoveries (`wait`) triggered | **as few as possible** | | Frequent recoveries mean the costmap or the footprint is wrong, not that Nav2 is working |
 

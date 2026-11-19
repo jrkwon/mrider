@@ -74,7 +74,7 @@ reuses.
 | DBW | **Single Teensy 4.1 running micro-ROS** + Sabertooth 2x32 in independent R/C PWM mode — [ADR D3](design/adr-dbw-architecture-review.md#46-decision-adopted-2026-08-07) |
 | Steering | **Load-side absolute angle sensor** on the kingpin axis, ≥200 Hz position loop **on the Teensy**; ±22.5° travel, R_min 1.52 m — [ADR B / ADR E](design/dbw.md) |
 | Odometry | One quadrature encoder on one drive-motor shaft — **PPR must be measured, never inherited** (finding F7) — roll-out calibrated, fused with the IMU in an EKF — [ADR C](design/dbw.md) |
-| Sensors | Front camera + 2D LiDAR (minimum); BNO085-class IMU; GNSS/RTK as a growth path. **No rear sensing** — see the reverse constraint in [software.md §4.5](design/software.md#45-planner-swap-to-smacplannerhybrid-resolved-2026-08-09) |
+| Sensors | Front camera + 2D LiDAR (minimum); BNO085-class IMU; GNSS/RTK as a growth path. The LiDAR scans 360° from the top of the mast; nothing sees below its scan plane |
 | Compute | Onboard laptop (own battery) running ROS 2 Humble — SLAM, Nav2, and an end-to-end NN pipeline |
 | Safety | Hardware E-stop, relay MUX (default = stock), hardware RC signal MUX, RC serial override — **three of the four work with the firmware dead** — plus failsafe matrix + FMEA |
 
