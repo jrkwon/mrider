@@ -47,13 +47,13 @@ slam_toolbox is reused essentially as-is: `solver_plugin: CeresSolver`, `mode: m
 `max_laser_range: 10.0`, `transform_publish_period: 0.02`
 ([software.md §4.2](../design/software.md#42-slam_toolbox-configslammapper_params_online_asyncyaml)).
 
-> [!CAUTION]
-> **Fix the frame mismatch before your first map**
+> [!NOTE]
+> **One base frame, already**
 >
-> B-MROVER's slam config uses `base_frame: base_footprint` while the EKF uses `base_link`.
-> If you skipped this correction in [step 5](05-software.md#58-re-parameterize-for-the-real-chassis),
-> TF will be inconsistent and your map will be subtly, confusingly wrong. Reconcile to one
-> convention — `base_link` throughout is recommended.
+> B-MROVER's slam config used `base_frame: base_footprint` while its EKF used `base_link`.
+> `mitt_navigation/config/slam_toolbox.yaml` says `base_link`, as the EKF does, so there is
+> nothing to reconcile here. If a map comes out subtly wrong, check that nobody has put
+> `base_footprint` back.
 
 **Drive the map manually.** Use joystick teleop from step 7 — you are not navigating yet.
 
@@ -82,7 +82,7 @@ ros2 run nav2_map_server map_saver_cli -f config/maps/test_course
 
 | Item | Reference | Yours | Why that reference |
 |---|---|---|---|
-| Course dimensions | — *(your course)* | m × m | Feeds `robot_radius` and the Nav2 velocity caps below |
+| Course dimensions | — *(your course)* | m × m | Decides which goals are reachable: a turn needs more than twice the turning radius of clear floor |
 | Map resolution | **0.05 m/cell** *(fixed)* | | Changing it invalidates the costmap tuning that follows |
 | `max_laser_range` used | — *(your LiDAR)* | m | Record it: a map made at a different range will not localize the same |
 | Loop-closure error at start point | — *(gate: the map closes)* | m | Doubled walls mean drift or bad extrinsics, not a tuning problem |
@@ -94,8 +94,17 @@ bad extrinsics), and the start point returns to itself.
 
 ## 8.3 Phase B — Localization on the saved map
 
-Switch slam_toolbox `mode: localization` with the saved map for repeat runs. Drive the course
-manually again and confirm the pose stays locked.
+For repeat runs, stop `slam.launch.py` and localize on the saved map with AMCL. Both publish
+`map` → `odom`, so never run the two together.
+
+```bash
+ros2 launch mitt_navigation localization.launch.py use_sim_time:=false \
+  map:=/absolute/path/to/test_course.yaml
+```
+
+`map:=` must be an absolute path. AMCL does not assume where the vehicle is: give it a
+**2D Pose Estimate** in RViz first. Then drive the course manually again and confirm the pose
+stays locked.
 
 - [ ] Pose does not jump when the vehicle passes featureless stretches
 - [ ] Pose recovers correctly after a deliberate re-start from a known point
@@ -106,49 +115,77 @@ A monotonically growing correction means odometry is biased — go back to
 
 ## 8.4 Phase C — Nav2 goals
 
-Nav2 is reused with the NavFn planner and B-MROVER's costmap layers, re-parameterized for the
-real chassis ([software.md §4.3](../design/software.md#43-nav2-configslamnav2_paramsyaml)).
+Nav2 runs from this repo's own launch file and parameter file, not B-MROVER's. The planner is
+`SmacPlannerHybrid`, which plans inside the turning circle, and the controller is Regulated
+Pure Pursuit. DWB and NavFn were dropped in the twin before any vehicle existed
+([software.md §4.4–§4.5](../design/software.md#44-nav2-bring-up-in-the-twin-result-2026-08-08)).
 
-**Re-parameterize before the first goal:**
+**Two values are your vehicle's own, and you do not type either into Nav2.** They come from
+your overlay, `mitt_description/config/vehicles/vehicle<n>.yaml`:
 
-| Parameter | B-MROVER value | Your value | Why |
-|---|---|---|---|
-| `robot_radius` | 0.1397 | *(from step 2 dimensions)* | The real chassis is much larger |
-| `max_vel_x` | 0.26 | *(cap at walking speed)* | Safety case is only valid ≤ walking speed |
-| `max_vel_theta` | 1.0 | *(derive from ±22.5° limit)* | You cannot rotate faster than the steering allows |
-| `max_vel_y` | 0.0 | 0.0 | Non-holonomic — keep at zero |
+| Nav2 parameter | Comes from | Rule |
+|---|---|---|
+| `footprint` (local and global costmap) | wheelbase, track, wheel and chassis sizes | Outline of body and wheels, each edge rounded outward to 1 cm |
+| `minimum_turning_radius` (planner) | `min_turning_radius` | 5% above the measured radius, rounded up to 1 cm |
+
+`nav2.launch.py vehicle:=<n>` writes a copy of `nav2_params.yaml` with those values and runs
+Nav2 on the copy. **Do not edit `nav2_params.yaml` for your vehicle**: it holds the estimates,
+and a check keeps it that way. Change the overlay and open a pull request with that one file
+([teams.md](../course/teams.md)).
 
 ```bash
-ros2 launch nav2_bringup navigation_launch.py \
-  params_file:=config/slam/nav2_params.yaml map:=config/maps/test_course.yaml
+MITT_VEHICLE=<n> source ros2_ws/setup_env.sh            # every terminal
+ros2 launch mitt_navigation nav2.launch.py vehicle:=<n> use_sim_time:=false
 ```
 
+Start it after `real.launch.py` and after SLAM or localization, because Nav2 needs
+`map` → `odom` to exist. On a real vehicle it refuses to start, with exit status 1 and one
+line saying why, unless all three hold:
+
+- [ ] `vehicle:=` is 1, 2 or 3
+- [ ] `ROS_DOMAIN_ID` in this shell is 10 + `<n>`
+- [ ] `vehicle<n>.yaml` has a **measured** `min_turning_radius`
+      ([calibration.md §1.5](../design/calibration.md#15-minimum-turning-radius-measured-not-derived))
+
+It also compares the body of the running robot with `vehicle:=<n>` and prints a block headed
+`WRONG VEHICLE` if they differ. That is a warning, not a stop: read the first screen of output.
+
+> [!CAUTION]
+> **Autonomous reverse is unproven on a real vehicle**
+>
+> The committed parameters let the planner reverse (`motion_model_for_search: REEDS_SHEPP`,
+> `allow_reversing: true`), and `nav2.launch.py` runs them on a real vehicle unchanged. The
+> vehicle has **no rear sensing**, so a reverse segment is driven on what the costmap
+> remembers. [software.md §4.5](../design/software.md#45-planner-swap-to-smacplannerhybrid-resolved-2026-08-09)
+> leaves the choice open: add rear sensing, cap reverse distance and speed in firmware, or
+> forbid autonomous reverse on hardware. Until your team has decided, send only goals **ahead**
+> of the vehicle, keep the area behind it clear, and keep the operator's thumbs on the sticks.
+
 Send a goal from RViz's **2D Goal Pose**, starting with a short straight-line goal and only
-then progressing to goals requiring turns.
+then progressing to goals requiring turns. Pick goals with at least 1 m of clearance: the
+footprint reaches about 0.8 m ahead of `base_link`.
 
 > [!NOTE]
-> **Expect DWB to struggle, and know what to do about it**
+> **What recovery there is**
 >
-> DWB is a diff-drive/omni-oriented local planner. On a true Ackermann vehicle with a
-> ±22.5° steering limit, it can plan paths the vehicle physically cannot follow.
-> [ADR-SW2](../design/software.md#adr-sw2-nav2-local-controller-for-ackermann) keeps DWB as
-> the reused default for bring-up and **pre-registers Regulated Pure Pursuit as the swap**,
-> with a concrete trigger: persistent path-tracking error or infeasible commands during
-> turning tests. If you hit that trigger, swapping to RPP is the planned action, not a
-> workaround.
+> The only recovery behavior is `wait`. `Spin` is absent because the vehicle cannot rotate in
+> place, and `BackUp` because it would reverse blind. A vehicle that noses into an obstacle is
+> finished until the operator takes the RC sticks
+> ([safety.md §1.2](../design/safety.md)). The goal tolerance is 0.6 m and 0.6 rad, so "reached"
+> means within that, not on the point.
 
 **Record sheet — Nav2**
 
 | Test | Expected | Yours | Why that expectation |
 |---|---|---|---|
+| `minimum_turning_radius` Nav2 reports | **1.05 × your measured radius**, rounded up to 1 cm | m | `ros2 param get /planner_server GridBased.minimum_turning_radius`; anything else means the overlay was not used |
 | Straight-line goal, 5 m | reaches it | | The simplest goal there is; a failure here is localization, not planning |
-| Goal requiring a single turn | reaches it | | First goal the ±22.5° limit constrains — `max_vel_theta` must already be derived |
-| Goal requiring reversing/recovery | reaches it | | **MRider has no rear sensing** — [software.md §4.5](../design/software.md). A recovery that reverses is driving blind |
+| Goal requiring a single turn | reaches it | | First goal the turning radius constrains; an undrivable path means the measured radius is too small |
+| Reverse segments in planned paths | **none** *(until your team has decided)* | | **MRider has no rear sensing** — see the caution above |
 | Path-tracking error, worst case | — *(your course)* | m | No reference: compare against your own earlier runs |
-| Recovery behaviors triggered | **as few as possible** | | Frequent recoveries mean the costmap or the velocity caps are wrong, not that Nav2 is working |
-| Controller retained | DWB *(default)* | | Record a swap to RPP **and why** — a silent swap makes every later lap incomparable |
+| Recoveries (`wait`) triggered | **as few as possible** | | Frequent recoveries mean the costmap or the footprint is wrong, not that Nav2 is working |
 
-**Gate:** goals are reached without repeated recovery behaviors, and the vehicle never
+**Gate:** goals are reached without repeated recoveries, and the vehicle never
 commands a steering angle it cannot achieve.
 
 ## 8.5 Phase D — Data collection
@@ -278,7 +315,9 @@ consecutive attempts. One lucky lap is not a working policy.
 | Policy drives straight through corners | Label distribution dominated by straights | [Phase D](#85-phase-d-data-collection) balance |
 | Policy oscillates left/right on straights | Overfit, or noisy steering labels | Check `steering_angle` noise from [step 6](06-bench-test.md); more data |
 | Policy works one direction only | Trained on one course direction | Record the other direction |
-| Nav2 paths the vehicle cannot follow | DWB vs. Ackermann | Swap to RPP — [ADR-SW2](../design/software.md#adr-sw2-nav2-local-controller-for-ackermann) |
+| Nav2 paths the vehicle cannot follow | Planner radius below the real turning radius | Re-measure both locks — [calibration.md §1.5](../design/calibration.md#15-minimum-turning-radius-measured-not-derived); record the larger in `vehicle<n>.yaml` |
+| `nav2.launch.py will not start: …` | Vehicle number, ROS domain, or an unmeasured turning radius | The line names which — [Phase C](#84-phase-c-nav2-goals) |
+| `WRONG VEHICLE` in the Nav2 terminal | Nav2 and the robot were started with different `vehicle:=` | Stop Nav2; start it with the robot's number |
 | Map doubles walls | Odometry drift or bad extrinsics | [Odometry](06-bench-test.md#66-drive-distance-ticksmeters) and [extrinsics](06-bench-test.md#68-extrinsics-sensors-base_link) |
 | Pose jumps during localization | Featureless stretches, or LiDAR range too short | `max_laser_range`; add features to the course |
 | Steering label does not match image | Time-sync error | [calibration.md §6](../design/calibration.md#6-time-synchronization) |
@@ -290,7 +329,7 @@ happened, because every blank **Yours** cell in this guide is a question that on
 can answer — and for most of them, nobody has answered it yet at all.
 
 - [ ] All calibration artifacts committed under `config/calibration/` with full stamps
-- [ ] Map and Nav2 parameters committed
+- [ ] Map committed, and your measured values in `vehicle<n>.yaml` (Nav2 takes its numbers from there)
 - [ ] Dataset and trained weights archived with their config
 - [ ] **This guide updated** — replace the placeholders with your measured values, remove the
       Draft banners from pages you have now validated, and correct anything that was wrong

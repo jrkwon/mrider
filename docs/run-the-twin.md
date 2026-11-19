@@ -114,7 +114,9 @@ SLAM's `map → odom`.
     ```
 
     Running the twin of a vehicle? Give Nav2 the same `vehicle:=<n>` you gave `sim.launch.py`, so
-    it plans with that vehicle's footprint and turning radius.
+    it plans with that vehicle's footprint and turning radius. If the two numbers name different
+    bodies, Nav2 prints a block headed `WRONG VEHICLE` in its first screen of output and keeps
+    running: stop it and start it with the twin's number.
 
     **Wait ~45 s.** Ready when the log shows `Managed nodes are active`.
 
