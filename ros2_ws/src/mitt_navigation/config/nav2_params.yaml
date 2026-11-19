@@ -42,6 +42,16 @@ amcl:
     robot_model_type: "nav2_amcl::DifferentialMotionModel"
     set_initial_pose: false
 
+# The map file comes from `localization.launch.py map:=...`. nav2_bringup
+# passes it on by REWRITING the key below, and a key that is not in this file
+# is not rewritten: without this block map_server stopped at configure with
+# "parameter 'yaml_filename' is not initialized" and localization never came
+# up. Found 2026-11-19, the first time localization.launch.py was run.
+map_server:
+  ros__parameters:
+    use_sim_time: true
+    yaml_filename: ""
+
 bt_navigator:
   ros__parameters:
     use_sim_time: true
