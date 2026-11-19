@@ -10,11 +10,12 @@
   BackUp is excluded for a DIFFERENT reason, and it is worth being precise: the
   vehicle CAN reverse. Since the 2026-08-09 planner swap, allow_reversing is
   true and SmacPlannerHybrid emits Reeds-Shepp paths containing reversing
-  segments - a goal 2.5 m directly behind was reached that way. What is excluded
-  is backing up BLIND as a recovery reflex: the LiDAR only sees forward and
-  there is no rear sensing (docs/design/sensors.md). Reversing along a path
-  planned against a costmap is not the same act as reversing because you are
-  stuck.
+  segments - a goal 2.5 m directly behind was reached that way. BackUp was
+  left out in 2026-08 on the belief that the LiDAR only saw forward, which made
+  a BackUp a blind reflex. CORRECTED 2026-11-19: the LiDAR is a 360-degree unit
+  on top of the mast, and Nav2's BackUp checks the local costmap before it
+  moves. It stays out because this tree was tested without it; see
+  behavior_server in nav2_params.yaml.
 
   The stock tree references both behaviors, so loading it against our
   behavior_server - which only loads the "wait" plugin - fails at BT parse time

@@ -376,8 +376,8 @@ manual command.
 This is the safety model working as designed rather than a defect — `safety.md §1.2` already
 states recovery is an operator taking the RC sticks — but it is now *demonstrated*, and it
 sets a real operational constraint: **an autonomous run that noses into an obstacle is over
-until a human intervenes.** Whether to enable reverse is a hardware question, not a tuning
-one: there is no rear sensing (`sensors.md`), so reversing is currently blind.
+until a human intervenes.** *(This paragraph ended, until 2026-11-19, by calling reverse a
+hardware question because the vehicle had no rear sensing. It has: see the correction in §4.5.)*
 
 **Method note.** Two goals were rejected before a valid test was possible — one 0.05 m from
 a wall, one in free space not *connected* to the robot. Goals for this vehicle must be
@@ -413,17 +413,27 @@ impossible forward-only at a 1.6 m turning radius. The vehicle reversed 2.1 m in
 line, heading unchanged at ~3°, and arrived 0.40 m from the goal. Before this change that
 manoeuvre had no solution at all.
 
-**Reverse is deliberately expensive, not merely permitted** (`reverse_penalty: 2.5`), and
-this is the constraint to carry into Track B: **the vehicle has no rear sensing.** The LiDAR
-faces forward; there is no rear camera or bumper. Autonomous reverse is therefore *blind*,
-relying on costmap memory of what was seen driving in. In simulation that is free; on the
-real vehicle it is not.
+**Reverse is deliberately expensive, not merely permitted** (`reverse_penalty: 2.5`): a
+manoeuvre of last resort, used to leave a dead end and not to shortcut a turn. 2.5 is the value
+the run above was verified with, and it is a tuning value.
 
-This is the twin doing its job — it has surfaced a hardware requirement before the vehicle
-exists. Track B must choose one of: add rear sensing, hard-cap reverse distance and speed in
-firmware, or forbid autonomous reverse on hardware and accept the manual-recovery model of
-F-N4. **Until that is decided, autonomous reverse on the real car is unproven** and must not
-be enabled by inheriting this config unchanged.
+**Autonomous reverse on a real vehicle is unproven**, because it has been driven in the twin
+only. The first reverse goals on a vehicle are a team's test to run, at walking speed with the
+operator on the sticks, like every first run in [build step 8](../build/08-autonomous.md).
+
+*CORRECTED 2026-11-19. Until then this section said the vehicle had no rear sensing: that the
+LiDAR faced forward, that reverse was blind and ran on costmap memory, and that Track B had to
+choose between adding rear sensing, capping reverse in firmware, and forbidding autonomous
+reverse on hardware. The premise was wrong, and it was never checked against this repo's own
+sensor pages. The LiDAR is a 360° unit on a cap on top of the mast, above the roofline
+([sensors.md §5](sensors.md#5-mounting-mast-concept), `mitt_sensors.xacro`), so the costmap behind the vehicle is updated
+from live scans as the costmap ahead is. `BackUp` was excluded on the same premise; Nav2's
+`BackUp` also checks the local costmap before it moves. Neither parameter has been changed: the
+reason given for them has.*
+
+*What is true, in every direction and not only behind: a 2D LiDAR sees one slice at mast height
+and nothing lower, the camera looks forward and Nav2 does not use it, and there is no bumper or
+contact sensor.*
 
 `minimum_turning_radius` is the one place the turning circle enters Nav2. Its 1.6 is the derived
 `0.63 / tan(22.5°) = 1.52 m` plus margin, and the real figure is **measured by each team on its
