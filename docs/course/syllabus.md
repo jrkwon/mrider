@@ -143,9 +143,9 @@ Reading keys: **B** = *ROS 2: Zero to Robot* · **M** = [MRider learn module](..
 | [10](weeks/w10.md) | **11/16** | Perception: camera and 2D LiDAR, intrinsics and extrinsics | Track work | Track milestone |
 | [11](weeks/w11.md) | **11/23** | SLAM: `slam_toolbox`, loop closure, and how to read a bad map | **Merge 1 — Electrical + Chassis** | — |
 | [12](weeks/w12.md) | **11/30** | Nav2: costmaps, planners, behavior trees, lifecycle nodes **★ MID-SEMESTER PRESENTATION**, which carries **Merge 2 — Simulation + Software** | Mid deliverable · peer eval 1 |
-| 13 | **12/07** | Simulation to reality: calibration, QoS/DDS, diagnostics, logging | **Merge 3 — (E+C) + Software** | — |
-| 14 | **12/14** | System architecture, CI, reproducibility. Validation and failure analysis | **Merge 4 — full integration**; measure against the acceptance gates; dress rehearsal | Peer eval 2 |
-| 15 | **12/21** | — | **★ FINAL DEMO + PRESENTATIONS** | Final report · demo |
+| [13](weeks/w13.md) | **12/07** | Simulation to reality: calibration, QoS/DDS, diagnostics, logging | **Merge 3 — (E+C) + Software** | — |
+| [14](weeks/w14.md) | **12/14** | System architecture, CI, reproducibility. Validation and failure analysis | **Merge 4 — full integration**; measure against the acceptance gates; dress rehearsal | Peer eval 2 |
+| [15](weeks/w15.md) | **12/21** | — | **★ FINAL DEMO + PRESENTATIONS** | Final report · demo |
 
 > [!NOTE]
 > **The mid-semester presentation moved to Week 12 (11/30)**
