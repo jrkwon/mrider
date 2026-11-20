@@ -101,7 +101,9 @@ SLAM's `map → odom`.
 
     Give it a **2D Pose Estimate** in RViz first: `set_initial_pose` is
     `false`, so AMCL does not assume where the vehicle is. A particle cloud
-    that never converges is almost always that.
+    that never converges is almost always that. Do it **before starting Nav2**:
+    without a pose there is no `map` frame, and Nav2 waits for one without an
+    error ([software.md §4.8](design/software.md#48-nav2-does-not-come-up-until-amcl-has-a-pose-result-2026-11-20)).
 
     **Do not run both.** Two publishers for `map → odom` is a map that jitters
     against the scan, and it is miserable to diagnose. Each file takes
