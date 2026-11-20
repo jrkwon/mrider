@@ -595,6 +595,24 @@ explain that error. It may be the same event seen differently, since a pose publ
 is active is dropped and leaves this state; that is a guess, not a result. Logs are in
 `.omc/artifacts/lifecycle-trial-2026-11-20/` on the instructor's machine.
 
+**A second way into the same state: the EKF died.** In one of 24 starts of
+`localization.launch.py` that day, `ekf_node` exited with code -11 (a segmentation fault) within
+seconds of starting. The EKF is the only publisher of `odom` → `base_link`, so AMCL accepted the
+pose and still could not place the vehicle in `map`, and Nav2 waited exactly as above. The one line
+that tells the two apart is in the **localization** terminal:
+
+```
+[ERROR] [ekf_node-1]: process has died [pid ..., exit code -11, ...]
+```
+
+Relaunching localization cleared it. Seen once, not reproduced, cause unknown.
+
+**Follow-up on §4.7, same day, commit `8aa18e8`.** Eight goals alternating between (4.0, 1.5) and
+(0.5, 0.0), both in open floor, with the committed parameters: **8 of 8 reached.** RPP printed
+`detected collision ahead!` three times in all, in two of the four runs back towards (0.5, 0.0),
+which ends about 1.2 m from a wall, and never on the way out. So the refusals that remain after
+§4.7 are brief, come near a wall, and did not fail a goal here. Eight runs, one pair of points.
+
 ---
 
 ## 5. Data collection + end-to-end NN pipeline
