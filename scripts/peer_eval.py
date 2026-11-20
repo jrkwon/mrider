@@ -68,7 +68,8 @@ def read_responses(path):
         m = GRID.match(h or '')
         if not m:
             continue
-        question, member = m.group(1), m.group(2)
+        # Stripped: a label typed by hand into a question title picks up spaces.
+        question, member = m.group(1), m.group(2).strip()
         crit = next((c for c in CRITERIA if question.lower().startswith(c.lower())), None)
         if crit:
             score_cols[h] = (crit, member)
