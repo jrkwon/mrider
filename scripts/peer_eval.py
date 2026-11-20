@@ -45,7 +45,9 @@ import statistics
 import sys
 
 CRITERIA = ('Contribution', 'Reliability', 'Collaboration')
-GRID = re.compile(r'^\s*(.+?)\s*\[(.+?)\]\s*$')
+# DOTALL: a question title may run over several lines when the scale is
+# explained in it, and the exported column header keeps the line breaks.
+GRID = re.compile(r'^\s*(.+?)\s*\[([^\[\]]+)\]\s*$', re.S)
 
 
 def die(msg):
@@ -79,6 +81,12 @@ def read_responses(path):
             text_cols[h] = member
     if not members:
         die(f'{path}: no "Contribution [<member>]" style columns')
+    # A free-text question copied from another team's form and not renamed
+    # would otherwise lose one member's text without a word.
+    strangers = sorted({m for m in text_cols.values() if m not in members})
+    if strangers:
+        print(f'WARNING: free-text question(s) name {strangers}, who is not a member '
+              f'{members}. Fix the question title in the form; those answers are not shown.\n')
     for crit in CRITERIA:
         missing = [m for m in members
                    if (crit, m) not in score_cols.values()]
