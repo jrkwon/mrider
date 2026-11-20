@@ -555,6 +555,45 @@ the best of several tried. Logs are in `.omc/artifacts/inflation-trial-2026-11-1
 instructor's machine, not in this repository. Twice in two days Nav2's lifecycle bring-up hung
 at `configure` with `failed to send response to /controller_server/change_state (timeout)` and
 came up on a relaunch. Not diagnosed, and not connected to this finding by any evidence.
+*(§4.8 finds one cause of a bring-up that does not finish. It is not shown to be this one.)*
+
+### 4.8 Nav2 does not come up until AMCL has a pose — RESULT 2026-11-20
+
+**Symptom.** `localization.launch.py` is running, `nav2.launch.py` is started, and bring-up never
+finishes. `Managed nodes are active` does not appear, no goal is accepted, and there is no error.
+`controller_server` and `smoother_server` report `active`; `planner_server` sits in its
+activation, and everything after it stays `inactive`.
+
+**Cause.** AMCL here has `set_initial_pose: false`, so until it is given a pose it publishes no
+`map` → `odom`, and the `map` frame does not exist. `planner_server` activates its global costmap,
+which waits for `base_link` in `map`, and the lifecycle manager waits for the planner. The only
+sign is an `INFO` line, repeated about twice a second:
+
+```
+[global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available
+```
+
+It is not a fault and nothing has to be restarted: Nav2 is waiting for the pose.
+
+**Trial, in the twin, depot world and map, commit `787c4b7`.** One simulator; for each cycle
+`localization.launch.py`, then `nav2.launch.py`, then up to 150 s for `Managed nodes are active`.
+
+| Initial pose | Cycles | Came up | Time to active |
+|---|---:|---:|---|
+| Never given | 10 | **0** | not within 150 s; 311 of the lines above in the first cycle |
+| Published to `/initialpose` before Nav2 was started | 8 | **8** | 12–14 s |
+| Published 45 s after Nav2 was started | 4 | **4** | 54–55 s, that is about 10 s after the pose |
+
+**What changes for a team.** Give AMCL its **2D Pose Estimate before starting Nav2**, or give it
+afterwards and wait: Nav2 finishes on its own. With `slam.launch.py` this does not arise, because
+`slam_toolbox` publishes `map` → `odom` from its first scan.
+
+**Limits.** 22 cycles on one machine, twin only. The pose was published from the command line at
+the spawn point, not set in RViz. The `change_state (timeout)` error recorded in §4.7 did **not**
+occur in any of the 22 cycles, so this explains a bring-up that never finishes and does not
+explain that error. It may be the same event seen differently, since a pose published before AMCL
+is active is dropped and leaves this state; that is a guess, not a result. Logs are in
+`.omc/artifacts/lifecycle-trial-2026-11-20/` on the instructor's machine.
 
 ---
 

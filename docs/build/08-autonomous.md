@@ -103,7 +103,9 @@ ros2 launch mitt_navigation localization.launch.py use_sim_time:=false \
 ```
 
 `map:=` must be an absolute path. AMCL does not assume where the vehicle is: give it a
-**2D Pose Estimate** in RViz first. Then drive the course manually again and confirm the pose
+**2D Pose Estimate** in RViz first, and **before you start Nav2**. Until AMCL has a pose there is no
+`map` frame, and Nav2's bring-up waits for it without reporting an error
+([software.md §4.8](../design/software.md#48-nav2-does-not-come-up-until-amcl-has-a-pose-result-2026-11-20)). Then drive the course manually again and confirm the pose
 stays locked.
 
 - [ ] Pose does not jump when the vehicle passes featureless stretches
@@ -321,6 +323,7 @@ consecutive attempts. One lucky lap is not a working policy.
 | Policy works one direction only | Trained on one course direction | Record the other direction |
 | Nav2 paths the vehicle cannot follow | Planner radius below the real turning radius | Re-measure both locks — [calibration.md §1.5](../design/calibration.md#15-minimum-turning-radius-measured-not-derived); record the larger in `vehicle<n>.yaml` |
 | `nav2.launch.py will not start: …` | Vehicle number, ROS domain, or an unmeasured turning radius | The line names which — [Phase C](#84-phase-c-nav2-goals) |
+| Nav2 never prints `Managed nodes are active`; `Timed out waiting for transform from base_link to map` repeats | AMCL has no initial pose, so there is no `map` frame | Set the **2D Pose Estimate**; Nav2 finishes by itself in about 10 s — [software.md §4.8](../design/software.md#48-nav2-does-not-come-up-until-amcl-has-a-pose-result-2026-11-20) |
 | `WRONG VEHICLE` in the Nav2 terminal | Nav2 and the robot were started with different `vehicle:=` | Stop Nav2; start it with the robot's number |
 | Map doubles walls | Odometry drift or bad extrinsics | [Odometry](06-bench-test.md#66-drive-distance-ticksmeters) and [extrinsics](06-bench-test.md#68-extrinsics-sensors-base_link) |
 | Pose jumps during localization | Featureless stretches, or LiDAR range too short | `max_laser_range`; add features to the course |
