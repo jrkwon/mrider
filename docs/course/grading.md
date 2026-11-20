@@ -191,7 +191,8 @@ that is its real purpose. Present to your classmates, not to me.
 | **Integration** | 15 | It merged. It works with the other tracks' work, not only alone |
 | **Failure analysis** | 10 | What did not work, why, and what you would do differently |
 
-**Adjusted by peer evaluation, up to ±15%** on your individual share.
+**Adjusted by peer evaluation, up to ±15%** on your individual share. This is the only component
+peer evaluation touches; [how the adjustment is computed](teams.md#peer-evaluation).
 
 ### On acceptance evidence
 

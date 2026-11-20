@@ -191,8 +191,9 @@ Full rubrics are in [Grading & Rubrics](grading.md).
 **Participation is not attendance.** It is assessed from standup contributions, commit history, and
 documentation written — evidence of work, not presence in a chair.
 
-**Peer evaluation** runs twice, at Week 12 and Week 15. It can adjust an individual's team-component
-grade by up to ±15%. A team is not a place to be carried.
+**Peer evaluation** runs twice, at Week 12 and Week 14. The second one can adjust an individual's
+**Team deliverable** grade by up to ±15%; the first is a check, and changes no grade. The rule is in
+[Teams & Tracks](teams.md#peer-evaluation). A team is not a place to be carried.
 
 ### Late work
 
