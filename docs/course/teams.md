@@ -172,7 +172,7 @@ status update. All three teams merge on the same dates.
 | Week | Date | Merge | The claim it proves |
 |---|---|---|---|
 | **11** | 11/23 | **E + C** | The vehicle steers to a commanded angle under firmware control, wheels off the ground. Closes bring-up Stage 1: ≤ 1° steady-state error, no sustained oscillation |
-| **12** | 11/30 | **S + W** | The twin runs *measured* geometry and the functional test suite is green in CI |
+| **12** | 11/30 | **S + W** | The twin runs *measured* geometry and the functional test suite is green in CI. Shown inside the [mid-semester presentation](grading.md#mid-semester-presentation-15) |
 | **13** | 12/07 | **(E+C) + W** | `mitt_hardware` talks to the real Teensy. **The ADR-SW4 gate:** the identical teleop launch runs in sim and on hardware, differing only in the plugin |
 | **14** | 12/14 | **all four** | Full stack on the vehicle — teleop, then a hallway map, then a Nav2 goal. Then measured against the acceptance gates in [software.md §8](../design/software.md) |
 | **15** | 12/21 | — | **★ Final demo and presentations** |
@@ -302,7 +302,8 @@ point. An unchanged charter in Week 14 means nobody was reading it.
 
 ## Peer evaluation
 
-Runs twice: **Week 8** and **Week 15**. Confidential; only I see individual responses.
+Runs twice: **Week 12** and **Week 15**. *(The first was planned for Week 8 and moved with the
+mid-semester presentation, 2026-11-20.)* Confidential; only I see individual responses.
 
 For each teammate including yourself, on a 1–5 scale:
 
@@ -320,7 +321,7 @@ Consistent, evidenced under-contribution can reduce it further.
 > [!NOTE]
 > **If your team has a problem**
 >
-> Tell me at Week 8, not Week 15. At Week 8 there are seven weeks left and it is fixable. At Week
+> Tell me now, not at Week 15. While there are weeks left it is fixable. At Week
 > 15 there is nothing I can do but adjust grades, which helps nobody build anything.
 
 ---

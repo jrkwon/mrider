@@ -3,7 +3,7 @@
 | Component | Weight | When |
 |---|---:|---|
 | [Individual labs 1–5](#individual-labs-30) | **30%** | W1–W5, due weekly |
-| [Mid-semester presentation](#mid-semester-presentation-15) | **15%** | W8 — 11/02 |
+| [Mid-semester presentation](#mid-semester-presentation-15) | **15%** | W12 — 11/30 |
 | [Team deliverable](#team-deliverable-25) | **25%** | W15 — 12/21 |
 | [Final demo & presentation](#final-demo-presentation-20) | **20%** | W15 — 12/21 |
 | [Participation & documentation](#participation-documentation-10) | **10%** | Continuous |
@@ -146,7 +146,11 @@ nowhere else — the per-student files under `dist/` are regenerated on every ru
 
 ## Mid-semester presentation (15%)
 
-**Week 8, 11/02.** Each team presents for 12 minutes plus 5 minutes of questions.
+**Week 12, 11/30.** Each team presents for 12 minutes plus 5 minutes of questions. Moved from Week 8 (11/02) on 2026-11-20: the vehicles reached the teams that week, so there was nothing yet to demonstrate.
+
+The presentation **carries your Merge 2 demonstration**: show the Merge 1 result and the
+[Merge 2 claim](weeks/w12.md#mid-semester-presentation-and-merge-2) inside your 12 minutes, with their numbers. There is no
+separate merge slot that day.
 
 This is the first checkpoint where the three teams have to explain themselves to each other — and
 that is its real purpose. Present to your classmates, not to me.
@@ -155,7 +159,7 @@ that is its real purpose. Present to your classmates, not to me.
 
 | | Points | |
 |---|---:|---|
-| **Subsystem demonstrated** | 30 | Something works, live or recorded. Partial is fine and expected at Week 8 |
+| **Subsystem demonstrated** | 30 | Something works, live or recorded. Partial is fine and expected: the vehicles have been with you four weeks |
 | **Evidence quality** | 25 | Numbers, plots, logs. Measured, not asserted |
 | **Interface clarity** | 20 | What you need from other tracks and what you will give them, concretely and with dates |
 | **Risk honesty** | 15 | What is going wrong, what you will do about it |
@@ -164,7 +168,8 @@ that is its real purpose. Present to your classmates, not to me.
 > [!WARNING]
 > **The most common way to lose points here**
 >
-> Presenting a plan instead of a result. At Week 8 you are five weeks into track work. "We
+> Presenting a plan instead of a result. By Week 12 you are six weeks into track work and four weeks
+> into having a vehicle. "We
 > researched the options" is a Week 6 answer. Show what you built, even if it is small and broken.
 >
 > The second most common: a team that has not talked to the track it depends on. Interface clarity

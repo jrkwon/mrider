@@ -86,11 +86,11 @@ Week 0 is orientation. Individual labs run Weeks 1–5; team tracks run Weeks 6�
 | [5](weeks/w05.md) | 10/12 | Description to motion: URDF, TF2, Gazebo, `ros2_control` | [Lab 5](labs/lab5.md) |
 | [6](weeks/w06.md) | 10/19 | Odometry, sensor fusion, and **teams announced** | — |
 | [7](weeks/w07.md) | 10/26 | Embedded ROS 2: micro-ROS, Teensy, `hardware_interface` | — |
-| [8](weeks/w08.md) | 11/02 | Safety, authority, failsafe — **★ mid-semester presentation** | — |
+| [8](weeks/w08.md) | 11/02 | Safety, authority, failsafe | — |
 | [9](weeks/w09.md) | 11/09 | Control: PID, pure pursuit, RPP | — |
 | [10](weeks/w10.md) | 11/16 | Perception: camera, LiDAR, calibration | — |
 | [11](weeks/w11.md) | 11/23 | SLAM — **★ Merge 1: Electrical + Chassis** | — |
-| [12](weeks/w12.md) | 11/30 | Nav2 — **★ Merge 2: Simulation + Software** | — |
+| [12](weeks/w12.md) | 11/30 | Nav2 — **★ mid-semester presentation**, carrying **Merge 2: Simulation + Software** | — |
 | 13–15 | 12/07 – 12/21 | Sim-to-real, integration, validation, final demo | see [Teams](teams.md) |
 
 Weekly notes for W13 onward are published once the hardware exists — they depend on
