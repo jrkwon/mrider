@@ -46,6 +46,8 @@ ros2_ws/src/gz_ros2_control/
 /course/roster*.txt
 # Marks. Student grade data - must never be committed.
 /course/scores-*.tsv
+# Instructor's merge, standup and demo records. Grade data as well.
+/course/records-*.md
 
 # OpenSCAD build output
 *.stl
