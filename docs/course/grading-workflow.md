@@ -176,6 +176,75 @@ delivers it by email and on the notifications page.
 
 ---
 
+## Peer evaluation
+
+Twice: Week 12 (a check, no grade effect) and Week 14 (adjusts the Team deliverable, up to ±15%).
+The rule the students were given is in [Teams & Tracks](teams.md#peer-evaluation).
+
+### The form
+
+**One Google Form per team**, filled in during the last 15 minutes of class. Collect it in the room:
+a form sent home comes back from eight of thirteen. Set it to one response per person and do not
+show respondents the results.
+
+Every question that names a member uses **the same label for that member**, character for
+character. The script identifies a self-rating by that label and nothing else.
+
+| # | Question | Type |
+|---|---|---|
+| 1 | **Who are you?** | Dropdown: one choice per member |
+| 2 | **Contribution** — did they deliver what they owned? Rate every member, yourself included. 1 = almost nothing, 3 = what was agreed, 5 = well beyond it | Multiple-choice grid: rows = members, columns = 1 2 3 4 5, one response per row required |
+| 3 | **Reliability** — could the team depend on their commitments? 1 = rarely, 3 = usually, 5 = always | Same grid |
+| 4 | **Collaboration** — did they make the team work better? 1 = made it harder, 3 = neutral, 5 = clearly better | Same grid |
+| 5 | **What did this person do that the git history would not show me? [member]** — one question per member, the member's label in square brackets at the end | Paragraph, optional |
+| 6 | **Is there anything about how the team is working that I should know?** | Paragraph, optional |
+
+Form description, shown at the top:
+
+> Confidential: only the instructor reads individual responses. Rate what you observed, not what
+> you assume. Your own row is not counted in your score. The Week 12 evaluation changes no grade.
+
+A grid question exports one column per row, named `Contribution [<member>]`, which is the shape the
+script expects. Question 5 is written with the bracket by hand so that it exports the same way.
+
+### Reading it
+
+*Responses → ⋮ → Download responses (.csv)*, one file per team, then:
+
+```bash
+python3 scripts/peer_eval.py ~/Downloads/peer1-team1.csv --text
+```
+
+```
+4 of 4 members responded; team mean of received scores = 3.67
+
+member                    recv  n  self  ratio  mult  flags
+------------------------------------------------------------------------
+Member A                  4.33  3  5.00   1.18  1.15
+Member B                  4.00  3  4.00   1.09  1.00
+Member C                  4.00  3  4.00   1.09  1.00
+Member D                  2.33  3  5.00   0.64  0.85  received < 3; ratio < 0.8; self is 2.7 above received
+```
+
+`recv` is the mean from the other members, `n` how many of them rated this person, `ratio` is `recv`
+over the team mean, and `mult` is the multiplier the published rule gives. The flags are where to
+look first; `--text` prints what was written about each member underneath.
+
+At **Week 12** nothing is applied. A flag is a reason to talk to the team that week.
+
+At **Week 14** the multiplier applies to that student's Team deliverable score, after it has been
+read against the free text, the fork's commit history and the standup notes. With three or four
+raters, one person marking a teammate down moves the mean a long way: the `raters disagree` flag
+names who, and the free text has to carry the reason.
+
+> [!WARNING]
+> **The output is grade data and it is printed, not saved**
+>
+> Keep the CSVs outside this repository. Record the ratio and the multiplier you used in
+> `course/records-<term>-merges.md`, which is git-ignored.
+
+---
+
 ## Things the LMS does to your downloads
 
 **It renames them.** Student names get prefixed; a second copy of the same file gets `-1` appended.

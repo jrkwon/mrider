@@ -302,7 +302,7 @@ point. An unchanged charter in Week 14 means nobody was reading it.
 
 ## Peer evaluation
 
-Runs twice: **Week 12** and **Week 15**. *(The first was planned for Week 8 and moved with the
+Runs twice: **Week 12** and **Week 14**. *(The first was planned for Week 8 and moved with the
 mid-semester presentation, 2026-11-20.)* Confidential; only I see individual responses.
 
 For each teammate including yourself, on a 1–5 scale:
@@ -315,7 +315,21 @@ Plus, in free text: *what did this person do that the git history would not show
 debugging someone else's problem, and asking the question that saved a week are all real work that
 leaves no commit.
 
-**Effect on grade:** peer evaluation can adjust your personal team-component grade by up to **±15%**.
+### Effect on grade
+
+*Decided 2026-11-20.*
+
+- **Only the Team deliverable (25%) is adjusted**, by up to **±15%** of your share of it. The
+  mid-semester presentation and the final demo are graded per team and stay as they are.
+- **Only the Week 14 evaluation adjusts a grade.** The Week 12 one is a check: it tells me, and
+  through me your team, where something is going wrong while there are weeks left to fix it.
+- **How the number is computed.** Your score is the mean of what your teammates gave you; your own
+  rating of yourself is not in it. That score divided by your team's mean is your ratio. A ratio
+  between **0.90 and 1.10 changes nothing**, because four or five people cannot measure a
+  difference that small. Outside that band the ratio is your multiplier, limited to 0.85–1.15.
+- **No multiplier is applied on numbers alone.** I read it against the free text, your fork's
+  commit history and the standups before using it.
+
 Consistent, evidenced under-contribution can reduce it further.
 
 > [!NOTE]
