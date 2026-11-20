@@ -239,7 +239,8 @@ These weights are inherited deliberately from the
 
 ### Final report
 
-Submitted with the demo. Structure — again inherited from M8:
+Committed to your fork before class on 12/21; the skeleton is on the [Final report](final-report.md)
+page. Structure — again inherited from M8:
 
 1. **Approach** — what you set out to build and why
 2. **Implementation** — what you actually built

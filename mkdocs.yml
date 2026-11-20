@@ -121,6 +121,7 @@ nav:
       - Environment Setup: course/environment.md
       - Teams & Tracks: course/teams.md
       - Grading & Rubrics: course/grading.md
+      - Final Report: course/final-report.md
       - Grading Workflow (instructor): course/grading-workflow.md
       - Submitting Labs: course/submission.md
       - Labs:
@@ -143,6 +144,9 @@ nav:
           - Week 10 — Perception: course/weeks/w10.md
           - Week 11 — SLAM & Merge 1: course/weeks/w11.md
           - Week 12 — Nav2 & Merge 2: course/weeks/w12.md
+          - Week 13 — Sim to Real & Merge 3: course/weeks/w13.md
+          - Week 14 — Validation & Merge 4: course/weeks/w14.md
+          - Week 15 — Final Demo: course/weeks/w15.md
   - Learn:
       - Overview: learn/index.md
       - M1 — Intro to MRider & ROS 2: learn/m1-ros2-intro.md
