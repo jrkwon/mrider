@@ -208,6 +208,20 @@ paths this repository uses: `firmware/`, `ros2_ws/src/mitt_hardware/`, `ros2_ws/
 your charter. Every member commits there, under their own name. **Your fork's history is what is
 graded** — both the deliverables and the individual commit record.
 
+How to set it up:
+
+- **One member creates the fork**, normally the team lead, and invites every other member as a
+  collaborator with **Write** access (*Settings → Collaborators*). Send me the fork's URL.
+- **Nobody makes a second fork.** Members clone the team fork and push branches to it. A personal
+  fork of the team fork scatters the history that is graded.
+- **Do not squash-merge.** A squashed pull request records whoever pressed the button as the
+  author, and the commits of the person who did the work are gone. Use a merge commit or a rebase.
+- **Commit as yourself.** Check `git config user.name` and `git config user.email` on every machine
+  you commit from, and that the email is one your GitHub account knows. On a shared laptop, set
+  them per clone or pass `--author`, or one person ends up with everyone's work.
+- **Fork, do not copy.** Use GitHub's *Fork* button, so the repository stays public and
+  `git merge upstream/main` keeps working. A new repository with the files copied in has neither.
+
 Keep the fork current. `main` keeps moving, and a fork that falls behind stops building against the
 interfaces below:
 
