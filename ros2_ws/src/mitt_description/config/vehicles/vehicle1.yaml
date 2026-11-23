@@ -22,3 +22,19 @@
 #
 #   wheelbase: 0.641          # m  axle centre to axle centre, tape, 2026-11-20
 #   min_turning_radius: 1.58  # m  calibration.md 1.5, the LARGER of both locks
+
+# Measured on team 1's vehicle.
+wheelbase: 0.533          # m  front axle centre to rear axle centre, tape, 2026-10-28
+track_width: 0.435        # m  front wheel centre to centre, tape, 2026-10-28
+
+# Rear axle centre to floor, tape, vehicle on the floor, 2026-11-23. Same value
+# with and without the equipment load.
+# Hard plastic wheel. A tape round the tyre gives 645 mm (r 0.1027).
+wheel_radius: 0.101       # m
+
+# Full circle at each full lock, steering turned by hand, 2026-10-28.
+# Diameter: tape from one rear tyre's outer edge at the start to the other rear
+# tyre's same-side edge half a turn later. The tyre offsets cancel, so this is
+# the path of the rear axle centre. Left 4.09 and 4.30 m (mean 4.195), right
+# 3.91 m. The larger lock is left: 4.195 / 2.
+min_turning_radius: 2.10  # m
