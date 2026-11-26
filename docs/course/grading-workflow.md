@@ -245,6 +245,48 @@ names who, and the free text has to carry the reason.
 
 ---
 
+## Team rubrics and the course total
+
+The three team components are marked per team, and two things are marked per student. All of it
+lives beside the lab marks, in the same git-ignored pattern:
+
+| File in `course/` | One row per | Columns |
+|---|---|---|
+| `scores-<term>-mid.tsv` | team | demonstrated 30, evidence 25, interface 20, risk 15, delivery 10 |
+| `scores-<term>-deliverable.tsv` | team | functionality 30, evidence 25, quality 20, integration 15, failure 10 |
+| `scores-<term>-final.tsv` | team | autonomous 25, depth 20, failure 20, reproducibility 15, safety 10, presentation 10 |
+| `scores-<term>-students.tsv` | student | team, track, peer multiplier, participation 0–10 |
+
+The columns are the rubric rows in [Grading & Rubrics](grading.md), in the same order.
+
+```bash
+python3 scripts/course_grade.py --init     # once: creates the four files, all dots
+python3 scripts/course_grade.py            # the table, as far as it is marked
+python3 scripts/course_grade.py --csv dist/grade/course.csv
+```
+
+`--init` never overwrites a file that exists. The student list comes from the first lab marks file.
+
+```
+uniqname     team trk  labs   mid  deliv  mult final  part  total   of    pct
+-----------------------------------------------------------------------------
+student_a       1   W  30.0  13.5      -  1.00     -     -   43.5   45  96.7%
+student_b       2   E  24.6  11.2      -  1.00     -     -   35.8   45  79.6%
+
+Not fully marked: deliverable, final, participation. "of" is the weight each total is out of.
+```
+
+A dot means *not marked yet*. A component with a dot is left out of the total **and** out of the
+weight the total is measured against, so the table can be read in Week 12 without a missing final
+demo looking like a zero.
+
+**The peer multiplier is typed in by hand.** `peer_eval.py` prints a suggestion; it goes into the
+`peer_mult` column only after it has been read against the free text and the commits. It multiplies
+the Team deliverable and nothing else, and the result is limited to the full 25%: a multiplier
+above 1.00 can recover points a team lost, not exceed the component.
+
+---
+
 ## Things the LMS does to your downloads
 
 **It renames them.** Student names get prefixed; a second copy of the same file gets `-1` appended.
