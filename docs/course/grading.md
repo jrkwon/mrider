@@ -185,7 +185,7 @@ that is its real purpose. Present to your classmates, not to me.
 
 | | Points | |
 |---|---:|---|
-| **Functionality** | 30 | Does it do what your charter said it would? |
+| **Functionality** | 30 | Does it do what [your track's deliverable table](teams.md#the-four-tracks) says it owns? |
 | **Acceptance evidence** | 25 | The gates your track owns, measured, with numbers recorded in `docs/build/` |
 | **Code & documentation quality** | 20 | Readable, tested where testable, documented so the next cohort can build on it |
 | **Integration** | 15 | It merged. It works with the other tracks' work, not only alone |

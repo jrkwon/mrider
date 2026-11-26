@@ -1,7 +1,7 @@
 # Final Report
 
 **Due Monday, December 21, 2026, before class.** One report per team, committed to your fork at
-`docs/course/reports/vehicle<n>.md`, beside your charter.
+`docs/course/reports/vehicle<n>.md`.
 
 The report is where the [Team deliverable](grading.md#team-deliverable-25) and the
 [Final demo](grading.md#final-demo-presentation-20) rubrics find their evidence. It has five
@@ -10,7 +10,7 @@ fourth is the one that matters most.
 
 | Section | Length | What it is for |
 |---|---|---|
-| 1. Approach | ~1 page | What you set out to build, from your charter, and what you gave up |
+| 1. Approach | ~1 page | What your team set out to build, and what you gave up |
 | 2. Implementation | ~1–2 pages | What you actually built, per track. What differs from the design documents, and why |
 | 3. Results | ~2 pages | The acceptance gates: number, procedure, conditions, trials |
 | 4. Failure analysis | ~2 pages | **The heart of the report.** What broke, which subsystem, what evidence |
@@ -27,8 +27,10 @@ fourth is the one that matters most.
 
 ## What makes each section work
 
-**Approach.** Start from your charter and say what changed. A charter that was never revised means
-nobody was reading it, and a revised one is the record of what you learned.
+**Approach.** Say what your team set out to build, track by track, against the
+[track tables](teams.md#the-four-tracks), and what you gave up along the way and why. No charter is
+collected, so this section is where that plan is written down. A plan that never changed means
+nobody was checking it against the vehicle.
 
 **Implementation.** Name people. *Who built what* is read from here and from the commit history
 together, and work that left no commit (measurement, debugging, review) is real work that only this
@@ -65,7 +67,7 @@ Copy this into `docs/course/reports/vehicle<n>.md` in your fork and fill it in.
 
 ## 1. Approach
 
-What the charter committed to, and what changed since.
+What the team set out to build, per track, and what changed since.
 
 ## 2. Implementation
 
