@@ -126,11 +126,18 @@ def _only_if_it_worked(what, why, then):
 
 
 def _refuse(problems):
+    """End the launch, before any node is started, with exit status 1.
+
+    Raised, not logged-and-Shutdown, for the reason nav2.launch.py and
+    sim.launch.py give: an exception here ends `ros2 launch` with status 1,
+    where Shutdown ended it with status 0 - which a script, a CI job or a
+    student's `&&` reads as "the vehicle started". The list of reasons is the
+    exception's message, so it is still printed in full.
+    """
     lines = "\n".join(f"[bringup]   - {p}" for p in problems)
-    return [
-        LogInfo(msg="\n[bringup] NOT STARTING THE VEHICLE.\n" + lines + "\n"),
-        Shutdown(reason="real.launch.py preflight failed"),
-    ]
+    raise RuntimeError(
+        "real.launch.py will not start.\n"
+        "[bringup] NOT STARTING THE VEHICLE.\n" + lines) from None
 
 
 def _lidar_executable():
@@ -226,7 +233,7 @@ def _bringup(context, *_args, **_kwargs):
             problems.append(str(e))
 
     if problems:
-        return _refuse(problems)
+        _refuse(problems)
 
     # ------------------------------------------------------------------------
     desc_pkg = FindPackageShare("mitt_description")
