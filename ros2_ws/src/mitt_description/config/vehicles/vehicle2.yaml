@@ -24,7 +24,7 @@
 #   min_turning_radius: 1.58  # m  calibration.md 1.5, the LARGER of both locks
 
 wheelbase: 0.535           # m  rear axle centre -> front axle centre, tape, 2026-10-30
-track_width: 0.37          # m  wheel separation, tape, 2026-10-30
+track_width: 0.44          # m  front wheel centre to centre, tape, 2026-11-28
 wheel_radius: 0.102        # m  loaded rolling circumference 0.643 m / 2pi, mark tyre and roll one revolution, 2026-10-30
 min_turning_radius: 2.15   # m  rear axle centre at full lock, left 2.150 / right 2.085, the LARGER (calibration.md 1.5), 2026-10-30
 
