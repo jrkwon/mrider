@@ -186,3 +186,17 @@ jobs:
             grep -q 'name="base_link"' /tmp/mitt_v$v.urdf
           done
           echo "expanded URDF: $(wc -l < /tmp/mitt.urdf) lines"
+
+      # Merge 2: "the functional test suite is green in CI" (w12.md).
+      # Only the functional tests (ctest names starting `functional_`). The
+      # inherited linters (flake8, pep257) already fail on the course code -
+      # 62 of 125 on 2026-11-28 - and would turn this red for reasons that are
+      # not a regression; they belong in a job of their own once cleaned up.
+      - name: functional tests (not linters)
+        run: |
+          set -euo pipefail
+          cd ros2_ws
+          set +u; source setup_env.sh; set -u
+          colcon test --packages-select mitt_description \
+            --ctest-args -R '^functional_' --event-handlers console_direct+
+          colcon test-result --test-result-base build/mitt_description --verbose

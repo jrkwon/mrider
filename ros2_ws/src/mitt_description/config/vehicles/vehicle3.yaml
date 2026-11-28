@@ -22,3 +22,37 @@
 #
 #   wheelbase: 0.641          # m  axle centre to axle centre, tape, 2026-11-20
 #   min_turning_radius: 1.58  # m  calibration.md 1.5, the LARGER of both locks
+
+# Measured on team 3's vehicle, 2026-10 (day not recorded).
+wheelbase: 0.535          # m  front wheel centre to rear wheel centre
+chassis_length: 0.92      # m  overall length
+chassis_width: 0.46       # m  body width, wheels NOT included
+
+# Floor to the top of the body, vehicle on the floor, mast and equipment plate
+# not included. Re-measured, reported 2026-11-28.
+chassis_height: 0.30      # m
+
+# Wheel diameter 195 mm, re-measured, reported 2026-11-28 (first reported as
+# 20 cm). Not the loaded floor-to-axle height Week 11 asks for. A tape round
+# the tyre gave 64 cm (r 0.102).
+wheel_radius: 0.0975      # m
+
+# Tyre width across the tread, reported 2026-11-28. With track 0.442 the
+# wheels, not the 0.46 m body, set the width of the Nav2 footprint.
+wheel_width: 0.06         # m
+
+# REAR axle, wheel centre to wheel centre. The front track has not been
+# measured; the controller and the Nav2 footprint use this one value for both.
+track_width: 0.442        # m
+
+# Road-wheel angles at one full lock, side not recorded: inner wheel 20 deg,
+# outer wheel 18 deg. The URDF limit applies to each steer joint, so it takes
+# the inner wheel's 20. The other lock has not been measured.
+steer_limit_deg: 20.0
+
+# Full circle at one full lock, side not recorded, 2026-10. Diameter measured
+# as in vehicle1.yaml: tape from one rear tyre's outer edge at the start to the
+# other rear tyre's same-side edge half a turn later, so the tyre offsets
+# cancel and this is the path of the rear axle centre: 3.91 m. The other lock
+# has not been measured, so this may be the SMALLER of the two.
+min_turning_radius: 1.955 # m
